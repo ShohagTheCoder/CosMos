@@ -1,0 +1,1 @@
+Point of save application CosMos.
