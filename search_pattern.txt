@@ -1,0 +1,23 @@
+Search pattern
+---------------------
+[name] [value|helpers|search] = search pattern
+
+' '[name] = Space at the beging means select customer not product 
+[Enter] = Entry selected item or exicute command
+'  ' = Select secound item
+'   ' = Select third item
+'    ' = Select fourth item
+1 = Set value 1 to current unit
+1[unit] = set unit and value
+
+[command:name] = inline command. selector decide how to use the name like n:pran (not pran), c:pran (company pran), min:100 (minimum price 100), max:100(maximum price ) etc
+
++[value] = add value to unit like +52 (add 52 to current unit value)
+-[value] = subtract value to unit like -25 (substract 25 to current unit value)
++[value][unit] = add value * unit like +52kg (add 52 kg to current unit value without changing the unit)
+-[value][unit] = subtract value * unit like -25l (substract 25 liter to current unit value without changing the unit)
+
+--[value] = decrece price of item
+=--[value] = Add discout on total price
+
+[unit] = Select unit
