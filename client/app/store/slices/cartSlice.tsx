@@ -4,6 +4,7 @@ export interface CartItem {
     _id: string;
     name: string;
     price: number;
+    quantity: number;
 }
 
 export interface CartState {
@@ -24,13 +25,21 @@ const cartSlice = createSlice({
     reducers: {
         addToCart(state, action) {
             state.items[action.payload._id] = action.payload;
-            state.totalPrice = action.payload.price;
+            state.totalPrice += action.payload.price * action.payload.quantity;
             state.totalItem += 1;
+        },
+
+        removeToCart(state, action) {
+            state.totalPrice -=
+                state.items[action.payload].price *
+                state.items[action.payload].quantity;
+            state.totalItem -= 1;
+            delete state.items[action.payload];
         },
     },
 });
 
 import React from "react";
 
-export const { addToCart } = cartSlice.actions;
+export const { addToCart, removeToCart } = cartSlice.actions;
 export default cartSlice.reducer;

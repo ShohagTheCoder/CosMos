@@ -1,22 +1,21 @@
 "use client";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Product } from "./../interfaces/product.interface";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import useAddToCart from "./functions/addToCart";
 import apiClient from "../utils/apiClient";
-// import { completeSell } from "./functions/completeSell";
-import { MessageType } from "../utils/enums/MessageType";
+import { addToCart } from "../store/slices/cartSlice";
+import CartItem from "./components/CartItem";
+import ProductCard from "./components/ProductCard";
+import SellDetails from "./components/SellDetails";
 
 export default function Sell() {
     let [command, setCommand] = useState("");
     const [products, setproducts] = useState<Record<string, Product>>({});
     const dispatch = useDispatch();
     let cart = useSelector((state: RootState) => state.cart);
-    const addToCart = useAddToCart();
     const [note, setNote] = useState("");
-    const [filteredProduct, setFilteredProduct] = useState(products);
+    const [filteredProducts, setFilteredProducts] = useState(products);
 
     const now = new Date();
     // Format date as YYYY-MM-DD
@@ -27,16 +26,19 @@ export default function Sell() {
     const [message, setMessage] = useState("No Message");
 
     useEffect(() => {
-        window.addEventListener("keypress", () => {
+        window.addEventListener("keydown", (e: any) => {
             let command = document.getElementById("command");
-            if (document.activeElement != command) {
+            if (
+                document.activeElement != command &&
+                e.target.tagName != "TEXTAREA"
+            ) {
                 command?.focus();
             }
         });
 
         // Cleanup funtion to remove the evern listener
         return () => {
-            window.removeEventListener("keypress", () => {});
+            window.removeEventListener("keydown", () => {});
         };
     }, []);
 
@@ -68,15 +70,14 @@ export default function Sell() {
         });
 
         // Convert filtered array back to object
-        const filteredProductsObject = filtered.reduce<Record<string, Product>>(
-            (acc, product) => {
-                acc[product._id] = product;
-                return acc;
-            },
-            {}
-        );
+        const filteredProductssObject = filtered.reduce<
+            Record<string, Product>
+        >((acc, product) => {
+            acc[product._id] = product;
+            return acc;
+        }, {});
 
-        setFilteredProduct(filteredProductsObject);
+        setFilteredProducts(filteredProductssObject);
     }, [command, products]);
 
     async function handleCompleteSell() {
@@ -96,6 +97,22 @@ export default function Sell() {
         }
     }
 
+    function handleKeyDown(e: any): void {
+        switch (e.key) {
+            case "Enter":
+                if (Object.entries(filteredProducts).length > 0) {
+                    const product = {
+                        ...Object.values(filteredProducts)[0],
+                        quantity: 1,
+                    };
+                    console.log(product);
+                    dispatch(addToCart(product));
+                    setCommand("");
+                }
+                break;
+        }
+    }
+
     return (
         <main>
             <div className="2xl:container mx-auto">
@@ -107,6 +124,7 @@ export default function Sell() {
                                 id="command"
                                 value={command}
                                 onChange={(e) => setCommand(e.target.value)}
+                                onKeyDown={handleKeyDown}
                                 type="text"
                                 className="bg-black border text-white px-4 py-2 text-lg"
                                 autoFocus
@@ -115,16 +133,9 @@ export default function Sell() {
                         </div>
                         <div className="mt-3"></div>
                         <div className="flex flex-wrap gap-3">
-                            {Object.entries(filteredProduct).map(
+                            {Object.entries(filteredProducts).map(
                                 ([_id, product]) => (
-                                    <div
-                                        onDoubleClick={() => addToCart(product)}
-                                        key={_id}
-                                        className="product border w-[200px]"
-                                    >
-                                        <img src="product.jpeg" alt="Product" />
-                                        <p>{product.name}</p>
-                                    </div>
+                                    <ProductCard key={_id} product={product} />
                                 )
                             )}
                         </div>
@@ -133,14 +144,7 @@ export default function Sell() {
                         <div className="cart">
                             {Object.entries(cart.items).map(
                                 ([_id, product]) => (
-                                    <div key={_id} className="product border">
-                                        <img
-                                            src="product.jpeg"
-                                            alt="Product"
-                                            className="w-[80px]"
-                                        />
-                                        <p>{product.name}</p>
-                                    </div>
+                                    <CartItem key={_id} product={product} />
                                 )
                             )}
                         </div>
@@ -154,6 +158,7 @@ export default function Sell() {
                                 placeholder="Leave a note about the sell"
                             ></textarea>
                         </div>
+                        <SellDetails />
                         <div className="place-sell">
                             <button
                                 onDoubleClick={() => handleCompleteSell()}
