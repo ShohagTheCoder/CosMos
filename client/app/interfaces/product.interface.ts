@@ -5,4 +5,5 @@ export interface Product {
     description?: string;
     madeIn?: string; // Added based on your document structure
     __v?: number; // Version key (usually used by MongoDB)
+    quantity?: number;
 }

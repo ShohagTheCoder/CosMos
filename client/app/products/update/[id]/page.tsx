@@ -1,6 +1,7 @@
 "use client";
 import apiClient from "@/app/utils/apiClient";
-import React, { useState } from "react";
+import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 interface Product {
     name: string;
@@ -8,13 +9,29 @@ interface Product {
     description?: string;
     madeIn?: string;
 }
-function CreateProduct() {
+
+function UpdateProduct() {
+    const { id } = useParams();
     const [product, setProduct] = useState<Product>({
         name: "",
         description: "",
         price: 0,
         // Add initial values for new fields as needed
     });
+
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const result = await apiClient.get(`products/${id}`);
+                setProduct(result.data);
+            } catch (error) {
+                console.log(error);
+                setMessage("Something went wrong");
+            }
+        };
+
+        fetchProduct();
+    }, [id]);
 
     const [message, setMessage] = useState("");
 
@@ -30,18 +47,18 @@ function CreateProduct() {
         setProduct((prev) => ({ ...prev, price: parseFloat(e.target.value) }));
     }
 
-    async function createProduct() {
+    async function updateProduct() {
         try {
-            const result = await apiClient.post("products", product);
+            const result = await apiClient.put(`products/${id}`, product);
             console.log(result.data);
-            setMessage("Product created successfully!");
+            setMessage("Product updated successfully!");
             setProduct({
                 name: "",
                 description: "",
                 price: 0,
             }); // Reset form after success
         } catch (error) {
-            setMessage("Failed to create product.");
+            setMessage("Failed to update product.");
             console.error(error);
         }
     }
@@ -98,13 +115,13 @@ function CreateProduct() {
                 <button
                     type="button"
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    onClick={createProduct}
+                    onClick={updateProduct}
                 >
-                    Create Product
+                    Update Product
                 </button>
             </div>
         </div>
     );
 }
 
-export default CreateProduct;
+export default UpdateProduct;
