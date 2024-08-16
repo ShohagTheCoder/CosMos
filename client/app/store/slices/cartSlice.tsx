@@ -1,3 +1,4 @@
+import { Customer } from "@/app/interfaces/customer.inerface";
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface CartItem {
@@ -11,6 +12,8 @@ export interface CartState {
     items: Record<string, CartItem>;
     totalQuantity: number;
     totalPrice: number;
+    customer?: Customer;
+    activeItem?: string;
 }
 
 const initialState: CartState = {
@@ -35,6 +38,7 @@ const cartSlice = createSlice({
                 state.items = { ...state.items, [item._id]: updatedItem };
             } else {
                 state.items = { ...state.items, [item._id]: item };
+                state.activeItem = item._id;
             }
 
             state.totalPrice += item.price * item.quantity;
@@ -49,6 +53,7 @@ const cartSlice = createSlice({
                 state.items = rest;
                 state.totalPrice -= removedItem.price * removedItem.quantity;
                 state.totalQuantity -= removedItem.quantity;
+                state.activeItem = Object.keys(state.items)[0];
             }
         },
         updateQuantity: (state, action) => {
@@ -64,7 +69,10 @@ const cartSlice = createSlice({
             }
         },
         incrementQuantity: (state, action) => {
-            const itemId = action.payload;
+            let itemId = action.payload;
+            if (!itemId) {
+                itemId = state.activeItem;
+            }
             const item = state.items[itemId];
 
             if (item) {
@@ -75,7 +83,10 @@ const cartSlice = createSlice({
             }
         },
         decrementQuantity: (state, action) => {
-            const itemId = action.payload;
+            let itemId = action.payload;
+            if (!itemId) {
+                itemId = state.activeItem;
+            }
             const item = state.items[itemId];
 
             if (item && item.quantity > 1) {
@@ -90,6 +101,10 @@ const cartSlice = createSlice({
             state.totalQuantity = 0;
             state.totalPrice = 0;
         },
+
+        addCustomer: (state, action) => {
+            state.customer = action.payload;
+        },
     },
 });
 
@@ -100,5 +115,6 @@ export const {
     incrementQuantity,
     decrementQuantity,
     clearCart,
+    addCustomer,
 } = cartSlice.actions;
 export default cartSlice.reducer;

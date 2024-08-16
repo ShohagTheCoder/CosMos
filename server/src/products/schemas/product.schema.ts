@@ -1,8 +1,24 @@
-import { Schema } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
-export const ProductSchema = new Schema({
-    name: String,
-    price: Number,
-    description: String,
-    madeIn: { type: String, required: false, default: 'Bangladesh' },
-});
+export type ProductDocument = Product & Document;
+
+@Schema()
+export class Product {
+    @Prop({ required: true })
+    name: string;
+
+    @Prop({ required: true })
+    description: string;
+
+    @Prop({ required: true })
+    price: number;
+
+    @Prop()
+    createdAt: Date;
+
+    @Prop()
+    updatedAt: Date;
+}
+
+export const ProductSchema = SchemaFactory.createForClass(Product);
