@@ -264,7 +264,7 @@ export default function Sell() {
                     }
                 } else {
                     if (cart.totalQuantity == 0) break;
-                    if (forceOrder >= 3) {
+                    if (forceOrder >= 5) {
                         handleCompleteSell();
                     } else {
                         forceOrder++;
@@ -333,7 +333,7 @@ export default function Sell() {
                                 value={note}
                                 onKeyDown={handleNoteKeyDown}
                                 onChange={(e) => setNote(e.target.value)}
-                                rows={4}
+                                rows={2}
                                 cols={50}
                                 placeholder="Leave a note about the sell"
                             ></textarea>

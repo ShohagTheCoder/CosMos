@@ -1,0 +1,11 @@
+$path = E:\TheCoder\CosMos\cosmos.bat
+
+open cmd and run mongod
+open mongodbCompass and connect
+open vscode $path
+vscode code all tabs
+vscode open intrigreted therminal and in cd server then
+vscode terminal run - npm run dev
+vscode open intrigreted therminal and cd client then
+vscode terminal run - npm run dev
+open chrome http://localhost:3000/

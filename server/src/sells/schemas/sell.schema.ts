@@ -1,5 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import {
+    Customer,
+    CustomerSchema,
+} from 'src/customers/schemas/customer.schema';
+import { Product } from 'src/products/schemas/product.schema';
 
 export type SellDocument = Sell & Document;
 
@@ -14,11 +19,11 @@ export class Sell {
     @Prop({ required: true, type: Object })
     user: object;
 
-    @Prop({ required: true, type: Object })
-    cart: object;
+    @Prop({ required: true, type: Map })
+    cart: Map<string, Product>;
 
-    @Prop({ type: Object })
-    customer: object;
+    @Prop({ type: CustomerSchema })
+    customer: Customer;
 
     @Prop()
     createdAt: Date;

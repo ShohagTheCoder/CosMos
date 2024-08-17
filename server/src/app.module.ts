@@ -10,6 +10,10 @@ import { UsersModule } from './users/users.module';
 import { ActivitiesModule } from './activities/activities.module';
 import { CompaniesModule } from './companies/companies.module';
 import { SuppliersModule } from './suppliers/suppliers.module';
+import { DataService } from './data/data.service';
+import { UnitsController } from './units/units.controller';
+import { UnitsService } from './units/units.service';
+import { DataService } from './data/data.service';
 
 @Module({
     imports: [
@@ -22,7 +26,7 @@ import { SuppliersModule } from './suppliers/suppliers.module';
         CompaniesModule,
         SuppliersModule,
     ],
-    controllers: [AppController],
-    providers: [AppService],
+    controllers: [AppController, UnitsController],
+    providers: [AppService, DataService, UnitsService],
 })
 export class AppModule {}
