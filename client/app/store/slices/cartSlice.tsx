@@ -14,12 +14,14 @@ export interface CartState {
     totalPrice: number;
     customer?: Customer;
     activeItem?: string;
+    selectedProductIndex: number;
 }
 
 const initialState: CartState = {
     items: {},
     totalQuantity: 0,
     totalPrice: 0,
+    selectedProductIndex: 0,
 };
 
 const cartSlice = createSlice({
@@ -53,9 +55,32 @@ const cartSlice = createSlice({
                 state.items = rest;
                 state.totalPrice -= removedItem.price * removedItem.quantity;
                 state.totalQuantity -= removedItem.quantity;
-                state.activeItem = Object.keys(state.items)[0];
+                state.activeItem = Object.keys(state.items)[
+                    Object.keys(state.items).length - 1
+                ];
             }
         },
+
+        selectNexProduct: (state, action) => {
+            if (state.selectedProductIndex == action.payload) {
+                state.selectedProductIndex = 0;
+            } else {
+                state.selectedProductIndex += 1;
+            }
+        },
+
+        selectPreviousProduct: (state, action) => {
+            if (state.selectedProductIndex == 0) {
+                state.selectedProductIndex = action.payload;
+            } else {
+                state.selectedProductIndex -= 1;
+            }
+        },
+
+        resetSelectedProductIndex: (state) => {
+            state.selectedProductIndex = 0;
+        },
+
         updateQuantity: (state, action) => {
             const { itemId, newQuantity } = action.payload;
             const item = state.items[itemId];
@@ -105,6 +130,10 @@ const cartSlice = createSlice({
         addCustomer: (state, action) => {
             state.customer = action.payload;
         },
+
+        changeActiveItem: (state, action) => {
+            state.activeItem = action.payload;
+        },
     },
 });
 
@@ -116,5 +145,9 @@ export const {
     decrementQuantity,
     clearCart,
     addCustomer,
+    changeActiveItem,
+    selectPreviousProduct,
+    selectNexProduct,
+    resetSelectedProductIndex,
 } = cartSlice.actions;
 export default cartSlice.reducer;

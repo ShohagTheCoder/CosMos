@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Product } from "./../interfaces/product.interface";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
@@ -7,8 +7,13 @@ import apiClient from "../utils/apiClient";
 import {
     addCustomer,
     addToCart,
+    changeActiveItem,
     decrementQuantity,
     incrementQuantity,
+    removeFromCart,
+    resetSelectedProductIndex,
+    selectNexProduct,
+    selectPreviousProduct,
 } from "../store/slices/cartSlice";
 import CartItem from "./components/CartItem";
 import ProductCard from "./components/ProductCard";
@@ -28,11 +33,15 @@ export default function Sell() {
     const [note, setNote] = useState("");
     const [filteredProducts, setFilteredProducts] = useState(products);
     const [isCustomers, setIsCustomers] = useState(false);
+    let noteRef = useRef<HTMLTextAreaElement>(null);
+    let selectedProductIndex = cart.selectedProductIndex;
+    let forceOrder = 1;
 
     const [message, setMessage] = useState("No Message");
 
     useEffect(() => {
         window.addEventListener("keydown", (e: any) => {
+            if (e.key == "Tab") return;
             let command = document.getElementById("command");
             if (
                 document.activeElement != command &&
@@ -132,12 +141,18 @@ export default function Sell() {
 
             setFilteredProducts(filteredProductsObject);
         }
+
+        // Reset selected product index
+        if (selectedProductIndex > 0) {
+            dispatch(resetSelectedProductIndex());
+        }
     }, [command, products]);
 
     async function handleCompleteSell() {
         try {
             const result = await apiClient.post("/sells", {
                 totalPrice: cart.totalPrice,
+                customer: cart.customer,
                 user: {
                     name: "Shohag Ahmed",
                     age: 22,
@@ -154,33 +169,119 @@ export default function Sell() {
         }
     }
 
-    function handleKeyDown(e: any): void {
-        console.log(e.key);
+    function handleNoteKeyDown(e: any) {
         switch (e.key) {
+            case "Tab":
+                e.preventDefault();
+                document.getElementById("command")?.focus();
+                break;
+        }
+    }
+
+    function changeCartActiveItemTo(val: number) {
+        const cartItemsKey = Object.keys(cart.items);
+        if (cart.activeItem && cartItemsKey.length > 1) {
+            let key = cartItemsKey.indexOf(cart.activeItem) + val;
+            if (key < 0) {
+                key = cartItemsKey.length - 1;
+            } else if (key >= cartItemsKey.length) {
+                key = 0;
+            }
+
+            dispatch(changeActiveItem(cartItemsKey[key]));
+        }
+    }
+
+    let [isShift, setIsShift] = useState(false);
+
+    function handleKeyDown(e: any): void {
+        // console.log(e.key);
+        let max = 0;
+        switch (e.key) {
+            case "Shift":
+                setIsShift(true);
+                break;
+
+            case "Tab":
+                e.preventDefault();
+                noteRef.current?.focus();
+                break;
+
             case "ArrowUp":
-                dispatch(incrementQuantity(false));
+                if (isShift) {
+                    changeCartActiveItemTo(-1);
+                } else {
+                    dispatch(incrementQuantity(false));
+                }
                 break;
+
             case "ArrowDown":
-                dispatch(decrementQuantity(false));
+                if (isShift) {
+                    changeCartActiveItemTo(+1);
+                } else {
+                    dispatch(decrementQuantity(false));
+                }
                 break;
+
+            case "ArrowLeft":
+                e.preventDefault();
+                max = isCustomers
+                    ? Object.keys(filteredCustomers).length - 1
+                    : Object.keys(filteredProducts).length - 1;
+                if (command.length > 1) {
+                    dispatch(selectPreviousProduct(max));
+                }
+                break;
+
+            case "ArrowRight":
+                e.preventDefault();
+                max = isCustomers
+                    ? Object.keys(filteredCustomers).length - 1
+                    : Object.keys(filteredProducts).length - 1;
+                if (command.length > 1) {
+                    dispatch(selectNexProduct(max));
+                }
+                break;
+
             case "Enter":
-                if (!isCustomers) {
+                if (!isCustomers && command.length > 0) {
                     if (Object.keys(filteredProducts).length > 0) {
                         const product = {
-                            ...Object.values(filteredProducts)[0],
+                            ...Object.values(filteredProducts)[
+                                selectedProductIndex
+                            ],
                             quantity: 1,
                         };
                         dispatch(addToCart(product));
                         setCommand("");
                     }
-                } else {
+                } else if (command.length > 1) {
                     if (Object.keys(filteredCustomers).length > 0) {
                         dispatch(
                             addCustomer(Object.values(filteredCustomers)[0])
                         );
                         setCommand("");
                     }
+                } else {
+                    if (cart.totalQuantity == 0) break;
+                    if (forceOrder >= 3) {
+                        handleCompleteSell();
+                    } else {
+                        forceOrder++;
+                    }
                 }
+                break;
+            case "Delete":
+                e.preventDefault();
+                dispatch(removeFromCart(cart.activeItem));
+                break;
+        }
+    }
+
+    function handleKeyUp(e: any): void {
+        switch (e.key) {
+            case "Shift":
+                setIsShift(false);
                 break;
         }
     }
@@ -206,6 +307,7 @@ export default function Sell() {
                                 value={command}
                                 onChange={(e) => setCommand(e.target.value)}
                                 onKeyDown={handleKeyDown}
+                                onKeyUp={handleKeyUp}
                                 type="text"
                                 className="bg-black border text-white px-4 py-2 text-lg"
                                 autoFocus
@@ -224,10 +326,12 @@ export default function Sell() {
                         <div className="mt-4"></div>
                         <SellDetails />
                         <CustomerDetails />
-                        <div className="note">
+                        <div>
                             <textarea
+                                ref={noteRef}
                                 className="w-full bg-black text-white border mt-4 p-2 focus:outline-none"
                                 value={note}
+                                onKeyDown={handleNoteKeyDown}
                                 onChange={(e) => setNote(e.target.value)}
                                 rows={4}
                                 cols={50}

@@ -4,6 +4,7 @@ import {
     incrementQuantity,
     decrementQuantity,
     removeFromCart,
+    changeActiveItem,
 } from "./../../store/slices/cartSlice"; // Assuming your cart slice location
 import { RootState } from "../../store/store";
 
@@ -34,15 +35,23 @@ function CartItem() {
 
     return (
         <div className="cart">
+            <div className="border flex p-2">
+                <p>Actions :</p>
+                <p className="w-[80px]"></p>
+                <button className="bg-red-700 px-2 py-1">Delete</button>
+            </div>
             {Object.values(cart.items).map((product) => (
                 <div
                     key={product._id}
-                    className="flex items-center border-b py-4"
+                    className={`flex items-center py-4 px-3 ${
+                        product._id == cart.activeItem ? "bg-green-950" : ""
+                    }`}
                 >
                     <img
                         src="product.jpeg"
                         alt={product.name}
                         className="h-[90px] object-cover mr-4"
+                        onClick={() => dispatch(changeActiveItem(product._id))}
                     />
                     <div className="flex-1">
                         <h3 className="text-lg font-medium">{product.name}</h3>

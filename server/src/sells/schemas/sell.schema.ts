@@ -1,26 +1,30 @@
-import { Schema } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
-export const SellSchema = new Schema({
-    totalPrice: {
-        type: Number,
-        required: true, // Makes sure totalPrice is always provided
-        min: 0, // Ensures totalPrice is not negative
-    },
-    note: {
-        type: String,
-        maxlength: 500, // Optional: Limits note length to 500 characters
-    },
-    user: {
-        type: Schema.Types.Mixed,
-        required: true,
-    },
-    cart: {
-        type: Schema.Types.Mixed, // Allows for any type of value
-        required: true,
-    },
-    dateTime: {
-        type: Date,
-        required: true,
-        default: Date.now,
-    },
-});
+export type SellDocument = Sell & Document;
+
+@Schema()
+export class Sell {
+    @Prop({ required: true, min: 0 })
+    totalPrice: number;
+
+    @Prop({ maxlength: 500 })
+    note: string;
+
+    @Prop({ required: true, type: Object })
+    user: object;
+
+    @Prop({ required: true, type: Object })
+    cart: object;
+
+    @Prop({ type: Object })
+    customer: object;
+
+    @Prop()
+    createdAt: Date;
+
+    @Prop()
+    updatedAt: Date;
+}
+
+export const SellSchema = SchemaFactory.createForClass(Sell);

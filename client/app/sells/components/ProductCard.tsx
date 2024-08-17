@@ -1,14 +1,19 @@
 import { addToCart } from "@/app/store/slices/cartSlice";
+import { RootState } from "@/app/store/store";
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 function ProductCard({ products }: { products: any }) {
     const dispatch = useDispatch();
+    const selectedProductIndex = useSelector(
+        (state: RootState) => state.cart.selectedProductIndex
+    );
 
     function handleAddToCart(_id: string) {
         const newProduct = {
             ...products[_id],
             quantity: 1,
+            subTotal: products[_id].price,
         };
 
         dispatch(addToCart(newProduct));
@@ -16,11 +21,15 @@ function ProductCard({ products }: { products: any }) {
 
     return (
         <div className="flex flex-wrap gap-3">
-            {Object.values(products).map((product: any) => (
+            {Object.values(products).map((product: any, key: number) => (
                 <div
                     key={product._id}
                     onClick={() => handleAddToCart(product._id)}
-                    className="max-w-sm rounded-lg overflow-hidden shadow-xl bg-gray-800 text-white"
+                    className={`max-w-sm rounded-lg overflow-hidden shadow-xl border-[5px] bg-gray-800 text-white ${
+                        selectedProductIndex == key
+                            ? "border-green-700"
+                            : "border-black"
+                    }`}
                 >
                     <img
                         className="w-full h-48 object-cover"
