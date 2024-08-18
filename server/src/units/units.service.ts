@@ -1,14 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { readFileSync } from 'fs';
-import path from 'path';
+import units from './units';
+import bases from './bases';
 
 @Injectable()
 export class UnitsService {
-    public data: { name: string; unit: string; value: number }[];
+    public data: { units: object; bases: object };
 
     constructor() {
-        const filePath = path.resolve(__dirname, 'data.json');
-        const rawData = readFileSync(filePath, 'utf8');
-        this.data = JSON.parse(rawData);
+        this.data = { units, bases };
     }
 }

@@ -1,6 +1,7 @@
 "use client";
 import apiClient from "@/app/utils/apiClient";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Units from "../components/Units";
 
 interface Product {
     name: string;
@@ -8,27 +9,57 @@ interface Product {
     description?: string;
     madeIn?: string;
 }
+
+interface Base {
+    label: string;
+    base: string;
+}
+
 function CreateProduct() {
-    const [product, setProduct] = useState<Product>({
+    const [product, setProduct] = useState({
         name: "",
         description: "",
         price: 0,
         // Add initial values for new fields as needed
     });
 
+    const [basesList, setBasesList] = useState<Record<string, Base>>({});
+    const [unitsList, setUnitsList] = useState({});
+
+    const [bases, setBases] = useState({});
+    const [prices, setPrices] = useState({});
+    const [measurements, setmeasurements] = useState({});
+
     const [message, setMessage] = useState("");
 
     function updateName(e: React.ChangeEvent<HTMLInputElement>) {
-        setProduct((prev) => ({ ...prev, name: e.target.value }));
+        setProduct((prev: any) => ({ ...prev, name: e.target.value }));
     }
 
     function updateDescription(e: React.ChangeEvent<HTMLTextAreaElement>) {
-        setProduct((prev) => ({ ...prev, description: e.target.value }));
+        setProduct((prev: any) => ({ ...prev, description: e.target.value }));
     }
 
     function updatePrice(e: React.ChangeEvent<HTMLInputElement>) {
-        setProduct((prev) => ({ ...prev, price: parseFloat(e.target.value) }));
+        setProduct((prev: any) => ({
+            ...prev,
+            price: parseFloat(e.target.value),
+        }));
     }
+
+    useEffect(() => {
+        async function fetchBasesListAndUnitsList() {
+            try {
+                let respose = await apiClient("units");
+                console.log(respose.data);
+                setBasesList(respose.data.bases);
+                setUnitsList(respose.data.unist);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchBasesListAndUnitsList();
+    }, []);
 
     async function createProduct() {
         try {
@@ -47,7 +78,7 @@ function CreateProduct() {
     }
 
     return (
-        <div className="container max-w-[1000px] mt-4 mx-auto p-4 bg-gray-800 text-white">
+        <div className="container max-w-[800px] mt-4 mx-auto bg-gray-800 text-white">
             <p className="text-center text-red-500">{message}</p>
             <div className="bg-gray-700 shadow-md rounded px-8 pt-6 pb-8 mb-4">
                 <div className="mb-4">
@@ -94,11 +125,23 @@ function CreateProduct() {
                         onChange={updatePrice}
                     />
                 </div>
+                {/* Bases */}
+                <div className="bases">
+                    <p>Base</p>
+                    <select className="bg-black px-3 py-2 my-3">
+                        {Object.values(basesList).map((base) => (
+                            <option key={base.base} value={base.base}>
+                                {base.label}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <Units />
                 {/* ... other fields and buttons with dark theme styling */}
                 <button
                     type="button"
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    onClick={createProduct}
+                    onDoubleClick={createProduct}
                 >
                     Create Product
                 </button>
