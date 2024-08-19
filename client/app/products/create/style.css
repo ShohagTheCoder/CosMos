@@ -1,0 +1,18 @@
+.tab-header-item {
+    background-color: #080808;
+    padding: 10px 25px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.tab-header-item.active {
+    background-color: #155207;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
