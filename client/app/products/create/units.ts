@@ -1,4 +1,12 @@
-const units = {
+import { Unit } from "../interfaces/product.interface";
+
+interface UnitBases {
+    weight: Record<string, Unit>;
+    pices: Record<string, Unit>;
+    volume: Record<string, Unit>;
+}
+
+const units: UnitBases = {
     weight: {
         g: {
             label: "Gram",
@@ -26,9 +34,10 @@ const units = {
             unit: "bag",
             value: 50,
             dynamic: true,
+            base: "kg",
         },
     },
-    pice: {
+    pices: {
         pcs: {
             label: "Pices",
             unit: "pcs",

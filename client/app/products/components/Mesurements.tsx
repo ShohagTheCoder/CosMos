@@ -1,37 +1,18 @@
 import React, { useState } from "react";
 import { Measurement } from "../interfaces/product.interface";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
+import {
+    addMeasurement,
+    updateMeasurementUnit,
+    updateMeasurementValue,
+} from "@/app/store/slices/productSlice";
 
 function Measurements({ units }: { units: any }) {
-    const [measurements, setMeasurements] = useState<Measurement[]>([
-        { unit: units[0].unit, value: 0 },
-    ]);
-
-    function handleUnitChange(key: number, unit: string) {
-        const updated = measurements.map((item, index) =>
-            index === key ? { ...item, unit } : item
-        );
-
-        setMeasurements(updated);
-    }
-
-    function handleValueChange(key: number, value: any) {
-        const updated = measurements.map((item, index) =>
-            index === key ? { ...item, value } : item
-        );
-
-        setMeasurements(updated);
-    }
-
-    function handleAddMeasurement() {
-        const last = measurements[measurements.length - 1];
-        setMeasurements((state: any) => [
-            ...state,
-            {
-                unit: last.unit,
-                value: last.value,
-            },
-        ]);
-    }
+    const dispatch = useDispatch();
+    const measurements = useSelector(
+        (state: RootState) => state.product.measurements
+    );
 
     return (
         <div className="border border-gray-500 mb-4">
@@ -43,7 +24,12 @@ function Measurements({ units }: { units: any }) {
                             className="h-[40px] p-1 bg-black text-white p-2"
                             value={measurement.unit}
                             onChange={(e) =>
-                                handleUnitChange(key, e.target.value)
+                                dispatch(
+                                    updateMeasurementUnit({
+                                        key,
+                                        unit: e.target.value,
+                                    })
+                                )
                             }
                         >
                             {units.map((unit: any, key: number) => (
@@ -58,7 +44,12 @@ function Measurements({ units }: { units: any }) {
                             className="h-[30px] bg-black w-[60px] text-white p-2"
                             value={measurement.value}
                             onChange={(e) =>
-                                handleValueChange(key, e.target.value)
+                                dispatch(
+                                    updateMeasurementValue({
+                                        key,
+                                        value: e.target.value,
+                                    })
+                                )
                             }
                         />
                     </div>
@@ -66,7 +57,7 @@ function Measurements({ units }: { units: any }) {
             ))}
             <button
                 className="font-bold bg-green-800 text-white border border-green-700 rounded-md px-3 py-1 my-2"
-                onClick={handleAddMeasurement}
+                onClick={() => dispatch(addMeasurement())}
             >
                 Add Measurement
             </button>

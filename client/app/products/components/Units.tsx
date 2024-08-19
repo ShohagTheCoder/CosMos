@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from "react";
 import Prices from "./Prices";
 import Measurements from "./Mesurements";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUnitsDynamicValue } from "@/app/store/slices/productSlice";
+import { RootState } from "@/app/store/store";
 
 function Units({ data }: { data: any }) {
-    const [units, setUnits] = useState(data);
+    const dispatch = useDispatch();
+    const units = useSelector((state: RootState) => state.product.units);
     const unitsAndLabels = Object.values(data).map((unit: any) => ({
         label: unit.label,
         unit: unit.unit,
     }));
 
-    function handleDynamicValue(unit: string, value: any) {
+    function handleDynamicValue(unit: string, sValue: string) {
+        const value = parseInt(sValue);
         if (value > 100 || value < 0) return;
-        setUnits((state: any) => ({
-            ...state,
-            [unit]: {
-                ...state[unit],
-                value: value,
-            },
-        }));
+        dispatch(updateUnitsDynamicValue({ key: unit, value }));
     }
 
     return (

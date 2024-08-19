@@ -1,46 +1,24 @@
 import React, { useState } from "react";
-import { Price } from "../interfaces/product.interface";
+import Product, { Price } from "../interfaces/product.interface";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    addPrice,
+    updatePriceMax,
+    updatePricePrice,
+    updatePrices,
+    updatePriceUnit,
+} from "@/app/store/slices/productSlice";
+import { RootState } from "@/app/store/store";
 
 function Prices({ units }: { units: any }) {
-    const [prices, setPrices] = useState<Price[]>([
-        { unit: units[0].unit, max: 0, price: 0 },
-    ]);
+    const dispatch = useDispatch();
+    const prices = useSelector((state: RootState) => state.product.prices);
 
-    function handleUnitChange(key: number, unit: any) {
-        const updated = prices.map((item, index) =>
-            index === key ? { ...item, unit } : item
-        );
+    // const [localPrices, setLocalPrices] = useState<Record<string, Price>>({});
 
-        setPrices(updated);
-    }
+    // function handleChangeOnPrice() {
 
-    function handleMaxChange(key: number, max: any) {
-        const updated = prices.map((item, index) =>
-            index === key ? { ...item, max } : item
-        );
-
-        setPrices(updated);
-    }
-
-    function handlePriceChange(key: number, price: any) {
-        const updated = prices.map((item, index) =>
-            index === key ? { ...item, price } : item
-        );
-
-        setPrices(updated);
-    }
-
-    function handleAddPrice() {
-        const last = prices[prices.length - 1];
-        setPrices((state: any) => [
-            ...state,
-            {
-                unit: last.unit,
-                max: last.max,
-                price: last.price,
-            },
-        ]);
-    }
+    // }
 
     return (
         <div className="border border-gray-500 mb-4">
@@ -50,7 +28,11 @@ function Prices({ units }: { units: any }) {
                     <select
                         className="h-[40px] p-1 bg-black text-white p-2"
                         value={price.unit}
-                        onChange={(e) => handleUnitChange(key, e.target.value)}
+                        onChange={(e) =>
+                            dispatch(
+                                updatePriceUnit({ key, unit: e.target.value })
+                            )
+                        }
                     >
                         {units.map((unit: any, key: number) => (
                             <option key={key} value={unit.unit}>
@@ -63,19 +45,27 @@ function Prices({ units }: { units: any }) {
                         type="number"
                         className="h-[30px] bg-black w-[60px] text-white p-2"
                         value={price.max}
-                        onChange={(e) => handleMaxChange(key, e.target.value)}
+                        onChange={(e) =>
+                            dispatch(
+                                updatePriceMax({ key, max: e.target.value })
+                            )
+                        }
                     />
                     Price :{" "}
                     <input
                         type="number"
                         className="h-[30px] bg-black w-[60px] text-white p-2"
                         value={price.price}
-                        onChange={(e) => handlePriceChange(key, e.target.value)}
+                        onChange={(e) =>
+                            dispatch(
+                                updatePricePrice({ key, price: e.target.value })
+                            )
+                        }
                     />
                 </div>
             ))}
             <button
-                onClick={handleAddPrice}
+                onClick={() => dispatch(addPrice())}
                 className="font-bold bg-green-800 text-white border border-green-700 rounded-md px-3 py-1 my-2"
             >
                 Add Price

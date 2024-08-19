@@ -5,89 +5,27 @@ import Units from "../components/Units";
 import "./style.css";
 import UnitsTab from "../components/UnitsTab";
 import { Measurement, Price } from "../interfaces/product.interface";
+import { useDispatch, useSelector } from "react-redux";
+import { updateProductField } from "@/app/store/slices/productSlice";
 
 interface Product {
     SKU: string;
     name: string;
-    prices: Price[];
-    units: Record<string, any>;
-    measurements: Measurement[];
     description?: string;
     madeIn?: string;
 }
 
 function CreateProduct() {
-    const [product, setProduct] = useState<Product>({
-        SKU: "",
-        name: "",
-        description: "",
-        units: {
-            kg: "Hoi",
-        },
-        prices: [
-            {
-                unit: "kg",
-                max: 0,
-                price: 0,
-            },
-        ],
-        measurements: [
-            {
-                unit: "kg",
-                value: 0,
-            },
-        ],
-        // Add initial values for new fields as needed
-    });
-
-    // const [basesList, setBasesList] = useState<Record<string, Base>>({});
-    // const [unitsList, setUnitsList] = useState({});
-
-    // const [bases, setBases] = useState({});
-    // const [units, setUnits] = useState({});
-    // const [prices, setPrices] = useState([]);
-    // const [measurements, setmeasurements] = useState([]);
-
+    const dispatch = useDispatch();
+    const product = useSelector((state: any) => state.product);
     const [message, setMessage] = useState("");
-
-    function updateSKU(e: React.ChangeEvent<HTMLInputElement>) {
-        setProduct((prev: any) => ({ ...prev, SKU: e.target.value }));
-    }
-    function updateName(e: React.ChangeEvent<HTMLInputElement>) {
-        setProduct((prev: any) => ({ ...prev, name: e.target.value }));
-    }
-
-    function updateDescription(e: React.ChangeEvent<HTMLTextAreaElement>) {
-        setProduct((prev: any) => ({ ...prev, description: e.target.value }));
-    }
-
-    function updatePrice(e: React.ChangeEvent<HTMLInputElement>) {
-        setProduct((prev: any) => ({
-            ...prev,
-            price: parseFloat(e.target.value),
-        }));
-    }
-
-    // useEffect(() => {
-    //     async function fetchBasesListAndUnitsList() {
-    //         try {
-    //             let respose = await apiClient("units");
-    //             setBasesList(respose.data.bases);
-    //             setUnitsList(respose.data.unist);
-    //         } catch (error) {
-    //             console.log(error);
-    //         }
-    //     }
-    //     fetchBasesListAndUnitsList();
-    // }, []);
 
     async function createProduct() {
         console.log(product);
-        return;
         try {
             const result = await apiClient.post("products", product);
             setMessage("Product created successfully!");
-            setProduct(product); // Reset form after success
+            console.log(result.data);
         } catch (error) {
             setMessage("Failed to create product.");
             console.error(error);
@@ -110,7 +48,14 @@ function CreateProduct() {
                         id="name"
                         type="text"
                         value={product.SKU}
-                        onChange={updateSKU}
+                        onChange={(e) =>
+                            dispatch(
+                                updateProductField({
+                                    field: "SKU",
+                                    value: e.target.value,
+                                })
+                            )
+                        }
                     />
                 </div>
                 <div className="mb-4">
@@ -125,7 +70,14 @@ function CreateProduct() {
                         id="name"
                         type="text"
                         value={product.name}
-                        onChange={updateName}
+                        onChange={(e) =>
+                            dispatch(
+                                updateProductField({
+                                    field: "name",
+                                    value: e.target.value,
+                                })
+                            )
+                        }
                     />
                 </div>
                 <div className="mb-4">
@@ -139,7 +91,14 @@ function CreateProduct() {
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-white bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         id="description"
                         value={product.description}
-                        onChange={updateDescription}
+                        onChange={(e) =>
+                            dispatch(
+                                updateProductField({
+                                    field: "description",
+                                    value: e.target.value,
+                                })
+                            )
+                        }
                     />
                 </div>
                 <UnitsTab />

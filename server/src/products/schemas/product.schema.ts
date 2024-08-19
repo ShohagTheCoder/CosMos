@@ -1,17 +1,32 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import Base from 'src/units/schemas/base.schema';
-import Unit from 'src/units/schemas/unit.schema';
 
 export type ProductDocument = Product & Document;
+
+class Unit {
+    @Prop()
+    unit: string;
+
+    @Prop()
+    dynamic: boolean;
+
+    @Prop()
+    value: number;
+
+    @Prop()
+    label: string;
+
+    @Prop()
+    base: string;
+}
 
 // Price
 class Price {
     @Prop()
-    base: string;
+    unit: string;
 
     @Prop()
-    maxUnit: number;
+    max: number;
 
     @Prop()
     price: number;
@@ -35,16 +50,13 @@ export class Product {
     description: string;
 
     @Prop({ required: true })
-    unitBases: Map<string, Base>;
-
-    @Prop({ required: true })
     units: Map<string, Unit>;
 
     @Prop({ required: true })
-    prices: Map<string, Price>;
+    prices: Price[];
 
     @Prop({ required: true })
-    measurements: Map<string, Measurement>;
+    measurements: Measurement[];
 
     @Prop()
     createdBy: string; // insert user here
