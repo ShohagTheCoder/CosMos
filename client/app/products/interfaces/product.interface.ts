@@ -25,4 +25,27 @@ export default interface Product {
     units: Record<string, Unit>;
     prices: Price[];
     measurements: Measurement[];
+    unit: string;
+    price: number;
+    discount: number;
+    extraDiscount: number;
+    quantity?: number;
+    subTotal?: number;
+}
+
+export interface ProductWithID {
+    _id: string;
+    SKU: string;
+    name: string;
+    description?: string;
+    madeIn?: string;
+    units: Record<string, Unit>;
+    prices: Price[];
+    measurements: Measurement[];
+    unit: string;
+    price: number;
+    discount: number;
+    extraDiscount: number;
+    quantity: number;
+    subTotal: number;
 }

@@ -58,6 +58,28 @@ export class Product {
     @Prop({ required: true })
     measurements: Measurement[];
 
+    @Prop({ required: true })
+    price: number;
+
+    @Prop({
+        default: function (this: Product) {
+            return this.price;
+        },
+    })
+    subTotal: number;
+
+    @Prop({ required: true })
+    unit: string;
+
+    @Prop()
+    discount: number; // insert user here
+
+    @Prop()
+    extraDiscount: number; // insert user here
+
+    @Prop({ default: 1 })
+    quantity: number;
+
     @Prop()
     createdBy: string; // insert user here
 

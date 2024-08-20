@@ -1,3 +1,6 @@
+import Product, {
+    ProductWithID,
+} from "@/app/products/interfaces/product.interface";
 import { addToCart } from "@/app/store/slices/cartSlice";
 import { RootState } from "@/app/store/store";
 import React from "react";
@@ -10,13 +13,8 @@ function ProductCard({ products }: { products: any }) {
     );
 
     function handleAddToCart(_id: string) {
-        const newProduct = {
-            ...products[_id],
-            quantity: 1,
-            subTotal: products[_id].price,
-        };
-
-        dispatch(addToCart(newProduct));
+        const newProduct: ProductWithID = products[_id];
+        dispatch(addToCart({ ...newProduct, subTotal: newProduct.price }));
     }
 
     return (

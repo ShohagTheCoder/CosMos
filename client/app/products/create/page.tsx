@@ -1,23 +1,19 @@
 "use client";
 import apiClient from "@/app/utils/apiClient";
-import React, { useEffect, useState } from "react";
-import Units from "../components/Units";
+import React, { useState } from "react";
 import "./style.css";
 import UnitsTab from "../components/UnitsTab";
-import { Measurement, Price } from "../interfaces/product.interface";
 import { useDispatch, useSelector } from "react-redux";
-import { updateProductField } from "@/app/store/slices/productSlice";
-
-interface Product {
-    SKU: string;
-    name: string;
-    description?: string;
-    madeIn?: string;
-}
+import {
+    updateProductField,
+    updateUnit,
+} from "@/app/store/slices/productSlice";
+import { RootState } from "@/app/store/store";
+import { Unit } from "../interfaces/product.interface";
 
 function CreateProduct() {
     const dispatch = useDispatch();
-    const product = useSelector((state: any) => state.product);
+    const product = useSelector((state: RootState) => state.product);
     const [message, setMessage] = useState("");
 
     async function createProduct() {
@@ -39,13 +35,13 @@ function CreateProduct() {
                 <div className="mb-4">
                     <label
                         className="block text-gray-300 text-sm font-bold mb-2"
-                        htmlFor="name"
+                        htmlFor="SKU"
                     >
                         SKU
                     </label>
                     <input
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-white bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="name"
+                        id="SKU"
                         type="text"
                         value={product.SKU}
                         onChange={(e) =>

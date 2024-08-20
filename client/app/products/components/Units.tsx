@@ -61,7 +61,7 @@ function Units({ data }: { data: any }) {
                     }
                 })}
             </div>
-            <Prices units={unitsAndLabels} />
+            <Prices />
             <Measurements units={unitsAndLabels} />
         </div>
     );

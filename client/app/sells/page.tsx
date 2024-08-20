@@ -1,13 +1,12 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { Product } from "./../interfaces/product.interface";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import apiClient from "../utils/apiClient";
 import {
     addCustomer,
     addToCart,
-    changeActiveItem,
+    changeActiveProduct,
     decrementQuantity,
     incrementQuantity,
     removeFromCart,
@@ -15,17 +14,18 @@ import {
     selectNexProduct,
     selectPreviousProduct,
 } from "../store/slices/cartSlice";
-import CartItem from "./components/CartItem";
+import CartProduct from "./components/CartProduct";
 import ProductCard from "./components/ProductCard";
 import SellDetails from "./components/SellDetails";
 import Link from "next/link";
 import { Customer } from "../interfaces/customer.inerface";
 import CustomerCard from "./components/CustomerCard";
 import CustomerDetails from "./components/CustomerDetails";
+import { ProductWithID } from "../products/interfaces/product.interface";
 
 export default function Sell() {
     let [command, setCommand] = useState("");
-    const [products, setProducts] = useState<Record<string, Product>>({});
+    const [products, setProducts] = useState<Record<string, ProductWithID>>({});
     const [customers, setCustomers] = useState<Record<string, Customer>>({});
     const [filteredCustomers, setFilteredCustomers] = useState(customers);
     const dispatch = useDispatch();
@@ -60,16 +60,15 @@ export default function Sell() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await apiClient<Product[]>("products");
+                const response = await apiClient<ProductWithID[]>("products");
                 const productsArray = response.data;
 
-                const products = productsArray.reduce<Record<string, Product>>(
-                    (acc, product) => {
-                        acc[product._id] = product;
-                        return acc;
-                    },
-                    {}
-                );
+                const products = productsArray.reduce<
+                    Record<string, ProductWithID>
+                >((acc, product) => {
+                    acc[product._id] = product;
+                    return acc;
+                }, {});
                 setProducts(products);
             } catch (error) {
                 console.error(error);
@@ -133,7 +132,7 @@ export default function Sell() {
 
             // Convert filtered array back to object
             const filteredProductsObject = tempFilteredProducts.reduce<
-                Record<string, Product>
+                Record<string, ProductWithID>
             >((acc, product) => {
                 acc[product._id] = product;
                 return acc;
@@ -157,7 +156,7 @@ export default function Sell() {
                     name: "Shohag Ahmed",
                     age: 22,
                 },
-                cart: cart.items,
+                cart: cart.products,
                 note: note,
             });
             setMessage("Sell created successfully");
@@ -178,17 +177,17 @@ export default function Sell() {
         }
     }
 
-    function changeCartActiveItemTo(val: number) {
-        const cartItemsKey = Object.keys(cart.items);
-        if (cart.activeItem && cartItemsKey.length > 1) {
-            let key = cartItemsKey.indexOf(cart.activeItem) + val;
+    function changeCartActiveProductTo(val: number) {
+        const cartProductsKey = Object.keys(cart.products);
+        if (cart.activeProduct && cartProductsKey.length > 1) {
+            let key = cartProductsKey.indexOf(cart.activeProduct) + val;
             if (key < 0) {
-                key = cartItemsKey.length - 1;
-            } else if (key >= cartItemsKey.length) {
+                key = cartProductsKey.length - 1;
+            } else if (key >= cartProductsKey.length) {
                 key = 0;
             }
 
-            dispatch(changeActiveItem(cartItemsKey[key]));
+            dispatch(changeActiveProduct(cartProductsKey[key]));
         }
     }
 
@@ -209,7 +208,7 @@ export default function Sell() {
 
             case "ArrowUp":
                 if (isShift) {
-                    changeCartActiveItemTo(-1);
+                    changeCartActiveProductTo(-1);
                 } else {
                     dispatch(incrementQuantity(false));
                 }
@@ -217,7 +216,7 @@ export default function Sell() {
 
             case "ArrowDown":
                 if (isShift) {
-                    changeCartActiveItemTo(+1);
+                    changeCartActiveProductTo(+1);
                 } else {
                     dispatch(decrementQuantity(false));
                 }
@@ -263,7 +262,7 @@ export default function Sell() {
                         setCommand("");
                     }
                 } else {
-                    if (cart.totalQuantity == 0) break;
+                    if (cart.totalPrice == 0) break;
                     if (forceOrder >= 5) {
                         handleCompleteSell();
                     } else {
@@ -273,7 +272,7 @@ export default function Sell() {
                 break;
             case "Delete":
                 e.preventDefault();
-                dispatch(removeFromCart(cart.activeItem));
+                dispatch(removeFromCart(cart.activeProduct));
                 break;
         }
     }
@@ -322,7 +321,7 @@ export default function Sell() {
                         )}
                     </div>
                     <div className="border p-4">
-                        <CartItem />
+                        <CartProduct />
                         <div className="mt-4"></div>
                         <SellDetails />
                         <CustomerDetails />

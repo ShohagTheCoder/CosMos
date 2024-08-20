@@ -3,6 +3,7 @@ import React from "react";
 function CustomerCard({ customers }: { customers: any }) {
     function handleAddCustomer(_id: string) {
         console.log(customers[_id]);
+        document.getElementById("command")?.focus();
     }
 
     return (

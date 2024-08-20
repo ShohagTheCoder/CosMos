@@ -13,10 +13,6 @@ function SellDetails() {
                 Total price : {cart.totalPrice}
             </p>
             <hr className="my-3 border-gray-300" />
-            <p className=" text-lg font-semibold">
-                Total items : {cart.totalQuantity}
-            </p>
-            <hr className="my-3 border-gray-300" />
         </div>
     );
 }

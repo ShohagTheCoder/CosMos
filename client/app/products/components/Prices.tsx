@@ -5,40 +5,36 @@ import {
     addPrice,
     updatePriceMax,
     updatePricePrice,
-    updatePrices,
     updatePriceUnit,
 } from "@/app/store/slices/productSlice";
 import { RootState } from "@/app/store/store";
 
-function Prices({ units }: { units: any }) {
+function Prices() {
     const dispatch = useDispatch();
-    const prices = useSelector((state: RootState) => state.product.prices);
-
-    // const [localPrices, setLocalPrices] = useState<Record<string, Price>>({});
-
-    // function handleChangeOnPrice() {
-
-    // }
+    const product = useSelector((state: RootState) => state.product);
 
     return (
         <div className="border border-gray-500 mb-4">
-            {prices.map((price, key) => (
+            {product.prices.map((price, key) => (
                 <div key={key} className="price bg-gray-900 p-2">
                     Unit :{" "}
                     <select
                         className="h-[40px] p-1 bg-black text-white p-2"
                         value={price.unit}
-                        onChange={(e) =>
+                        onChange={(e) => {
+                            console.log(product);
                             dispatch(
                                 updatePriceUnit({ key, unit: e.target.value })
-                            )
-                        }
+                            );
+                        }}
                     >
-                        {units.map((unit: any, key: number) => (
-                            <option key={key} value={unit.unit}>
-                                {unit.label}
-                            </option>
-                        ))}
+                        {Object.values(product.units).map(
+                            (unit: any, key: number) => (
+                                <option key={key} value={unit.unit}>
+                                    {unit.label}
+                                </option>
+                            )
+                        )}
                     </select>{" "}
                     Max :{" "}
                     <input

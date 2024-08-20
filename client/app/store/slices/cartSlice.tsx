@@ -1,25 +1,22 @@
+import getCartProductsTotalPrice from "@/app/functions/getCartProductsTotalPrice";
+import getProductSubTotalPrice from "@/app/functions/getProductSubTotalPrice";
+import getProductPrice from "@/app/functions/getProductSubTotalPrice";
+import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
+import getUpdatedProduct from "@/app/functions/getUpdatedProduct";
 import { Customer } from "@/app/interfaces/customer.inerface";
-import { createSlice } from "@reduxjs/toolkit";
-
-export interface CartItem {
-    _id: string;
-    name: string;
-    price: number;
-    quantity: number;
-}
+import { ProductWithID } from "@/app/products/interfaces/product.interface";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface CartState {
-    items: Record<string, CartItem>;
-    totalQuantity: number;
+    products: Record<string, ProductWithID>;
     totalPrice: number;
     customer?: Customer;
-    activeItem?: string;
+    activeProduct?: string;
     selectedProductIndex: number;
 }
 
 const initialState: CartState = {
-    items: {},
-    totalQuantity: 0,
+    products: {},
     totalPrice: 0,
     selectedProductIndex: 0,
 };
@@ -28,35 +25,37 @@ const cartSlice = createSlice({
     name: "cart",
     initialState,
     reducers: {
-        addToCart: (state, action) => {
-            const item = action.payload;
-            const existingItem = state.items[item._id];
+        addToCart: (state: CartState, action: PayloadAction<ProductWithID>) => {
+            const product = action.payload;
+            const existingProduct = state.products[product._id];
 
-            if (existingItem) {
-                const updatedItem = {
-                    ...existingItem,
-                    quantity: existingItem.quantity + item.quantity,
+            if (existingProduct) {
+                let existingQuantity = existingProduct.quantity || 0;
+                const updatedProduct = {
+                    ...existingProduct,
+                    quantity: existingQuantity + product.quantity,
                 };
-                state.items = { ...state.items, [item._id]: updatedItem };
+                state.products = {
+                    ...state.products,
+                    [product._id]: updatedProduct,
+                };
             } else {
-                state.items = { ...state.items, [item._id]: item };
-                state.activeItem = item._id;
+                state.products = { ...state.products, [product._id]: product };
+                state.activeProduct = product._id;
             }
 
-            state.totalPrice += item.price * item.quantity;
-            state.totalQuantity += item.quantity;
+            state.totalPrice += product.subTotal;
         },
         removeFromCart: (state, action) => {
-            const itemId = action.payload;
-            const removedItem = state.items[itemId];
+            const productId = action.payload;
+            const removedProduct = state.products[productId];
 
-            if (removedItem) {
-                const { [itemId]: removed, ...rest } = state.items;
-                state.items = rest;
-                state.totalPrice -= removedItem.price * removedItem.quantity;
-                state.totalQuantity -= removedItem.quantity;
-                state.activeItem = Object.keys(state.items)[
-                    Object.keys(state.items).length - 1
+            if (removedProduct) {
+                const { [productId]: removed, ...rest } = state.products;
+                state.products = rest;
+                state.totalPrice -= removedProduct.subTotal;
+                state.activeProduct = Object.keys(state.products)[
+                    Object.keys(state.products).length - 1
                 ];
             }
         },
@@ -82,48 +81,83 @@ const cartSlice = createSlice({
         },
 
         updateQuantity: (state, action) => {
-            const { itemId, newQuantity } = action.payload;
-            const item = state.items[itemId];
+            const { productId, quantity } = action.payload;
+            const product = state.products[productId];
 
-            if (item) {
-                const updatedItem = { ...item, quantity: newQuantity };
-                const quantityDifference = newQuantity - item.quantity;
-                state.items = { ...state.items, [itemId]: updatedItem };
-                state.totalPrice += item.price * quantityDifference;
-                state.totalQuantity += quantityDifference;
+            if (product) {
+                const updatedProduct = getUpdatedProduct(
+                    product,
+                    quantity,
+                    null
+                );
+                state.products = {
+                    ...state.products,
+                    [productId]: updatedProduct,
+                };
+                state.totalPrice = getCartProductsTotalPrice({
+                    ...state.products,
+                    [product._id]: updatedProduct,
+                });
             }
         },
-        incrementQuantity: (state, action) => {
-            let itemId = action.payload;
-            if (!itemId) {
-                itemId = state.activeItem;
+        incrementQuantity: (state: CartState, action) => {
+            let productId = action.payload;
+            if (!productId) {
+                productId = state.activeProduct;
             }
-            const item = state.items[itemId];
+            const product = state.products[productId];
 
-            if (item) {
-                const updatedItem = { ...item, quantity: item.quantity + 1 };
-                state.items = { ...state.items, [itemId]: updatedItem };
-                state.totalPrice += item.price;
-                state.totalQuantity++;
+            if (product) {
+                const updatedProduct = getUpdatedProduct(product, 1, null);
+                state.products[productId] = updatedProduct;
+                state.totalPrice = getCartProductsTotalPrice({
+                    ...state.products,
+                    [product._id]: updatedProduct,
+                });
             }
         },
         decrementQuantity: (state, action) => {
-            let itemId = action.payload;
-            if (!itemId) {
-                itemId = state.activeItem;
+            let productId = action.payload;
+            if (!productId) {
+                productId = state.activeProduct;
             }
-            const item = state.items[itemId];
+            const product = state.products[productId];
 
-            if (item && item.quantity > 1) {
-                const updatedItem = { ...item, quantity: item.quantity - 1 };
-                state.items = { ...state.items, [itemId]: updatedItem };
-                state.totalPrice -= item.price;
-                state.totalQuantity--;
+            if (product && product.quantity > 1) {
+                const updatedProduct = getUpdatedProduct(product, -1, null);
+                state.products = {
+                    ...state.products,
+                    [productId]: updatedProduct,
+                };
+                state.totalPrice = getCartProductsTotalPrice({
+                    ...state.products,
+                    [product._id]: updatedProduct,
+                });
             }
         },
+
+        updateUnit: (
+            state: CartState,
+            action: PayloadAction<{ key: string; unit: string }>
+        ) => {
+            const { key, unit } = action.payload;
+            const product = state.products[key];
+
+            if (product) {
+                const updatedProduct = getUpdatedProduct(product, null, unit);
+                state.products = {
+                    ...state.products,
+                    [key]: updatedProduct,
+                };
+                state.totalPrice = getCartProductsTotalPrice({
+                    ...state.products,
+                    [product._id]: updatedProduct,
+                });
+            }
+        },
+
         clearCart: (state) => {
-            state.items = {};
-            state.totalQuantity = 0;
+            state.products = {};
             state.totalPrice = 0;
         },
 
@@ -131,8 +165,8 @@ const cartSlice = createSlice({
             state.customer = action.payload;
         },
 
-        changeActiveItem: (state, action) => {
-            state.activeItem = action.payload;
+        changeActiveProduct: (state, action) => {
+            state.activeProduct = action.payload;
         },
     },
 });
@@ -145,9 +179,10 @@ export const {
     decrementQuantity,
     clearCart,
     addCustomer,
-    changeActiveItem,
+    changeActiveProduct,
     selectPreviousProduct,
     selectNexProduct,
     resetSelectedProductIndex,
+    updateUnit,
 } = cartSlice.actions;
 export default cartSlice.reducer;
