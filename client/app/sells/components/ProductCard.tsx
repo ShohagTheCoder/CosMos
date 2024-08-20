@@ -15,6 +15,7 @@ function ProductCard({ products }: { products: any }) {
     function handleAddToCart(_id: string) {
         const newProduct: ProductWithID = products[_id];
         dispatch(addToCart({ ...newProduct, subTotal: newProduct.price }));
+        document.getElementById("command")?.focus();
     }
 
     return (
@@ -42,7 +43,7 @@ function ProductCard({ products }: { products: any }) {
                             {product.description}
                         </p>
                         <p className="font-semibold text-xl text-green-400">
-                            ${product.price}
+                            ${product.price.toLocaleString()}
                         </p>
                     </div>
                 </div>

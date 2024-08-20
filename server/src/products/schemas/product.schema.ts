@@ -1,9 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
+import { Stock } from 'src/stocks/schemas/stocks.schema';
 
-export type ProductDocument = Product & Document;
-
-class Unit {
+// Define nested schemas
+@Schema()
+export class Unit {
     @Prop()
     unit: string;
 
@@ -20,8 +21,8 @@ class Unit {
     base: string;
 }
 
-// Price
-class Price {
+@Schema()
+export class Price {
     @Prop()
     unit: string;
 
@@ -32,8 +33,8 @@ class Price {
     price: number;
 }
 
-// Measurement
-class Measurement {
+@Schema()
+export class Measurement {
     @Prop()
     unit: string;
 
@@ -41,21 +42,23 @@ class Measurement {
     value: number;
 }
 
-@Schema()
-export class Product {
+export type ProductDocument = Product & Document;
+
+@Schema({ timestamps: true }) // Automatically handles createdAt and updatedAt
+export class Product extends Document {
     @Prop({ required: true })
     name: string;
 
     @Prop({ required: true })
     description: string;
 
-    @Prop({ required: true })
+    @Prop({ type: Map, of: Unit, required: true })
     units: Map<string, Unit>;
 
-    @Prop({ required: true })
+    @Prop({ type: [Price], required: true })
     prices: Price[];
 
-    @Prop({ required: true })
+    @Prop({ type: [Measurement], required: true })
     measurements: Measurement[];
 
     @Prop({ required: true })
@@ -72,22 +75,29 @@ export class Product {
     unit: string;
 
     @Prop()
-    discount: number; // insert user here
+    discount?: number;
 
     @Prop()
-    extraDiscount: number; // insert user here
+    extraDiscount?: number;
 
     @Prop({ default: 1 })
     quantity: number;
 
-    @Prop()
-    createdBy: string; // insert user here
+    @Prop({
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Stock',
+        required: true,
+    })
+    stock: Stock;
 
     @Prop()
-    createdAt: Date;
+    createdBy?: string;
 
     @Prop()
-    updatedAt: Date;
+    createdAt?: Date;
+
+    @Prop()
+    updatedAt?: Date;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

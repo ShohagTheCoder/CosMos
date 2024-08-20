@@ -1,8 +1,7 @@
 import Product, { Unit } from "@/app/products/interfaces/product.interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import cartSlice from "./cartSlice";
 import { units } from "@/app/products/create/units";
-import getProductPrice from "@/app/functions/getProductSubTotalPrice";
+import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 
 const initialState: Product = {
     SKU: "",
@@ -57,7 +56,7 @@ const productSlice = createSlice({
         ) => {
             const { key, value } = action.payload;
             state.units[key].value = value;
-            state.price = Math.ceil(getProductPrice(state));
+            state.price = Math.ceil(getProductUnitPrice(state));
         },
         updatePriceMax: (
             state: Product,
@@ -67,7 +66,7 @@ const productSlice = createSlice({
             state.prices = state.prices.map((item, index) =>
                 index === key ? { ...item, max } : item
             );
-            state.price = Math.ceil(getProductPrice(state));
+            state.price = Math.ceil(getProductUnitPrice(state));
         },
         updatePriceUnit: (
             state: Product,
@@ -78,7 +77,7 @@ const productSlice = createSlice({
             state.prices = state.prices.map((item, index) =>
                 index === key ? { ...item, unit, max: 0 } : item
             );
-            state.price = Math.ceil(getProductPrice(state));
+            state.price = Math.ceil(getProductUnitPrice(state));
         },
         updatePricePrice: (
             state: Product,
@@ -88,7 +87,7 @@ const productSlice = createSlice({
             state.prices = state.prices.map((item, index) =>
                 index === key ? { ...item, price } : item
             );
-            state.price = Math.ceil(getProductPrice(state));
+            state.price = Math.ceil(getProductUnitPrice(state));
         },
         addPrice: (state: Product) => {
             state.prices.push(state.prices[state.prices.length - 1]);
@@ -104,11 +103,11 @@ const productSlice = createSlice({
         },
         updateMeasurementValue: (
             state: Product,
-            action: PayloadAction<{ key: number; value: any }>
+            action: PayloadAction<{ key: number; value: number }>
         ) => {
             const { key, value } = action.payload;
             state.measurements = state.measurements.map((item, index) =>
-                index === key ? { ...item, value } : item
+                index === key ? { ...item, value: value } : item
             );
         },
         addMeasurement: (state: Product) => {
@@ -118,7 +117,7 @@ const productSlice = createSlice({
         },
         updateUnit: (state: Product, action: PayloadAction<string>) => {
             state.unit = action.payload;
-            state.price = Math.ceil(getProductPrice(state));
+            state.price = Math.ceil(getProductUnitPrice(state));
         },
     },
 });

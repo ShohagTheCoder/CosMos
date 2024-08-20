@@ -47,7 +47,7 @@ function Measurements({ units }: { units: any }) {
                                 dispatch(
                                     updateMeasurementValue({
                                         key,
-                                        value: e.target.value,
+                                        value: parseInt(e.target.value),
                                     })
                                 )
                             }

@@ -6,6 +6,7 @@ import {
     removeFromCart,
     changeActiveProduct,
     updateUnit,
+    updateQuantity,
 } from "../../store/slices/cartSlice"; // Assuming your cart slice location
 import { RootState } from "../../store/store";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
@@ -59,7 +60,28 @@ function CartProduct() {
                     />
                     <div className="flex-1">
                         <h3 className="text-lg font-medium">{product.name}</h3>
-                        <p className="text-gray-200">Price: ${product.price}</p>
+                        <p className="text-gray-200">
+                            1
+                            {product.units[product.unit].base +
+                                " = " +
+                                product.price.toLocaleString() +
+                                " tk"}
+                        </p>
+                        <p>
+                            1 {product.unit} ={" "}
+                            {product.units[product.unit].value +
+                                " " +
+                                product.units[product.unit].base +
+                                " * " +
+                                product.quantity +
+                                " = " +
+                                (
+                                    product.units[product.unit].value *
+                                    product.quantity
+                                ).toLocaleString() +
+                                " " +
+                                product.units[product.unit].base}
+                        </p>
                         <div className="flex products-center mt-2">
                             <button
                                 className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-1 px-3 rounded"
@@ -67,12 +89,29 @@ function CartProduct() {
                             >
                                 -
                             </button>
-                            <span className="tex-white-700 font-bold mx-2">
-                                {product.quantity}
-                            </span>
+                            <input
+                                type="number"
+                                className="h-[40px] bg-black w-[66px] text-white p-2"
+                                value={product.quantity}
+                                onChange={(e) =>
+                                    dispatch(
+                                        updateQuantity({
+                                            key: product._id,
+                                            quantity: parseInt(e.target.value),
+                                        })
+                                    )
+                                }
+                            />
+
+                            <button
+                                className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-1 px-2 rounded"
+                                onClick={() => handleIncrement(product._id)}
+                            >
+                                +
+                            </button>
                             <div>
                                 <select
-                                    className="h-[40px] p-1 bg-black text-white p-2"
+                                    className="h-[40px] p-1 bg-black text-white p-2 mx-2"
                                     value={product.unit}
                                     onChange={(e) =>
                                         dispatch(
@@ -89,23 +128,17 @@ function CartProduct() {
                                                 key={unit.unit}
                                                 value={unit.unit}
                                             >
-                                                {unit.label}
+                                                {unit.unit}
                                             </option>
                                         )
                                     )}
                                 </select>
                             </div>
-                            <button
-                                className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-1 px-2 rounded"
-                                onClick={() => handleIncrement(product._id)}
-                            >
-                                +
-                            </button>
                         </div>
                     </div>
                     <div className="text-right">
                         <p className="text-lg font-medium">
-                            Subtotal: {product.subTotal}
+                            Subtotal: {product.subTotal.toLocaleString()}
                         </p>
                         <button
                             onDoubleClick={() =>

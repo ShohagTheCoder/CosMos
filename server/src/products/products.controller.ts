@@ -8,8 +8,6 @@ import {
     Put,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -26,15 +24,19 @@ export class ProductsController {
     }
 
     @Post()
-    create(@Body() createProductDto: CreateProductDto) {
-        return this.productsService.create(createProductDto);
+    async create(@Body() createProductDto: any) {
+        const createdProduct =
+            await this.productsService.create(createProductDto);
+
+        if (createdProduct) {
+            // await this.productsService.createStock(createProductDto.stock);
+        }
+
+        return createdProduct;
     }
 
     @Put(':id')
-    update(
-        @Param('id') id: string,
-        @Body() updateProductDto: UpdateProductDto,
-    ) {
+    update(@Param('id') id: string, @Body() updateProductDto: any) {
         return this.productsService.update(id, updateProductDto);
     }
 

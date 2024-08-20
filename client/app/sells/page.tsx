@@ -13,6 +13,7 @@ import {
     resetSelectedProductIndex,
     selectNexProduct,
     selectPreviousProduct,
+    shiftMeasurementTo,
 } from "../store/slices/cartSlice";
 import CartProduct from "./components/CartProduct";
 import ProductCard from "./components/ProductCard";
@@ -45,7 +46,8 @@ export default function Sell() {
             let command = document.getElementById("command");
             if (
                 document.activeElement != command &&
-                e.target.tagName != "TEXTAREA"
+                e.target.tagName != "TEXTAREA" &&
+                e.target.tagName != "INPUT"
             ) {
                 command?.focus();
             }
@@ -229,6 +231,8 @@ export default function Sell() {
                     : Object.keys(filteredProducts).length - 1;
                 if (command.length > 1) {
                     dispatch(selectPreviousProduct(max));
+                } else {
+                    dispatch(shiftMeasurementTo(-1));
                 }
                 break;
 
@@ -239,6 +243,8 @@ export default function Sell() {
                     : Object.keys(filteredProducts).length - 1;
                 if (command.length > 1) {
                     dispatch(selectNexProduct(max));
+                } else {
+                    dispatch(shiftMeasurementTo(1));
                 }
                 break;
 
