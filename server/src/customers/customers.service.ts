@@ -21,7 +21,7 @@ export class CustomersService {
             username: createCustomerDto.phoneNumber,
             password: 'password',
             balance: 0,
-            minimumBalance: -1000,
+            minimumBalance: 1000,
             maximumBalance: 1000,
             limit: 1000,
             // lastTransaction: null,

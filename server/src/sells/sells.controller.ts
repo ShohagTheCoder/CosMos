@@ -16,6 +16,8 @@ export class SellsController {
 
     @Post()
     async create(@Body() createSellDto: any) {
+        // console.log(createSellDto);
+        // return;
         return this.sellsService.create(createSellDto);
     }
 

@@ -18,10 +18,25 @@ export class Sell {
     user: object;
 
     @Prop({ required: true, type: Map })
-    cart: Map<string, Product>;
+    products: Map<string, Product>;
 
     @Prop({ type: Object })
     customer?: object;
+
+    @Prop()
+    paid: number;
+
+    @Prop()
+    due: number;
+
+    @Prop()
+    customerTotalDue: number;
+
+    @Prop()
+    paidTransaction: string;
+
+    @Prop()
+    dueTransaction: string;
 
     @Prop()
     createdAt: Date;

@@ -152,20 +152,11 @@ export default function Sell() {
 
     async function handleCompleteSell() {
         try {
-            const result = await apiClient.post("/sells", {
-                totalPrice: cart.totalPrice,
-                customer: cart.customer,
-                user: {
-                    name: "Shohag Ahmed",
-                    age: 22,
-                },
-                cart: cart.products,
-                note: note,
-            });
+            const result = await apiClient.post("/sells", cart);
             setMessage("Sell created successfully");
-            setTimeout(() => {
-                window.location.reload();
-            }, 3000);
+            // setTimeout(() => {
+            //     window.location.reload();
+            // }, 3000);
         } catch (error) {
             setMessage("Error has occured");
         }

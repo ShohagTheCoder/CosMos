@@ -34,7 +34,7 @@ export class Account extends Document {
     lastTransactionAmount: number;
 
     @Prop()
-    lastTransactionDate: string;
+    lastTransactionDate: Date;
 
     @Prop()
     lastTransactionAccountName: string;

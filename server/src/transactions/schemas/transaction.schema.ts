@@ -16,25 +16,25 @@ export class Transaction extends Document {
     receiverName: string;
 
     @Prop()
-    amount: string;
+    amount: number;
 
     @Prop()
-    senderNewBalance: string;
+    senderNewBalance: number;
 
     @Prop()
-    receiverNewBalance: string;
+    receiverNewBalance: number;
 
     @Prop()
-    senderLastTransaction: number;
+    senderLastTransaction: string;
 
     @Prop()
-    receiverLastTransaction: number;
+    receiverLastTransaction: string;
 
     @Prop()
     action: string;
 
     @Prop()
-    nonte: string;
+    note: string;
 
     @Prop()
     date: Date;

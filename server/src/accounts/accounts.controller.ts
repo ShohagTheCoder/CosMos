@@ -20,6 +20,12 @@ export class AccountsController {
         return this.accountsService.create(createAccountDto);
     }
 
+    @Post('send-money')
+    sendMoney(@Body() sendMoneyDto: any) {
+        console.log(sendMoneyDto);
+        return this.accountsService.sendMoney(sendMoneyDto);
+    }
+
     @Get()
     findAll() {
         return this.accountsService.findAll();

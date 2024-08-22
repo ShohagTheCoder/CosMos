@@ -2,22 +2,36 @@ import getCartProductsTotalPrice from "@/app/functions/getCartProductsTotalPrice
 import getCurrentMeasurement from "@/app/functions/getCurrentMeasurement";
 import getProductCount from "@/app/functions/getProductCount";
 import getUpdatedProduct from "@/app/functions/getUpdatedProduct";
-import { Customer } from "@/app/interfaces/customer.inerface";
+import { Customer, CustomerWithId } from "@/app/interfaces/customer.inerface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface CartState {
     products: Record<string, ProductWithID>;
     totalPrice: number;
-    customer?: Customer;
+    customer?: CustomerWithId;
     activeProduct?: string;
     selectedProductIndex: number;
+    due: number;
+    paid: number;
+    user: {
+        _id: string;
+        name: string;
+    };
+    customerTotalDue: number;
 }
 
 const initialState: CartState = {
+    selectedProductIndex: 0,
     products: {},
     totalPrice: 0,
-    selectedProductIndex: 0,
+    paid: 0,
+    due: 0,
+    customerTotalDue: 0,
+    user: {
+        _id: "66c6d86cb0f83bdb4ed36c96",
+        name: "Shohag Ahmed",
+    },
 };
 
 const cartSlice = createSlice({
@@ -81,6 +95,13 @@ const cartSlice = createSlice({
 
         resetSelectedProductIndex: (state) => {
             state.selectedProductIndex = 0;
+        },
+
+        updatePaid: (state: CartState, action: PayloadAction<number>) => {
+            const paid = action.payload;
+            state.paid = paid;
+            state.due = state.totalPrice - paid;
+            state.customerTotalDue = -100 - (state.totalPrice - paid);
         },
 
         updateQuantity: (
@@ -221,6 +242,7 @@ const cartSlice = createSlice({
 export const {
     addToCart,
     removeFromCart,
+    updatePaid,
     updateQuantity,
     incrementQuantity,
     decrementQuantity,
