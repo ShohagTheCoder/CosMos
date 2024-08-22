@@ -99,6 +99,50 @@ function CreateProduct() {
                 </div>
                 <UnitsTab />
                 {/* ... other fields and buttons with dark theme styling */}
+                <div className="mb-4">
+                    <label
+                        className="block text-gray-300 text-sm font-bold mb-2"
+                        htmlFor="stockLow"
+                    >
+                        Stock Low
+                    </label>
+                    <input
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-white bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="name"
+                        type="number"
+                        value={product.stockLow}
+                        onChange={(e) =>
+                            dispatch(
+                                updateProductField({
+                                    field: "stockLow",
+                                    value: parseInt(e.target.value),
+                                })
+                            )
+                        }
+                    />
+                </div>
+                <div className="mb-4">
+                    <label
+                        className="block text-gray-300 text-sm font-bold mb-2"
+                        htmlFor="stockLow"
+                    >
+                        Stock Alert
+                    </label>
+                    <input
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-white bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="name"
+                        type="number"
+                        value={product.stockAlert}
+                        onChange={(e) =>
+                            dispatch(
+                                updateProductField({
+                                    field: "stockAlert",
+                                    value: parseInt(e.target.value),
+                                })
+                            )
+                        }
+                    />
+                </div>
                 <button
                     type="button"
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"

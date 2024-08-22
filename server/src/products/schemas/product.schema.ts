@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
-import { Stock } from 'src/stocks/schemas/stocks.schema';
+import mongoose, { Document, Types } from 'mongoose';
 
 // Define nested schemas
 @Schema()
@@ -47,13 +46,16 @@ export type ProductDocument = Product & Document;
 @Schema({ timestamps: true }) // Automatically handles createdAt and updatedAt
 export class Product extends Document {
     @Prop({ required: true })
+    SKU: string;
+
+    @Prop({ required: true })
     name: string;
 
     @Prop({ required: true })
     description: string;
 
-    @Prop({ type: Map, of: Unit, required: true })
-    units: Map<string, Unit>;
+    @Prop({ type: mongoose.Schema.Types.Mixed, required: true })
+    units: Record<string, Unit>;
 
     @Prop({ type: [Price], required: true })
     prices: Price[];
@@ -83,12 +85,17 @@ export class Product extends Document {
     @Prop({ default: 1 })
     quantity: number;
 
-    @Prop({
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Stock',
-        required: true,
-    })
-    stock: Stock;
+    @Prop({ default: 1 })
+    count: number;
+
+    @Prop()
+    stock: string;
+
+    @Prop()
+    stockLow: number;
+
+    @Prop()
+    stockAlert: number;
 
     @Prop()
     createdBy?: string;

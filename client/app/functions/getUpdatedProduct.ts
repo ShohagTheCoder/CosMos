@@ -1,6 +1,7 @@
 import Product, {
     ProductWithID,
 } from "../products/interfaces/product.interface";
+import getProductCount from "./getProductCount";
 import getProductSubTotalPrice from "./getProductSubTotalPrice";
 import getProductUnitPrice from "./getProductUnitPrice";
 
@@ -18,6 +19,7 @@ export default function getUpdatedProduct(
     }
 
     product.price = getProductUnitPrice(product);
+    product.count = getProductCount(product);
     product.subTotal = getProductSubTotalPrice(product);
 
     return product;

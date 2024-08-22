@@ -3,6 +3,8 @@ import {
     Controller,
     Delete,
     Get,
+    HttpException,
+    HttpStatus,
     Param,
     Post,
     Put,
@@ -25,14 +27,7 @@ export class ProductsController {
 
     @Post()
     async create(@Body() createProductDto: any) {
-        const createdProduct =
-            await this.productsService.create(createProductDto);
-
-        if (createdProduct) {
-            // await this.productsService.createStock(createProductDto.stock);
-        }
-
-        return createdProduct;
+        return this.productsService.create(createProductDto);
     }
 
     @Put(':id')

@@ -41,113 +41,122 @@ function CartProduct() {
             <div className="border flex p-2">
                 <p>Actions :</p>
                 <p className="w-[80px]"></p>
-                <button className="bg-red-700 px-2 py-1">Delete</button>
+                <button
+                    onDoubleClick={() => dispatch(removeFromCart(null))}
+                    className="ms-auto bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
+                >
+                    Delete &#x1F5D1;
+                </button>
             </div>
             {Object.values(cart.products).map((product: ProductWithID) => (
-                <div
-                    key={product._id}
-                    className={`flex products-center py-4 px-3 ${
-                        product._id == cart.activeProduct ? "bg-green-950" : ""
-                    }`}
-                >
-                    <img
-                        src="product.jpeg"
-                        alt={product.name}
-                        className="h-[90px] object-cover mr-4"
-                        onClick={() =>
-                            dispatch(changeActiveProduct(product._id))
-                        }
-                    />
-                    <div className="flex-1">
-                        <h3 className="text-lg font-medium">{product.name}</h3>
-                        <p className="text-gray-200">
-                            1
-                            {product.units[product.unit].base +
-                                " = " +
-                                product.price.toLocaleString() +
-                                " tk"}
-                        </p>
-                        <p>
-                            1 {product.unit} ={" "}
-                            {product.units[product.unit].value +
-                                " " +
-                                product.units[product.unit].base +
-                                " * " +
-                                product.quantity +
-                                " = " +
-                                (
-                                    product.units[product.unit].value *
-                                    product.quantity
-                                ).toLocaleString() +
-                                " " +
-                                product.units[product.unit].base}
-                        </p>
-                        <div className="flex products-center mt-2">
-                            <button
-                                className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-1 px-3 rounded"
-                                onClick={() => handleDecrement(product._id)}
-                            >
-                                -
-                            </button>
-                            <input
-                                type="number"
-                                className="h-[40px] bg-black w-[66px] text-white p-2"
-                                value={product.quantity}
-                                onChange={(e) =>
-                                    dispatch(
-                                        updateQuantity({
-                                            key: product._id,
-                                            quantity: parseInt(e.target.value),
-                                        })
-                                    )
-                                }
-                            />
-
-                            <button
-                                className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-1 px-2 rounded"
-                                onClick={() => handleIncrement(product._id)}
-                            >
-                                +
-                            </button>
-                            <div>
-                                <select
-                                    className="h-[40px] p-1 bg-black text-white p-2 mx-2"
-                                    value={product.unit}
+                <div key={product._id}>
+                    <div
+                        className={`flex flex-wrap py-4 px-3 ${
+                            product._id == cart.activeProduct
+                                ? "bg-green-950"
+                                : ""
+                        }`}
+                    >
+                        <img
+                            src="product.jpeg"
+                            alt={product.name}
+                            className="h-[90px] object-cover mr-4"
+                            onClick={() =>
+                                dispatch(changeActiveProduct(product._id))
+                            }
+                        />
+                        <div className="overflow-hidden">
+                            <h3 className="text-lg font-medium">
+                                {product.name}
+                            </h3>
+                            <p className="text-gray-200">
+                                1
+                                {product.units[product.unit].base +
+                                    " = " +
+                                    product.price.toLocaleString()}{" "}
+                                <span> ৳</span>
+                            </p>
+                            <p>
+                                1 {product.unit} ={" "}
+                                {product.units[product.unit].value +
+                                    " " +
+                                    product.units[product.unit].base +
+                                    " * " +
+                                    product.quantity +
+                                    " = " +
+                                    (
+                                        product.units[product.unit].value *
+                                        product.quantity
+                                    ).toLocaleString() +
+                                    " " +
+                                    product.units[product.unit].base}
+                            </p>
+                        </div>
+                        <div className="w-full flex flex-wrap products-center mt-4 justify-between items-center">
+                            <div className="flex flex-warp">
+                                <button
+                                    className="h-[40px] w-[40px] hover:bg-green-500 hover:text-white text-2xl bg-gray-300 text-gray-700 border-0"
+                                    onClick={() => handleDecrement(product._id)}
+                                >
+                                    -
+                                </button>
+                                <input
+                                    type="number"
+                                    className="no-spin h-[40px] w-[70px] bg-black  outline-none text-white text-center"
+                                    value={product.quantity}
+                                    min={1}
                                     onChange={(e) =>
                                         dispatch(
-                                            updateUnit({
+                                            updateQuantity({
                                                 key: product._id,
-                                                unit: e.target.value,
+                                                quantity: parseInt(
+                                                    e.target.value
+                                                ),
                                             })
                                         )
                                     }
+                                />
+
+                                <button
+                                    className="h-[40px] w-[40px] hover:bg-green-500 hover:text-white text-2xl bg-gray-300 text-gray-700 border-0"
+                                    onClick={() => handleIncrement(product._id)}
                                 >
-                                    {Object.values(product.units).map(
-                                        (unit) => (
-                                            <option
-                                                key={unit.unit}
-                                                value={unit.unit}
-                                            >
-                                                {unit.unit}
-                                            </option>
-                                        )
-                                    )}
-                                </select>
+                                    +
+                                </button>
+                                <div>
+                                    <select
+                                        className="h-[40px] bg-black text-white p-2 outline-none"
+                                        value={product.unit}
+                                        onChange={(e) =>
+                                            dispatch(
+                                                updateUnit({
+                                                    key: product._id,
+                                                    unit: e.target.value,
+                                                })
+                                            )
+                                        }
+                                    >
+                                        {Object.values(product.units).map(
+                                            (unit) => (
+                                                <option
+                                                    key={unit.unit}
+                                                    value={unit.unit}
+                                                >
+                                                    {unit.unit}
+                                                </option>
+                                            )
+                                        )}
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="flex flex-wrap items-center">
+                                <p className="text-lg font-medium">
+                                    মোট :{" "}
+                                    {product.subTotal.toLocaleString("Bn-bd")}
+                                    <span> ৳</span>
+                                </p>
                             </div>
                         </div>
-                    </div>
-                    <div className="text-right">
-                        <p className="text-lg font-medium">
-                            Subtotal: {product.subTotal.toLocaleString()}
-                        </p>
-                        <button
-                            onDoubleClick={() =>
-                                dispatch(removeFromCart(product._id))
-                            }
-                            className="bg-red-500 hover:bg-red-700 mt-4 text-white font-bold py-2 px-4 rounded"
-                        >
-                            Remove
-                        </button>
                     </div>
                 </div>
             ))}

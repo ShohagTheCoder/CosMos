@@ -8,32 +8,32 @@ import {
     Put,
 } from '@nestjs/common';
 import { SellsService } from './sells.service';
-import { Sell } from './interfaces/sell.interface';
+import { CreateSellDto } from './dto/create-sell.dto';
 
 @Controller('sells')
 export class SellsController {
     constructor(private readonly sellsService: SellsService) {}
 
     @Post()
-    async create(@Body() createSellDto: Sell): Promise<Sell> {
+    async create(@Body() createSellDto: any) {
         return this.sellsService.create(createSellDto);
     }
 
     @Get()
-    async findAll(): Promise<Sell[]> {
+    async findAll() {
         return this.sellsService.findAll();
     }
 
     @Get(':id')
-    async findOne(@Param('id') id: string): Promise<Sell> {
+    async findOne(@Param('id') id: string) {
         return this.sellsService.findOne(id);
     }
 
     @Put(':id')
     async update(
         @Param('id') id: string,
-        @Body() updateSellDto: Partial<Sell>,
-    ): Promise<Sell> {
+        @Body() updateSellDto: CreateSellDto,
+    ) {
         return this.sellsService.update(id, updateSellDto);
     }
 

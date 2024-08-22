@@ -42,7 +42,7 @@ export default function Sell() {
 
     useEffect(() => {
         window.addEventListener("keydown", (e: any) => {
-            if (e.key == "Tab") return;
+            if (e.key == "Tab") e.preventDefault();
             let command = document.getElementById("command");
             if (
                 document.activeElement != command &&
@@ -71,6 +71,7 @@ export default function Sell() {
                     acc[product._id] = product;
                     return acc;
                 }, {});
+                console.log(products);
                 setProducts(products);
             } catch (error) {
                 console.error(error);

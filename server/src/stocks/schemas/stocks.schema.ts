@@ -1,9 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
 export type StockDocument = Stock & Document;
 
 @Schema()
 export class Stock extends Document {
+    @Prop()
+    product: string;
+
     @Prop()
     SKU: string;
 
@@ -14,13 +18,22 @@ export class Stock extends Document {
     stock: number;
 
     @Prop()
+    stockLow: number;
+
+    @Prop()
+    stockAlert: number;
+
+    @Prop()
     lastSupplier: string;
 
     @Prop()
     LastReceiver: string;
 
     @Prop()
-    lastStockedDate: Date;
+    LastReturned?: string;
+
+    @Prop()
+    lastStockedDate?: Date;
 }
 
 export const StockSchema = SchemaFactory.createForClass(Stock);

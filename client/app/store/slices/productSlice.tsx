@@ -25,6 +25,8 @@ const initialState: Product = {
     unit: Object.values(units.weight)[0].base,
     discount: 0,
     extraDiscount: 0,
+    stockAlert: 10,
+    stockLow: 50,
 };
 
 const productSlice = createSlice({

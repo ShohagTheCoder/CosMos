@@ -31,6 +31,8 @@ export default interface Product {
     extraDiscount: number;
     quantity?: number;
     subTotal?: number;
+    stockLow: number;
+    stockAlert: number;
 }
 
 export interface ProductWithID {
@@ -46,6 +48,10 @@ export interface ProductWithID {
     price: number;
     discount: number;
     extraDiscount: number;
+    stock: string;
     quantity: number;
+    count: number;
     subTotal: number;
+    stockLow: number;
+    stockAlert: number;
 }

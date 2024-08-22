@@ -1,8 +1,6 @@
 import getCartProductsTotalPrice from "@/app/functions/getCartProductsTotalPrice";
 import getCurrentMeasurement from "@/app/functions/getCurrentMeasurement";
-import getProductSubTotalPrice from "@/app/functions/getProductSubTotalPrice";
-import getProductPrice from "@/app/functions/getProductSubTotalPrice";
-import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
+import getProductCount from "@/app/functions/getProductCount";
 import getUpdatedProduct from "@/app/functions/getUpdatedProduct";
 import { Customer } from "@/app/interfaces/customer.inerface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
@@ -43,6 +41,7 @@ const cartSlice = createSlice({
             } else {
                 product.unit = product.measurements[0].unit;
                 product.quantity = product.measurements[0].value;
+                product.count = getProductCount(product);
                 state.products = { ...state.products, [product._id]: product };
                 state.activeProduct = product._id;
             }
@@ -50,7 +49,8 @@ const cartSlice = createSlice({
             state.totalPrice += product.subTotal;
         },
         removeFromCart: (state, action) => {
-            const productId = action.payload;
+            let productId = action.payload;
+            if (productId == null) productId = state.activeProduct;
             const removedProduct = state.products[productId];
 
             if (removedProduct) {

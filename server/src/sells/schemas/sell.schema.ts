@@ -6,8 +6,6 @@ import {
 } from 'src/customers/schemas/customer.schema';
 import { Product } from 'src/products/schemas/product.schema';
 
-export type SellDocument = Sell & Document;
-
 @Schema()
 export class Sell {
     @Prop({ required: true, min: 0 })
@@ -22,8 +20,8 @@ export class Sell {
     @Prop({ required: true, type: Map })
     cart: Map<string, Product>;
 
-    @Prop({ type: CustomerSchema })
-    customer: Customer;
+    @Prop({ type: Object })
+    customer?: object;
 
     @Prop()
     createdAt: Date;
@@ -31,5 +29,7 @@ export class Sell {
     @Prop()
     updatedAt: Date;
 }
+
+export type SellDocument = Sell & Document;
 
 export const SellSchema = SchemaFactory.createForClass(Sell);

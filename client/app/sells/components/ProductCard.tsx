@@ -24,10 +24,10 @@ function ProductCard({ products }: { products: any }) {
                 <div
                     key={product._id}
                     onClick={() => handleAddToCart(product._id)}
-                    className={`max-w-sm rounded-lg overflow-hidden shadow-xl border-[5px] bg-gray-800 text-white ${
+                    className={`max-w-sm rounded overflow-hidden shadow-xl bg-gray-800 text-white ${
                         selectedProductIndex == key
-                            ? "border-green-700"
-                            : "border-black"
+                            ? "bg-green-900"
+                            : "bg-black"
                     }`}
                 >
                     <img
@@ -35,15 +35,16 @@ function ProductCard({ products }: { products: any }) {
                         src="product.jpeg"
                         alt={product.name}
                     />
-                    <div className="px-6 py-4">
-                        <h2 className="font-semibold text-2xl mb-2">
+                    <div className="p-3">
+                        <h2 className="font-semibold text-xl mb-1">
                             {product.name}
                         </h2>
-                        <p className="text-gray-300 text-base mb-4">
+                        <p className="text-gray-300 text-base mb-1">
                             {product.description}
                         </p>
                         <p className="font-semibold text-xl text-green-400">
-                            ${product.price.toLocaleString()}
+                            {product.price.toLocaleString("Bn-bd")}
+                            <span> ৳</span>
                         </p>
                     </div>
                 </div>
