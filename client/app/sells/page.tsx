@@ -24,6 +24,9 @@ import { Customer, CustomerWithId } from "../interfaces/customer.inerface";
 import CustomerCard from "./components/CustomerCard";
 import CustomerDetails from "./components/CustomerDetails";
 import { ProductWithID } from "../products/interfaces/product.interface";
+import { Message } from "../interfaces/message.interface";
+import { MessageType } from "../utils/enums/MessageType";
+import { ERROR, INFO, NONE, SUCCESS, WARN } from "../utils/constants/Message";
 
 export default function Sell() {
     let [command, setCommand] = useState("");
@@ -39,7 +42,10 @@ export default function Sell() {
     let selectedProductIndex = cart.selectedProductIndex;
     let forceOrder = 1;
 
-    const [message, setMessage] = useState("No Message");
+    const [message, setMessage] = useState<Message>({
+        type: NONE,
+        data: "Faild to create message",
+    });
 
     useEffect(() => {
         window.addEventListener("keydown", (e: any) => {
@@ -154,12 +160,18 @@ export default function Sell() {
     async function handleCompleteSell() {
         try {
             const result = await apiClient.post("/sells", cart);
-            setMessage("Sell created successfully");
+            setMessage({
+                type: SUCCESS,
+                data: "Sell created successfully",
+            });
             // setTimeout(() => {
             //     window.location.reload();
             // }, 3000);
         } catch (error) {
-            setMessage("Error has occured");
+            setMessage({
+                type: ERROR,
+                data: "Faild to create sell",
+            });
         }
     }
     async function handleAddCustomer() {
@@ -313,7 +325,36 @@ export default function Sell() {
                                 className="border border-2 border-dashed border-slate-500 bg-black outline-none focus:border-green-500 text-white px-4 py-2 text-lg"
                                 autoFocus
                             />
-                            <div className="message">{message}</div>
+                            <div className="message">
+                                {message.type == ERROR ? (
+                                    <div className="error bg-red-600 p-3">
+                                        {message.data}
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
+                                {message.type == SUCCESS ? (
+                                    <div className="success bg-green-600 p-3">
+                                        {message.data}
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
+                                {message.type == WARN ? (
+                                    <div className="warn bg-yellow-600 p-3">
+                                        {message.data}
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
+                                {message.type == INFO ? (
+                                    <div className="info bg-blue-600 p-3">
+                                        {message.data}
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
+                            </div>
                         </div>
                         <div className="mt-3"></div>
                         {isCustomers ? (

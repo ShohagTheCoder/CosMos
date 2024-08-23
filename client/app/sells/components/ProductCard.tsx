@@ -32,7 +32,7 @@ function ProductCard({ products }: { products: any }) {
                 >
                     <img
                         className="w-full h-48 object-cover"
-                        src="product.jpeg"
+                        src="product.jpg"
                         alt={product.name}
                     />
                     <div className="p-3">

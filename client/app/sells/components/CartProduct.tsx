@@ -38,15 +38,6 @@ function CartProduct() {
 
     return (
         <div className="cart">
-            {/* <div className="mb-3 border border-dashed border-2 border-slate-500 flex p-2">
-                <p className="w-[80px]"></p>
-                <button
-                    onDoubleClick={() => dispatch(removeFromCart(null))}
-                    className="ms-auto bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
-                >
-                    Delete &#x1F5D1;
-                </button>
-            </div> */}
             {Object.values(cart.products).map((product: ProductWithID) => (
                 <div
                     key={product._id}
@@ -60,7 +51,7 @@ function CartProduct() {
                         }`}
                     >
                         <img
-                            src="product.jpeg"
+                            src="product.jpg"
                             alt={product.name}
                             className="h-[90px] object-cover mr-4"
                             onClick={() =>
