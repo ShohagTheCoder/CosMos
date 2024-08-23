@@ -15,10 +15,11 @@ export class CustomersService {
     ) {}
 
     async create(createCustomerDto: any) {
+        const { name, phoneNumber, email, address } = createCustomerDto;
         const account = {
-            name: createCustomerDto.name,
-            owner: null,
-            username: createCustomerDto.phoneNumber,
+            name: name,
+            type: 'customer',
+            username: phoneNumber,
             password: 'password',
             balance: 0,
             minimumBalance: 1000,

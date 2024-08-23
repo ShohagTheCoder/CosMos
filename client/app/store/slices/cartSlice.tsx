@@ -19,6 +19,7 @@ export interface CartState {
         name: string;
     };
     customerTotalDue: number;
+    customerAccount: any;
 }
 
 const initialState: CartState = {
@@ -31,6 +32,9 @@ const initialState: CartState = {
     user: {
         _id: "66c6d86cb0f83bdb4ed36c96",
         name: "Shohag Ahmed",
+    },
+    customerAccount: {
+        balance: 0,
     },
 };
 
@@ -85,6 +89,13 @@ const cartSlice = createSlice({
             }
         },
 
+        addCustomerAccount: (
+            state: CartState,
+            action: PayloadAction<object>
+        ) => {
+            state.customerAccount = action.payload;
+        },
+
         selectPreviousProduct: (state, action) => {
             if (state.selectedProductIndex == 0) {
                 state.selectedProductIndex = action.payload;
@@ -99,9 +110,12 @@ const cartSlice = createSlice({
 
         updatePaid: (state: CartState, action: PayloadAction<number>) => {
             const paid = action.payload;
-            state.paid = paid;
-            state.due = state.totalPrice - paid;
-            state.customerTotalDue = -100 - (state.totalPrice - paid);
+            if (paid >= 0) {
+                state.paid = paid;
+                state.due = state.totalPrice - paid;
+                state.customerTotalDue =
+                    state.customerAccount.balance - (state.totalPrice - paid);
+            }
         },
 
         updateQuantity: (
@@ -253,6 +267,7 @@ export const {
     selectNexProduct,
     resetSelectedProductIndex,
     updateUnit,
+    addCustomerAccount,
     shiftMeasurementTo,
 } = cartSlice.actions;
 export default cartSlice.reducer;

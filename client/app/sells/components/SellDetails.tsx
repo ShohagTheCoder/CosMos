@@ -8,21 +8,44 @@ function SellDetails() {
     const dispatch = useDispatch();
 
     return (
-        <div className="py-3">
-            <hr className="my-3 border-gray-300" />
-            <p className=" text-lg font-semibold">
-                সর্বমোট : {cart.totalPrice.toLocaleString("Bn-bd")}
-                <span> ৳</span>
-            </p>
-            <input
-                className="h-[40px] w-[70px] bg-black outline-none text-white px-3 border"
-                type="number"
-                value={cart.paid}
-                onChange={(e) => dispatch(updatePaid(parseInt(e.target.value)))}
-            />
-            <p>Due: {cart.due}</p>
-            <p>Customer total Due: {cart.customerTotalDue}</p>
-            <hr className="my-3 border-gray-300" />
+        <div className="p-3 mb-3 border border-dashed border-2 border-gray-600">
+            <div className="single-row mb-2 pb-1 border-b border-dashed border-b-2 border-gray-600 flex justify-between">
+                <p className=" text-lg font-semibold py-1">সর্বমোট :</p>
+                <p className=" text-lg font-semibold py-1">
+                    {cart.totalPrice.toLocaleString("En-us")}
+                    <span> ৳</span>
+                </p>
+            </div>
+            <div className="single-row mb-2 pb-1 border-b border-dashed border-b-2 border-gray-600 flex justify-between">
+                <p className=" text-lg font-semibold py-1">জমা :</p>
+                <p className=" text-lg font-semibold py-1">
+                    <input
+                        className="no-spin w-[80px] text-end bg-black outline-none text-white"
+                        type="number"
+                        value={cart.paid}
+                        onChange={(e) =>
+                            dispatch(updatePaid(parseInt(e.target.value)))
+                        }
+                    />
+                    <span> ৳</span>
+                </p>
+            </div>
+            <div className="single-row mb-2 pb-1 border-b border-dashed border-b-2 border-gray-600 flex justify-between">
+                <p className=" text-lg font-semibold py-1">বাকি :</p>
+                <p className=" text-lg font-semibold py-1">
+                    {cart.due.toLocaleString("En-us")}
+                    <span> ৳</span>
+                </p>
+            </div>
+            <div className="single-row flex justify-between">
+                <p className=" text-lg font-semibold py-1">
+                    &apos;{cart.customer?.name}&#39; এর মোট বাকি :
+                </p>
+                <p className=" text-lg font-semibold py-1">
+                    {Math.abs(cart.customerTotalDue).toLocaleString("En-us")}
+                    <span> ৳</span>
+                </p>
+            </div>
         </div>
     );
 }

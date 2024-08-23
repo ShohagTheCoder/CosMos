@@ -5,6 +5,7 @@ import { RootState } from "../store/store";
 import apiClient from "../utils/apiClient";
 import {
     addCustomer,
+    addCustomerAccount,
     addToCart,
     changeActiveProduct,
     decrementQuantity,
@@ -19,7 +20,7 @@ import CartProduct from "./components/CartProduct";
 import ProductCard from "./components/ProductCard";
 import SellDetails from "./components/SellDetails";
 import Link from "next/link";
-import { Customer } from "../interfaces/customer.inerface";
+import { Customer, CustomerWithId } from "../interfaces/customer.inerface";
 import CustomerCard from "./components/CustomerCard";
 import CustomerDetails from "./components/CustomerDetails";
 import { ProductWithID } from "../products/interfaces/product.interface";
@@ -80,11 +81,11 @@ export default function Sell() {
 
         const fetchCustomers = async () => {
             try {
-                const response = await apiClient<Customer[]>("customers");
+                const response = await apiClient<CustomerWithId[]>("customers");
                 const customersArray = response.data;
 
                 const customers = customersArray.reduce<
-                    Record<string, Customer>
+                    Record<string, CustomerWithId>
                 >((acc, customer) => {
                     acc[customer._id] = customer;
                     return acc;
@@ -105,7 +106,7 @@ export default function Sell() {
 
             const tempFilteredCustomers = Object.values(customers).filter(
                 (customer) => {
-                    return customer.fullName
+                    return customer.name
                         .toLowerCase()
                         .includes(command.trim().toLowerCase());
                 }
@@ -113,7 +114,7 @@ export default function Sell() {
 
             // Convert filtered array back to object
             const filteredCustomersObject = tempFilteredCustomers.reduce<
-                Record<string, Customer>
+                Record<string, CustomerWithId>
             >((acc, customer) => {
                 acc[customer._id] = customer;
                 return acc;
@@ -160,6 +161,12 @@ export default function Sell() {
         } catch (error) {
             setMessage("Error has occured");
         }
+    }
+    async function handleAddCustomer() {
+        const customer = Object.values(filteredCustomers)[0];
+        const { data } = await apiClient.get(`accounts/${customer.account}`);
+        dispatch(addCustomer(customer));
+        dispatch(addCustomerAccount(data));
     }
 
     function handleNoteKeyDown(e: any) {
@@ -254,9 +261,7 @@ export default function Sell() {
                     }
                 } else if (command.length > 1) {
                     if (Object.keys(filteredCustomers).length > 0) {
-                        dispatch(
-                            addCustomer(Object.values(filteredCustomers)[0])
-                        );
+                        handleAddCustomer();
                         setCommand("");
                     }
                 } else {
@@ -287,8 +292,8 @@ export default function Sell() {
         <main>
             <div className="2xl:container mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-4 py-4 min-h-screen">
-                    <div className="border col-span-2 p-4">
-                        <div className="header border p-3 mb-3">
+                    <div className="col-span-2">
+                        <div className="p-3 border border-2 border-dashed border-slate-500 mb-3">
                             <Link href={"/"}>Home</Link>
                             <Link className="ms-3" href={"/products"}>
                                 Products
@@ -297,8 +302,7 @@ export default function Sell() {
                                 Customers
                             </Link>
                         </div>
-                        <div className="message">{message}</div>
-                        <div>
+                        <div className="flex flex-wrap gap-4 items-center">
                             <input
                                 id="command"
                                 value={command}
@@ -306,10 +310,10 @@ export default function Sell() {
                                 onKeyDown={handleKeyDown}
                                 onKeyUp={handleKeyUp}
                                 type="text"
-                                className="bg-black border text-white px-4 py-2 text-lg"
+                                className="border border-2 border-dashed border-slate-500 bg-black outline-none focus:border-green-500 text-white px-4 py-2 text-lg"
                                 autoFocus
                             />
-                            <p>{command}</p>
+                            <div className="message">{message}</div>
                         </div>
                         <div className="mt-3"></div>
                         {isCustomers ? (
@@ -318,35 +322,34 @@ export default function Sell() {
                             <ProductCard products={filteredProducts} />
                         )}
                     </div>
-                    <div className="border p-4">
+                    <div className="">
                         <CartProduct />
-                        <div className="mt-4"></div>
-                        <SellDetails />
                         <CustomerDetails />
-                        <div>
+                        <div className="">
                             <textarea
                                 ref={noteRef}
-                                className="w-full bg-black text-white border mt-4 p-2 focus:outline-none"
+                                className="w-full resize-none bg-black text-white p-3 outline-none border border-dashed border-2 border-gray-600 placeholder-slate-300 mb-1"
                                 value={note}
                                 onKeyDown={handleNoteKeyDown}
                                 onChange={(e) => setNote(e.target.value)}
                                 rows={2}
                                 cols={50}
-                                placeholder="Leave a note about the sell"
+                                placeholder="বিক্রি সম্পর্কে কিছু মনে রাখার আছে কি?"
                             ></textarea>
                         </div>
+                        <SellDetails />
                         <div className="flex gap-4">
                             <button
                                 onDoubleClick={() => handleCompleteSell()}
-                                className="border p-3 mt-3 bg-blue-800 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                className="w-1/2 pt-3 pb-2 border border-2 border-dashed border-green-600 bg-green-900 hover:bg-green-700 text-white"
                             >
-                                Complete Sell
+                                বিক্রয় ও প্রিন্ট
                             </button>
                             <button
                                 onDoubleClick={() => handleCompleteSell()}
-                                className="border p-3 mt-3 bg-green-800 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                                className="w-1/2 pt-3 pb-2 border border-dashed border-2 border-blue-600 bg-blue-900 hover:bg-blue-700 text-white"
                             >
-                                Complete and Print
+                                বিক্রয়
                             </button>
                         </div>
                     </div>

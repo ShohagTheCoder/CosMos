@@ -38,8 +38,7 @@ function CartProduct() {
 
     return (
         <div className="cart">
-            <div className="border flex p-2">
-                <p>Actions :</p>
+            {/* <div className="mb-3 border border-dashed border-2 border-slate-500 flex p-2">
                 <p className="w-[80px]"></p>
                 <button
                     onDoubleClick={() => dispatch(removeFromCart(null))}
@@ -47,9 +46,12 @@ function CartProduct() {
                 >
                     Delete &#x1F5D1;
                 </button>
-            </div>
+            </div> */}
             {Object.values(cart.products).map((product: ProductWithID) => (
-                <div key={product._id}>
+                <div
+                    key={product._id}
+                    className="mb-3 border border-dashed border-2 border-slate-500"
+                >
                     <div
                         className={`flex flex-wrap py-4 px-3 ${
                             product._id == cart.activeProduct

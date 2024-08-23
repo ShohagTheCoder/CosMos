@@ -32,8 +32,8 @@ export class AccountsController {
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.accountsService.findOne(+id);
+    async findOne(@Param('id') id: string) {
+        return await this.accountsService.findOne(id);
     }
 
     @Patch(':id')

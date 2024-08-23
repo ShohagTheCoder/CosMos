@@ -10,6 +10,9 @@ export class Account extends Document {
     name: string;
 
     @Prop()
+    type: string;
+
+    @Prop()
     username: string;
 
     @Prop()

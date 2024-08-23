@@ -45,7 +45,7 @@ export class SellsService {
                 senderId: createSellDto.user._id,
                 receiverId: '66c6d8a0b0f83bdb4ed36c97',
                 amount: createSellDto.paid,
-                action: 'purchase',
+                action: 'sells',
                 note: createSellDto.note,
             });
 
@@ -54,10 +54,10 @@ export class SellsService {
             if (createSellDto.due > 0) {
                 // Create transaction for sell
                 const customerToCart = await this.accountsService.sendMoney({
-                    senderId: '66c6ed65b0f83bdb4ed36cb3',
+                    senderId: createSellDto.customer._id,
                     receiverId: '66c6d8a0b0f83bdb4ed36c97',
                     amount: createSellDto.due,
-                    action: 'sells',
+                    action: 'sells due',
                     note: createSellDto.note,
                 });
 

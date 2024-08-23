@@ -24,6 +24,13 @@ export default function Home() {
                         Sells
                     </Link>
                     <Link href={"products"}>Products</Link>
+                    <Link className="mx-3" href={"products/create"}>
+                        Create Product
+                    </Link>
+                    <Link href={"products"}>Customers</Link>
+                    <Link className="mx-3" href={"customers/create"}>
+                        Create Customer
+                    </Link>
                 </div>
                 <div className="bg-green-600 p-4">Two</div>
                 <div className="bg-green-600 p-4">Three</div>

@@ -2,7 +2,6 @@ import React from "react";
 
 function CustomerCard({ customers }: { customers: any }) {
     function handleAddCustomer(_id: string) {
-        console.log(customers[_id]);
         document.getElementById("command")?.focus();
     }
 
@@ -17,11 +16,11 @@ function CustomerCard({ customers }: { customers: any }) {
                     <img
                         className="w-full h-48 object-cover"
                         src="product.jpeg"
-                        alt={customer.fullName}
+                        alt={customer.name}
                     />
                     <div className="px-6 py-4">
                         <h2 className="font-semibold text-2xl mb-2">
-                            {customer.fullName}
+                            {customer.name}
                         </h2>
                         <p className="text-gray-300 text-base mb-4">
                             {customer.address}
