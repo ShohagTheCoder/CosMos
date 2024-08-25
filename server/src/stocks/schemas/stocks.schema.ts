@@ -15,6 +15,21 @@ export class Stock extends Document {
     name: string;
 
     @Prop()
+    totalSalesCount: number;
+
+    @Prop()
+    lastYearSalesCount: number;
+
+    @Prop()
+    lastMonthSalesCount: number;
+
+    @Prop()
+    lastWeekSalesCount: number;
+
+    @Prop()
+    unit: string;
+
+    @Prop()
     stock: number;
 
     @Prop()

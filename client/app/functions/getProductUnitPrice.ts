@@ -11,7 +11,7 @@ export default function getProductUnitPrice(product: Product): number {
     for (let i = 0; i < pricesLength; i++) {
         const price = prices[i];
         result = Math.ceil(price.price - product.discount);
-        if (unit.value * quantity <= price.max * units[price.unit].value) {
+        if (unit.value * quantity < price.max * units[price.unit].value) {
             return result;
         }
     }

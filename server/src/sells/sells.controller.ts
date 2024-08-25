@@ -16,9 +16,14 @@ export class SellsController {
 
     @Post()
     async create(@Body() createSellDto: any) {
-        // console.log(createSellDto);
+        console.log(createSellDto);
         // return;
         return this.sellsService.create(createSellDto);
+    }
+
+    @Get('findByCustomer/:id')
+    async findByCustomer(@Param('id') id: string) {
+        return this.sellsService.findByCustomer(id);
     }
 
     @Get()

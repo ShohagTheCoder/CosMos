@@ -21,6 +21,14 @@ export class SellsService {
         return this.sellModel.find();
     }
 
+    findByCustomer(id: string) {
+        // return this.sellModel.find({
+        //     'customer._id': id,
+        // });
+
+        return this.sellModel.find();
+    }
+
     findOne(id: string) {
         return this.sellModel.findById(id);
     }
@@ -54,7 +62,7 @@ export class SellsService {
             if (createSellDto.due > 0) {
                 // Create transaction for sell
                 const customerToCart = await this.accountsService.sendMoney({
-                    senderId: createSellDto.customer._id,
+                    senderId: createSellDto.customer.account,
                     receiverId: '66c6d8a0b0f83bdb4ed36c97',
                     amount: createSellDto.due,
                     action: 'sells due',

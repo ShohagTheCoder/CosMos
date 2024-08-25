@@ -25,8 +25,7 @@ import CustomerCard from "./components/CustomerCard";
 import CustomerDetails from "./components/CustomerDetails";
 import { ProductWithID } from "../products/interfaces/product.interface";
 import { Message } from "../interfaces/message.interface";
-import { MessageType } from "../utils/enums/MessageType";
-import { ERROR, INFO, NONE, SUCCESS, WARN } from "../utils/constants/Message";
+import { ERROR, INFO, NONE, SUCCESS, WARN } from "../utils/constants/message";
 
 export default function Sell() {
     let [command, setCommand] = useState("");

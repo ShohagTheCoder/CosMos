@@ -7,6 +7,7 @@ export interface Unit {
     unit: string;
     label: string;
     dynamic: boolean;
+    dynamicValue: boolean;
     value: number;
     base: string;
 }
@@ -27,6 +28,8 @@ export default interface Product {
     measurements: Measurement[];
     unit: string;
     price: number;
+    saleUnitsBase: string;
+    purchaseUnitsBase: string;
     discount: number;
     extraDiscount: number;
     quantity?: number;
@@ -41,6 +44,8 @@ export interface ProductWithID {
     name: string;
     description?: string;
     madeIn?: string;
+    saleUnitsBase: string;
+    purchaseUnitsBase: string;
     units: Record<string, Unit>;
     prices: Price[];
     measurements: Measurement[];

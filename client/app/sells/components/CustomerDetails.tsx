@@ -10,7 +10,7 @@ function CustomerDetails() {
     if (customer) {
         return (
             <div>
-                <table className="min-w-full bg-slate-900 border border-dashed border-2 border-slate-600">
+                <table className="min-w-full bg-slate-900 border border-dashed border-2 border-slate-600 mb-3">
                     <tbody>
                         <tr className="border-b border-gray-700">
                             <td className="px-4 py-3 font-semibold text-gray-300">

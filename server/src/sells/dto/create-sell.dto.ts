@@ -4,6 +4,7 @@ export interface CreateSellDto {
     customer?: {
         _id: string;
         name: string;
+        account: string;
     };
     user: {
         _id: string;
