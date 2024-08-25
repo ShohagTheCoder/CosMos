@@ -10,9 +10,9 @@ import {
     updateUnitsDynamicValue,
 } from "@/app/store/slices/productSlice";
 import { RootState } from "@/app/store/store";
-import { Unit } from "../interfaces/product.interface";
 import PurchasePrices from "./PurchasePrices";
 import PurchaseMeasurements from "./PurchaseMeasurements";
+import { Unit } from "../../interfaces/product.interface";
 
 function Units({ data }: { data: any }) {
     const dispatch = useDispatch();

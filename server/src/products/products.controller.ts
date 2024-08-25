@@ -6,6 +6,7 @@ import {
     HttpException,
     HttpStatus,
     Param,
+    Patch,
     Post,
     Put,
 } from '@nestjs/common';
@@ -30,7 +31,7 @@ export class ProductsController {
         return this.productsService.create(createProductDto);
     }
 
-    @Put(':id')
+    @Patch(':id')
     update(@Param('id') id: string, @Body() updateProductDto: any) {
         return this.productsService.update(id, updateProductDto);
     }

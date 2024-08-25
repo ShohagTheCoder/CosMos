@@ -19,6 +19,8 @@ export interface Price {
 }
 
 export default interface Product {
+    [x: string]: any;
+    _id?: string;
     SKU: string;
     name: string;
     description?: string;
@@ -26,6 +28,9 @@ export default interface Product {
     units: Record<string, Unit>;
     prices: Price[];
     measurements: Measurement[];
+    purchasePrices: Price[];
+    purchaseMeasurements: Measurement[];
+    resources: any;
     unit: string;
     price: number;
     saleUnitsBase: string;
@@ -49,6 +54,9 @@ export interface ProductWithID {
     units: Record<string, Unit>;
     prices: Price[];
     measurements: Measurement[];
+    purchasePrices: Price[];
+    purchaseMeasurements: Measurement[];
+    resources: any;
     unit: string;
     price: number;
     discount: number;

@@ -123,11 +123,11 @@ const cartSlice = createSlice({
             action: PayloadAction<{ key: string; quantity: number }>
         ) => {
             let { key, quantity } = action.payload;
-            if (!quantity) quantity = 1;
+            if (!quantity) quantity = 0;
             if (quantity > 1000) return;
             const product = state.products[key];
 
-            if (product) {
+            if (product && product.quantity >= 0) {
                 const updatedProduct = getUpdatedProduct(
                     product,
                     quantity - product.quantity,
@@ -166,7 +166,7 @@ const cartSlice = createSlice({
             }
             const product = state.products[productId];
 
-            if (product && product.quantity > 1) {
+            if (product && product.quantity > 0) {
                 const updatedProduct = getUpdatedProduct(product, -1, null);
                 state.products = {
                     ...state.products,

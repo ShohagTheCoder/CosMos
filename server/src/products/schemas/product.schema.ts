@@ -63,6 +63,15 @@ export class Product extends Document {
     @Prop({ type: [Measurement], required: true })
     measurements: Measurement[];
 
+    @Prop()
+    saleUnitsBase: string;
+
+    @Prop({ type: [Price], required: true })
+    purchasePrices: Price[];
+
+    @Prop({ type: [Measurement], required: true })
+    purchaseMeasurements: Measurement[];
+
     @Prop({ required: true })
     price: number;
 

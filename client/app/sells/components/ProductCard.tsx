@@ -42,10 +42,16 @@ function ProductCard({ products }: { products: any }) {
                         <p className="text-gray-300 text-base mb-1">
                             {product.description}
                         </p>
-                        <p className="font-semibold text-xl text-green-400">
-                            {product.price.toLocaleString("Bn-bd")}
+                        <p className="font-semibold text-xl text-green-400 inline-block">
+                            {(
+                                product.price *
+                                product.units[product.unit].value
+                            ).toLocaleString("Un-us")}
                             <span> ৳</span>
                         </p>
+                        <span className="ms-2">
+                            1 {product.units[product.unit].label}
+                        </span>
                     </div>
                 </div>
             ))}

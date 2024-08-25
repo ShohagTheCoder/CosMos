@@ -4,8 +4,14 @@
     cursor: pointer;
     user-select: none;
 }
+.tab-title {
+    background-color: #080808;
+    padding: 10px 25px;
+    cursor: pointer;
+    user-select: none;
+}
 
-.tab-header-item.active {
+.tab-title.active {
     background-color: #155207;
 }
 
@@ -15,4 +21,11 @@
 
 .tab-content.active {
     display: block;
+}
+
+.tab-navigations {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    flex-wrap: wrap;
 }

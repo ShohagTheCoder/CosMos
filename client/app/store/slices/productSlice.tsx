@@ -27,12 +27,26 @@ const initialState: Product = {
             value: 1,
         },
     ],
+    purchasePrices: [
+        {
+            unit: "kg",
+            max: 1,
+            price: 1,
+        },
+    ],
+    purchaseMeasurements: [
+        {
+            unit: "kg",
+            value: 1,
+        },
+    ],
     price: 1,
     unit: Object.values(units.weight)[0].base,
     discount: 0,
     extraDiscount: 0,
     stockAlert: 10,
     stockLow: 50,
+    resources: "Hi",
 };
 
 const productSlice = createSlice({
@@ -157,15 +171,90 @@ const productSlice = createSlice({
                 state.measurements[state.measurements.length - 1]
             );
         },
+        /* Purchse section */
+        updatePurchasePriceMax: (
+            state: Product,
+            action: PayloadAction<{ key: number; max: any }>
+        ) => {
+            const { key, max } = action.payload;
+            state.purchasePrices = state.purchasePrices.map((item, index) =>
+                index === key ? { ...item, max } : item
+            );
+            state.price = Math.ceil(getProductUnitPrice(state));
+        },
+        updatePurchasePriceUnit: (
+            state: Product,
+            action: PayloadAction<{ key: number; unit: string }>
+        ) => {
+            const { key, unit } = action.payload;
+            console.log(action.payload);
+            state.purchasePrices = state.purchasePrices.map((item, index) =>
+                index === key ? { ...item, unit, max: 1 } : item
+            );
+            state.price = Math.ceil(getProductUnitPrice(state));
+        },
+        updatePurchasePricePrice: (
+            state: Product,
+            action: PayloadAction<{ key: number; price: any }>
+        ) => {
+            const { key, price } = action.payload;
+            state.purchasePrices = state.purchasePrices.map((item, index) =>
+                index === key ? { ...item, price } : item
+            );
+            state.price = Math.ceil(getProductUnitPrice(state));
+        },
+        addPurchasePrice: (state: Product) => {
+            state.purchasePrices.push(
+                state.purchasePrices[state.purchasePrices.length - 1]
+            );
+        },
+        updatePurchaseMeasurementUnit: (
+            state: Product,
+            action: PayloadAction<{ key: number; unit: any }>
+        ) => {
+            const { key, unit } = action.payload;
+            state.purchaseMeasurements = state.purchaseMeasurements.map(
+                (item, index) => (index === key ? { ...item, unit } : item)
+            );
+        },
+        updatePurchaseMeasurementValue: (
+            state: Product,
+            action: PayloadAction<{ key: number; value: number }>
+        ) => {
+            const { key, value } = action.payload;
+            state.purchaseMeasurements = state.purchaseMeasurements.map(
+                (item, index) =>
+                    index === key ? { ...item, value: value } : item
+            );
+        },
+        addPurchaseMeasurement: (state: Product) => {
+            state.purchaseMeasurements.push(
+                state.purchaseMeasurements[
+                    state.purchaseMeasurements.length - 1
+                ]
+            );
+        },
+        // Others
         updateUnit: (state: Product, action: PayloadAction<string>) => {
             state.unit = action.payload;
             state.price = Math.ceil(getProductUnitPrice(state));
+        },
+
+        setProduct: (state, action) => {
+            return action.payload;
         },
     },
 });
 
 export const {
     updateProductField,
+    updatePurchasePriceMax,
+    updatePurchasePriceUnit,
+    updatePurchasePricePrice,
+    addPurchasePrice,
+    updatePurchaseMeasurementUnit,
+    updatePurchaseMeasurementValue,
+    addPurchaseMeasurement,
     selectUnits,
     updatePriceMax,
     updatePriceUnit,
@@ -180,6 +269,7 @@ export const {
     updateDynamicUnitUnit,
     changeSaleUnitsBase,
     remapDynamicUnitUnit,
+    setProduct,
 } = productSlice.actions;
 
 export default productSlice.reducer;

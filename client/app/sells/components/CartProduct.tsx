@@ -26,7 +26,7 @@ function CartProduct() {
 
     const handleDecrement = (_id: string) => {
         let product = cart.products[_id];
-        if (product.quantity > 1) {
+        if (product.quantity > 0) {
             dispatch(decrementQuantity(product._id)); // Decrement quantity
         }
     };
@@ -70,25 +70,31 @@ function CartProduct() {
                                 <span> ৳</span>
                             </p>
                             <p>
-                                1 {product.unit} ={" "}
-                                {product.units[product.unit].value +
-                                    " " +
-                                    product.units[product.unit].base +
-                                    " * " +
-                                    product.quantity +
-                                    " = " +
-                                    (
-                                        product.units[product.unit].value *
-                                        product.quantity
-                                    ).toLocaleString() +
-                                    " " +
-                                    product.units[product.unit].base}
+                                {product.saleUnitsBase == product.unit ? (
+                                    ""
+                                ) : (
+                                    <div>
+                                        1 {product.unit} ={" "}
+                                        {product.units[product.unit].value +
+                                            " " +
+                                            product.units[product.unit].base +
+                                            " * " +
+                                            product.quantity +
+                                            " = " +
+                                            (
+                                                product.units[product.unit]
+                                                    .value * product.quantity
+                                            ).toLocaleString() +
+                                            " " +
+                                            product.units[product.unit].base}
+                                    </div>
+                                )}
                             </p>
                         </div>
                         <div className="w-full flex flex-wrap products-center mt-4 justify-between items-center">
                             <div className="flex flex-warp">
                                 <button
-                                    className="h-[40px] w-[40px] hover:bg-green-500 hover:text-white text-2xl bg-gray-300 text-gray-700 border-0"
+                                    className="h-[40px] w-[40px] select-none hover:bg-green-500 hover:text-white text-2xl bg-gray-300 text-gray-700 border-0"
                                     onClick={() => handleDecrement(product._id)}
                                 >
                                     -
@@ -97,12 +103,11 @@ function CartProduct() {
                                     type="number"
                                     className="no-spin h-[40px] w-[70px] bg-black  outline-none text-white text-center"
                                     value={product.quantity}
-                                    min={1}
                                     onChange={(e) =>
                                         dispatch(
                                             updateQuantity({
                                                 key: product._id,
-                                                quantity: parseInt(
+                                                quantity: parseFloat(
                                                     e.target.value
                                                 ),
                                             })
@@ -111,7 +116,7 @@ function CartProduct() {
                                 />
 
                                 <button
-                                    className="h-[40px] w-[40px] hover:bg-green-500 hover:text-white text-2xl bg-gray-300 text-gray-700 border-0"
+                                    className="h-[40px] w-[40px] select-none hover:bg-green-500 hover:text-white text-2xl bg-gray-300 text-gray-700 border-0"
                                     onClick={() => handleIncrement(product._id)}
                                 >
                                     +

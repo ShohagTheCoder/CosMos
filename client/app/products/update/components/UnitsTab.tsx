@@ -1,53 +1,28 @@
 import React, { useEffect, useState } from "react";
 import Units from "./Units";
-import { units } from "../create/units";
-import { Unit } from "../interfaces/product.interface";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUnits, updateUnit } from "@/app/store/slices/productSlice";
 import { RootState } from "@/app/store/store";
+import { units } from "../../create/units";
+import { Unit } from "../../interfaces/product.interface";
 
 function UnitsTab() {
     const dispatch = useDispatch();
-    const [base, setBase] = useState("");
+    let base;
     const product = useSelector((state: RootState) => state.product);
 
-    function handleTabChange(base: string, units: any) {
-        setBase(base);
-        dispatch(selectUnits(units));
+    if (product.measurements[0].unit == "kg") {
+        base = "weight";
+    }
+    if (product.measurements[0].unit == "pcs") {
+        base = "pices";
+    }
+    if (product.measurements[0].unit == "ltr") {
+        base = "volume";
     }
 
     return (
         <div className="tab">
-            {base == "" ? (
-                <div className="tab-header flex flex-wrap">
-                    <div
-                        className="tab-header-item"
-                        onDoubleClick={() =>
-                            handleTabChange("weight", units.weight)
-                        }
-                    >
-                        <p>Weight</p>
-                    </div>
-                    <div
-                        className="tab-header-item"
-                        onDoubleClick={() =>
-                            handleTabChange("pices", units.pices)
-                        }
-                    >
-                        <p>Pices</p>
-                    </div>
-                    <div
-                        className="tab-header-item"
-                        onDoubleClick={() =>
-                            handleTabChange("volume", units.volume)
-                        }
-                    >
-                        <p>Volume</p>
-                    </div>
-                </div>
-            ) : (
-                <p>{base}</p>
-            )}
             <div className="tab-contents">
                 <div
                     className={`tab-content ${

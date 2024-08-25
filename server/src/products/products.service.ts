@@ -61,8 +61,15 @@ export class ProductsService {
         }
     }
 
-    update(id: string, updateProductDto: any) {
-        return this.productModel.findByIdAndUpdate(id, updateProductDto);
+    async update(id: string, updateProductDto: any) {
+        const product = await this.productModel.findById(id);
+
+        if (product) {
+            Object.assign(product, updateProductDto);
+            return product.save();
+        }
+
+        throw new Error('Product not found for id ' + id);
     }
 
     delete(id: string) {
