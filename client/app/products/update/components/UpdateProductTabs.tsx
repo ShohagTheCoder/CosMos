@@ -22,9 +22,7 @@ function UpdateProductTabs() {
     return (
         <div>
             <div className="tab">
-                <div className="p-3 border tab-titles flex justify-between">
-                    {getTabTitles()}
-                </div>
+                <div className="p-3 border tab-titles">{getTabTitles()}</div>
                 <div className="tab-contents p-3 border">
                     <div
                         className={`tab-content ${

@@ -47,19 +47,17 @@ const cartSlice = createSlice({
             const existingProduct = state.products[product._id];
 
             if (existingProduct) {
-                let existingQuantity = existingProduct.quantity || 0;
-                const updatedProduct = {
-                    ...existingProduct,
-                    quantity: existingQuantity + product.quantity,
-                };
-                state.products = {
-                    ...state.products,
-                    [product._id]: updatedProduct,
-                };
+                state.products[product._id] = getUpdatedProduct(
+                    existingProduct,
+                    1,
+                    null
+                );
             } else {
-                product.unit = product.measurements[0].unit;
-                product.quantity = product.measurements[0].value;
-                product.count = getProductCount(product);
+                product = getUpdatedProduct(
+                    product,
+                    product.measurements[0].value - 1,
+                    product.measurements[0].unit
+                );
                 state.products = { ...state.products, [product._id]: product };
                 state.activeProduct = product._id;
             }

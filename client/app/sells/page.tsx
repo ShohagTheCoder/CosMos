@@ -77,7 +77,6 @@ export default function Sell() {
                     acc[product._id] = product;
                     return acc;
                 }, {});
-                console.log(products);
                 setProducts(products);
             } catch (error) {
                 console.error(error);

@@ -19,30 +19,33 @@ function UnitsTab() {
     return (
         <div className="tab">
             {base == "" ? (
-                <div className="tab-header flex flex-wrap">
-                    <div
-                        className="tab-header-item"
-                        onDoubleClick={() =>
-                            handleTabChange("weight", units.weight)
-                        }
-                    >
-                        <p>Weight</p>
-                    </div>
-                    <div
-                        className="tab-header-item"
-                        onDoubleClick={() =>
-                            handleTabChange("pices", units.pices)
-                        }
-                    >
-                        <p>Pices</p>
-                    </div>
-                    <div
-                        className="tab-header-item"
-                        onDoubleClick={() =>
-                            handleTabChange("volume", units.volume)
-                        }
-                    >
-                        <p>Volume</p>
+                <div>
+                    <p>Select units type</p>
+                    <div className="tab-titles units-tab flex flex-wrap">
+                        <div
+                            className="tab-title"
+                            onDoubleClick={() =>
+                                handleTabChange("weight", units.weight)
+                            }
+                        >
+                            <p>Weight</p>
+                        </div>
+                        <div
+                            className="tab-title"
+                            onDoubleClick={() =>
+                                handleTabChange("pices", units.pices)
+                            }
+                        >
+                            <p>Pices</p>
+                        </div>
+                        <div
+                            className="tab-title"
+                            onDoubleClick={() =>
+                                handleTabChange("volume", units.volume)
+                            }
+                        >
+                            <p>Volume</p>
+                        </div>
                     </div>
                 </div>
             ) : (

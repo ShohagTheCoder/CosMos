@@ -86,6 +86,17 @@ export class Product extends Document {
     unit: string;
 
     @Prop()
+    hasResources: boolean;
+
+    @Prop()
+    resources: any[];
+    // @Prop({ type: [Product] })
+    // resources: Product[];
+
+    @Prop()
+    resourcesCost: number;
+
+    @Prop()
     discount?: number;
 
     @Prop()

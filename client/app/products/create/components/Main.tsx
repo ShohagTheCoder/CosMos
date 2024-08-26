@@ -8,8 +8,6 @@ function Main() {
     const dispatch = useDispatch();
     const product = useSelector((state: RootState) => state.product);
 
-    console.log(product);
-
     return (
         <div>
             <div className="mb-4">

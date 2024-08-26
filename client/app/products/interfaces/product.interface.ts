@@ -30,7 +30,9 @@ export default interface Product {
     measurements: Measurement[];
     purchasePrices: Price[];
     purchaseMeasurements: Measurement[];
-    resources: any;
+    hasResources: boolean;
+    resources: ProductWithID[];
+    resourcesCost: number;
     unit: string;
     price: number;
     saleUnitsBase: string;
@@ -56,7 +58,9 @@ export interface ProductWithID {
     measurements: Measurement[];
     purchasePrices: Price[];
     purchaseMeasurements: Measurement[];
-    resources: any;
+    hasResources: boolean;
+    resources: ProductWithID[];
+    resourcesCost: number;
     unit: string;
     price: number;
     discount: number;
@@ -67,4 +71,16 @@ export interface ProductWithID {
     subTotal: number;
     stockLow: number;
     stockAlert: number;
+}
+
+export interface Resource {
+    _id: string;
+    SKU: string;
+    name: string;
+    hasResources: boolean;
+    resourcesCost: number;
+    unit: string;
+    price: number;
+    quantity: number;
+    subTotal: number;
 }

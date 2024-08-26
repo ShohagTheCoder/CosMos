@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import Main from "./Main";
 import UnitsTab from "../../components/UnitsTab";
 import CreateProduct from "./CreateProduct";
+import Resources from "./Resources";
 
 function CreateProductTabs() {
     const [active, setActive] = useState("Main");
-    const tabTitles = ["Main", "Units", "Prices"];
+    const tabTitles = ["Main", "Units", "Resources", "Prices"];
 
     function getTabTitles() {
         return tabTitles.map((title) => (
@@ -21,9 +22,7 @@ function CreateProductTabs() {
     return (
         <div>
             <div className="tab">
-                <div className="p-3 border tab-titles flex justify-between">
-                    {getTabTitles()}
-                </div>
+                <div className="p-3 border tab-titles">{getTabTitles()}</div>
                 <div className="tab-contents p-3 border">
                     <div
                         className={`tab-content ${
@@ -50,6 +49,21 @@ function CreateProductTabs() {
                             <button onClick={() => setActive("Main")}>
                                 Previous
                             </button>
+                            <button onClick={() => setActive("Resources")}>
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                    <div
+                        className={`tab-content ${
+                            active == "Resources" ? "active" : ""
+                        }`}
+                    >
+                        <Resources />
+                        <div className="tab-navigations">
+                            <button onClick={() => setActive("Units")}>
+                                Previous
+                            </button>
                             <button onClick={() => setActive("Prices")}>
                                 Next
                             </button>
@@ -62,7 +76,7 @@ function CreateProductTabs() {
                     >
                         <CreateProduct />
                         <div className="tab-navigations">
-                            <button onClick={() => setActive("Units")}>
+                            <button onClick={() => setActive("Resources")}>
                                 Previous
                             </button>
                         </div>

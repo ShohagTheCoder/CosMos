@@ -1,10 +1,11 @@
-import Product, { Unit } from "@/app/products/interfaces/product.interface";
+import Product, {
+    ProductWithID,
+    Unit,
+} from "@/app/products/interfaces/product.interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { units } from "@/app/products/create/units";
 import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 import { getUpdatedSaleUnitsBase } from "@/app/functions/getUpdatedSaleUnitsBase";
-import getUpdatedProduct from "@/app/functions/getUpdatedProduct";
-import getProductUpdatedPrices from "@/app/functions/updatePricesForNewBase";
 import updatePricesForNewBase from "@/app/functions/updatePricesForNewBase";
 
 const initialState: Product = {
@@ -46,7 +47,9 @@ const initialState: Product = {
     extraDiscount: 0,
     stockAlert: 10,
     stockLow: 50,
-    resources: "Hi",
+    hasResources: false,
+    resources: [],
+    resourcesCost: 0,
 };
 
 const productSlice = createSlice({
@@ -114,6 +117,37 @@ const productSlice = createSlice({
             state.unit = base;
             state.price = getProductUnitPrice(state);
         },
+
+        updateProductResourceProduct: (
+            state: Product,
+            action: PayloadAction<{ key: number; product: ProductWithID }>
+        ) => {
+            const { key, product } = action.payload;
+            state.resources = state.resources.map(
+                (resource: any, index: number) =>
+                    index === key ? product : resource
+            );
+        },
+        updateProductResourceUnit: (
+            state: Product,
+            action: PayloadAction<{ key: number; unit: string }>
+        ) => {
+            const { key, unit } = action.payload;
+            state.resources = state.resources.map(
+                (resource: any, index: number) =>
+                    index === key ? { ...resource, unit } : resource
+            );
+        },
+        updateProductResourceQuantity: (
+            state: Product,
+            action: PayloadAction<{ key: number; quantity: number }>
+        ) => {
+            const { key, quantity } = action.payload;
+            state.resources = state.resources.map(
+                (resource: any, index: number) =>
+                    index === key ? { ...resource, quantity } : resource
+            );
+        },
         updatePriceMax: (
             state: Product,
             action: PayloadAction<{ key: number; max: any }>
@@ -129,11 +163,13 @@ const productSlice = createSlice({
             action: PayloadAction<{ key: number; unit: string }>
         ) => {
             const { key, unit } = action.payload;
-            console.log(action.payload);
             state.prices = state.prices.map((item, index) =>
                 index === key ? { ...item, unit, max: 1 } : item
             );
             state.price = Math.ceil(getProductUnitPrice(state));
+        },
+        toggleProductHasResources: (state) => {
+            state.hasResources = !state.hasResources;
         },
         updatePricePrice: (
             state: Product,
@@ -243,6 +279,9 @@ const productSlice = createSlice({
         setProduct: (state, action) => {
             return action.payload;
         },
+        addResource: (state, action) => {
+            state.resources.push(action.payload);
+        },
     },
 });
 
@@ -270,6 +309,11 @@ export const {
     changeSaleUnitsBase,
     remapDynamicUnitUnit,
     setProduct,
+    updateProductResourceProduct,
+    updateProductResourceUnit,
+    updateProductResourceQuantity,
+    toggleProductHasResources,
+    addResource,
 } = productSlice.actions;
 
 export default productSlice.reducer;
