@@ -13,6 +13,7 @@ import { BrandsModule } from './brands/brands.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { AccountsModule } from './accounts/accounts.module';
 import { TrashModule } from './trash/trash.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
     imports: [
@@ -28,6 +29,7 @@ import { TrashModule } from './trash/trash.module';
         TransactionsModule,
         AccountsModule,
         TrashModule,
+        AuthModule,
     ],
     controllers: [AppController],
     providers: [AppService],

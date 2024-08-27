@@ -1,16 +1,38 @@
+"use client";
 import apiClient from "@/app/utils/apiClient";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import TansferMoney from "../components/TansferMoney";
 
-async function CustomerProfile() {
+function CustomerProfile() {
     const id = "66c6d8a0b0f83bdb4ed36c97";
+    const [sells, setSells] = useState([]);
+    const [account, setAccount] = useState({
+        balance: 0,
+    });
 
-    // const { data: customer } = await apiClient.get(`customers/${id}`);
-    const { data: sells } = await apiClient.get("sells");
-    const { data: account } = await apiClient.get(`accounts/${id}`);
+    const [tansferMoneyPopup, setTansferMoneyPopup] = useState(false);
+    function handleTansferMoney(data: any) {
+        setTansferMoneyPopup(false);
+    }
+
+    useEffect(() => {
+        apiClient.get("sells").then((res) => setSells(res.data));
+        apiClient.get(`accounts/${id}`).then((res) => setAccount(res.data));
+    }, []);
 
     return (
         <main>
+            {tansferMoneyPopup ? (
+                <TansferMoney
+                    account={account}
+                    callback={handleTansferMoney}
+                    handleClose={() => setTansferMoneyPopup(false)}
+                />
+            ) : (
+                ""
+            )}
+
             <div className="container mx-auto">
                 <div className="grid grid-cols-4 py-3 gap-3">
                     <div className="col-span-2 border p-3">
@@ -41,12 +63,12 @@ async function CustomerProfile() {
                             </div>
                             <div className="col-span-1">View account</div>
                             <div className="col-span-1">
-                                <Link
-                                    href="/accounts"
+                                <button
+                                    onClick={() => setTansferMoneyPopup(true)}
                                     className="py-2 px-3 bg-blue-700"
                                 >
                                     Send money
-                                </Link>
+                                </button>
                             </div>
                         </div>
                     </div>

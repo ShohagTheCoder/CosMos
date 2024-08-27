@@ -1,26 +1,44 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { User } from './entities/user.entity';
+import { Model } from 'mongoose';
+import { UserDocument } from './schemas/user.schema';
+
+const users = [
+    { id: 1, name: 'Shohag Ahmed', password: 'pass', canSell: true },
+    { id: 2, name: 'Imradul Haq Imran', password: 'pass', canSell: false },
+];
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
+    constructor(
+        @InjectModel(User.name) private userModel: Model<UserDocument>,
+    ) {}
 
-  findAll() {
-    return `This action returns all users`;
-  }
+    create(createUserDto: CreateUserDto) {
+        return 'This action adds a new user';
+    }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+    findAll() {
+        return `This action returns all users`;
+    }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+    findOne(id: number) {
+        return this.userModel.findById(id);
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
+    async findByUsername(username: string) {
+        // return await this.userModel.findOne({ fullname: username });
+        return users.find((user) => user.name == username);
+    }
+
+    update(id: number, updateUserDto: UpdateUserDto) {
+        return `This action updates a #${id} user`;
+    }
+
+    remove(id: number) {
+        return `This action removes a #${id} user`;
+    }
 }
