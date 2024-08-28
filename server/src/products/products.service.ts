@@ -72,7 +72,7 @@ export class ProductsService {
         throw new Error('Product not found for id ' + id);
     }
 
-    delete(id: string) {
+    remove(id: string) {
         return this.productModel.findByIdAndDelete(id);
     }
 }

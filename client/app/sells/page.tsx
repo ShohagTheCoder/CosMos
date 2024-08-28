@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Cookies from "js-cookie";
 import { RootState } from "../store/store";
 import apiClient from "../utils/apiClient";
 import {
@@ -26,6 +27,7 @@ import CustomerDetails from "./components/CustomerDetails";
 import { ProductWithID } from "../products/interfaces/product.interface";
 import { Message } from "../interfaces/message.interface";
 import { ERROR, INFO, NONE, SUCCESS, WARN } from "../utils/constants/message";
+import axios from "axios";
 
 export default function Sell() {
     let [command, setCommand] = useState("");
@@ -298,6 +300,11 @@ export default function Sell() {
         }
     }
 
+    async function handleLogout() {
+        await axios.get("/api/auth/logout");
+        window.location.reload();
+    }
+
     return (
         <main>
             <div className="2xl:container mx-auto">
@@ -311,6 +318,12 @@ export default function Sell() {
                             <Link className="ms-3" href={"/customers"}>
                                 Customers
                             </Link>
+                            <button
+                                onDoubleClick={handleLogout}
+                                className="bg-red-700 text-white py-1 px-3 rounded ms-[20px]"
+                            >
+                                Logout
+                            </button>
                         </div>
                         <div className="flex flex-wrap gap-4 items-center">
                             <input

@@ -1,1 +1,1 @@
-export const SECRET = 'SHOHAG AHMED';
+export const SECRET = 'SHOHAG';

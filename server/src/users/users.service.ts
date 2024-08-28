@@ -7,8 +7,20 @@ import { Model } from 'mongoose';
 import { UserDocument } from './schemas/user.schema';
 
 const users = [
-    { id: 1, name: 'Shohag Ahmed', password: 'pass', canSell: true },
-    { id: 2, name: 'Imradul Haq Imran', password: 'pass', canSell: false },
+    {
+        id: 1,
+        name: 'Shohag Ahmed',
+        password: 'pass',
+        canSell: true,
+        verify: 'Shohag Ahmed',
+    },
+    {
+        id: 2,
+        name: 'Imradul Haq Imran',
+        password: 'pass',
+        canSell: false,
+        verify: 'Shohag Ahmed',
+    },
 ];
 
 @Injectable()
