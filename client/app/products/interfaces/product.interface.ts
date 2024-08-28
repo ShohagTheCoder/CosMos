@@ -80,6 +80,8 @@ export interface Resource {
     hasResources: boolean;
     resourcesCost: number;
     unit: string;
+    units: object;
+    count: number;
     price: number;
     quantity: number;
     subTotal: number;

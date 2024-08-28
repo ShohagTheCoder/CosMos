@@ -8,11 +8,10 @@ import {
     updateMeasurementValue,
 } from "@/app/store/slices/productSlice";
 
-function Measurements({ units }: { units: any }) {
+function Measurements() {
     const dispatch = useDispatch();
-    const measurements = useSelector(
-        (state: RootState) => state.product.measurements
-    );
+    const product = useSelector((state: RootState) => state.product);
+    const measurements = product.measurements;
 
     return (
         <div className="border border-gray-500 mb-4">
@@ -32,11 +31,13 @@ function Measurements({ units }: { units: any }) {
                                 )
                             }
                         >
-                            {units.map((unit: any, key: number) => (
-                                <option key={key} value={unit.unit}>
-                                    {unit.label}
-                                </option>
-                            ))}
+                            {Object.values(product.units).map(
+                                (unit: any, key: number) => (
+                                    <option key={key} value={unit.unit}>
+                                        {unit.label}
+                                    </option>
+                                )
+                            )}
                         </select>
                         Value :{" "}
                         <input

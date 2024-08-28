@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Product, { Price } from "../interfaces/product.interface";
 import { useDispatch, useSelector } from "react-redux";
 import {
     addPurchasePrice,

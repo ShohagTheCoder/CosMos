@@ -3,6 +3,7 @@ import {
     addResource,
     toggleProductHasResources,
     updateProductResourceQuantity,
+    updateProductResourceUnit,
 } from "@/app/store/slices/productSlice";
 import { RootState } from "@/app/store/store";
 import apiClient from "@/app/utils/apiClient";
@@ -45,11 +46,17 @@ function Resources() {
             hasResources: product.hasResources,
             resourcesCost: product.resourcesCost,
             unit: product.unit,
+            units: product.units,
             price: product.price,
             quantity: product.quantity,
+            count: product.count,
             subTotal: product.subTotal,
         };
         dispatch(addResource(resource));
+    }
+
+    function handleResourceUnitChange(key: number, unit: string) {
+        dispatch(updateProductResourceUnit({ key, unit }));
     }
 
     return (
@@ -94,6 +101,12 @@ function Resources() {
                                             Unit:
                                             <select
                                                 value={product.unit}
+                                                onChange={(e) =>
+                                                    handleResourceUnitChange(
+                                                        key,
+                                                        e.target.value
+                                                    )
+                                                }
                                                 className="bg-slate-900 py-2 px-3 mx-2"
                                             >
                                                 {Object.values(

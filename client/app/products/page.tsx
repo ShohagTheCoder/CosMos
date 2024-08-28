@@ -1,9 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import apiClient from "../utils/apiClient";
-import { Product } from "../interfaces/product.interface";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import Product from "./interfaces/product.interface";
 
 export default function Products() {
     const [products, setProducts] = useState([]);

@@ -3,6 +3,7 @@ import Prices from "./Prices";
 import Measurements from "./Mesurements";
 import { useDispatch, useSelector } from "react-redux";
 import {
+    addDynamicUnit,
     changeSaleUnitsBase,
     remapDynamicUnitUnit,
     updateDynamicUnitLabel,
@@ -18,10 +19,6 @@ function Units({ data }: { data: any }) {
     const dispatch = useDispatch();
     const product = useSelector((state: RootState) => state.product);
     const units = product.units;
-    const unitsAndLabels = Object.values(data).map((unit: any) => ({
-        label: unit.label,
-        unit: unit.unit,
-    }));
 
     function handleDynamicValue(unit: string, sValue: string) {
         const value = parseInt(sValue);
@@ -34,13 +31,6 @@ function Units({ data }: { data: any }) {
     }
 
     function handleDynamicUnitUnitRemap(unit: string) {
-        for (const prevUnit in units) {
-            if (prevUnit == units[unit].unit) {
-                dispatch(updateDynamicUnitUnit({ key: unit, value: "none" }));
-                return;
-            }
-        }
-
         dispatch(remapDynamicUnitUnit(unit));
     }
     function handleDynamicUnitLabel(unit: string, value: string) {
@@ -49,6 +39,16 @@ function Units({ data }: { data: any }) {
 
     function handleChangeSaleUnitsBase(e: any) {
         dispatch(changeSaleUnitsBase(e.target.value));
+    }
+
+    function handleAddDynamicUnit() {
+        dispatch(
+            addDynamicUnit({
+                unit: "unit-" + Math.round(Math.random() * 1000),
+                label: "Label",
+                value: 1,
+            })
+        );
     }
 
     return (
@@ -210,17 +210,17 @@ function Units({ data }: { data: any }) {
                     </tbody>
                 </table>
                 <button
-                    // onClick={() => dispatch(addUnit())}
+                    onClick={handleAddDynamicUnit}
                     className="font-bold bg-green-800 text-white border border-green-700 rounded-md px-3 py-1 my-2"
                 >
                     Add Unit
                 </button>
             </div>
             <Prices />
-            <Measurements units={unitsAndLabels} />
+            <Measurements />
             <p className="bg-yellow-700 py-3 px-4 mb-3">Purchase section</p>
             <PurchasePrices />
-            <PurchaseMeasurements units={unitsAndLabels} />
+            <PurchaseMeasurements />
         </div>
     );
 }

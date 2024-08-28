@@ -6,11 +6,10 @@ import {
     updatePurchaseMeasurementValue,
 } from "@/app/store/slices/productSlice";
 
-function PurchaseMeasurements({ units }: { units: any }) {
+function PurchaseMeasurements() {
     const dispatch = useDispatch();
-    const purchaseMeasurements = useSelector(
-        (state: RootState) => state.product.purchaseMeasurements
-    );
+    const product = useSelector((state: RootState) => state.product);
+    const purchaseMeasurements = product.purchaseMeasurements;
 
     return (
         <div className="border border-gray-500 mb-4">
@@ -30,11 +29,13 @@ function PurchaseMeasurements({ units }: { units: any }) {
                                 )
                             }
                         >
-                            {units.map((unit: any, key: number) => (
-                                <option key={key} value={unit.unit}>
-                                    {unit.label}
-                                </option>
-                            ))}
+                            {Object.values(product.units).map(
+                                (unit: any, key: number) => (
+                                    <option key={key} value={unit.unit}>
+                                        {unit.label}
+                                    </option>
+                                )
+                            )}
                         </select>
                         Value :{" "}
                         <input

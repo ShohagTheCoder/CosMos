@@ -73,7 +73,24 @@ const productSlice = createSlice({
             state.units = action.payload;
             state.prices[0].unit = unit;
             state.measurements[0].unit = unit;
+            state.purchasePrices[0].unit = unit;
+            state.purchaseMeasurements[0].unit = unit;
             state.unit = unit;
+        },
+        addDynamicUnit: (
+            state: Product,
+            action: PayloadAction<{
+                unit: string;
+                label: string;
+                value: number;
+            }>
+        ) => {
+            state.units[action.payload.unit] = {
+                ...action.payload,
+                dynamic: true,
+                dynamicValue: true,
+                base: state.purchaseUnitsBase,
+            };
         },
         updateUnitsDynamicValue: (
             state: Product,
@@ -290,6 +307,7 @@ export const {
     updatePurchasePriceMax,
     updatePurchasePriceUnit,
     updatePurchasePricePrice,
+    addDynamicUnit,
     addPurchasePrice,
     updatePurchaseMeasurementUnit,
     updatePurchaseMeasurementValue,
