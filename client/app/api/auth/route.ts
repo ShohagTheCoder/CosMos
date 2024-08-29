@@ -18,7 +18,7 @@ export async function POST(req: Request) {
                 },
                 {
                     headers: {
-                        "Set-Cookie": `access_token=${access_token}; path=/; Max-Age=3600`,
+                        "Set-Cookie": `access_token=${access_token}; path=/; Max-Age=43200`,
                     },
                 }
             );

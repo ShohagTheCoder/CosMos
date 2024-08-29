@@ -10,6 +10,8 @@ import {
     Transaction,
     TransactionSchema,
 } from 'src/transactions/schemas/transaction.schema';
+import { Product, ProductSchema } from 'src/products/schemas/product.schema';
+import { StocksService } from 'src/stocks/stocks.service';
 
 @Module({
     imports: [
@@ -18,9 +20,10 @@ import {
             { name: Stock.name, schema: StockSchema },
             { name: Account.name, schema: AccountSchema },
             { name: Transaction.name, schema: TransactionSchema },
+            { name: Product.name, schema: ProductSchema },
         ]),
     ],
     controllers: [SellsController],
-    providers: [SellsService, AccountsService],
+    providers: [SellsService, AccountsService, StocksService],
 })
 export class SellsModule {}

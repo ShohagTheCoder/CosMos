@@ -41,6 +41,21 @@ export class Measurement {
     value: number;
 }
 
+@Schema()
+export class Resource {
+    @Prop()
+    _id: string;
+
+    @Prop()
+    unit: string;
+
+    @Prop()
+    count: number;
+
+    @Prop()
+    quantity: number;
+}
+
 export type ProductDocument = Product & Document;
 
 @Schema({ timestamps: true }) // Automatically handles createdAt and updatedAt
@@ -89,9 +104,7 @@ export class Product extends Document {
     hasResources: boolean;
 
     @Prop()
-    resources: any[];
-    // @Prop({ type: [Product] })
-    // resources: Product[];
+    resources: Resource[];
 
     @Prop()
     resourcesCost: number;

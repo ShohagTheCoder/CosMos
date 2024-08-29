@@ -11,12 +11,37 @@ function CreateProduct() {
 
     async function createProduct() {
         console.log(product);
+        // return;
         try {
             const result = await apiClient.post("products", product);
             setMessage("Product created successfully!");
             console.log(result.data);
         } catch (error) {
             setMessage("Failed to create product.");
+            console.error(error);
+        }
+    }
+
+    async function UpdateProduct() {
+        const update = Object.entries(product).reduce(
+            (acc: any, [key, value]) => {
+                if (value != product.product[key] && key != "product") {
+                    acc[key] = value;
+                }
+
+                return acc;
+            },
+            {}
+        );
+        try {
+            const result = await apiClient.patch(
+                `products/${product._id}`,
+                update
+            );
+            setMessage("Product updated successfully!");
+            console.log(result.data);
+        } catch (error) {
+            setMessage("Failed to update product.");
             console.error(error);
         }
     }
@@ -68,13 +93,27 @@ function CreateProduct() {
                     }
                 />
             </div>
-            <button
-                type="button"
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                onDoubleClick={createProduct}
-            >
-                Create Product
-            </button>
+            {product._id ? (
+                <>
+                    <button
+                        type="button"
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        onDoubleClick={UpdateProduct}
+                    >
+                        Update Product
+                    </button>
+                </>
+            ) : (
+                <>
+                    <button
+                        type="button"
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                        onDoubleClick={createProduct}
+                    >
+                        Create Product
+                    </button>
+                </>
+            )}
         </div>
     );
 }

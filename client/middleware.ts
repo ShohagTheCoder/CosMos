@@ -21,10 +21,6 @@ export function middleware(req: NextRequest) {
 
     try {
         const decoded = decodeJwt(access_token);
-        // if (decoded.username == "admin")
-        //     throw new Error("You are not allowed to access this page");
-        console.log(decoded);
-        console.log("Token verified, proceeding");
         return NextResponse.next();
     } catch (error) {
         console.log("Token verification failed, redirecting to login", error);

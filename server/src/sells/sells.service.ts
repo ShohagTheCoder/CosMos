@@ -5,8 +5,7 @@ import { Stock, StockDocument } from 'src/stocks/schemas/stocks.schema';
 import { Sell, SellDocument } from './schemas/sell.schema';
 import { CreateSellDto } from './dto/create-sell.dto';
 import { AccountsService } from 'src/accounts/accounts.service';
-
-const CART_ID = '66c6db894bf58c000a9d261f';
+import { StocksService } from 'src/stocks/stocks.service';
 
 @Injectable()
 export class SellsService {
@@ -15,6 +14,7 @@ export class SellsService {
         @InjectModel(Stock.name)
         private stockModel: Model<StockDocument>,
         private accountsService: AccountsService,
+        private stocksService: StocksService,
     ) {}
 
     findAll() {
@@ -35,20 +35,18 @@ export class SellsService {
 
     async create(createSellDto: CreateSellDto) {
         try {
-            // Process each product in the cart
+            // Update stock for each product in cart
             for (const product of Object.values(createSellDto.products)) {
-                const stock = await this.stockModel.findById(product.stock);
-                if (!stock) {
-                    throw new Error(`Stock with ID ${product.stock} not found`);
-                }
-                stock.stock -= product.count;
-                await stock.save();
+                await this.stocksService.updateStockQuantity(
+                    product._id.toString(),
+                    product.count,
+                );
             }
 
             // Create and save the new sell
             const createdSell = new this.sellModel(createSellDto);
 
-            // Create transaction for sell
+            // Create transaction from user to cart for sell's paid
             const userToCart = await this.accountsService.sendMoney({
                 senderId: createSellDto.user._id,
                 receiverId: '66c6d8a0b0f83bdb4ed36c97',
@@ -59,8 +57,8 @@ export class SellsService {
 
             createdSell.paidTransaction = userToCart._id.toString();
 
-            if (createSellDto.due > 0) {
-                // Create transaction for sell
+            // Create transaction for sell from customer to cart if the sell has due
+            if (createSellDto.due > 0 && createSellDto.customer) {
                 const customerToCart = await this.accountsService.sendMoney({
                     senderId: createSellDto.customer.account,
                     receiverId: '66c6d8a0b0f83bdb4ed36c97',

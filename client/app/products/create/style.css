@@ -6,7 +6,7 @@
 
 .tab-title {
     /* background-color: #080808; */
-    padding: 10px 15px;
+    padding: 5px 10px;
     margin: 0 10px;
     cursor: pointer;
     user-select: none;
@@ -28,7 +28,6 @@
 .tab-navigations {
     display: flex;
     justify-content: space-between;
-    padding: 15px;
     flex-wrap: wrap;
 }
 

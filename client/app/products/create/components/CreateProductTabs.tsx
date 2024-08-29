@@ -12,6 +12,7 @@ function CreateProductTabs() {
         return tabTitles.map((title) => (
             <div
                 key={title}
+                onClick={() => setActive(title)}
                 className={`tab-title ${active == title ? "active" : ""}`}
             >
                 {title}
@@ -19,25 +20,49 @@ function CreateProductTabs() {
         ));
     }
 
+    function getTabNavigationButton(index: number) {
+        let prevIndex;
+        let nextIndex;
+        if (index == 0) {
+            prevIndex = tabTitles.length - 1;
+            nextIndex = 1;
+        } else if (index == tabTitles.length - 1) {
+            prevIndex = index - 1;
+            nextIndex = 0;
+        } else {
+            prevIndex = index - 1;
+            nextIndex = index + 1;
+        }
+
+        return (
+            <div className="tab-navigations bg-slate-800 p-2 rounded mt-4">
+                <button
+                    className="py-2 px-3 hover:bg-green-700 rounded"
+                    onClick={() => setActive(tabTitles[prevIndex])}
+                >{`<- ${tabTitles[prevIndex]}`}</button>
+                <button
+                    className="py-2 px-3 hover:bg-green-700 rounded"
+                    onClick={() => setActive(tabTitles[nextIndex])}
+                >{`${tabTitles[nextIndex]} ->`}</button>
+            </div>
+        );
+    }
+
     return (
         <div>
             <div className="tab">
-                <div className="p-3 border tab-titles">{getTabTitles()}</div>
-                <div className="tab-contents p-3 border">
+                <div className="p-3 bg-slate-900 tab-titles mb-3">
+                    {getTabTitles()}
+                </div>
+                <div className="tab-contents">
                     <div
                         className={`tab-content ${
                             active == "Main" ? "active" : ""
                         }`}
                     >
                         <Main />
-                        <div className="tab-navigations">
-                            <button
-                                className="ms-auto"
-                                onClick={() => setActive("Units")}
-                            >
-                                Next
-                            </button>
-                        </div>
+
+                        {getTabNavigationButton(0)}
                     </div>
                     <div
                         className={`tab-content ${
@@ -45,14 +70,7 @@ function CreateProductTabs() {
                         }`}
                     >
                         <UnitsTab />
-                        <div className="tab-navigations">
-                            <button onClick={() => setActive("Main")}>
-                                Previous
-                            </button>
-                            <button onClick={() => setActive("Resources")}>
-                                Next
-                            </button>
-                        </div>
+                        {getTabNavigationButton(1)}
                     </div>
                     <div
                         className={`tab-content ${
@@ -60,14 +78,7 @@ function CreateProductTabs() {
                         }`}
                     >
                         <Resources />
-                        <div className="tab-navigations">
-                            <button onClick={() => setActive("Units")}>
-                                Previous
-                            </button>
-                            <button onClick={() => setActive("Prices")}>
-                                Next
-                            </button>
-                        </div>
+                        {getTabNavigationButton(2)}
                     </div>
                     <div
                         className={`tab-content ${
@@ -75,11 +86,7 @@ function CreateProductTabs() {
                         }`}
                     >
                         <CreateProduct />
-                        <div className="tab-navigations">
-                            <button onClick={() => setActive("Resources")}>
-                                Previous
-                            </button>
-                        </div>
+                        {getTabNavigationButton(3)}
                     </div>
                 </div>
             </div>

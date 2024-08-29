@@ -108,8 +108,11 @@ const cartSlice = createSlice({
         },
 
         updatePaid: (state: CartState, action: PayloadAction<number>) => {
-            const paid = action.payload;
-            if (state.customer && paid > 0) {
+            let paid = action.payload;
+            if (!paid) {
+                paid = 0;
+            }
+            if (paid < 100000) {
                 state.paid = paid;
                 state.due = state.totalPrice - paid;
             }
@@ -248,6 +251,7 @@ const cartSlice = createSlice({
 
         addCustomer: (state, action) => {
             state.customer = action.payload;
+            state.paid = state.totalPrice;
         },
 
         changeActiveProduct: (state, action) => {

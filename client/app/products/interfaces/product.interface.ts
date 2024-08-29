@@ -9,13 +9,19 @@ export interface Unit {
     dynamic: boolean;
     dynamicValue: boolean;
     value: number;
-    base: string;
 }
 
 export interface Price {
     unit: string;
     max: number;
     price: number;
+}
+
+export interface Resource {
+    _id: string;
+    unit: string;
+    count: number;
+    quantity: number;
 }
 
 export default interface Product {
@@ -31,12 +37,12 @@ export default interface Product {
     purchasePrices: Price[];
     purchaseMeasurements: Measurement[];
     hasResources: boolean;
-    resources: ProductWithID[];
+    resources: Resource[];
     resourcesCost: number;
-    unit: string;
+    unit?: string;
     price: number;
-    saleUnitsBase: string;
-    purchaseUnitsBase: string;
+    saleUnitsBase?: string;
+    purchaseUnitsBase?: string;
     discount: number;
     extraDiscount: number;
     quantity?: number;
@@ -59,7 +65,7 @@ export interface ProductWithID {
     purchasePrices: Price[];
     purchaseMeasurements: Measurement[];
     hasResources: boolean;
-    resources: ProductWithID[];
+    resources: Resource[];
     resourcesCost: number;
     unit: string;
     price: number;
@@ -71,18 +77,4 @@ export interface ProductWithID {
     subTotal: number;
     stockLow: number;
     stockAlert: number;
-}
-
-export interface Resource {
-    _id: string;
-    SKU: string;
-    name: string;
-    hasResources: boolean;
-    resourcesCost: number;
-    unit: string;
-    units: object;
-    count: number;
-    price: number;
-    quantity: number;
-    subTotal: number;
 }

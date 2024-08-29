@@ -41,7 +41,7 @@ function SelectProductPopup({ products, callback, handleClose }: any) {
 
     return (
         <div className="fixed top-0 left-0 h-screen w-screen bg-black z-50 py-[100px]">
-            <div className="w-[800px] mx-auto h-full p-5 bg-slate-900">
+            <div className="w-[800px] mx-auto h-full p-5 bg-slate-900 overflow-hidden">
                 <div className="flex place-content-between mb-4 items-center">
                     <input
                         id="command"
@@ -58,42 +58,44 @@ function SelectProductPopup({ products, callback, handleClose }: any) {
                         X
                     </button>
                 </div>
-                <div className="flex flex-wrap gap-3">
-                    {filteredProducts.map((product: any, key: number) => (
-                        <div
-                            key={product._id}
-                            onClick={() => callback(product)}
-                            className={`max-w-sm rounded overflow-hidden shadow-xl bg-gray-800 text-white ${
-                                selectedProductIndex == key
-                                    ? "bg-green-900"
-                                    : "bg-black"
-                            }`}
-                        >
-                            <img
-                                className="w-full h-48 object-cover"
-                                src="/product.jpg"
-                                alt={product.name}
-                            />
-                            <div className="p-3">
-                                <h2 className="font-semibold text-xl mb-1">
-                                    {product.name}
-                                </h2>
-                                <p className="text-gray-300 text-base mb-1">
-                                    {product.description}
-                                </p>
-                                <p className="font-semibold text-xl text-green-400 inline-block">
-                                    {(
-                                        product.price *
-                                        product.units[product.unit].value
-                                    ).toLocaleString("Un-us")}
-                                    <span> ৳</span>
-                                </p>
-                                <span className="ms-2">
-                                    1 {product.units[product.unit].label}
-                                </span>
+                <div className="h-full overflow-scroll pb-[50px] pr-4">
+                    <div className="grid grid-cols-3 gap-3">
+                        {filteredProducts.map((product: any, key: number) => (
+                            <div
+                                key={product._id}
+                                onClick={() => callback(product)}
+                                className={`max-w-sm rounded overflow-hidden shadow-xl bg-gray-800 text-white ${
+                                    selectedProductIndex == key
+                                        ? "bg-green-900"
+                                        : "bg-black"
+                                }`}
+                            >
+                                <img
+                                    className="w-full h-48 object-cover"
+                                    src="/product.jpg"
+                                    alt={product.name}
+                                />
+                                <div className="p-3">
+                                    <h2 className="font-semibold text-xl mb-1">
+                                        {product.name}
+                                    </h2>
+                                    <p className="text-gray-300 text-base mb-1">
+                                        {product.description}
+                                    </p>
+                                    <p className="font-semibold text-xl text-green-400 inline-block">
+                                        {(
+                                            product.price *
+                                            product.units[product.unit].value
+                                        ).toLocaleString("Un-us")}
+                                        <span> ৳</span>
+                                    </p>
+                                    <span className="ms-2">
+                                        1 {product.units[product.unit].label}
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>

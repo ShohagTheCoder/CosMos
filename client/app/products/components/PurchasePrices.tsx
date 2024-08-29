@@ -89,6 +89,7 @@ function PurchasePrices() {
                                     price.price *
                                     product.units[price.unit].value
                                 }
+                                step={product.units[price.unit].value / 2}
                                 onChange={(e) =>
                                     handleUpdateProductPriceByPurchasePricesUnitValue(
                                         key,

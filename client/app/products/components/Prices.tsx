@@ -76,10 +76,11 @@ function Prices() {
                             <input
                                 type="number"
                                 className="h-[30px] bg-black w-[100px] text-white p-2"
-                                value={
+                                step={product.units[price.unit].value / 2}
+                                value={Math.ceil(
                                     price.price *
-                                    product.units[price.unit].value
-                                }
+                                        product.units[price.unit].value
+                                )}
                                 onChange={(e) =>
                                     handleUpdateProductPriceByPricesUnitValue(
                                         key,

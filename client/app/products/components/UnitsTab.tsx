@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Units from "./Units";
 import { units } from "../create/units";
 import { Unit } from "../interfaces/product.interface";
@@ -8,40 +8,51 @@ import { RootState } from "@/app/store/store";
 
 function UnitsTab() {
     const dispatch = useDispatch();
-    const [base, setBase] = useState("");
     const product = useSelector((state: RootState) => state.product);
 
-    function handleTabChange(base: string, units: any) {
-        setBase(base);
-        dispatch(selectUnits(units));
-    }
-
     return (
-        <div className="tab">
-            {base == "" ? (
+        <div className="tab p-4 bg-gray-800 rounded-lg shadow-lg">
+            {!product.saleUnitsBase ? (
                 <div>
-                    <p>Select units type</p>
-                    <div className="tab-titles units-tab flex flex-wrap">
+                    <p className="text-lg font-semibold text-gray-200 mb-4">
+                        Select units type
+                    </p>
+                    <div className="tab-titles units-tab flex flex-wrap gap-4">
                         <div
-                            className="tab-title"
+                            className="tab-title cursor-pointer px-4 py-2 bg-gray-700 text-gray-200 rounded-md hover:bg-gray-600 transition-colors"
                             onDoubleClick={() =>
-                                handleTabChange("weight", units.weight)
+                                dispatch(
+                                    selectUnits({
+                                        base: "kg",
+                                        units: units.weight,
+                                    })
+                                )
                             }
                         >
                             <p>Weight</p>
                         </div>
                         <div
-                            className="tab-title"
+                            className="tab-title cursor-pointer px-4 py-2 bg-gray-700 text-gray-200 rounded-md hover:bg-gray-600 transition-colors"
                             onDoubleClick={() =>
-                                handleTabChange("pices", units.pices)
+                                dispatch(
+                                    selectUnits({
+                                        base: "pcs",
+                                        units: units.pices,
+                                    })
+                                )
                             }
                         >
-                            <p>Pices</p>
+                            <p>Pieces</p>
                         </div>
                         <div
-                            className="tab-title"
+                            className="tab-title cursor-pointer px-4 py-2 bg-gray-700 text-gray-200 rounded-md hover:bg-gray-600 transition-colors"
                             onDoubleClick={() =>
-                                handleTabChange("volume", units.volume)
+                                dispatch(
+                                    selectUnits({
+                                        base: "ltr",
+                                        units: units.volume,
+                                    })
+                                )
                             }
                         >
                             <p>Volume</p>
@@ -49,53 +60,49 @@ function UnitsTab() {
                     </div>
                 </div>
             ) : (
-                <p>{base}</p>
-            )}
-            <div className="tab-contents">
-                <div
-                    className={`tab-content ${
-                        base == "weight" ? "active" : ""
-                    }`}
-                >
-                    <Units data={units.weight} />
-                </div>
-                <div
-                    className={`tab-content ${base == "pices" ? "active" : ""}`}
-                >
-                    <Units data={units.pices} />
-                </div>
-                <div
-                    className={`tab-content ${
-                        base == "volume" ? "active" : ""
-                    }`}
-                >
-                    <Units data={units.volume} />
-                </div>
-            </div>
-            {base != "" ? (
-                <div className="mb-4">
-                    <label
-                        className="block text-gray-300 text-sm font-bold mb-2"
-                        htmlFor="name"
-                    >
-                        Default Unit
-                    </label>
-                    <select
-                        className="h-[40px] p-1 bg-black text-white p-2"
-                        value={product.unit}
-                        onChange={(e) => dispatch(updateUnit(e.target.value))}
-                    >
-                        {Object.values(product.units).map((unit: Unit) => (
-                            <option key={unit.unit} value={unit.unit}>
-                                {unit.label}
-                            </option>
-                        ))}
-                    </select>
-                    Default Price:{" "}
-                    {product.price * product.units[product.unit].value}
-                </div>
-            ) : (
-                ""
+                <>
+                    <div className="tab-contents mt-4">
+                        <div
+                            className={`tab-content ${
+                                product.saleUnitsBase != "" ? "active" : ""
+                            }`}
+                        >
+                            <Units />
+                        </div>
+                    </div>
+                    <div className="mb-4">
+                        <label
+                            className="block text-gray-300 text-sm font-semibold mb-2"
+                            htmlFor="name"
+                        >
+                            Default Unit
+                        </label>
+                        <select
+                            className="h-[40px] w-full bg-gray-700 text-white rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value={product.unit}
+                            onChange={(e) =>
+                                dispatch(updateUnit(e.target.value))
+                            }
+                        >
+                            {Object.values(product.units).map((unit: Unit) => (
+                                <option
+                                    key={unit.unit}
+                                    value={unit.unit}
+                                    className="bg-gray-800 text-white"
+                                >
+                                    {unit.label}
+                                </option>
+                            ))}
+                        </select>
+                        <p className="mt-2 text-gray-400">
+                            Default Price:{" "}
+                            <span className="font-semibold text-white">
+                                {product.price *
+                                    product.units[product.saleUnitsBase].value}
+                            </span>
+                        </p>
+                    </div>
+                </>
             )}
         </div>
     );

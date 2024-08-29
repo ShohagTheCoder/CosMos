@@ -7,42 +7,18 @@ import { units } from "@/app/products/create/units";
 import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 import { getUpdatedSaleUnitsBase } from "@/app/functions/getUpdatedSaleUnitsBase";
 import updatePricesForNewBase from "@/app/functions/updatePricesForNewBase";
+import getUpdatedProduct from "@/app/functions/getUpdatedProduct";
 
 const initialState: Product = {
     SKU: "",
     name: "",
     description: "",
     units: units.weight,
-    saleUnitsBase: "kg",
-    purchaseUnitsBase: "kg",
-    prices: [
-        {
-            unit: "kg",
-            max: 1,
-            price: 1,
-        },
-    ],
-    measurements: [
-        {
-            unit: "kg",
-            value: 1,
-        },
-    ],
-    purchasePrices: [
-        {
-            unit: "kg",
-            max: 1,
-            price: 1,
-        },
-    ],
-    purchaseMeasurements: [
-        {
-            unit: "kg",
-            value: 1,
-        },
-    ],
+    prices: [],
+    measurements: [],
+    purchasePrices: [],
+    purchaseMeasurements: [],
     price: 1,
-    unit: Object.values(units.weight)[0].base,
     discount: 0,
     extraDiscount: 0,
     stockAlert: 10,
@@ -67,15 +43,30 @@ const productSlice = createSlice({
         },
         selectUnits: (
             state: Product,
-            action: PayloadAction<Record<string, Unit>>
+            action: PayloadAction<{ base: string; units: Record<string, Unit> }>
         ) => {
-            const unit = Object.values(action.payload)[0].base;
-            state.units = action.payload;
-            state.prices[0].unit = unit;
-            state.measurements[0].unit = unit;
-            state.purchasePrices[0].unit = unit;
-            state.purchaseMeasurements[0].unit = unit;
-            state.unit = unit;
+            const { base, units } = action.payload;
+            state.saleUnitsBase = base;
+            state.units = units;
+            state.prices[0] = {
+                unit: base,
+                max: 1,
+                price: 1,
+            };
+            state.measurements[0] = {
+                unit: base,
+                value: 1,
+            };
+            state.purchasePrices[0] = {
+                unit: base,
+                max: 1,
+                price: 1,
+            };
+            state.purchaseMeasurements[0] = {
+                unit: base,
+                value: 1,
+            };
+            state.unit = base;
         },
         addDynamicUnit: (
             state: Product,
@@ -89,7 +80,6 @@ const productSlice = createSlice({
                 ...action.payload,
                 dynamic: true,
                 dynamicValue: true,
-                base: state.purchaseUnitsBase,
             };
         },
         updateUnitsDynamicValue: (
@@ -152,7 +142,11 @@ const productSlice = createSlice({
             const { key, unit } = action.payload;
             state.resources = state.resources.map(
                 (resource: any, index: number) =>
-                    index === key ? { ...resource, unit } : resource
+                    index === key
+                        ? {
+                              ...getUpdatedProduct(resource, null, unit),
+                          }
+                        : resource
             );
         },
         updateProductResourceQuantity: (
@@ -160,10 +154,20 @@ const productSlice = createSlice({
             action: PayloadAction<{ key: number; quantity: number }>
         ) => {
             const { key, quantity } = action.payload;
-            state.resources = state.resources.map(
-                (resource: any, index: number) =>
-                    index === key ? { ...resource, quantity } : resource
-            );
+            if (quantity > 0) {
+                state.resources = state.resources.map(
+                    (resource: any, index: number) =>
+                        index === key
+                            ? {
+                                  ...getUpdatedProduct(
+                                      resource,
+                                      quantity - resource.quantity,
+                                      null
+                                  ),
+                              }
+                            : resource
+                );
+            }
         },
         updatePriceMax: (
             state: Product,
