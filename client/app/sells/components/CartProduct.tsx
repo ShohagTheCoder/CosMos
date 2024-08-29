@@ -7,6 +7,8 @@ import {
     changeActiveProduct,
     updateUnit,
     updateQuantity,
+    addDiscount,
+    addExtraDiscount,
 } from "../../store/slices/cartSlice"; // Assuming your cart slice location
 import { RootState } from "../../store/store";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
@@ -68,6 +70,42 @@ function CartProduct() {
                                     " = " +
                                     product.price.toLocaleString()}{" "}
                                 <span> ৳</span>
+                            </p>
+                            <p>
+                                Discount :
+                                <input
+                                    type="number"
+                                    className="bg-slate-900 w-[60px] py-1 px-2 outline-none"
+                                    value={product.discount}
+                                    onChange={(e) =>
+                                        dispatch(
+                                            addDiscount({
+                                                key: product._id,
+                                                amount: parseFloat(
+                                                    e.target.value
+                                                ),
+                                            })
+                                        )
+                                    }
+                                />
+                            </p>
+                            <p>
+                                Extra Discount :
+                                <input
+                                    type="number"
+                                    className="bg-slate-900 w-[60px] py-1 px-2 outline-none"
+                                    value={product.extraDiscount}
+                                    onChange={(e) =>
+                                        dispatch(
+                                            addExtraDiscount({
+                                                key: product._id,
+                                                amount: parseFloat(
+                                                    e.target.value
+                                                ),
+                                            })
+                                        )
+                                    }
+                                />
                             </p>
                             <p>
                                 {product.saleUnitsBase == product.unit ? (

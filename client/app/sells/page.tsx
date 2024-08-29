@@ -28,6 +28,7 @@ import { ProductWithID } from "../products/interfaces/product.interface";
 import { Message } from "../interfaces/message.interface";
 import { ERROR, INFO, NONE, SUCCESS, WARN } from "../utils/constants/message";
 import axios from "axios";
+import Sidebar from "../components/Sidebar";
 
 export default function Sell() {
     let [command, setCommand] = useState("");
@@ -307,7 +308,8 @@ export default function Sell() {
 
     return (
         <main>
-            <div className="2xl:container mx-auto">
+            <Sidebar />
+            <div className="2xl:container mx-auto ps-[94px] 2xl:ps-0">
                 <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-4 py-4 min-h-screen">
                     <div className="col-span-2">
                         <div className="p-3 border border-2 border-dashed border-slate-500 mb-3">

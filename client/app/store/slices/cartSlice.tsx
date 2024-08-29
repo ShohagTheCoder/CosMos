@@ -18,7 +18,6 @@ export interface CartState {
         _id: string;
         name: string;
     };
-    customerTotalDue: number;
     customerAccount: any;
 }
 
@@ -28,7 +27,6 @@ const initialState: CartState = {
     totalPrice: 0,
     paid: 0,
     due: 0,
-    customerTotalDue: 0,
     user: {
         _id: "66c6d86cb0f83bdb4ed36c96",
         name: "Shohag Ahmed",
@@ -63,6 +61,7 @@ const cartSlice = createSlice({
             }
 
             state.totalPrice += product.subTotal;
+            state.due = state.totalPrice - state.paid;
         },
         removeFromCart: (state, action) => {
             let productId = action.payload;
@@ -77,6 +76,8 @@ const cartSlice = createSlice({
                     Object.keys(state.products).length - 1
                 ];
             }
+
+            state.due = state.totalPrice - state.paid;
         },
 
         selectNexProduct: (state, action) => {
@@ -108,11 +109,9 @@ const cartSlice = createSlice({
 
         updatePaid: (state: CartState, action: PayloadAction<number>) => {
             const paid = action.payload;
-            if (paid >= 0) {
+            if (state.customer && paid > 0) {
                 state.paid = paid;
                 state.due = state.totalPrice - paid;
-                state.customerTotalDue =
-                    state.customerAccount.balance - (state.totalPrice - paid);
             }
         },
 
@@ -139,6 +138,7 @@ const cartSlice = createSlice({
                     ...state.products,
                     [product._id]: updatedProduct,
                 });
+                state.due = state.totalPrice - state.paid;
             }
         },
         incrementQuantity: (state: CartState, action) => {
@@ -155,6 +155,7 @@ const cartSlice = createSlice({
                     ...state.products,
                     [product._id]: updatedProduct,
                 });
+                state.due = state.totalPrice - state.paid;
             }
         },
         decrementQuantity: (state, action) => {
@@ -174,6 +175,7 @@ const cartSlice = createSlice({
                     ...state.products,
                     [product._id]: updatedProduct,
                 });
+                state.due = state.totalPrice - state.paid;
             }
         },
 
@@ -194,6 +196,7 @@ const cartSlice = createSlice({
                     ...state.products,
                     [product._id]: updatedProduct,
                 });
+                state.due = state.totalPrice - state.paid;
             }
         },
 
@@ -233,12 +236,14 @@ const cartSlice = createSlice({
                     ...state.products,
                     [product._id]: updatedProduct,
                 });
+                state.due = state.totalPrice - state.paid;
             }
         },
 
         clearCart: (state) => {
             state.products = {};
             state.totalPrice = 0;
+            state.due = state.totalPrice - state.paid;
         },
 
         addCustomer: (state, action) => {
@@ -247,6 +252,49 @@ const cartSlice = createSlice({
 
         changeActiveProduct: (state, action) => {
             state.activeProduct = action.payload;
+        },
+
+        addDiscount: (
+            state: CartState,
+            action: PayloadAction<{ key: string; amount: number }>
+        ) => {
+            const { key, amount } = action.payload;
+            if (!state.products[key] || amount < 0) return;
+            const updatedProduct = getUpdatedProduct(
+                {
+                    ...state.products[key],
+                    discount: amount,
+                },
+                null,
+                null
+            );
+            state.products[key] = updatedProduct;
+            state.totalPrice = getCartProductsTotalPrice({
+                ...state.products,
+                [key]: updatedProduct,
+            });
+            state.due = state.totalPrice - state.paid;
+        },
+        addExtraDiscount: (
+            state: CartState,
+            action: PayloadAction<{ key: string; amount: number }>
+        ) => {
+            const { key, amount } = action.payload;
+            if (!state.products[key] || amount < 0) return;
+            const updatedProduct = getUpdatedProduct(
+                {
+                    ...state.products[key],
+                    extraDiscount: amount,
+                },
+                null,
+                null
+            );
+            state.products[key] = updatedProduct;
+            state.totalPrice = getCartProductsTotalPrice({
+                ...state.products,
+                [key]: updatedProduct,
+            });
+            state.due = state.totalPrice - state.paid;
         },
     },
 });
@@ -267,5 +315,7 @@ export const {
     updateUnit,
     addCustomerAccount,
     shiftMeasurementTo,
+    addDiscount,
+    addExtraDiscount,
 } = cartSlice.actions;
 export default cartSlice.reducer;

@@ -10,7 +10,7 @@ export default function getProductSubTotalPrice(
     const pricesLength = Object.keys(product.prices).length;
     for (let i = 0; i < pricesLength; i++) {
         const price = prices[i];
-        result = product.count * product.price - product.extraDiscount;
+        result = product.count * product.price;
 
         if (product.count <= price.max * units[price.unit].value) {
             break;

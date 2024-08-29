@@ -10,7 +10,6 @@ function UpdateProduct() {
     const [message, setMessage] = useState("");
 
     async function UpdateProduct() {
-        console.log(product);
         const update = Object.entries(product).reduce(
             (acc: any, [key, value]) => {
                 if (value != product.product[key] && key != "product") {

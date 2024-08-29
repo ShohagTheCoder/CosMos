@@ -18,7 +18,7 @@ function PurchaseMeasurements() {
                     <div className="measurement bg-gray-900 p-2">
                         Purchase Unit :{" "}
                         <select
-                            className="h-[40px] p-1 bg-black text-white p-2"
+                            className="h-[40px] bg-black text-white p-2"
                             value={measurement.unit}
                             onChange={(e) =>
                                 dispatch(

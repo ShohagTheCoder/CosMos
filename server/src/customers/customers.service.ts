@@ -53,9 +53,7 @@ export class CustomersService {
     }
 
     async update(id: string, updateCustomerDto): Promise<Customer | null> {
-        return this.customerModel.findByIdAndUpdate(id, updateCustomerDto, {
-            new: true,
-        });
+        return this.customerModel.findByIdAndUpdate(id, updateCustomerDto);
     }
 
     async remove(id: string): Promise<Customer | null> {

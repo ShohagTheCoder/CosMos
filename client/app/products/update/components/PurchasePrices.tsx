@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
     addPurchasePrice,
@@ -27,7 +27,7 @@ function PurchasePrices() {
                 <div key={key} className="price bg-gray-900 p-2">
                     Purchase Unit :{" "}
                     <select
-                        className="h-[40px] p-1 bg-black text-white p-2"
+                        className="h-[40px] bg-black text-white p-2"
                         value={price.unit}
                         onChange={(e) => {
                             console.log(product);

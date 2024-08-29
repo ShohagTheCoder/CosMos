@@ -6,6 +6,7 @@ import {
     Param,
     Put,
     Delete,
+    Patch,
 } from '@nestjs/common';
 import { CustomersService } from './customers.service';
 
@@ -28,8 +29,8 @@ export class CustomersController {
         return this.customersService.findOne(id);
     }
 
-    @Put(':id')
-    async update(@Param('id') id: string, @Body() updateCustomerDto) {
+    @Patch(':id')
+    async update(@Param('id') id: string, @Body() updateCustomerDto: any) {
         return this.customersService.update(id, updateCustomerDto);
     }
 
