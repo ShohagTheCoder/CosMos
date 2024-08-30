@@ -37,7 +37,7 @@ export default interface Product {
     purchasePrices: Price[];
     purchaseMeasurements: Measurement[];
     hasResources: boolean;
-    resources: Resource[];
+    resources: Record<string, Resource>;
     resourcesCost: number;
     unit?: string;
     price: number;
@@ -65,7 +65,7 @@ export interface ProductWithID {
     purchasePrices: Price[];
     purchaseMeasurements: Measurement[];
     hasResources: boolean;
-    resources: Resource[];
+    resources: Record<string, Resource>;
     resourcesCost: number;
     unit: string;
     price: number;

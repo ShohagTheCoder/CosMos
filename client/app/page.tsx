@@ -110,6 +110,12 @@ export default function Dashboard() {
                                 Dashboard Home
                             </Link>
                             <Link
+                                href="/actions/sell"
+                                className="block p-3 bg-gray-700 rounded hover:bg-gray-600 transition-all duration-200"
+                            >
+                                Sell
+                            </Link>
+                            <Link
                                 href="/sells"
                                 className="block p-3 bg-gray-700 rounded hover:bg-gray-600 transition-all duration-200"
                             >

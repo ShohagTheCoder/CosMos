@@ -10,7 +10,7 @@ export default function getProductUnitPrice(product: Product): number {
     const pricesLength = Object.keys(product.prices).length;
     for (let i = 0; i < pricesLength; i++) {
         const price = prices[i];
-        result = Math.ceil(price.price - product.discount);
+        result = Math.ceil(price.price);
         if (unit.value * quantity < price.max * units[price.unit].value) {
             return result;
         }

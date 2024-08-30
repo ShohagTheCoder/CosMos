@@ -16,6 +16,6 @@ export default function getProductSubTotalPrice(
             break;
         }
     }
-
+    result = result - product.quantity * product.discount;
     return Math.ceil(result - product.extraDiscount);
 }

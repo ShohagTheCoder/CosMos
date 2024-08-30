@@ -47,17 +47,7 @@ function Resources() {
             count: res.count,
         };
 
-        const existed = product.resources.find(
-            (resource) => resource._id == res._id
-        );
-
-        if (!existed) {
-            dispatch(addResource(resource));
-        }
-    }
-
-    function handleResourceUnitChange(key: number, unit: string) {
-        dispatch(updateProductResourceUnit({ key, unit }));
+        dispatch(addResource(resource));
     }
 
     return (
@@ -105,92 +95,108 @@ function Resources() {
                             </p>
                         </div>
                         <div className="">
-                            {product.resources.map(
+                            {Object.values(product.resources).map(
                                 (resource: Resource, key: number) => {
-                                    let product: ProductWithID = products.find(
-                                        (product: ProductWithID) => {
-                                            return product._id == resource._id;
+                                    const pro: ProductWithID = products.find(
+                                        (p: ProductWithID) => {
+                                            return p._id == resource._id;
                                         }
                                     );
-                                    return (
-                                        <div key={key}>
-                                            <div className="p-3 mb-3 bg-slate-800 flex flex-wrap">
-                                                <div className="mr-3">
-                                                    <img
-                                                        className="w-[80px]"
-                                                        src="/product.jpg"
-                                                        alt=""
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col justify-between">
-                                                    <div>
-                                                        <p className="mb-2">
-                                                            {product.name}
-                                                        </p>
-                                                    </div>
-                                                    <div>
-                                                        Unit:
-                                                        <select
-                                                            value={product.unit}
-                                                            onChange={(e) =>
-                                                                handleResourceUnitChange(
-                                                                    key,
-                                                                    e.target
-                                                                        .value
-                                                                )
-                                                            }
-                                                            className="bg-slate-900 py-2 px-3 mx-2"
-                                                        >
-                                                            {Object.values(
-                                                                product.units
-                                                            ).map(
-                                                                (
-                                                                    unit: Unit,
-                                                                    key: number
-                                                                ) => (
-                                                                    <option
-                                                                        key={
-                                                                            key
-                                                                        }
-                                                                        value={
-                                                                            unit.unit
-                                                                        }
-                                                                    >
-                                                                        {
-                                                                            unit.label
-                                                                        }
-                                                                    </option>
-                                                                )
-                                                            )}
-                                                        </select>
-                                                        Quantity :
-                                                        <input
-                                                            type="number"
-                                                            value={
-                                                                product.quantity
-                                                            }
-                                                            onChange={(e) =>
-                                                                dispatch(
-                                                                    updateProductResourceQuantity(
-                                                                        {
-                                                                            key,
-                                                                            quantity:
-                                                                                parseFloat(
-                                                                                    e
-                                                                                        .target
-                                                                                        .value
-                                                                                ),
-                                                                        }
-                                                                    )
-                                                                )
-                                                            }
-                                                            className="bg-slate-900 py-1 px-3 mx-2 w-[120px]"
+
+                                    if (pro) {
+                                        return (
+                                            <div key={key}>
+                                                <div className="p-3 mb-3 bg-slate-800 flex flex-wrap">
+                                                    <div className="mr-3">
+                                                        <img
+                                                            className="w-[80px]"
+                                                            src="/product.jpg"
+                                                            alt=""
                                                         />
+                                                    </div>
+                                                    <div className="flex flex-col justify-between">
+                                                        <div>
+                                                            <p className="mb-2">
+                                                                {pro.name}
+                                                            </p>
+                                                        </div>
+                                                        <div>
+                                                            Unit:
+                                                            <select
+                                                                value={
+                                                                    resource.unit
+                                                                }
+                                                                onChange={(e) =>
+                                                                    dispatch(
+                                                                        updateProductResourceUnit(
+                                                                            {
+                                                                                key: resource._id,
+                                                                                unit: e
+                                                                                    .target
+                                                                                    .value,
+                                                                                product:
+                                                                                    pro,
+                                                                            }
+                                                                        )
+                                                                    )
+                                                                }
+                                                                className="bg-slate-900 py-2 px-3 mx-2"
+                                                            >
+                                                                {Object.values(
+                                                                    pro.units
+                                                                ).map(
+                                                                    (
+                                                                        unit: Unit,
+                                                                        key: number
+                                                                    ) => (
+                                                                        <option
+                                                                            key={
+                                                                                key
+                                                                            }
+                                                                            value={
+                                                                                unit.unit
+                                                                            }
+                                                                        >
+                                                                            {
+                                                                                unit.label
+                                                                            }
+                                                                        </option>
+                                                                    )
+                                                                )}
+                                                            </select>
+                                                            Quantity :
+                                                            <input
+                                                                type="number"
+                                                                value={
+                                                                    resource.quantity
+                                                                }
+                                                                onChange={(e) =>
+                                                                    dispatch(
+                                                                        updateProductResourceQuantity(
+                                                                            {
+                                                                                key: resource._id,
+                                                                                quantity:
+                                                                                    parseFloat(
+                                                                                        e
+                                                                                            .target
+                                                                                            .value
+                                                                                    ),
+                                                                                product:
+                                                                                    pro,
+                                                                            }
+                                                                        )
+                                                                    )
+                                                                }
+                                                                className="bg-slate-900 py-1 px-3 mx-2 w-[120px]"
+                                                            />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    );
+                                        );
+                                    } else {
+                                        return "";
+                                    }
                                 }
                             )}
                         </div>

@@ -67,7 +67,7 @@ function SellDetails() {
                     </div>
                     <div className="single-row flex flex-wrap">
                         <div className="flex justify-between w-1/2 pe-4">
-                            {customerAccount.balance < 0 ? (
+                            {customerAccount.balance <= 0 ? (
                                 <>
                                     <p className=" text-lg font-semibold py-1">
                                         আগের বাকি :
@@ -87,7 +87,8 @@ function SellDetails() {
                                     <p className=" text-lg font-semibold py-1">
                                         {convertStandardToBnBD(
                                             customerAccount.balance
-                                        )}
+                                        )}{" "}
+                                        ৳
                                     </p>
                                 </>
                             )}

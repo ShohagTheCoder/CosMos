@@ -22,13 +22,16 @@ export default function Products() {
         fetchProducts();
     }, []);
 
-    async function handleDeleteProduct(_id: any) {
+    async function handleDeleteProduct(_id: any, index: number) {
         const sure = window.confirm("Are you sure to delete the product?");
         if (sure) {
             try {
                 const result = await apiClient.delete(`products/${_id}`);
                 console.log(result.data);
                 setMessage("Product deleted successfully");
+                const updatedProducts = products;
+                delete updatedProducts[index];
+                setProducts(updatedProducts);
             } catch (error) {
                 setMessage("Failed to delete product");
                 console.log("failed to delete product");
@@ -58,9 +61,9 @@ export default function Products() {
                         </tr>
                     </thead>
                     <tbody>
-                        {products.map((product: Product) => (
+                        {products.map((product: Product, index: number) => (
                             <tr
-                                key={product._id}
+                                key={index}
                                 className="hover:bg-gray-200 dark:hover:bg-gray-600"
                             >
                                 <td className="py-3 px-4">{product.name}</td>
@@ -77,7 +80,10 @@ export default function Products() {
                                     </Link>
                                     <button
                                         onClick={() =>
-                                            handleDeleteProduct(product._id)
+                                            handleDeleteProduct(
+                                                product._id,
+                                                index
+                                            )
                                         }
                                         className="btn btn-sm btn-danger"
                                     >

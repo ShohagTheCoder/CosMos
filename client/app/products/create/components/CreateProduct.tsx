@@ -23,6 +23,8 @@ function CreateProduct() {
     }
 
     async function UpdateProduct() {
+        console.log(product);
+        // return;
         const update = Object.entries(product).reduce(
             (acc: any, [key, value]) => {
                 if (value != product.product[key] && key != "product") {

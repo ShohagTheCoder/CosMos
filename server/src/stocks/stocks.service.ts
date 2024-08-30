@@ -35,7 +35,7 @@ export class StocksService {
 
         // Recursively decrease the stock of each resource
         if (product.hasResources) {
-            for (const resource of product.resources) {
+            for (const resource of Object.values(product.resources)) {
                 await this.updateStockQuantity(
                     resource._id.toString(),
                     resource.count * count,

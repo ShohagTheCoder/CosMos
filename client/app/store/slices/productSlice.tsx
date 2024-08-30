@@ -1,5 +1,6 @@
 import Product, {
     ProductWithID,
+    Resource,
     Unit,
 } from "@/app/products/interfaces/product.interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
@@ -24,7 +25,7 @@ const initialState: Product = {
     stockAlert: 10,
     stockLow: 50,
     hasResources: false,
-    resources: [],
+    resources: {},
     resourcesCost: 0,
 };
 
@@ -125,48 +126,46 @@ const productSlice = createSlice({
             state.price = getProductUnitPrice(state);
         },
 
-        updateProductResourceProduct: (
-            state: Product,
-            action: PayloadAction<{ key: number; product: ProductWithID }>
-        ) => {
-            const { key, product } = action.payload;
-            state.resources = state.resources.map(
-                (resource: any, index: number) =>
-                    index === key ? product : resource
-            );
-        },
+        // updateProductResourceProduct: (
+        //     state: Product,
+        //     action: PayloadAction<{ key: number; product: ProductWithID }>
+        // ) => {
+        //     const { key, product } = action.payload;
+        //     state.resources = state.resources.map(
+        //         (resource: any, index: number) =>
+        //             index === key ? product : resource
+        //     );
+        // },
         updateProductResourceUnit: (
             state: Product,
-            action: PayloadAction<{ key: number; unit: string }>
+            action: PayloadAction<{
+                key: string;
+                unit: string;
+                product: ProductWithID;
+            }>
         ) => {
-            const { key, unit } = action.payload;
-            state.resources = state.resources.map(
-                (resource: any, index: number) =>
-                    index === key
-                        ? {
-                              ...getUpdatedProduct(resource, null, unit),
-                          }
-                        : resource
-            );
+            const { key, unit, product } = action.payload;
+            let resource = state.resources[key];
+
+            if (resource) {
+                resource.unit = unit;
+                resource.count = product.units[unit].value * resource.quantity;
+            }
         },
         updateProductResourceQuantity: (
             state: Product,
-            action: PayloadAction<{ key: number; quantity: number }>
+            action: PayloadAction<{
+                key: string;
+                quantity: number;
+                product: ProductWithID;
+            }>
         ) => {
-            const { key, quantity } = action.payload;
-            if (quantity > 0) {
-                state.resources = state.resources.map(
-                    (resource: any, index: number) =>
-                        index === key
-                            ? {
-                                  ...getUpdatedProduct(
-                                      resource,
-                                      quantity - resource.quantity,
-                                      null
-                                  ),
-                              }
-                            : resource
-                );
+            const { key, quantity, product } = action.payload;
+            let resource = state.resources[key];
+
+            if (resource) {
+                resource.quantity = quantity;
+                resource.count = product.units[resource.unit].value * quantity;
             }
         },
         updatePriceMax: (
@@ -300,8 +299,14 @@ const productSlice = createSlice({
         setProduct: (state, action) => {
             return action.payload;
         },
-        addResource: (state, action) => {
-            state.resources.push(action.payload);
+        addResource: (state: Product, action: PayloadAction<Resource>) => {
+            const resource = action.payload;
+            const existed = state.resources[resource._id];
+            if (existed) {
+                state.resources[resource._id].quantity += 1;
+            } else {
+                state.resources[resource._id] = resource;
+            }
         },
     },
 });
@@ -331,7 +336,7 @@ export const {
     changeSaleUnitsBase,
     remapDynamicUnitUnit,
     setProduct,
-    updateProductResourceProduct,
+    // updateProductResourceProduct,
     updateProductResourceUnit,
     updateProductResourceQuantity,
     toggleProductHasResources,
