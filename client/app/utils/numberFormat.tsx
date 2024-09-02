@@ -1,13 +1,13 @@
-export function convertStandardToBnBD(standardNumber: number) {
+export function convertStandardToBnBD(standardNumber: number): string {
     const bnBDFormat = new Intl.NumberFormat("bn-BD", {
         maximumFractionDigits: 2, // Adjust as needed
     });
     return bnBDFormat.format(standardNumber);
 }
 
-export function convertBnBDToStandard(bnBDNumberString: string) {
+export function convertBnBDToStandard(bnBDNumberString: string): number {
     // Define mappings from Bangla digits to standard digits
-    const banglaToStandardMap: any = {
+    const banglaToStandardMap: { [key: string]: string } = {
         "০": "0",
         "১": "1",
         "২": "2",

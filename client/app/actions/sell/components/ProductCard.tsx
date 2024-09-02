@@ -19,7 +19,7 @@ function ProductCard({ products }: { products: any }) {
     }
 
     return (
-        <div className="flex flex-wrap gap-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4">
             {Object.values(products).map((product: any, key: number) => (
                 <div
                     key={product._id}
@@ -31,7 +31,7 @@ function ProductCard({ products }: { products: any }) {
                     }`}
                 >
                     <img
-                        className="w-full h-48 object-cover"
+                        className="w-full h-[240px] object-cover"
                         src="/product.jpg"
                         alt={product.name}
                     />

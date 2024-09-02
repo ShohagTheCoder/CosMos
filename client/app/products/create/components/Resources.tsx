@@ -15,6 +15,8 @@ import {
     Unit,
 } from "../../interfaces/product.interface";
 import { count } from "console";
+import Switch from "@/app/elements/switch/Switch";
+import Button from "@/app/elements/buttons/Button";
 
 function Resources() {
     const dispatch = useDispatch();
@@ -62,28 +64,17 @@ function Resources() {
                 ) : (
                     ""
                 )}
-                <div className="flex items-center mb-3 bg-slate-900 py-2 px-4">
-                    <p className="inline-block mr-3">Product has resources</p>
-                    <div className="pt-2">
-                        <label className="relative inline-flex items-center cursor-pointer">
-                            <input
-                                type="checkbox"
-                                className="sr-only peer"
-                                checked={product.hasResources}
-                                onChange={handleHasResource}
-                            />
-                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-500 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                        </label>
-                    </div>
-                </div>
+                <Switch
+                    checked={product.hasResources}
+                    onChange={handleHasResource}
+                    label="Product Has resources"
+                    className="justify-between bg-slate-900"
+                />
                 {product.hasResources && product.saleUnitsBase ? (
                     <div className="">
-                        <button
-                            onClick={() => handleAddResource()}
-                            className="py-2 px-3 me-3 bg-slate-900"
-                        >
-                            + Add Resource +
-                        </button>
+                        <Button variant="tertiary" onClick={handleAddResource}>
+                            Add Resources +
+                        </Button>
                         <div>
                             <p className="py-2 px-4 bg-green-700 text-white my-3">
                                 Resouce mesurement{" "}
@@ -101,7 +92,7 @@ function Resources() {
                                         (p: ProductWithID) => {
                                             return p._id == resource._id;
                                         }
-                                    );
+                                    )!;
 
                                     if (pro) {
                                         return (

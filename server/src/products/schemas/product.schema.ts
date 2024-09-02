@@ -127,6 +127,9 @@ export class Product extends Document {
     @Prop({ default: 1 })
     count: number;
 
+    @Prop({ default: 1 })
+    priority: number;
+
     @Prop()
     stock: string;
 

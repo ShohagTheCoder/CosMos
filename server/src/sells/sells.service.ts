@@ -29,8 +29,8 @@ export class SellsService {
         return this.sellModel.find();
     }
 
-    findOne(id: string) {
-        return this.sellModel.findById(id);
+    async findOne(id: string) {
+        return await this.sellModel.findById(id).exec();
     }
 
     async create(createSellDto: CreateSellDto) {

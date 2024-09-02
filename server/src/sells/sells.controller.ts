@@ -33,7 +33,8 @@ export class SellsController {
 
     @Get(':id')
     async findOne(@Param('id') id: string) {
-        return this.sellsService.findOne(id);
+        console.log(id);
+        return await this.sellsService.findOne(id);
     }
 
     @Put(':id')

@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
     incrementQuantity,
     decrementQuantity,
-    removeFromCart,
     changeActiveProduct,
     updateQuantity,
     addDiscount,
@@ -47,7 +46,7 @@ function CartProduct() {
             {Object.values(cart.products).map((product: ProductWithID) => (
                 <div
                     key={product._id}
-                    className="mb-3 border border-dashed border-2 border-slate-500"
+                    className="mb-3 border-dashed border-2 border-slate-500"
                 >
                     <div
                         className={`grid grid-cols-4 p-3 gap-3 ${

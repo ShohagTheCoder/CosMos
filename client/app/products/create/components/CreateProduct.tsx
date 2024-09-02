@@ -1,4 +1,12 @@
-import { updateProductField } from "@/app/store/slices/productSlice";
+import Button from "@/app/elements/buttons/Button";
+import NumberInput from "@/app/elements/inputs/NumberInput";
+import Notification, {
+    NotificationType,
+} from "@/app/elements/notification/Notification";
+import {
+    setProductProduct,
+    updateProductField,
+} from "@/app/store/slices/productSlice";
 import { RootState } from "@/app/store/store";
 import apiClient from "@/app/utils/apiClient";
 import React, { useState } from "react";
@@ -7,22 +15,36 @@ import { useDispatch, useSelector } from "react-redux";
 function CreateProduct() {
     const dispatch = useDispatch();
     const product = useSelector((state: RootState) => state.product);
-    const [message, setMessage] = useState("");
+    const [notification, setNotification] = useState<{
+        type: NotificationType;
+        message: string;
+    }>({
+        type: "none",
+        message: "This is a message",
+    });
 
-    async function createProduct() {
+    async function handleCreateProduct() {
         console.log(product);
         // return;
         try {
             const result = await apiClient.post("products", product);
-            setMessage("Product created successfully!");
+            dispatch(setProductProduct(result.data));
+
+            setNotification({
+                type: "success",
+                message: "Product created successfully!",
+            });
             console.log(result.data);
         } catch (error) {
-            setMessage("Failed to create product.");
+            setNotification({
+                type: "error",
+                message: "Failed to create product.",
+            });
             console.error(error);
         }
     }
 
-    async function UpdateProduct() {
+    async function handleUpdateProduct() {
         console.log(product);
         // return;
         const update = Object.entries(product).reduce(
@@ -40,81 +62,67 @@ function CreateProduct() {
                 `products/${product._id}`,
                 update
             );
-            setMessage("Product updated successfully!");
+            setNotification({
+                type: "success",
+                message: "Product updated successfully!",
+            });
             console.log(result.data);
         } catch (error) {
-            setMessage("Failed to update product.");
+            setNotification({
+                type: "error",
+                message: "Failed to update product.",
+            });
             console.error(error);
         }
     }
 
     return (
         <div>
-            <p className="text-center text-red-500">{message}</p>
-            <div className="mb-4">
-                <label
-                    className="block text-gray-300 text-sm font-bold mb-2"
-                    htmlFor="stockLow"
-                >
-                    Stock Low
-                </label>
-                <input
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-white bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="name"
-                    type="number"
-                    value={product.stockLow}
-                    onChange={(e) =>
-                        dispatch(
-                            updateProductField({
-                                field: "stockLow",
-                                value: parseInt(e.target.value),
-                            })
-                        )
-                    }
-                />
-            </div>
-            <div className="mb-4">
-                <label
-                    className="block text-gray-300 text-sm font-bold mb-2"
-                    htmlFor="stockLow"
-                >
-                    Stock Alert
-                </label>
-                <input
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-white bg-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="name"
-                    type="number"
-                    value={product.stockAlert}
-                    onChange={(e) =>
-                        dispatch(
-                            updateProductField({
-                                field: "stockAlert",
-                                value: parseInt(e.target.value),
-                            })
-                        )
-                    }
-                />
-            </div>
+            <Notification
+                type={notification.type}
+                message={notification.message}
+            />
+            <NumberInput
+                className="mb-3"
+                value={product.stockLow}
+                onChange={(e) =>
+                    dispatch(
+                        updateProductField({
+                            field: "stockLow",
+                            value: parseInt(e.target.value),
+                        })
+                    )
+                }
+                options={{
+                    label: "Stock low",
+                    placeholder: "Minimum stock to inform Ex: 45",
+                }}
+            />
+            <NumberInput
+                className="mb-5"
+                value={product.stockAlert}
+                onChange={(e) =>
+                    dispatch(
+                        updateProductField({
+                            field: "stockAlert",
+                            value: parseInt(e.target.value),
+                        })
+                    )
+                }
+                options={{
+                    label: "Stock low",
+                    placeholder: "Minimum stock to alert Ex: 20",
+                }}
+            />
+
             {product._id ? (
-                <>
-                    <button
-                        type="button"
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        onDoubleClick={UpdateProduct}
-                    >
-                        Update Product
-                    </button>
-                </>
+                <Button onDoubleClick={handleUpdateProduct}>
+                    Update Product
+                </Button>
             ) : (
-                <>
-                    <button
-                        type="button"
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                        onDoubleClick={createProduct}
-                    >
-                        Create Product
-                    </button>
-                </>
+                <Button onDoubleClick={handleCreateProduct}>
+                    Create Product
+                </Button>
             )}
         </div>
     );

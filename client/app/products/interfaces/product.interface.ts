@@ -29,7 +29,7 @@ export default interface Product {
     _id?: string;
     SKU: string;
     name: string;
-    description?: string;
+    description: string;
     madeIn?: string;
     units: Record<string, Unit>;
     prices: Price[];
@@ -39,9 +39,10 @@ export default interface Product {
     hasResources: boolean;
     resources: Record<string, Resource>;
     resourcesCost: number;
-    unit?: string;
+    unit: string;
     price: number;
-    saleUnitsBase?: string;
+    priority: number;
+    saleUnitsBase: string;
     purchaseUnitsBase?: string;
     discount: number;
     extraDiscount: number;
@@ -61,6 +62,7 @@ export interface ProductWithID {
     purchaseUnitsBase: string;
     units: Record<string, Unit>;
     prices: Price[];
+    priority: number;
     measurements: Measurement[];
     purchasePrices: Price[];
     purchaseMeasurements: Measurement[];

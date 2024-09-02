@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 
 export default function LoginPage() {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [username, setUsername] = useState("Shohag Ahmed");
+    const [password, setPassword] = useState("pass");
     const [error, setError] = useState("");
     const router = useRouter();
 
@@ -23,7 +23,7 @@ export default function LoginPage() {
         console.log(data);
         if (data.success) {
             // Handle successful login, e.g., redirect to dashboard
-            router.push("/sells");
+            router.push("/actions/sell");
         } else {
             setError(data.message);
         }

@@ -4,8 +4,9 @@ import { Model } from 'mongoose';
 // import { Product } from './interfaces/product.interface';
 // import { CreateProductDto } from './dto/CreateProductDto';
 // import { UpdateProductDto } from './dto/UpdateProductDto';
-import { ProductDocument } from './schemas/product.schema';
-import { Stock, StockDocument } from 'src/stocks/schemas/stocks.schema';
+import { Product, ProductDocument } from './schemas/product.schema';
+import { StockDocument } from 'src/stocks/schemas/stocks.schema';
+import { TrashService } from 'src/trash/trash.service';
 
 @Injectable()
 export class ProductsService {
@@ -14,6 +15,7 @@ export class ProductsService {
         private readonly productModel: Model<ProductDocument>,
         @InjectModel('Stock')
         private readonly stockModel: Model<StockDocument>,
+        private trashService: TrashService,
     ) {}
 
     findAll() {
@@ -72,7 +74,19 @@ export class ProductsService {
         throw new Error('Product not found for id ' + id);
     }
 
-    remove(id: string) {
-        return this.productModel.findByIdAndDelete(id);
+    async remove(id: string) {
+        // Find the product by its ID
+        const product = await this.productModel.findById(id);
+
+        // Handle the case where the product might not be found
+        if (!product) {
+            throw new Error('Product not found');
+        }
+
+        // Move the product to the trash before deleting
+        await this.trashService.create(Product.name, product);
+
+        // Delete the product and return the result
+        return product.deleteOne();
     }
 }

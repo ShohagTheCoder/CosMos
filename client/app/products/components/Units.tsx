@@ -14,6 +14,7 @@ import { RootState } from "@/app/store/store";
 import { Unit } from "../interfaces/product.interface";
 import PurchasePrices from "./PurchasePrices";
 import PurchaseMeasurements from "./PurchaseMeasurements";
+import SelectInput from "@/app/elements/select/SelectInput";
 
 function Units() {
     const dispatch = useDispatch();
@@ -52,42 +53,32 @@ function Units() {
     }
 
     return (
-        <div className="scale p-6 bg-gray-900 text-gray-200 rounded-lg shadow-md">
-            <div className="mb-6">
-                <label
-                    className="block text-gray-400 text-sm font-semibold mb-2"
-                    htmlFor="sale-base"
-                >
-                    Product Sale Base
-                </label>
-                <select
-                    className="w-full h-10 bg-gray-800 text-gray-200 rounded-md p-2 focus:ring focus:ring-blue-500"
+        <div className="scale">
+            <div className="grid grid-cols-3">
+                <SelectInput
                     value={product.saleUnitsBase}
                     onChange={handleChangeSaleUnitsBase}
-                    id="sale-base"
-                >
-                    {Object.values(units).map((unit: Unit) => (
-                        <option key={unit.unit} value={unit.unit}>
-                            {unit.label}
-                        </option>
-                    ))}
-                </select>
-            </div>{" "}
+                    options={{
+                        label: "Product base unit",
+                        options: Object.values(units).map((unit: Unit) => ({
+                            label: unit.label,
+                            value: unit.unit,
+                        })),
+                    }}
+                    className="mb-3"
+                />
+            </div>
             <div className="border border-gray-500 mb-4">
-                {" "}
-                <table className="w-full border-collapse">
-                    {" "}
+                <table className="w-full border-collapse border-gray-600">
                     <thead>
-                        {" "}
                         <tr>
                             <th className="py-1 px-2 border">Unit</th>
                             <th className="py-1 px-2 border">Label</th>{" "}
                             <th className="py-1 px-2 border">Value * base</th>
                             <th className="py-1 px-2 border">Compare</th>{" "}
-                        </tr>{" "}
-                    </thead>{" "}
+                        </tr>
+                    </thead>
                     <tbody>
-                        {" "}
                         {Object.entries(units).map(([key, unit]) => {
                             if (unit.dynamic) {
                                 return (

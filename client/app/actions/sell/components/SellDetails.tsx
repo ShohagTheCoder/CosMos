@@ -1,4 +1,4 @@
-import { CartState, updatePaid } from "@/app/store/slices/cartSlice";
+import { updatePaid } from "@/app/store/slices/cartSlice";
 import { RootState } from "@/app/store/store";
 import {
     convertBnBDToStandard,
@@ -20,7 +20,7 @@ function SellDetails() {
     };
 
     return (
-        <div className="p-3 mb-3 border border-dashed border-2 border-gray-600">
+        <div className="p-3 mb-3 border-dashed border-2 border-gray-600">
             <div className="single-row flex justify-between items-center">
                 <p className=" text-lg font-semibold pt-1">সর্বমোট :</p>
                 <p className=" text-lg font-semibold pt-1">
@@ -30,7 +30,7 @@ function SellDetails() {
             </div>
             {cart.customer ? (
                 <>
-                    <div className="single-row pt-2 mb-2 mt-2 pb-1 border-t border-t-2 border-b border-dashed border-b-2 border-gray-600 flex justify-between">
+                    <div className="single-row pt-2 mb-2 mt-2 pb-1 border-t-2 border-dashed border-b-2 border-gray-600 flex justify-between">
                         <p className=" text-lg font-semibold py-1">পেয়েছি :</p>
                         <p className=" text-lg font-semibold py-1">
                             <input
@@ -42,7 +42,7 @@ function SellDetails() {
                             <span> ৳</span>
                         </p>
                     </div>
-                    <div className="single-row mb-2 pb-1 border-b border-dashed border-b-2 border-gray-600 flex justify-between">
+                    <div className="single-row mb-2 pb-1 border-dashed border-b-2 border-gray-600 flex justify-between">
                         {cart.due < 0 ? (
                             <>
                                 <p className=" text-lg font-semibold py-1">
@@ -56,7 +56,7 @@ function SellDetails() {
                         ) : (
                             <>
                                 <p className=" text-lg font-semibold py-1">
-                                    বাকি :
+                                    নতুন বাকি :
                                 </p>
                                 <p className=" text-lg font-semibold py-1">
                                     {convertStandardToBnBD(cart.due)}
@@ -93,7 +93,7 @@ function SellDetails() {
                                 </>
                             )}
                         </div>
-                        <div className="flex justify-between w-1/2 ps-4 border-s border-s-slate-600 border-s-2 border-dashed">
+                        <div className="flex justify-between w-1/2 ps-4 border-s-slate-600 border-s-2 border-dashed">
                             {customerAccount.balance - cart.due > 0 ? (
                                 <>
                                     <p className=" text-lg font-semibold py-1">

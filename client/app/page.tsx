@@ -1,12 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import Chart from "./components/Chart";
 import LineChart from "./components/LineChart";
 import PieChart from "./components/PieChar";
-
-// Replace with your API endpoint
-const API_ENDPOINT = "https://your-api-endpoint";
 
 export default function Dashboard() {
     // Assuming you have functions to fetch data from your API
@@ -28,19 +24,9 @@ export default function Dashboard() {
         ];
     };
 
-    const fetchCustomerData = () => {
-        // ... your fetch logic
-        return [
-            { name: "John Doe" },
-            { name: "Jane Smith" },
-            // ... more customer data
-        ];
-    };
-
     // Fetch data and calculate metrics
     const salesData = fetchSalesData();
     const productData = fetchProductData();
-    const customerData = fetchCustomerData();
 
     const totalSales = salesData.reduce((acc, sale) => acc + sale.amount, 0);
     const averageProductPrice =

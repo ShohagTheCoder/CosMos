@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 @Schema()
 export class User extends Document {
@@ -7,13 +7,25 @@ export class User extends Document {
     username: string;
 
     @Prop()
+    name: string;
+
+    @Prop()
+    email: string;
+
+    @Prop()
     password: string;
 
-    @Prop()
-    canSell: boolean;
+    @Prop({ type: mongoose.Schema.Types.Mixed })
+    actions: Record<string, object>;
 
     @Prop()
-    canPurchase: boolean;
+    role: string;
+
+    @Prop()
+    salary: number;
+
+    @Prop()
+    account: string;
 }
 
 export type UserDocument = User & Document;

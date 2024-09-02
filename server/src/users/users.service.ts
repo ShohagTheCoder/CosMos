@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './entities/user.entity';
 import { Model } from 'mongoose';
 import { UserDocument } from './schemas/user.schema';
+import { Account, AccountDocument } from 'src/accounts/schemas/account.schema';
 
 const users = [
     {
@@ -27,14 +27,30 @@ const users = [
 export class UsersService {
     constructor(
         @InjectModel(User.name) private userModel: Model<UserDocument>,
+        @InjectModel(Account.name) private accountModel: Model<AccountDocument>,
     ) {}
 
-    create(createUserDto: CreateUserDto) {
-        return 'This action adds a new user';
+    create(createUserDto: any) {
+        const user = new this.userModel(createUserDto);
+        const account = new this.accountModel({
+            owner: user._id.toString(),
+            name: createUserDto.name,
+            type: 'sell',
+            username: createUserDto.email,
+            password: createUserDto.password,
+            balance: 0,
+            minimumBalance: 1000,
+            maximumBalance: 10000,
+            limit: 10000,
+        });
+        user.account = account._id.toString();
+
+        user.save();
+        return account.save();
     }
 
     findAll() {
-        return `This action returns all users`;
+        return this.userModel.find();
     }
 
     findOne(id: number) {

@@ -5,13 +5,15 @@ import { Unit } from "../interfaces/product.interface";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUnits, updateUnit } from "@/app/store/slices/productSlice";
 import { RootState } from "@/app/store/store";
+import SelectInput from "@/app/elements/select/SelectInput";
 
 function UnitsTab() {
     const dispatch = useDispatch();
     const product = useSelector((state: RootState) => state.product);
+    console.log(product);
 
     return (
-        <div className="tab p-4 bg-gray-800 rounded-lg shadow-lg">
+        <div className="tab bg-gray-800 rounded-lg shadow-lg">
             {!product.saleUnitsBase ? (
                 <div>
                     <p className="text-lg font-semibold text-gray-200 mb-4">
@@ -70,37 +72,31 @@ function UnitsTab() {
                             <Units />
                         </div>
                     </div>
-                    <div className="mb-4">
-                        <label
-                            className="block text-gray-300 text-sm font-semibold mb-2"
-                            htmlFor="name"
-                        >
-                            Default Unit
-                        </label>
-                        <select
-                            className="h-[40px] w-full bg-gray-700 text-white rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            value={product.unit}
-                            onChange={(e) =>
-                                dispatch(updateUnit(e.target.value))
-                            }
-                        >
-                            {Object.values(product.units).map((unit: Unit) => (
-                                <option
-                                    key={unit.unit}
-                                    value={unit.unit}
-                                    className="bg-gray-800 text-white"
-                                >
-                                    {unit.label}
-                                </option>
-                            ))}
-                        </select>
-                        <p className="mt-2 text-gray-400">
-                            Default Price:{" "}
-                            <span className="font-semibold text-white">
-                                {product.price *
-                                    product.units[product.saleUnitsBase].value}
-                            </span>
-                        </p>
+                    <div className="grid grid-cols-3">
+                        <div>
+                            <SelectInput
+                                value={product.unit}
+                                onChange={(e) =>
+                                    dispatch(updateUnit(e.target.value))
+                                }
+                                options={{
+                                    options: Object.values(product.units).map(
+                                        (unit: Unit) => ({
+                                            label: unit.label,
+                                            value: unit.unit,
+                                        })
+                                    ),
+                                }}
+                            />
+                            <p className="mt-2 text-gray-400">
+                                Default Price:{" "}
+                                <span className="font-semibold text-white">
+                                    {product.price *
+                                        product.units[product.saleUnitsBase]
+                                            .value}
+                                </span>
+                            </p>
+                        </div>
                     </div>
                 </>
             )}

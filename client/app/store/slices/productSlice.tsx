@@ -8,7 +8,6 @@ import { units } from "@/app/products/create/units";
 import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 import { getUpdatedSaleUnitsBase } from "@/app/functions/getUpdatedSaleUnitsBase";
 import updatePricesForNewBase from "@/app/functions/updatePricesForNewBase";
-import getUpdatedProduct from "@/app/functions/getUpdatedProduct";
 
 const initialState: Product = {
     SKU: "",
@@ -17,9 +16,12 @@ const initialState: Product = {
     units: units.weight,
     prices: [],
     measurements: [],
+    saleUnitsBase: "",
     purchasePrices: [],
     purchaseMeasurements: [],
     price: 1,
+    unit: "",
+    priority: 1,
     discount: 0,
     extraDiscount: 0,
     stockAlert: 10,
@@ -41,6 +43,10 @@ const productSlice = createSlice({
             if (field in state) {
                 (state as any)[field] = value;
             }
+        },
+        setProductProduct: (state, action) => {
+            state._id = action.payload._id;
+            state.product = action.payload;
         },
         selectUnits: (
             state: Product,
@@ -341,6 +347,7 @@ export const {
     updateProductResourceQuantity,
     toggleProductHasResources,
     addResource,
+    setProductProduct,
 } = productSlice.actions;
 
 export default productSlice.reducer;

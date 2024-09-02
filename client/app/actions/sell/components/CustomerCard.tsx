@@ -7,16 +7,16 @@ function CustomerCard({ customers }: { customers: any }) {
         (state: RootState) => state.cart.selectedProductIndex
     );
 
-    function handleAddCustomer(_id: string) {
+    function handleAddCustomer() {
         document.getElementById("command")?.focus();
     }
 
     return (
-        <div className="flex flex-wrap gap-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4">
             {Object.values(customers).map((customer: any, key: number) => (
                 <div
                     key={customer._id}
-                    onClick={() => handleAddCustomer(customer._id)}
+                    onClick={() => handleAddCustomer()}
                     className={`max-w-sm rounded overflow-hidden shadow-xl bg-gray-800 text-white ${
                         selectedProductIndex == key
                             ? "bg-green-900"
@@ -24,8 +24,8 @@ function CustomerCard({ customers }: { customers: any }) {
                     }`}
                 >
                     <img
-                        className="w-full h-[200px] w-[200px] object-cover"
-                        src="profile-picture.jpg"
+                        className="h-[240px] w-full object-cover"
+                        src="/profile-picture.jpg"
                         alt={customer.name}
                     />
                     <div className="p-3">

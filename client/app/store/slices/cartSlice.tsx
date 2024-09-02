@@ -6,7 +6,14 @@ import { Customer, CustomerWithId } from "@/app/interfaces/customer.inerface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+export enum CartActionTypes {
+    sell = "sell",
+    purchase = "purchase",
+    return = "return",
+}
+
 export interface CartState {
+    [x: string]: any;
     products: Record<string, ProductWithID>;
     totalPrice: number;
     customer?: CustomerWithId;
@@ -19,6 +26,7 @@ export interface CartState {
         name: string;
     };
     customerAccount: any;
+    action: CartActionTypes;
 }
 
 const initialState: CartState = {
@@ -34,6 +42,7 @@ const initialState: CartState = {
     customerAccount: {
         balance: 0,
     },
+    action: CartActionTypes.sell,
 };
 
 const cartSlice = createSlice({
@@ -300,6 +309,12 @@ const cartSlice = createSlice({
             });
             state.due = state.totalPrice - state.paid;
         },
+        changeAction: (
+            state: CartState,
+            action: PayloadAction<CartActionTypes>
+        ) => {
+            state.action = action.payload;
+        },
     },
 });
 
@@ -321,5 +336,6 @@ export const {
     shiftMeasurementTo,
     addDiscount,
     addExtraDiscount,
+    changeAction,
 } = cartSlice.actions;
 export default cartSlice.reducer;
