@@ -1,5 +1,4 @@
-import { Injectable, Request } from '@nestjs/common';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './entities/user.entity';
 import { Model } from 'mongoose';
@@ -48,7 +47,7 @@ export class UsersService {
         return user ? user.toObject() : null;
     }
 
-    update(id: number, updateUserDto: UpdateUserDto) {
+    update(id: number, updateUserDto: any) {
         return `This action updates a #${id} user`;
     }
 

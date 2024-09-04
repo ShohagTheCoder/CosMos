@@ -6,6 +6,7 @@ import { Supplier, SupplierSchema } from './schemas/supplier.schema';
 import { Trash, TrashSchema } from 'src/trash/schemas/trash.schema';
 import { TrashService } from 'src/trash/trash.service';
 import { Product, ProductSchema } from 'src/products/schemas/product.schema';
+import { Account, AccountSchema } from 'src/accounts/schemas/account.schema';
 
 @Module({
     imports: [
@@ -13,6 +14,7 @@ import { Product, ProductSchema } from 'src/products/schemas/product.schema';
             { name: Supplier.name, schema: SupplierSchema },
             { name: Trash.name, schema: TrashSchema },
             { name: Product.name, schema: ProductSchema },
+            { name: Account.name, schema: AccountSchema },
         ]),
     ],
     controllers: [SuppliersController],

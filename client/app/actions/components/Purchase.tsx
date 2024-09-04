@@ -1,60 +1,59 @@
 "use client";
 
 import Sidebar from "@/app/components/Sidebar";
-import { CustomerWithId } from "@/app/interfaces/customer.inerface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import {
-    addCustomer,
-    addCustomerAccount,
-    addToCart,
-    CartActionTypes,
-    changeAction,
+    addSupplier,
+    addSupplierAccount,
+    addToPurchase,
     changeActiveProduct,
     decrementQuantity,
     incrementQuantity,
-    removeFromCart,
+    removeFromPurchase,
     resetSelectedProductIndex,
     selectNexProduct,
     selectPreviousProduct,
-    setUser,
+    setReceiver,
     shiftMeasurementTo,
-} from "@/app/store/slices/cartSlice";
+} from "@/app/store/slices/purchaseSlice";
 import { RootState } from "@/app/store/store";
 import apiClient from "@/app/utils/apiClient";
 import { ERROR, SUCCESS } from "@/app/utils/constants/message";
-import axios from "axios";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import CustomerCard from "./components/CustomerCard";
-import CartProduct from "./components/CartProduct";
-import CustomerDetails from "./components/CustomerDetails";
-import SellDetails from "./components/SellDetails";
-import SellReceipt from "@/app/components/bills/SellReceipt";
-import TextInput from "@/app/elements/inputs/TextInput";
 import Notification, {
     NotificationProps,
 } from "@/app/elements/notification/Notification";
-import SupplierCard from "./components/SupplierCard";
-import { fetchUser } from "@/app/utils/apiServices";
 import { logout } from "../functions/authHandlers";
-import Cookies from "js-cookie";
-import ProductsCard from "../components/ProductsCard";
+import ProductsCard from "./ProductsCard";
+import { SupplierWithId } from "@/app/interfaces/supplier.interface";
+import SupplierCard from "./components/SupplierCard";
+import SellReceipt from "@/app/components/bills/SellReceipt";
+import PurchaseDetails from "./components/purchaseDetails";
+import { useEffect, useRef, useState } from "react";
+import CustomerCard from "./components/CustomerCard";
+import PurchaseProducts from "./components/PurchaseProducts";
+import SupplierDetails from "./components/SupplierDetails";
+import PurchaseProductsCard from "./PurchaseProductCard";
 
-interface SellProps {
+interface PurchaseProps {
     products: Record<string, ProductWithID>;
-    customers: Record<string, CustomerWithId>;
-    user: any;
+    suppliers: Record<string, SupplierWithId>;
+    receiver: any;
 }
 
-export default function Sell({ products, customers, user }: SellProps) {
+export default function Purchase({
+    products,
+    suppliers,
+    receiver,
+}: PurchaseProps) {
     let [command, setCommand] = useState("");
-    const [filteredCustomers, setFilteredCustomers] = useState(customers);
+    const [filteredSuppliers, setFilteredSuppliers] = useState(suppliers);
     const dispatch = useDispatch();
-    let cart = useSelector((state: RootState) => state.cart);
+    let purchase = useSelector((state: RootState) => state.purchase);
     const [note, setNote] = useState("");
     const [filteredProducts, setFilteredProducts] = useState(products);
-    const [isCustomers, setIsCustomers] = useState(false);
+    const [isSuppliers, setIsSuppliers] = useState(false);
     let noteRef = useRef<HTMLTextAreaElement>(null);
     let forceOrder = 1;
 
@@ -65,8 +64,8 @@ export default function Sell({ products, customers, user }: SellProps) {
 
     // Single use effect
     useEffect(() => {
-        if (user) {
-            dispatch(setUser(user));
+        if (receiver) {
+            dispatch(setReceiver(receiver));
         }
 
         window.addEventListener("keydown", (e: any) => {
@@ -85,32 +84,32 @@ export default function Sell({ products, customers, user }: SellProps) {
         return () => {
             window.removeEventListener("keydown", () => {});
         };
-    }, []);
+    }, [dispatch, receiver]);
 
     useEffect(() => {
-        if (command.startsWith(" ") && customers) {
-            setIsCustomers(true);
+        if (command.startsWith(" ") && suppliers) {
+            setIsSuppliers(true);
 
-            const tempFilteredCustomers = Object.values(customers).filter(
-                (customer) => {
-                    return customer.name
+            const tempFilteredSuppliers = Object.values(suppliers).filter(
+                (supplier) => {
+                    return supplier.name
                         .toLowerCase()
                         .includes(command.trim().toLowerCase());
                 }
             );
 
             // Convert filtered array back to object
-            const filteredCustomersObject = tempFilteredCustomers.reduce<
-                Record<string, CustomerWithId>
-            >((acc, customer) => {
-                acc[customer._id] = customer;
+            const filteredSuppliersObject = tempFilteredSuppliers.reduce<
+                Record<string, SupplierWithId>
+            >((acc, supplier) => {
+                acc[supplier._id] = supplier;
                 return acc;
             }, {});
 
-            setFilteredCustomers(filteredCustomersObject);
+            setFilteredSuppliers(filteredSuppliersObject);
         } else if (products) {
-            if (isCustomers) {
-                setIsCustomers(false);
+            if (isSuppliers) {
+                setIsSuppliers(false);
             }
 
             const tempFilteredProducts = Object.values(products).filter(
@@ -133,41 +132,48 @@ export default function Sell({ products, customers, user }: SellProps) {
         }
 
         // Reset selected product index
-        if (cart.selectedProductIndex > 0) {
+        if (purchase.selectedProductIndex > 0) {
             dispatch(resetSelectedProductIndex());
         }
-    }, [command, products, customers, dispatch, isCustomers]);
+    }, [
+        command,
+        products,
+        suppliers,
+        dispatch,
+        isSuppliers,
+        purchase.selectedProductIndex,
+    ]);
 
-    async function handleCompleteSell() {
+    async function handleCompletePurchase() {
         try {
-            let sell = { ...cart };
-            if (!sell.customer) {
-                sell.paid = sell.totalPrice;
-                sell.due = 0;
-            }
-            await apiClient.post("/sells", sell);
-            setNotification({
-                type: SUCCESS,
-                message: "Sell created successfully",
-            });
+            // let purchase = { ...purchase };
+            // if (!purchase.supplier) {
+            //     purchase.paid = purchase.totalPrice;
+            //     purchase.due = 0;
+            // }
+            // await apiClient.post("/purchases", purchase);
+            // setNotification({
+            //     type: SUCCESS,
+            //     message: "Purchase created successfully",
+            // });
             // setTimeout(() => {
             //     window.location.reload();
             // }, 3000);
         } catch (error) {
             setNotification({
                 type: ERROR,
-                message: "Faild to create sell",
+                message: "Faild to create purchase",
             });
         }
     }
-    async function handleAddCustomer() {
-        if (filteredCustomers) {
-            const customer = Object.values(filteredCustomers)[0];
+    async function handleAddSupplier() {
+        if (filteredSuppliers) {
+            const supplier = Object.values(filteredSuppliers)[0];
             const { data } = await apiClient.get(
-                `accounts/${customer.account}`
+                `accounts/${supplier.account}`
             );
-            dispatch(addCustomer(customer));
-            dispatch(addCustomerAccount(data));
+            dispatch(addSupplier(supplier));
+            dispatch(addSupplierAccount(data));
         }
     }
 
@@ -180,17 +186,17 @@ export default function Sell({ products, customers, user }: SellProps) {
         }
     }
 
-    function changeCartActiveProductTo(val: number) {
-        const cartProductsKey = Object.keys(cart.products);
-        if (cart.activeProduct && cartProductsKey.length > 1) {
-            let key = cartProductsKey.indexOf(cart.activeProduct) + val;
+    function changePurchaseActiveProductTo(val: number) {
+        const purchaseProductsKey = Object.keys(purchase.products);
+        if (purchase.activeProduct && purchaseProductsKey.length > 1) {
+            let key = purchaseProductsKey.indexOf(purchase.activeProduct) + val;
             if (key < 0) {
-                key = cartProductsKey.length - 1;
-            } else if (key >= cartProductsKey.length) {
+                key = purchaseProductsKey.length - 1;
+            } else if (key >= purchaseProductsKey.length) {
                 key = 0;
             }
 
-            dispatch(changeActiveProduct(cartProductsKey[key]));
+            dispatch(changeActiveProduct(purchaseProductsKey[key]));
         }
     }
 
@@ -211,7 +217,7 @@ export default function Sell({ products, customers, user }: SellProps) {
 
             case "ArrowUp":
                 if (isShift) {
-                    changeCartActiveProductTo(-1);
+                    changePurchaseActiveProductTo(-1);
                 } else {
                     dispatch(incrementQuantity(false));
                 }
@@ -219,7 +225,7 @@ export default function Sell({ products, customers, user }: SellProps) {
 
             case "ArrowDown":
                 if (isShift) {
-                    changeCartActiveProductTo(+1);
+                    changePurchaseActiveProductTo(+1);
                 } else {
                     dispatch(decrementQuantity(false));
                 }
@@ -227,9 +233,9 @@ export default function Sell({ products, customers, user }: SellProps) {
 
             case "ArrowLeft":
                 e.preventDefault();
-                if (filteredCustomers && filteredProducts) {
-                    max = isCustomers
-                        ? Object.keys(filteredCustomers).length - 1
+                if (filteredSuppliers && filteredProducts) {
+                    max = isSuppliers
+                        ? Object.keys(filteredSuppliers).length - 1
                         : Object.keys(filteredProducts).length - 1;
                     if (command.length > 0) {
                         dispatch(selectPreviousProduct(max));
@@ -241,9 +247,9 @@ export default function Sell({ products, customers, user }: SellProps) {
 
             case "ArrowRight":
                 e.preventDefault();
-                if (filteredCustomers && filteredProducts) {
-                    max = isCustomers
-                        ? Object.keys(filteredCustomers).length - 1
+                if (filteredSuppliers && filteredProducts) {
+                    max = isSuppliers
+                        ? Object.keys(filteredSuppliers).length - 1
                         : Object.keys(filteredProducts).length - 1;
                     if (command.length > 0) {
                         dispatch(selectNexProduct(max));
@@ -262,30 +268,30 @@ export default function Sell({ products, customers, user }: SellProps) {
                 break;
             case "Enter":
                 if (
-                    !isCustomers &&
+                    !isSuppliers &&
                     command.length > 0 &&
-                    filteredCustomers &&
+                    filteredSuppliers &&
                     filteredProducts
                 ) {
                     if (Object.keys(filteredProducts).length > 0) {
                         const product = {
                             ...Object.values(filteredProducts)[
-                                cart.selectedProductIndex
+                                purchase.selectedProductIndex
                             ],
                             quantity: 1,
                         };
-                        dispatch(addToCart(product));
+                        dispatch(addToPurchase(product));
                         setCommand("");
                     }
-                } else if (command.length > 1 && filteredCustomers) {
-                    if (Object.keys(filteredCustomers).length > 0) {
-                        handleAddCustomer();
+                } else if (command.length > 1 && filteredSuppliers) {
+                    if (Object.keys(filteredSuppliers).length > 0) {
+                        handleAddSupplier();
                         setCommand("");
                     }
                 } else {
-                    if (cart.totalPrice == 0) break;
+                    if (purchase.totalPrice == 0) break;
                     if (forceOrder >= 5) {
-                        handleCompleteSell();
+                        handleCompletePurchase();
                     } else {
                         forceOrder++;
                     }
@@ -293,7 +299,7 @@ export default function Sell({ products, customers, user }: SellProps) {
                 break;
             case "Delete":
                 e.preventDefault();
-                dispatch(removeFromCart(cart.activeProduct));
+                dispatch(removeFromPurchase(purchase.activeProduct));
                 break;
         }
     }
@@ -306,8 +312,8 @@ export default function Sell({ products, customers, user }: SellProps) {
         }
     }
 
-    function handleAddToCart(product: ProductWithID) {
-        dispatch(addToCart(product));
+    function handleAddToPurchase(product: ProductWithID) {
+        dispatch(addToPurchase(product));
     }
 
     return (
@@ -325,17 +331,17 @@ export default function Sell({ products, customers, user }: SellProps) {
                         <div className="col-span-8 lg:col-span-5">
                             <div className="p-3 border-2 border-dashed border-slate-500 mb-3">
                                 <p className="bg-green-700 inline-block py-2 px-4 me-3">
-                                    {cart.action}
+                                    Purchase
                                 </p>
                                 <Link href={"/"}>Home</Link>
                                 <Link className="ms-3" href={"/products"}>
                                     Products
                                 </Link>
-                                <Link className="ms-3" href={"/customers"}>
-                                    Customers
+                                <Link className="ms-3" href={"/suppliers"}>
+                                    Suppliers
                                 </Link>
-                                <p className="inline-block mx-4 bg-green-600 py-2 px-3">
-                                    {user.name}
+                                <p className="inline-block mx-4 bg-green-700 py-2 px-3">
+                                    {purchase.receiver?.name}
                                 </p>
                                 <button
                                     onDoubleClick={logout}
@@ -355,71 +361,29 @@ export default function Sell({ products, customers, user }: SellProps) {
                                     className="border-2 w-full md:w-1/2 xl:w-1/3 border-dashed border-slate-500 bg-black outline-none focus:border-green-500 text-white px-4 py-2 text-lg"
                                     autoFocus
                                 />
-                                <div className="flex gap-4 mt-3">
-                                    <button
-                                        className="py-2 px-3 bg-slate-600"
-                                        onDoubleClick={() =>
-                                            dispatch(
-                                                changeAction(
-                                                    CartActionTypes.sell
-                                                )
-                                            )
-                                        }
-                                    >
-                                        Sell
-                                    </button>
-                                    <button
-                                        className="py-2 px-3 bg-slate-600"
-                                        onDoubleClick={() =>
-                                            dispatch(
-                                                changeAction(
-                                                    CartActionTypes.purchase
-                                                )
-                                            )
-                                        }
-                                    >
-                                        Purchase
-                                    </button>
-                                    <button
-                                        className="py-2 px-3 bg-slate-600"
-                                        onDoubleClick={() =>
-                                            dispatch(
-                                                changeAction(
-                                                    CartActionTypes.return
-                                                )
-                                            )
-                                        }
-                                    >
-                                        Return
-                                    </button>
-                                </div>
                             </div>
                             <div className="mt-3">
                                 {/* <ProductsCard selected={} /> */}
                             </div>
 
-                            {isCustomers ? (
+                            {isSuppliers ? (
                                 <div>
-                                    {cart.action == "purchase" ? (
-                                        <SupplierCard customers={customers} />
-                                    ) : (
-                                        <CustomerCard
-                                            customers={filteredCustomers}
-                                        />
-                                    )}
+                                    <CustomerCard
+                                        customers={filteredSuppliers}
+                                    />
                                 </div>
                             ) : (
                                 // <ProductCard products={filteredProducts} />
-                                <ProductsCard
-                                    selected={cart.selectedProductIndex}
-                                    callback={handleAddToCart}
+                                <PurchaseProductsCard
+                                    selected={purchase.selectedProductIndex}
+                                    callback={handleAddToPurchase}
                                     products={filteredProducts}
                                 />
                             )}
                         </div>
                         <div className="col-span-8 lg:col-span-3">
-                            <CartProduct />
-                            <CustomerDetails />
+                            <PurchaseProducts />
+                            <SupplierDetails />
                             <div className="">
                                 <textarea
                                     ref={noteRef}
@@ -432,16 +396,20 @@ export default function Sell({ products, customers, user }: SellProps) {
                                     placeholder="বিক্রি সম্পর্কে কিছু মনে রাখার আছে কি?"
                                 ></textarea>
                             </div>
-                            <SellDetails />
+                            <PurchaseDetails />
                             <div className="flex gap-4">
                                 <button
-                                    onDoubleClick={() => handleCompleteSell()}
+                                    onDoubleClick={() =>
+                                        handleCompletePurchase()
+                                    }
                                     className="w-1/2 pt-3 pb-2 border-2 border-dashed border-green-600 bg-green-900 hover:bg-green-700 text-white"
                                 >
                                     বিক্রয় ও প্রিন্ট
                                 </button>
                                 <button
-                                    onDoubleClick={() => handleCompleteSell()}
+                                    onDoubleClick={() =>
+                                        handleCompletePurchase()
+                                    }
                                     className="w-1/2 pt-3 pb-2 border-dashed border-2 border-blue-600 bg-blue-900 hover:bg-blue-700 text-white"
                                 >
                                     বিক্রয়

@@ -1,72 +1,74 @@
-import { getUserInServer } from "@/app/actions/sell/functions/apiHandlers";
-import getCartProductsTotalPrice from "@/app/functions/getCartProductsTotalPrice";
 import getCurrentMeasurement from "@/app/functions/getCurrentMeasurement";
-import getProductCount from "@/app/functions/getProductCount";
-import getUpdatedProduct from "@/app/functions/getUpdatedProduct";
-import { Customer, CustomerWithId } from "@/app/interfaces/customer.inerface";
+import getProductsTotalPrice from "@/app/functions/getProductsTotalPrice";
+import getUpdatedPurchaseProduct from "@/app/functions/purchase/getUpdatedPurchaseProduct";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { cookies } from "next/headers";
 
-export enum CartActionTypes {
+export enum PurchaseActionTypes {
     sell = "sell",
     purchase = "purchase",
     return = "return",
 }
 
-export interface CartState {
-    [x: string]: any;
+export interface PurchaseState {
+    receiver?: {
+        name: string;
+    };
     products: Record<string, ProductWithID>;
     totalPrice: number;
-    customer?: CustomerWithId;
+    supplier?: {
+        name: string;
+    };
     activeProduct?: string;
     selectedProductIndex: number;
-    due: number;
-    paid: number;
-    customerAccount: any;
-    action: CartActionTypes;
+    supplierAccount: any;
 }
 
-const initialState: CartState = {
+const initialState: PurchaseState = {
     selectedProductIndex: 0,
     products: {},
     totalPrice: 0,
-    paid: 0,
-    due: 0,
-    customerAccount: {
+    supplierAccount: {
         balance: 0,
     },
-    action: CartActionTypes.sell,
+    supplier: {
+        name: "shoag",
+    },
+    receiver: {
+        name: "Shohag AHmed",
+    },
 };
 
-const cartSlice = createSlice({
-    name: "cart",
+const purchaseSlice = createSlice({
+    name: "purchase",
     initialState,
     reducers: {
-        addToCart: (state: CartState, action: PayloadAction<ProductWithID>) => {
+        addToPurchase: (
+            state: PurchaseState,
+            action: PayloadAction<ProductWithID>
+        ) => {
             let product = action.payload;
             const existingProduct = state.products[product._id];
 
             if (existingProduct) {
-                state.products[product._id] = getUpdatedProduct(
+                state.products[product._id] = getUpdatedPurchaseProduct(
                     existingProduct,
                     1,
                     null
                 );
             } else {
-                product = getUpdatedProduct(
+                product = getUpdatedPurchaseProduct(
                     product,
-                    product.measurements[0].value - 1,
-                    product.measurements[0].unit
+                    product.purchaseMeasurements[0].value - 1,
+                    product.purchaseMeasurements[0].unit
                 );
                 state.products = { ...state.products, [product._id]: product };
                 state.activeProduct = product._id;
             }
 
             state.totalPrice += product.subTotal;
-            state.due = state.totalPrice - state.paid;
         },
-        removeFromCart: (state, action) => {
+        removeFromPurchase: (state, action) => {
             let productId = action.payload;
             if (productId == null) productId = state.activeProduct;
             const removedProduct = state.products[productId];
@@ -79,8 +81,6 @@ const cartSlice = createSlice({
                     Object.keys(state.products).length - 1
                 ];
             }
-
-            state.due = state.totalPrice - state.paid;
         },
 
         selectNexProduct: (state, action) => {
@@ -91,11 +91,11 @@ const cartSlice = createSlice({
             }
         },
 
-        addCustomerAccount: (
-            state: CartState,
+        addSupplierAccount: (
+            state: PurchaseState,
             action: PayloadAction<object>
         ) => {
-            state.customerAccount = action.payload;
+            state.supplierAccount = action.payload;
         },
 
         selectPreviousProduct: (state, action) => {
@@ -110,14 +110,10 @@ const cartSlice = createSlice({
             state.selectedProductIndex = 0;
         },
 
-        updatePaid: (state: CartState, action: PayloadAction<number>) => {
+        updatePaid: (state: PurchaseState, action: PayloadAction<number>) => {
             let paid = action.payload;
             if (!paid) {
                 paid = 0;
-            }
-            if (paid < 100000) {
-                state.paid = paid;
-                state.due = state.totalPrice - paid;
             }
         },
 
@@ -131,7 +127,7 @@ const cartSlice = createSlice({
             const product = state.products[key];
 
             if (product && product.quantity >= 0) {
-                const updatedProduct = getUpdatedProduct(
+                const updatedProduct = getUpdatedPurchaseProduct(
                     product,
                     quantity - product.quantity,
                     null
@@ -140,14 +136,13 @@ const cartSlice = createSlice({
                     ...state.products,
                     [key]: updatedProduct,
                 };
-                state.totalPrice = getCartProductsTotalPrice({
+                state.totalPrice = getProductsTotalPrice({
                     ...state.products,
                     [product._id]: updatedProduct,
                 });
-                state.due = state.totalPrice - state.paid;
             }
         },
-        incrementQuantity: (state: CartState, action) => {
+        incrementQuantity: (state: PurchaseState, action) => {
             let productId = action.payload;
             if (!productId) {
                 productId = state.activeProduct;
@@ -155,13 +150,16 @@ const cartSlice = createSlice({
             const product = state.products[productId];
 
             if (product) {
-                const updatedProduct = getUpdatedProduct(product, 1, null);
+                const updatedProduct = getUpdatedPurchaseProduct(
+                    product,
+                    1,
+                    null
+                );
                 state.products[productId] = updatedProduct;
-                state.totalPrice = getCartProductsTotalPrice({
+                state.totalPrice = getProductsTotalPrice({
                     ...state.products,
                     [product._id]: updatedProduct,
                 });
-                state.due = state.totalPrice - state.paid;
             }
         },
         decrementQuantity: (state, action) => {
@@ -172,42 +170,48 @@ const cartSlice = createSlice({
             const product = state.products[productId];
 
             if (product && product.quantity > 0) {
-                const updatedProduct = getUpdatedProduct(product, -1, null);
+                const updatedProduct = getUpdatedPurchaseProduct(
+                    product,
+                    -1,
+                    null
+                );
                 state.products = {
                     ...state.products,
                     [productId]: updatedProduct,
                 };
-                state.totalPrice = getCartProductsTotalPrice({
+                state.totalPrice = getProductsTotalPrice({
                     ...state.products,
                     [product._id]: updatedProduct,
                 });
-                state.due = state.totalPrice - state.paid;
             }
         },
 
         updateUnit: (
-            state: CartState,
+            state: PurchaseState,
             action: PayloadAction<{ key: string; unit: string }>
         ) => {
             const { key, unit } = action.payload;
             const product = state.products[key];
 
             if (product) {
-                const updatedProduct = getUpdatedProduct(product, null, unit);
+                const updatedProduct = getUpdatedPurchaseProduct(
+                    product,
+                    null,
+                    unit
+                );
                 state.products = {
                     ...state.products,
                     [key]: updatedProduct,
                 };
-                state.totalPrice = getCartProductsTotalPrice({
+                state.totalPrice = getProductsTotalPrice({
                     ...state.products,
                     [product._id]: updatedProduct,
                 });
-                state.due = state.totalPrice - state.paid;
             }
         },
 
         shiftMeasurementTo: (
-            state: CartState,
+            state: PurchaseState,
             action: PayloadAction<number>
         ) => {
             const id =
@@ -228,7 +232,7 @@ const cartSlice = createSlice({
                     measurement =
                         measurements[currentMeasurementIndex + action.payload];
                 }
-                const updatedProduct = getUpdatedProduct(
+                const updatedProduct = getUpdatedPurchaseProduct(
                     product,
                     measurement.value - product.quantity,
                     measurement.unit
@@ -238,23 +242,20 @@ const cartSlice = createSlice({
                     ...state.products,
                     [id]: updatedProduct,
                 };
-                state.totalPrice = getCartProductsTotalPrice({
+                state.totalPrice = getProductsTotalPrice({
                     ...state.products,
                     [product._id]: updatedProduct,
                 });
-                state.due = state.totalPrice - state.paid;
             }
         },
 
-        clearCart: (state) => {
+        clearPurchase: (state) => {
             state.products = {};
             state.totalPrice = 0;
-            state.due = state.totalPrice - state.paid;
         },
 
-        addCustomer: (state, action) => {
-            state.customer = action.payload;
-            state.paid = state.totalPrice;
+        addSupplier: (state, action) => {
+            state.supplier = action.payload;
         },
 
         changeActiveProduct: (state, action) => {
@@ -262,12 +263,12 @@ const cartSlice = createSlice({
         },
 
         addDiscount: (
-            state: CartState,
+            state: PurchaseState,
             action: PayloadAction<{ key: string; amount: number }>
         ) => {
             const { key, amount } = action.payload;
             if (!state.products[key] || amount < 0) return;
-            const updatedProduct = getUpdatedProduct(
+            const updatedProduct = getUpdatedPurchaseProduct(
                 {
                     ...state.products[key],
                     discount: amount,
@@ -276,19 +277,18 @@ const cartSlice = createSlice({
                 null
             );
             state.products[key] = updatedProduct;
-            state.totalPrice = getCartProductsTotalPrice({
+            state.totalPrice = getProductsTotalPrice({
                 ...state.products,
                 [key]: updatedProduct,
             });
-            state.due = state.totalPrice - state.paid;
         },
         addExtraDiscount: (
-            state: CartState,
+            state: PurchaseState,
             action: PayloadAction<{ key: string; amount: number }>
         ) => {
             const { key, amount } = action.payload;
             if (!state.products[key] || amount < 0) return;
-            const updatedProduct = getUpdatedProduct(
+            const updatedProduct = getUpdatedPurchaseProduct(
                 {
                     ...state.products[key],
                     extraDiscount: amount,
@@ -297,45 +297,37 @@ const cartSlice = createSlice({
                 null
             );
             state.products[key] = updatedProduct;
-            state.totalPrice = getCartProductsTotalPrice({
+            state.totalPrice = getProductsTotalPrice({
                 ...state.products,
                 [key]: updatedProduct,
             });
-            state.due = state.totalPrice - state.paid;
         },
-        changeAction: (
-            state: CartState,
-            action: PayloadAction<CartActionTypes>
-        ) => {
-            state.action = action.payload;
-        },
-        setUser: (state: CartState, action) => {
+        setReceiver: (state: PurchaseState, action) => {
             if (action.payload._id) {
-                state.user = action.payload;
+                state.receiver = action.payload;
             }
         },
     },
 });
 
 export const {
-    addToCart,
-    removeFromCart,
+    addToPurchase,
+    removeFromPurchase,
     updatePaid,
     updateQuantity,
     incrementQuantity,
     decrementQuantity,
-    clearCart,
-    addCustomer,
+    clearPurchase,
+    addSupplier,
     changeActiveProduct,
     selectPreviousProduct,
     selectNexProduct,
     resetSelectedProductIndex,
     updateUnit,
-    addCustomerAccount,
+    addSupplierAccount,
     shiftMeasurementTo,
     addDiscount,
     addExtraDiscount,
-    changeAction,
-    setUser,
-} = cartSlice.actions;
-export default cartSlice.reducer;
+    setReceiver,
+} = purchaseSlice.actions;
+export default purchaseSlice.reducer;

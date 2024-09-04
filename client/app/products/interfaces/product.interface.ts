@@ -50,6 +50,10 @@ export default interface Product {
     subTotal?: number;
     stockLow: number;
     stockAlert: number;
+    sellEnable: boolean;
+    purchaseEnable: boolean;
+    displaySaleUnit?: string;
+    displayPurchaseUnit?: string;
 }
 
 export interface ProductWithID {
@@ -79,4 +83,8 @@ export interface ProductWithID {
     subTotal: number;
     stockLow: number;
     stockAlert: number;
+    sellEnable: boolean;
+    purchaseEnable: boolean;
+    displaySaleUnit: string;
+    displayPurchaseUnit: string;
 }

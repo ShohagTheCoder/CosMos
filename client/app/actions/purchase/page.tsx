@@ -1,18 +1,18 @@
 import React from "react";
-import Sell from "../components/Sell";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
-import { CustomerWithId } from "@/app/interfaces/customer.inerface";
 import {
-    getCustomersInServer,
     getProductsInServer,
+    getSuppliersInServer,
     getUserInServer,
 } from "./../functions/apiHandlers";
 import { cookies } from "next/headers";
+import Purchase from "../components/Purchase";
+import { SupplierWithId } from "@/app/interfaces/supplier.interface";
 
 async function page() {
     const products: Record<string, ProductWithID> = await getProductsInServer();
-    const customers: Record<string, CustomerWithId> =
-        await getCustomersInServer();
+    const suppliers: Record<string, SupplierWithId> =
+        await getSuppliersInServer();
 
     const cookiesList = cookies();
     const userId = cookiesList.get("user-id")?.value;
@@ -21,7 +21,7 @@ async function page() {
 
     return (
         <div>
-            <Sell products={products} customers={customers} user={user} />
+            <Purchase products={products} suppliers={suppliers} user={user} />
         </div>
     );
 }

@@ -28,7 +28,8 @@
         "**/*.tsx",
         ".next/types/**/*.ts",
         "app/products/update/[id]",
-        "app/products/components/PurchasePrices.tsx"
+        "app/products/components/PurchasePrices.tsx",
+        "app/functions/purchase/getUpdatedPurchaseProduct.ts"
     ],
     "exclude": ["node_modules"]
 }

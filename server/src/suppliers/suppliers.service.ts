@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Supplier, SupplierDocument } from './schemas/supplier.schema';
 import { Model } from 'mongoose';
 import { TrashService } from 'src/trash/trash.service';
+import { Account, AccountDocument } from 'src/accounts/schemas/account.schema';
 
 @Injectable()
 export class SuppliersService {
@@ -12,11 +12,27 @@ export class SuppliersService {
         @InjectModel(Supplier.name)
         private supplierModel: Model<SupplierDocument>,
         private trashService: TrashService,
+        @InjectModel(Account.name) private accountModel: Model<AccountDocument>,
     ) {}
 
-    async create(createSupplierDto: CreateSupplierDto) {
+    async create(createSupplierDto: any) {
         const supplier = new this.supplierModel(createSupplierDto);
+        const account = new this.accountModel({
+            owner: supplier._id.toString(),
+            name: createSupplierDto.name,
+            type: 'supplier',
+            username: createSupplierDto.email,
+            password: createSupplierDto.password,
+            balance: 0,
+            minimumBalance: 1000,
+            maximumBalance: 10000,
+            limit: 10000,
+        });
+
+        supplier.account = account._id.toString();
+
         try {
+            account.save();
             return await supplier.save();
         } catch (error) {
             throw new Error('Faild to create suppllier');

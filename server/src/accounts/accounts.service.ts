@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAccountDto } from './dto/create-account.dto';
-import { UpdateAccountDto } from './dto/update-account.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Account, AccountDocument } from './schemas/account.schema';
@@ -96,7 +94,7 @@ export class AccountsService {
         return await this.accountModel.findById(id);
     }
 
-    update(id: number, updateAccountDto: UpdateAccountDto) {
+    update(id: number, updateAccountDto: any) {
         return `This action updates a #${id} account`;
     }
 

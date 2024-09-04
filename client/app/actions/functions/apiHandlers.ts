@@ -32,6 +32,14 @@ export async function getCustomersInServer() {
         handleError(error, "Faild to fetch customers");
     }
 }
+export async function getSuppliersInServer() {
+    try {
+        const res: AxiosResponse<object[]> = await apiClient.get("suppliers");
+        return arrayToObjectById(res.data);
+    } catch (error) {
+        handleError(error, "Faild to fetch suppliers");
+    }
+}
 
 export async function getUserInServer(id: string) {
     try {

@@ -16,6 +16,9 @@ export class Supplier extends Document {
     @Prop()
     address: string;
 
+    @Prop()
+    account: string;
+
     @Prop({ default: [] })
     products: string[];
 

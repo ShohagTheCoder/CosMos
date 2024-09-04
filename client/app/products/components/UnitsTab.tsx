@@ -3,7 +3,11 @@ import Units from "./Units";
 import { units } from "../create/units";
 import { Unit } from "../interfaces/product.interface";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUnits, updateUnit } from "@/app/store/slices/productSlice";
+import {
+    selectUnits,
+    updateProductField,
+    updateUnit,
+} from "@/app/store/slices/productSlice";
 import { RootState } from "@/app/store/store";
 import SelectInput from "@/app/elements/select/SelectInput";
 
@@ -72,31 +76,77 @@ function UnitsTab() {
                             <Units />
                         </div>
                     </div>
-                    <div className="grid grid-cols-3">
-                        <div>
-                            <SelectInput
-                                value={product.unit}
-                                onChange={(e) =>
-                                    dispatch(updateUnit(e.target.value))
-                                }
-                                options={{
-                                    options: Object.values(product.units).map(
-                                        (unit: Unit) => ({
+                    <div className="grid grid-cols-6 gap-4">
+                        {product.sellEnable ? (
+                            <div className="col-span-3">
+                                <SelectInput
+                                    value={product.displaySaleUnit!}
+                                    onChange={(e) =>
+                                        dispatch(
+                                            updateProductField({
+                                                field: "displaySaleUnit",
+                                                value: e.target.value,
+                                            })
+                                        )
+                                    }
+                                    options={{
+                                        label: "Display sale price unit",
+                                        options: Object.values(
+                                            product.units
+                                        ).map((unit: Unit) => ({
                                             label: unit.label,
                                             value: unit.unit,
-                                        })
-                                    ),
-                                }}
-                            />
-                            <p className="mt-2 text-gray-400">
-                                Default Price:{" "}
-                                <span className="font-semibold text-white">
-                                    {product.price *
-                                        product.units[product.saleUnitsBase]
-                                            .value}
-                                </span>
-                            </p>
-                        </div>
+                                        })),
+                                    }}
+                                />
+                                <p className="mt-2 text-gray-400">
+                                    Display sale price:{" "}
+                                    <span className="font-semibold text-white">
+                                        {product.price *
+                                            product.units[
+                                                product.displaySaleUnit!
+                                            ].value}
+                                    </span>
+                                </p>
+                            </div>
+                        ) : (
+                            ""
+                        )}
+                        {product.purchaseEnable ? (
+                            <div className="col-span-3">
+                                <SelectInput
+                                    value={product.purchaseUnitsBase!}
+                                    onChange={(e) =>
+                                        dispatch(
+                                            updateProductField({
+                                                field: "displayPurchaseUnit",
+                                                value: e.target.value,
+                                            })
+                                        )
+                                    }
+                                    options={{
+                                        label: "Default purchase price unit",
+                                        options: Object.values(
+                                            product.units
+                                        ).map((unit: Unit) => ({
+                                            label: unit.label,
+                                            value: unit.unit,
+                                        })),
+                                    }}
+                                />
+                                <p className="mt-2 text-gray-400">
+                                    Display purchase rice:{" "}
+                                    <span className="font-semibold text-white">
+                                        {product.price *
+                                            product.units[
+                                                product.displayPurchaseUnit!
+                                            ].value}
+                                    </span>
+                                </p>
+                            </div>
+                        ) : (
+                            ""
+                        )}
                     </div>
                 </>
             )}

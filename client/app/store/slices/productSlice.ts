@@ -21,6 +21,8 @@ const initialState: Product = {
     purchaseMeasurements: [],
     price: 1,
     unit: "",
+    sellEnable: true,
+    purchaseEnable: true,
     priority: 1,
     discount: 0,
     extraDiscount: 0,
@@ -74,6 +76,8 @@ const productSlice = createSlice({
                 value: 1,
             };
             state.unit = base;
+            state.displaySaleUnit = base;
+            state.displayPurchaseUnit = base;
         },
         addDynamicUnit: (
             state: Product,

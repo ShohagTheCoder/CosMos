@@ -119,10 +119,16 @@ export class Product extends Document {
     extraDiscount?: number;
 
     @Prop({ default: true })
-    availableForSale: boolean;
+    sellEnable: boolean;
 
     @Prop({ default: true })
-    availableForPurchase: boolean;
+    purchaseEnable: boolean;
+
+    @Prop()
+    displaySaleUnit: string;
+
+    @Prop()
+    displayPurchaseUnit: string;
 
     @Prop({ default: 1 })
     quantity: number;
