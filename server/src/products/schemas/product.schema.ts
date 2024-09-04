@@ -69,6 +69,9 @@ export class Product extends Document {
     @Prop({ required: true })
     description: string;
 
+    @Prop()
+    image: string;
+
     @Prop({ type: mongoose.Schema.Types.Mixed, required: true })
     units: Record<string, Unit>;
 

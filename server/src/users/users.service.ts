@@ -1,27 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Request } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './entities/user.entity';
 import { Model } from 'mongoose';
 import { UserDocument } from './schemas/user.schema';
 import { Account, AccountDocument } from 'src/accounts/schemas/account.schema';
-
-const users = [
-    {
-        id: 1,
-        name: 'Shohag Ahmed',
-        password: 'pass',
-        canSell: true,
-        verify: 'Shohag Ahmed',
-    },
-    {
-        id: 2,
-        name: 'Imradul Haq Imran',
-        password: 'pass',
-        canSell: false,
-        verify: 'Shohag Ahmed',
-    },
-];
 
 @Injectable()
 export class UsersService {
@@ -53,13 +36,16 @@ export class UsersService {
         return this.userModel.find();
     }
 
-    findOne(id: number) {
-        return this.userModel.findById(id);
+    async findOne(id: string) {
+        // return await this.userModel.findById(id);
+        const user = (await this.userModel.findById(id)).toObject();
+        const { password, ...result } = user;
+        return result;
     }
 
     async findByUsername(username: string) {
-        // return await this.userModel.findOne({ fullname: username });
-        return users.find((user) => user.name == username);
+        const user = await this.userModel.findOne({ name: username }).exec();
+        return user ? user.toObject() : null;
     }
 
     update(id: number, updateUserDto: UpdateUserDto) {

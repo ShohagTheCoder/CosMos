@@ -17,12 +17,12 @@ import { ProductsService } from './products.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { SellerGuard } from 'src/auth/guards/seller.guard';
 
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller('products')
 export class ProductsController {
     constructor(private readonly productsService: ProductsService) {}
 
-    @UseGuards(SellerGuard)
+    // @UseGuards(SellerGuard)
     @Get()
     findAll() {
         return this.productsService.findAll();

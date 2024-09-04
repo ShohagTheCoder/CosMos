@@ -39,3 +39,11 @@ export const fetchCustomers = async () => {
         handleError(error, "Faild to fetch customers");
     }
 };
+export const fetchUser = async (id: string) => {
+    try {
+        const response = await apiClient.get(`users/${id}`);
+        return response.data;
+    } catch (error) {
+        handleError(error, "Faild to fetch users");
+    }
+};

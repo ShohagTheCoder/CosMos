@@ -8,12 +8,12 @@ import { CustomersModule } from './customers/customers.module';
 import { UsersModule } from './users/users.module';
 import { SuppliersModule } from './suppliers/suppliers.module';
 import { StocksModule } from './stocks/stocks.module';
-import { PurchasesModule } from './purchases/purchases.module';
 import { BrandsModule } from './brands/brands.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { AccountsModule } from './accounts/accounts.module';
 import { TrashModule } from './trash/trash.module';
 import { AuthModule } from './auth/auth.module';
+import { PurchasesModule } from './purchases/purchases.module';
 
 @Module({
     imports: [

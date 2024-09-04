@@ -12,7 +12,6 @@ export class SellsService {
     constructor(
         @InjectModel(Sell.name) private sellModel: Model<SellDocument>,
         @InjectModel(Stock.name)
-        private stockModel: Model<StockDocument>,
         private accountsService: AccountsService,
         private stocksService: StocksService,
     ) {}

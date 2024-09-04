@@ -3,12 +3,18 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Trash, TrashDocument } from './schemas/trash.schema';
 import { Product, ProductDocument } from 'src/products/schemas/product.schema';
+import {
+    Supplier,
+    SupplierDocument,
+} from 'src/suppliers/schemas/supplier.schema';
 
 @Injectable()
 export class TrashService {
     constructor(
         @InjectModel(Trash.name) private trashModel: Model<TrashDocument>,
         @InjectModel(Product.name) private productModel: Model<ProductDocument>,
+        @InjectModel(Supplier.name)
+        private supplierModel: Model<SupplierDocument>,
     ) {}
 
     async create(source: string, data: any) {
@@ -52,10 +58,10 @@ export class TrashService {
 
     private getModelByName(source: string, data: any) {
         switch (source) {
-            case 'Product':
+            case Product.name:
                 return new this.productModel(data);
-                break;
-            // Add other cases for different source collections
+            case Supplier.name:
+                return new this.supplierModel(data);
             default:
                 throw new Error('Unknown source type');
         }

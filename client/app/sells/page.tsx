@@ -1,14 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ProductWithID } from "../products/interfaces/product.interface";
 import apiClient from "../utils/apiClient";
 import { CartState } from "../store/slices/cartSlice";
 import { convertStandardToBnBD } from "../utils/numberFormat";
 import Link from "next/link";
+import Cookies from "js-cookie";
 
 export default function Sell() {
     const [sells, setSells] = useState<CartState[]>([]);
+    const userId = Cookies.get("user_id");
+    console.log(userId);
 
     useEffect(() => {
         const fetchSells = async () => {

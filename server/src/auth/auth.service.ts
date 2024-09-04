@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { verify } from 'crypto';
+import { User } from 'src/users/schemas/user.schema';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -21,13 +22,12 @@ export class AuthService {
         throw new UnauthorizedException('Invalid username or password');
     }
 
-    async login(user: any) {
+    async login(user: User) {
+        console.log(user);
         const payload = {
-            username: user.name,
-            sub: user.userId,
-            canSell: user.canSell,
-            verify: user.verify,
+            sub: user._id,
         };
+        console.log(payload);
         return { access_token: this.jwtService.sign(payload) };
     }
 }

@@ -44,6 +44,24 @@ export class StocksService {
         }
     }
 
+    async updateStockQuantityUp(
+        productId: string,
+        count: number,
+    ): Promise<void> {
+        const product = await this.productModel.findById(productId).exec();
+        const stock = await this.stockModel.findById(product.stock).exec();
+
+        if (!product || !stock) {
+            throw new NotFoundException(
+                `Product with ID ${productId} not found.`,
+            );
+        }
+
+        // Decrease the stock of the current product
+        stock.stock += count;
+        await stock.save();
+    }
+
     async findOne(id: string): Promise<Stock> {
         return this.stockModel.findById(id).exec();
     }

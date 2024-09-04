@@ -1,0 +1,19 @@
+{
+    "name": "cosmos",
+    "version": "1.0.0",
+    "description": "Point of save application CosMos.",
+    "main": "index.js",
+    "devDependencies": {
+        "concurrently": "^8.2.2",
+        "electron": "^32.0.1"
+    },
+    "scripts": {
+        "start": "next start",
+        "dev": "concurrently \"next dev\" \"npm run start-server\" \"npm run start-electron\"",
+        "start-server": "npm run --prefix server start:dev",
+        "start-electron": "electron ."
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC"
+}

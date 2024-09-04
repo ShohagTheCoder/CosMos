@@ -1,3 +1,4 @@
+import { getUserInServer } from "@/app/actions/sell/functions/apiHandlers";
 import getCartProductsTotalPrice from "@/app/functions/getCartProductsTotalPrice";
 import getCurrentMeasurement from "@/app/functions/getCurrentMeasurement";
 import getProductCount from "@/app/functions/getProductCount";
@@ -5,6 +6,7 @@ import getUpdatedProduct from "@/app/functions/getUpdatedProduct";
 import { Customer, CustomerWithId } from "@/app/interfaces/customer.inerface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { cookies } from "next/headers";
 
 export enum CartActionTypes {
     sell = "sell",
@@ -21,10 +23,6 @@ export interface CartState {
     selectedProductIndex: number;
     due: number;
     paid: number;
-    user: {
-        _id: string;
-        name: string;
-    };
     customerAccount: any;
     action: CartActionTypes;
 }
@@ -35,10 +33,6 @@ const initialState: CartState = {
     totalPrice: 0,
     paid: 0,
     due: 0,
-    user: {
-        _id: "66c6d86cb0f83bdb4ed36c96",
-        name: "Shohag Ahmed",
-    },
     customerAccount: {
         balance: 0,
     },
@@ -315,6 +309,11 @@ const cartSlice = createSlice({
         ) => {
             state.action = action.payload;
         },
+        setUser: (state: CartState, action) => {
+            if (action.payload._id) {
+                state.user = action.payload;
+            }
+        },
     },
 });
 
@@ -337,5 +336,6 @@ export const {
     addDiscount,
     addExtraDiscount,
     changeAction,
+    setUser,
 } = cartSlice.actions;
 export default cartSlice.reducer;
