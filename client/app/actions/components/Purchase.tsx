@@ -4,8 +4,8 @@ import Sidebar from "@/app/components/Sidebar";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import {
     addSupplier,
-    addSupplierAccount,
     addToPurchase,
+    addToPurchaseProducts,
     changeActiveProduct,
     decrementQuantity,
     incrementQuantity,
@@ -35,18 +35,25 @@ import CustomerCard from "./components/CustomerCard";
 import PurchaseProducts from "./components/PurchaseProducts";
 import SupplierDetails from "./components/SupplierDetails";
 import PurchaseProductsCard from "./PurchaseProductCard";
+import { arrayToObjectById } from "../functions/arrayToObjectById";
+import SuppliersCard from "./components/SuppliersCard";
 
 interface PurchaseProps {
-    products: Record<string, ProductWithID>;
-    suppliers: Record<string, SupplierWithId>;
+    productsArray: ProductWithID[];
+    suppliersArray: SupplierWithId[];
     receiver: any;
 }
 
 export default function Purchase({
-    products,
-    suppliers,
+    productsArray,
+    suppliersArray,
     receiver,
 }: PurchaseProps) {
+    const products = arrayToObjectById(
+        productsArray,
+        (item: ProductWithID) => !item.purchaseEnable
+    );
+    const suppliers = arrayToObjectById(suppliersArray);
     let [command, setCommand] = useState("");
     const [filteredSuppliers, setFilteredSuppliers] = useState(suppliers);
     const dispatch = useDispatch();
@@ -84,7 +91,7 @@ export default function Purchase({
         return () => {
             window.removeEventListener("keydown", () => {});
         };
-    }, [dispatch, receiver]);
+    }, [receiver]);
 
     useEffect(() => {
         if (command.startsWith(" ") && suppliers) {
@@ -135,16 +142,11 @@ export default function Purchase({
         if (purchase.selectedProductIndex > 0) {
             dispatch(resetSelectedProductIndex());
         }
-    }, [
-        command,
-        products,
-        suppliers,
-        dispatch,
-        isSuppliers,
-        purchase.selectedProductIndex,
-    ]);
+    }, [command]);
 
     async function handleCompletePurchase() {
+        console.log(purchase);
+        return;
         try {
             // let purchase = { ...purchase };
             // if (!purchase.supplier) {
@@ -169,11 +171,7 @@ export default function Purchase({
     async function handleAddSupplier() {
         if (filteredSuppliers) {
             const supplier = Object.values(filteredSuppliers)[0];
-            const { data } = await apiClient.get(
-                `accounts/${supplier.account}`
-            );
             dispatch(addSupplier(supplier));
-            dispatch(addSupplierAccount(data));
         }
     }
 
@@ -260,13 +258,18 @@ export default function Purchase({
                 break;
             case "F9":
                 e.preventDefault();
-                window.location.href = "./purchase";
+                window.location.href = "./sell";
                 break;
             case "F10":
                 e.preventDefault();
                 window.location.href = "./return";
                 break;
             case "Enter":
+                if (command == "++") {
+                    handleAddSupplerProducts();
+                    setCommand("");
+                    break;
+                }
                 if (
                     !isSuppliers &&
                     command.length > 0 &&
@@ -304,6 +307,17 @@ export default function Purchase({
         }
     }
 
+    function handleAddSupplerProducts() {
+        if (purchase.supplier?.products) {
+            // Extract the products from the products object using the IDs
+            const supplierProducts = purchase.supplier.products
+                .map((id) => products[id])
+                .filter((product) => product !== undefined);
+
+            dispatch(addToPurchaseProducts(supplierProducts));
+        }
+    }
+
     function handleKeyUp(e: any): void {
         switch (e.key) {
             case "Shift":
@@ -334,6 +348,9 @@ export default function Purchase({
                                     Purchase
                                 </p>
                                 <Link href={"/"}>Home</Link>
+                                <Link className="ms-3" href={"/actions/sell"}>
+                                    Sell
+                                </Link>
                                 <Link className="ms-3" href={"/products"}>
                                     Products
                                 </Link>
@@ -368,8 +385,8 @@ export default function Purchase({
 
                             {isSuppliers ? (
                                 <div>
-                                    <CustomerCard
-                                        customers={filteredSuppliers}
+                                    <SuppliersCard
+                                        supplilers={filteredSuppliers}
                                     />
                                 </div>
                             ) : (
@@ -393,7 +410,7 @@ export default function Purchase({
                                     onChange={(e) => setNote(e.target.value)}
                                     rows={2}
                                     cols={50}
-                                    placeholder="বিক্রি সম্পর্কে কিছু মনে রাখার আছে কি?"
+                                    placeholder="কেনা সম্পর্কে কিছু লিখুন"
                                 ></textarea>
                             </div>
                             <PurchaseDetails />

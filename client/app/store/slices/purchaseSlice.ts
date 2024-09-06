@@ -18,25 +18,16 @@ export interface PurchaseState {
     totalPrice: number;
     supplier?: {
         name: string;
+        products: string[];
     };
     activeProduct?: string;
     selectedProductIndex: number;
-    supplierAccount: any;
 }
 
 const initialState: PurchaseState = {
     selectedProductIndex: 0,
     products: {},
     totalPrice: 0,
-    supplierAccount: {
-        balance: 0,
-    },
-    supplier: {
-        name: "shoag",
-    },
-    receiver: {
-        name: "Shohag AHmed",
-    },
 };
 
 const purchaseSlice = createSlice({
@@ -68,6 +59,25 @@ const purchaseSlice = createSlice({
 
             state.totalPrice += product.subTotal;
         },
+        addToPurchaseProducts: (
+            state: PurchaseState,
+            action: PayloadAction<ProductWithID[]>
+        ) => {
+            const products = action.payload;
+            // Loop through the new products and update the state
+            products.forEach((product) => {
+                if (product.purchaseMeasurements.length > 0) {
+                    state.products[product._id] = getUpdatedPurchaseProduct(
+                        product,
+                        product.purchaseMeasurements[0].value - 1,
+                        product.purchaseMeasurements[0].unit
+                    );
+                }
+            });
+
+            // Calculate the new total price
+            state.totalPrice = getProductsTotalPrice(state.products);
+        },
         removeFromPurchase: (state, action) => {
             let productId = action.payload;
             if (productId == null) productId = state.activeProduct;
@@ -89,13 +99,6 @@ const purchaseSlice = createSlice({
             } else {
                 state.selectedProductIndex += 1;
             }
-        },
-
-        addSupplierAccount: (
-            state: PurchaseState,
-            action: PayloadAction<object>
-        ) => {
-            state.supplierAccount = action.payload;
         },
 
         selectPreviousProduct: (state, action) => {
@@ -316,6 +319,7 @@ export const {
     updatePaid,
     updateQuantity,
     incrementQuantity,
+    addToPurchaseProducts,
     decrementQuantity,
     clearPurchase,
     addSupplier,
@@ -324,7 +328,6 @@ export const {
     selectNexProduct,
     resetSelectedProductIndex,
     updateUnit,
-    addSupplierAccount,
     shiftMeasurementTo,
     addDiscount,
     addExtraDiscount,

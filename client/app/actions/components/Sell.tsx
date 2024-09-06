@@ -34,14 +34,24 @@ import Notification, {
 import SupplierCard from "./components/SupplierCard";
 import { logout } from "../functions/authHandlers";
 import ProductsCard from "./ProductsCard";
+import { arrayToObjectById } from "../functions/arrayToObjectById";
 
 interface SellProps {
-    products: Record<string, ProductWithID>;
-    customers: Record<string, CustomerWithId>;
+    productsArray: ProductWithID[];
+    customersArray: CustomerWithId[];
     user: any;
 }
 
-export default function Sell({ products, customers, user }: SellProps) {
+export default function Sell({
+    productsArray,
+    customersArray,
+    user,
+}: SellProps) {
+    const products = arrayToObjectById(
+        productsArray,
+        (item) => !item.sellEnable
+    );
+    const customers = arrayToObjectById(customersArray);
     let [command, setCommand] = useState("");
     const [filteredCustomers, setFilteredCustomers] = useState(customers);
     const dispatch = useDispatch();
@@ -79,7 +89,7 @@ export default function Sell({ products, customers, user }: SellProps) {
         return () => {
             window.removeEventListener("keydown", () => {});
         };
-    }, [dispatch, user]);
+    }, [user]);
 
     useEffect(() => {
         if (command.startsWith(" ") && customers) {
@@ -130,14 +140,7 @@ export default function Sell({ products, customers, user }: SellProps) {
         if (cart.selectedProductIndex > 0) {
             dispatch(resetSelectedProductIndex());
         }
-    }, [
-        command,
-        products,
-        customers,
-        dispatch,
-        isCustomers,
-        cart.selectedProductIndex,
-    ]);
+    }, [command]);
 
     async function handleCompleteSell() {
         try {
@@ -326,13 +329,19 @@ export default function Sell({ products, customers, user }: SellProps) {
                         <div className="col-span-8 lg:col-span-5">
                             <div className="p-3 border-2 border-dashed border-slate-500 mb-3">
                                 <Link href={"/"}>Home</Link>
+                                <Link
+                                    className="ms-3"
+                                    href={"/actions/purchase"}
+                                >
+                                    Purchase
+                                </Link>
                                 <Link className="ms-3" href={"/products"}>
                                     Products
                                 </Link>
                                 <Link className="ms-3" href={"/customers"}>
                                     Customers
                                 </Link>
-                                <p className="inline-block mx-4 bg-green-600 py-2 px-3">
+                                <p className="inline-block mx-4 bg-green-700 py-2 px-3">
                                     {user.name}
                                 </p>
                                 <button
@@ -389,7 +398,7 @@ export default function Sell({ products, customers, user }: SellProps) {
                                     onChange={(e) => setNote(e.target.value)}
                                     rows={2}
                                     cols={50}
-                                    placeholder="বিক্রি সম্পর্কে কিছু মনে রাখার আছে কি?"
+                                    placeholder="বিক্রি সম্পর্কে কিছু লিখুন"
                                 ></textarea>
                             </div>
                             <SellDetails />

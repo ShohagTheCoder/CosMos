@@ -44,12 +44,12 @@ function ProductsCard({ selected, callback, products }: ProductsCardProps) {
                         <p className="font-semibold text-xl text-green-400 inline-block">
                             {convertStandardToBnBD(
                                 product.price *
-                                    product.units[product.unit].value
+                                    product.units[product.displaySaleUnit].value
                             )}
                             <span> ৳</span>
                         </p>
                         <span className="ms-2">
-                            1 {product.units[product.unit].label}
+                            1 {product.units[product.displaySaleUnit].label}
                         </span>
                     </div>
                 </div>

@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { setProduct } from "@/app/store/slices/productSlice";
 import General from "../../components/General";
-import UnitsTab from "../components/UnitsTab";
+import UnitsTab from "../../components/UnitsTab";
 import Resources from "../../create/components/Resources";
 import CreateProduct from "../../create/components/CreateProduct";
 import { RootState } from "@/app/store/store";

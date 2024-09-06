@@ -1,19 +1,41 @@
 {
-    "name": "cosmos",
+    "name": "CosMos",
     "version": "1.0.0",
-    "description": "Point of save application CosMos.",
-    "main": "index.js",
+    "description": "Point of sale application CosMos.",
+    "main": "main.js",
     "devDependencies": {
         "concurrently": "^8.2.2",
-        "electron": "^32.0.1"
+        "electron": "^32.0.2",
+        "electron-builder": "^25.0.5"
     },
     "scripts": {
         "start": "next start",
-        "dev": "concurrently \"next dev\" \"npm run start-server\" \"npm run start-electron\"",
-        "start-server": "npm run --prefix server start:dev",
-        "start-electron": "electron ."
+        "dev": "concurrently \"cd client && npm run dev\" \"cd server && npm run dev\" \"npm run start-electron\"",
+        "start-server": "cd server && npm run start:dev",
+        "start-electron": "electron .",
+        "build": "cd client && next build && cd .. && electron-builder",
+        "postinstall": "electron-builder install-app-deps",
+        "dist": "npm run build && electron-builder"
+    },
+    "build": {
+        "appId": "com.yourapp.id",
+        "files": [
+            "client/.next/",
+            "client/public/",
+            "server/",
+            "package.json",
+            "main.js"
+        ],
+        "directories": {
+            "buildResources": "resources"
+        }
     },
     "keywords": [],
     "author": "",
-    "license": "ISC"
+    "license": "ISC",
+    "dependencies": {
+        "next": "^14.2.8",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1"
+    }
 }

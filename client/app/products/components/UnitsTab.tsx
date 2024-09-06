@@ -11,10 +11,9 @@ import {
 import { RootState } from "@/app/store/store";
 import SelectInput from "@/app/elements/select/SelectInput";
 
-function UnitsTab() {
+export default function UnitsTab() {
     const dispatch = useDispatch();
     const product = useSelector((state: RootState) => state.product);
-    console.log(product);
 
     return (
         <div className="tab bg-gray-800 rounded-lg shadow-lg">
@@ -115,7 +114,7 @@ function UnitsTab() {
                         {product.purchaseEnable ? (
                             <div className="col-span-3">
                                 <SelectInput
-                                    value={product.purchaseUnitsBase!}
+                                    value={product.displayPurchaseUnit!}
                                     onChange={(e) =>
                                         dispatch(
                                             updateProductField({
@@ -125,7 +124,7 @@ function UnitsTab() {
                                         )
                                     }
                                     options={{
-                                        label: "Default purchase price unit",
+                                        label: "Display purchase price unit",
                                         options: Object.values(
                                             product.units
                                         ).map((unit: Unit) => ({
@@ -135,7 +134,7 @@ function UnitsTab() {
                                     }}
                                 />
                                 <p className="mt-2 text-gray-400">
-                                    Display purchase rice:{" "}
+                                    Display purchase price:{" "}
                                     <span className="font-semibold text-white">
                                         {product.price *
                                             product.units[
@@ -153,5 +152,3 @@ function UnitsTab() {
         </div>
     );
 }
-
-export default UnitsTab;

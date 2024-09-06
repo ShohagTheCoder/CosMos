@@ -3,6 +3,7 @@ import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import apiClient from "@/app/utils/apiClient";
 import { AxiosResponse } from "axios";
 import { arrayToObjectById } from "./arrayToObjectById";
+import { SupplierWithId } from "@/app/interfaces/supplier.interface";
 
 // Utility function to handle errors
 const handleError = (error: any, message: string) => {
@@ -11,14 +12,15 @@ const handleError = (error: any, message: string) => {
     throw new Error(message);
 };
 
-export async function getProductsInServer() {
+export async function getProductsInServer(): Promise<ProductWithID[]> {
     try {
         const res: AxiosResponse<ProductWithID[]> = await apiClient.get(
             "products"
         );
-        return arrayToObjectById(res.data);
+        return res.data;
     } catch (error) {
-        handleError(error, "Faild to fetch products");
+        handleError(error, "Failed to fetch products");
+        return []; // Return an empty object if there's an error
     }
 }
 
@@ -27,17 +29,21 @@ export async function getCustomersInServer() {
         const res: AxiosResponse<CustomerWithId[]> = await apiClient.get(
             "customers"
         );
-        return arrayToObjectById(res.data);
+        return res.data;
     } catch (error) {
         handleError(error, "Faild to fetch customers");
+        return []; // Return an empty object if there's an error
     }
 }
 export async function getSuppliersInServer() {
     try {
-        const res: AxiosResponse<object[]> = await apiClient.get("suppliers");
-        return arrayToObjectById(res.data);
+        const res: AxiosResponse<SupplierWithId[]> = await apiClient.get(
+            "suppliers"
+        );
+        return res.data;
     } catch (error) {
         handleError(error, "Faild to fetch suppliers");
+        return [];
     }
 }
 

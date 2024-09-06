@@ -217,7 +217,7 @@ export default function PurchaseProducts() {
                                 </div>
                             </div>
                             <div className="flex flex-wrap items-center ms-3">
-                                <p className="">
+                                <div className="">
                                     {product.saleUnitsBase == product.unit ? (
                                         ""
                                     ) : (
@@ -238,7 +238,7 @@ export default function PurchaseProducts() {
                                                 product.saleUnitsBase}
                                         </div>
                                     )}
-                                </p>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -11,17 +11,16 @@ export async function POST(req: Request) {
         });
         const access_token = data.access_token;
         if (access_token) {
-            return NextResponse.json(
-                {
-                    success: true,
-                    message: "Authentication successful",
-                },
-                {
-                    headers: {
-                        "Set-Cookie": `access_token=${access_token}; path=/; Max-Age=43200`,
-                    },
-                }
-            );
+            const response = NextResponse.json({ success: true });
+
+            // Set a cookie with the token or session identifier
+            response.cookies.set("access_token", access_token, {
+                httpOnly: true,
+                path: "/",
+                maxAge: 60 * 60 * 24, // 1 day
+            });
+
+            return response;
         } else {
             return NextResponse.json({
                 success: false,
