@@ -145,19 +145,14 @@ export default function Purchase({
     }, [command]);
 
     async function handleCompletePurchase() {
-        console.log(purchase);
-        return;
+        // console.log(purchase);
+        // return;
         try {
-            // let purchase = { ...purchase };
-            // if (!purchase.supplier) {
-            //     purchase.paid = purchase.totalPrice;
-            //     purchase.due = 0;
-            // }
-            // await apiClient.post("/purchases", purchase);
-            // setNotification({
-            //     type: SUCCESS,
-            //     message: "Purchase created successfully",
-            // });
+            await apiClient.post("/purchases", purchase);
+            setNotification({
+                type: SUCCESS,
+                message: "Purchase created successfully",
+            });
             // setTimeout(() => {
             //     window.location.reload();
             // }, 3000);

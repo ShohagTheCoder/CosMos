@@ -1,7 +1,9 @@
-import { ProductWithID } from "@/app/products/interfaces/product.interface";
+import Product, {
+    ProductWithID,
+} from "@/app/products/interfaces/product.interface";
 
 export default function getProductUnitpurchasePrice(
-    product: ProductWithID
+    product: ProductWithID | Product
 ): number {
     const units = product.units;
     const unit = units[product.unit];

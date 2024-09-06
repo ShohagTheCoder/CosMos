@@ -20,7 +20,7 @@ export class PurchasesService {
         try {
             // Update stock for each product in cart
             for (const product of Object.values(createPurchaseDto.products)) {
-                await this.stocksService.updateStockQuantity(
+                await this.stocksService.updateStockQuantityUp(
                     product._id.toString(),
                     product.count,
                 );

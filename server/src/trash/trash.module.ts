@@ -8,6 +8,7 @@ import {
     Supplier,
     SupplierSchema,
 } from 'src/suppliers/schemas/supplier.schema';
+import { Stock, StockSchema } from 'src/stocks/schemas/stocks.schema';
 
 @Module({
     imports: [
@@ -15,6 +16,7 @@ import {
             { name: Trash.name, schema: TrashSchema },
             { name: Product.name, schema: ProductSchema },
             { name: Supplier.name, schema: SupplierSchema },
+            { name: Stock.name, schema: StockSchema },
         ]),
     ],
     controllers: [TrashController],

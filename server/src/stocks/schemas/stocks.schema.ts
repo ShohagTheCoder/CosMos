@@ -1,8 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type StockDocument = Stock & Document;
-
 @Schema()
 export class Stock extends Document {
     @Prop()
@@ -51,4 +49,5 @@ export class Stock extends Document {
     lastStockedDate?: Date;
 }
 
+export type StockDocument = Stock & Document;
 export const StockSchema = SchemaFactory.createForClass(Stock);

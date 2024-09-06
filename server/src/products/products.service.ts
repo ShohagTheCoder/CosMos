@@ -5,15 +5,15 @@ import { Model } from 'mongoose';
 // import { CreateProductDto } from './dto/CreateProductDto';
 // import { UpdateProductDto } from './dto/UpdateProductDto';
 import { Product, ProductDocument } from './schemas/product.schema';
-import { StockDocument } from 'src/stocks/schemas/stocks.schema';
+import { Stock, StockDocument } from 'src/stocks/schemas/stocks.schema';
 import { TrashService } from 'src/trash/trash.service';
 
 @Injectable()
 export class ProductsService {
     constructor(
-        @InjectModel('Product')
+        @InjectModel(Product.name)
         private readonly productModel: Model<ProductDocument>,
-        @InjectModel('Stock')
+        @InjectModel(Stock.name)
         private readonly stockModel: Model<StockDocument>,
         private trashService: TrashService,
     ) {}
@@ -82,11 +82,19 @@ export class ProductsService {
         if (!product) {
             throw new Error('Product not found');
         }
+        const stock = await this.stockModel.findById(product.stock);
+        if (!stock) {
+            throw new Error('Product stock not found');
+        }
 
         // Move the product to the trash before deleting
-        await this.trashService.create(Product.name, product);
+        await this.trashService.trashGroup([
+            { source: Product.name, data: product },
+            { source: Stock.name, data: stock },
+        ]);
 
         // Delete the product and return the result
-        return product.deleteOne();
+        await stock.deleteOne();
+        return await product.deleteOne();
     }
 }

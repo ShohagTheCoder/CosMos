@@ -7,11 +7,13 @@ import Notification, {
     NotificationProps,
 } from "../elements/notification/Notification";
 import { ERROR, SUCCESS } from "../utils/constants/message";
+import { connected } from "process";
 
 interface Trash {
     _id: string;
     source: string;
     data: any;
+    connect?: string;
 }
 
 export default function Trashes() {
@@ -37,20 +39,36 @@ export default function Trashes() {
     }, []);
 
     async function handleTrashRestore(trash: Trash, index: number) {
+        const connect = trash.connect;
+
         try {
             await apiClient.get(`trash/restore/${trash._id}`);
             setNotification({
                 type: SUCCESS,
                 message: `${trash.source} restored successfully`,
             });
-            setTrashes((prevTrash) => [
-                ...prevTrash.slice(0, index),
-                ...prevTrash.slice(index + 1),
-            ]);
+
+            // Create a new array to update the state
+            let updatedTrashes = [...trashes];
+
+            // If `connect` is defined, filter out items with the same `connect` value
+            if (connect) {
+                updatedTrashes = updatedTrashes.filter(
+                    (item) => item.connect !== connect
+                );
+            } else {
+                // If no `connect`, only remove the restored item itself
+                updatedTrashes = updatedTrashes.filter(
+                    (item) => item._id !== trash._id
+                );
+            }
+
+            // Update the state with the new array
+            setTrashes(updatedTrashes);
         } catch (error) {
             setNotification({
                 type: ERROR,
-                message: `Faild to restore ${trash.source}`,
+                message: `Failed to restore ${trash.source}`,
             });
         }
     }

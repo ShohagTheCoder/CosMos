@@ -108,10 +108,16 @@ export class SuppliersService {
                 throw new Error('Supplier not found');
             }
 
+            const account = await this.accountModel.findById(supplier.account);
+
             // Move the product to the trash before deleting
-            await this.trashService.create(Supplier.name, supplier);
+            await this.trashService.trashGroup([
+                { source: Supplier.name, data: supplier },
+                { source: Account.name, data: account },
+            ]);
 
             // Delete the supplier and return the result
+            await account.deleteOne();
             return await supplier.deleteOne();
         } catch (error) {
             throw new Error('Failed to delete supplier'); // More descriptive error message
