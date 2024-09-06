@@ -25,13 +25,10 @@ import Notification, {
     NotificationProps,
 } from "@/app/elements/notification/Notification";
 import { logout } from "../functions/authHandlers";
-import ProductsCard from "./ProductsCard";
 import { SupplierWithId } from "@/app/interfaces/supplier.interface";
-import SupplierCard from "./components/SupplierCard";
 import SellReceipt from "@/app/components/bills/SellReceipt";
 import PurchaseDetails from "./components/purchaseDetails";
 import { useEffect, useRef, useState } from "react";
-import CustomerCard from "./components/CustomerCard";
 import PurchaseProducts from "./components/PurchaseProducts";
 import SupplierDetails from "./components/SupplierDetails";
 import PurchaseProductsCard from "./PurchaseProductCard";
@@ -329,7 +326,7 @@ export default function Purchase({
         <main>
             <SellReceipt />
             <div className="print:hidden">
-                <Sidebar />
+                <Sidebar active="purchase" />
                 <Notification
                     type={notification.type}
                     message={notification.message}

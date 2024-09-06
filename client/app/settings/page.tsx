@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Sidebar from "../components/Sidebar";
 
 interface Settings {
     darkTheme: boolean;
@@ -33,6 +34,7 @@ function Settings() {
 
     return (
         <main>
+            <Sidebar active={"settings"} />
             <div className="max-w-[600px] mx-auto my-5 pt-5 ps-6 pe-6 pb-1 bg-slate-800 rounded">
                 <p className="text-center text-xl">Settings</p>
                 <div className="my-4 border-b-2 border-dashed border-slate-600"></div>

@@ -3,6 +3,7 @@ import React from "react";
 import Chart from "./components/Chart";
 import LineChart from "./components/LineChart";
 import PieChart from "./components/PieChar";
+import Sidebar from "./components/Sidebar";
 
 export default function Dashboard() {
     // Assuming you have functions to fetch data from your API
@@ -58,6 +59,7 @@ export default function Dashboard() {
 
     return (
         <main className="bg-gray-900">
+            <Sidebar active="home" />
             <div className="2xl:container mx-auto py-8 px-4 text-white min-h-screen">
                 {/* Top Navigation Bar */}
                 <div className="flex justify-between items-center mb-8">

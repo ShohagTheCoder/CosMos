@@ -318,7 +318,7 @@ export default function Sell({
         <main>
             <SellReceipt />
             <div className="print:hidden">
-                <Sidebar />
+                <Sidebar active="sell" />
                 <Notification
                     type={notification.type}
                     message={notification.message}
