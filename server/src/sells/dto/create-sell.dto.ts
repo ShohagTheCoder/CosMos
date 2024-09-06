@@ -9,6 +9,7 @@ export interface CreateSellDto {
     user: {
         _id: string;
         name: string;
+        account: string;
     };
     products: object;
     due: number;

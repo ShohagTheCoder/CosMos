@@ -32,7 +32,7 @@ export class PurchasesService {
             // Create transaction from user to cart for sell's paid
             const cartToUser = await this.accountsService.sendMoney({
                 senderId: '66c6d8a0b0f83bdb4ed36c97',
-                receiverId: createPurchaseDto.receiver._id,
+                receiverId: createPurchaseDto.receiver.account,
                 amount: createPurchaseDto.totalPrice,
                 action: 'purchase',
                 note: createPurchaseDto.note,
@@ -56,8 +56,18 @@ export class PurchasesService {
         return `This action returns a #${id} purchase`;
     }
 
-    update(id: number, updatePurchaseDto: UpdatePurchaseDto) {
-        return `This action updates a #${id} purchase`;
+    async update(id: number, updatePurchaseDto: UpdatePurchaseDto) {
+        try {
+            const updatedPurchase = await this.purchaseModel.findByIdAndUpdate(
+                id,
+                updatePurchaseDto,
+                { new: true },
+            );
+            return updatedPurchase;
+        } catch (error) {
+            // Handle the error appropriately
+            throw error;
+        }
     }
 
     remove(id: number) {

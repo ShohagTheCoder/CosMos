@@ -1,10 +1,9 @@
-import { User } from 'src/users/entities/user.entity';
-
 export class CreatePurchaseDto {
     supplier: object;
     products: object;
     receiver: {
         _id: string;
+        account: string;
     };
     totalPrice: number;
     note: string;

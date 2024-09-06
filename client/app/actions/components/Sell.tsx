@@ -324,7 +324,7 @@ export default function Sell({
                     message={notification.message}
                     className="justify-center"
                 />
-                <div className="ps-[94px] 2xl:ps-[150px] pe-3 bg-gray-100 dark:bg-gray-950">
+                <div className="ps-[94px] 2xl:ps-[150px] pe-3 bg-white dark:bg-gray-950">
                     <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 gap-6 py-4 min-h-screen">
                         <div className="col-span-8 lg:col-span-5">
                             <div className="p-3 border-2 border-dashed border-slate-500 mb-3">

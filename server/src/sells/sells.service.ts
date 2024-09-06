@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Stock, StockDocument } from 'src/stocks/schemas/stocks.schema';
+import { Stock } from 'src/stocks/schemas/stocks.schema';
 import { Sell, SellDocument } from './schemas/sell.schema';
 import { CreateSellDto } from './dto/create-sell.dto';
 import { AccountsService } from 'src/accounts/accounts.service';
@@ -21,11 +21,9 @@ export class SellsService {
     }
 
     findByCustomer(id: string) {
-        // return this.sellModel.find({
-        //     'customer._id': id,
-        // });
-
-        return this.sellModel.find();
+        return this.sellModel.find({
+            'customer._id': id,
+        });
     }
 
     async findOne(id: string) {
@@ -47,7 +45,7 @@ export class SellsService {
 
             // Create transaction from user to cart for sell's paid
             const userToCart = await this.accountsService.sendMoney({
-                senderId: createSellDto.user._id,
+                senderId: createSellDto.user.account,
                 receiverId: '66c6d8a0b0f83bdb4ed36c97',
                 amount: createSellDto.paid,
                 action: 'sells',

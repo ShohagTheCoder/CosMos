@@ -14,6 +14,7 @@ import { AccountsModule } from './accounts/accounts.module';
 import { TrashModule } from './trash/trash.module';
 import { AuthModule } from './auth/auth.module';
 import { PurchasesModule } from './purchases/purchases.module';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
     imports: [
@@ -30,6 +31,7 @@ import { PurchasesModule } from './purchases/purchases.module';
         AccountsModule,
         TrashModule,
         AuthModule,
+        SettingsModule,
     ],
     controllers: [AppController],
     providers: [AppService],
