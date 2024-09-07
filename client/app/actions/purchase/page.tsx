@@ -1,7 +1,7 @@
 import React from "react";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import {
-    getProductsInServer,
+    getProductsInServerForPurchase,
     getSuppliersInServer,
     getUserInServer,
 } from "./../functions/apiHandlers";
@@ -10,7 +10,7 @@ import Purchase from "../components/Purchase";
 import { SupplierWithId } from "@/app/interfaces/supplier.interface";
 
 async function page() {
-    const products: ProductWithID[] = await getProductsInServer();
+    const products: ProductWithID[] = await getProductsInServerForPurchase();
     const suppliers: SupplierWithId[] = await getSuppliersInServer();
 
     const cookiesList = cookies();

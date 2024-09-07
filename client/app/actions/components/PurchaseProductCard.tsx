@@ -1,5 +1,4 @@
 import getProductUnitpurchasePrice from "@/app/functions/purchase/getProductUnitPrice";
-import getPurchaseProductUnitpurchasePrice from "@/app/functions/purchase/getProductUnitPrice";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { convertStandardToBnBD } from "@/app/utils/numberFormat";
 import React from "react";
@@ -47,14 +46,23 @@ export default function PurchaseProductsCard({
                         <p className="text-gray-300 text-base mb-1">
                             {product.description}
                         </p>
+                        <p>
+                            #{" "}
+                            {product.stock.stock /
+                                product.units[product.displayPurchaseUnit]
+                                    .value}{" "}
+                            {product.displayPurchaseUnit}
+                        </p>
                         <p className="font-semibold text-xl text-green-400 inline-block">
                             {convertStandardToBnBD(
-                                getProductUnitpurchasePrice(product)
+                                getProductUnitpurchasePrice(product) *
+                                    product.units[product.displayPurchaseUnit]
+                                        .value
                             )}
                             <span> ৳</span>
                         </p>
                         <span className="ms-2">
-                            1 {product.units[product.unit].label}
+                            1 {product.displayPurchaseUnit}
                         </span>
                     </div>
                 </div>

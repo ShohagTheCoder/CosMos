@@ -77,7 +77,11 @@ export interface ProductWithID {
     price: number;
     discount: number;
     extraDiscount: number;
-    stock: string;
+    stock:
+        | string
+        | {
+              stock: number;
+          };
     quantity: number;
     count: number;
     subTotal: number;

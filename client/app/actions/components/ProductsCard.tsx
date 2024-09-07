@@ -1,3 +1,4 @@
+import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { convertStandardToBnBD } from "@/app/utils/numberFormat";
 import React from "react";
@@ -41,9 +42,16 @@ function ProductsCard({ selected, callback, products }: ProductsCardProps) {
                         <p className="text-gray-300 text-base mb-1">
                             {product.description}
                         </p>
+                        <p>
+                            #{" "}
+                            {product.stock.stock /
+                                product.units[product.displaySaleUnit]
+                                    .value}{" "}
+                            {product.displaySaleUnit}
+                        </p>
                         <p className="font-semibold text-xl text-green-400 inline-block">
                             {convertStandardToBnBD(
-                                product.price *
+                                getProductUnitPrice(product) *
                                     product.units[product.displaySaleUnit].value
                             )}
                             <span> ৳</span>

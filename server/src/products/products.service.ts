@@ -1,9 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-// import { Product } from './interfaces/product.interface';
-// import { CreateProductDto } from './dto/CreateProductDto';
-// import { UpdateProductDto } from './dto/UpdateProductDto';
 import { Product, ProductDocument } from './schemas/product.schema';
 import { Stock, StockDocument } from 'src/stocks/schemas/stocks.schema';
 import { TrashService } from 'src/trash/trash.service';
@@ -18,8 +15,26 @@ export class ProductsService {
         private trashService: TrashService,
     ) {}
 
-    findAll() {
-        return this.productModel.find();
+    async findAll() {
+        try {
+            return await this.productModel
+                .find()
+                .select('-purchasePrices -purchaseMeasurements')
+                .populate('stock')
+                .exec();
+        } catch (error) {
+            console.error('Error finding products:', error);
+            throw error;
+        }
+    }
+
+    async findAllForPurchase() {
+        try {
+            return await this.productModel.find().populate('stock').exec();
+        } catch (error) {
+            console.error('Error finding products for purchase:', error);
+            throw error;
+        }
     }
 
     findOne(id: string) {

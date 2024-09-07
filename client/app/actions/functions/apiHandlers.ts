@@ -2,7 +2,6 @@ import { CustomerWithId } from "@/app/interfaces/customer.inerface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import apiClient from "@/app/utils/apiClient";
 import { AxiosResponse } from "axios";
-import { arrayToObjectById } from "./arrayToObjectById";
 import { SupplierWithId } from "@/app/interfaces/supplier.interface";
 
 // Utility function to handle errors
@@ -16,6 +15,19 @@ export async function getProductsInServer(): Promise<ProductWithID[]> {
     try {
         const res: AxiosResponse<ProductWithID[]> = await apiClient.get(
             "products"
+        );
+        return res.data;
+    } catch (error) {
+        handleError(error, "Failed to fetch products");
+        return []; // Return an empty object if there's an error
+    }
+}
+export async function getProductsInServerForPurchase(): Promise<
+    ProductWithID[]
+> {
+    try {
+        const res: AxiosResponse<ProductWithID[]> = await apiClient.get(
+            "products/for-purchase"
         );
         return res.data;
     } catch (error) {
