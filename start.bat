@@ -1,3 +1,1 @@
-@echo off
-cd /d %~d0%~p0
-node start.js
+@REM start node start.js
