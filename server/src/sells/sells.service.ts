@@ -34,10 +34,12 @@ export class SellsService {
         try {
             // Update stock for each product in cart
             for (const product of Object.values(createSellDto.products)) {
-                await this.stocksService.updateStockQuantity(
-                    product._id.toString(),
-                    product.count,
-                );
+                if (product.purchaseEnable) {
+                    await this.stocksService.updateStockQuantity(
+                        product._id.toString(),
+                        product.count,
+                    );
+                }
             }
 
             // Create and save the new sell

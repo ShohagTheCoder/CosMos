@@ -2,7 +2,9 @@ import Product, {
     ProductWithID,
 } from "../products/interfaces/product.interface";
 
-export default function getProductUnitPrice(product: Product): number {
+export default function getProductUnitPrice(
+    product: Product | ProductWithID
+): number {
     const units = product.units;
     const unit = units[product.unit];
     const prices = product.prices;

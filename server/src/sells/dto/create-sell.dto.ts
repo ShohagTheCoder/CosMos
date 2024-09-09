@@ -1,3 +1,5 @@
+import { Product } from 'src/products/schemas/product.schema';
+
 // Define the type for createSellDto
 export interface CreateSellDto {
     totalPrice: number;
@@ -11,7 +13,7 @@ export interface CreateSellDto {
         name: string;
         account: string;
     };
-    products: object;
+    products: Record<string, Product>;
     due: number;
     paid: number;
     note: string;

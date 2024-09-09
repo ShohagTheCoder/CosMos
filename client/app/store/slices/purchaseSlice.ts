@@ -1,6 +1,7 @@
 import getCurrentMeasurement from "@/app/functions/getCurrentMeasurement";
 import getProductsTotalPrice from "@/app/functions/getProductsTotalPrice";
 import getUpdatedPurchaseProduct from "@/app/functions/purchase/getUpdatedPurchaseProduct";
+import { Supplier } from "@/app/interfaces/supplier.interface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
@@ -16,10 +17,7 @@ export interface PurchaseState {
     };
     products: Record<string, ProductWithID>;
     totalPrice: number;
-    supplier?: {
-        name: string;
-        products: string[];
-    };
+    supplier?: Supplier;
     activeProduct?: string;
     selectedProductIndex: number;
 }

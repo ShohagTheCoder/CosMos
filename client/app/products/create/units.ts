@@ -14,7 +14,6 @@ const units: UnitBases = {
             value: 0.001,
             dynamic: false,
             dynamicValue: false,
-            base: "kg",
         },
         kg: {
             label: "Kilogram",
@@ -22,7 +21,6 @@ const units: UnitBases = {
             value: 1,
             dynamic: false,
             dynamicValue: false,
-            base: "kg",
         },
         qt: {
             label: "Quintal",
@@ -30,7 +28,6 @@ const units: UnitBases = {
             value: 100,
             dynamic: false,
             dynamicValue: false,
-            base: "kg",
         },
         bag: {
             label: "Bag",
@@ -38,7 +35,6 @@ const units: UnitBases = {
             value: 50,
             dynamic: false,
             dynamicValue: true,
-            base: "kg",
         },
         undefined: {
             label: "Undefined",
@@ -46,7 +42,6 @@ const units: UnitBases = {
             value: 1,
             dynamic: true,
             dynamicValue: true,
-            base: "kg",
         },
     },
     pices: {
@@ -56,7 +51,6 @@ const units: UnitBases = {
             value: 1,
             dynamic: false,
             dynamicValue: false,
-            base: "pcs",
         },
         box: {
             label: "Box",
@@ -64,7 +58,6 @@ const units: UnitBases = {
             value: 12,
             dynamic: false,
             dynamicValue: true,
-            base: "pcs",
         },
     },
     volume: {
@@ -74,7 +67,6 @@ const units: UnitBases = {
             value: 1,
             dynamic: false,
             dynamicValue: false,
-            base: "ltr",
         },
         btl: {
             label: "Bottle",
@@ -82,7 +74,6 @@ const units: UnitBases = {
             value: 5,
             dynamic: false,
             dynamicValue: true,
-            base: "ltr",
         },
     },
 };

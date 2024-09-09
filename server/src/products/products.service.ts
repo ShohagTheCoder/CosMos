@@ -45,7 +45,7 @@ export class ProductsService {
         const stockDto: any = {
             SKU: createProductDto.SKU, // Ensure SKU is part of CreateProductDto
             name: createProductDto.name,
-            stock: 100,
+            stock: createProductDto.purchaseEnable ? 100 : 0,
             stockLow: createProductDto.stockLow,
             stockAlert: createProductDto.stockAlert,
             lastSupplier: 'Shohag Ahmed',
