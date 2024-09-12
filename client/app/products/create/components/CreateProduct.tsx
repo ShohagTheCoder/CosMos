@@ -1,15 +1,19 @@
+"use client";
 import Button from "@/app/elements/buttons/Button";
 import NumberInput from "@/app/elements/inputs/NumberInput";
 import Notification, {
     NotificationType,
 } from "@/app/elements/notification/Notification";
+import formatDate from "@/app/functions/formatDate";
+import handleImageUpload from "@/app/functions/handleImageUpload";
 import {
     setProductProduct,
     updateProductField,
 } from "@/app/store/slices/productSlice";
 import { RootState } from "@/app/store/store";
 import apiClient from "@/app/utils/apiClient";
-import React, { useState } from "react";
+import { ERROR } from "@/app/utils/constants/message";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 function CreateProduct() {
@@ -23,29 +27,50 @@ function CreateProduct() {
         message: "This is a message",
     });
 
-    async function handleCreateProduct() {
-        console.log(product);
-        // return;
-        try {
-            const result = await apiClient.post("products", product);
-            dispatch(setProductProduct(result.data));
+    const [image, setImage] = useState<string | null>(null);
 
-            setNotification({
-                type: "success",
-                message: "Product created successfully!",
-            });
-            console.log(result.data);
-        } catch (error) {
-            setNotification({
-                type: "error",
-                message: "Failed to create product.",
-            });
-            console.error(error);
+    useEffect(() => {
+        // Retrieve base64 string from localStorage
+        const storedFile = localStorage.getItem("selectedProductImage");
+        if (storedFile) {
+            setImage(storedFile);
+        }
+    }, []);
+
+    async function handleCreateProduct() {
+        if (product.SKU.length > 4 && product.image) {
+            try {
+                if (await handleImageUpload(image, product.image!)) {
+                    // Clear the selected image
+                    localStorage.setItem("selectedProductImage", "");
+
+                    const result = await apiClient.post("products", product);
+                    dispatch(setProductProduct(result.data));
+
+                    setNotification({
+                        type: "success",
+                        message: "Product created successfully!",
+                    });
+                    console.log(result.data);
+                } else {
+                    setNotification({
+                        type: ERROR,
+                        message: "Image upload faild",
+                    });
+                }
+            } catch (error) {
+                setNotification({
+                    type: "error",
+                    message: "Failed to create product.",
+                });
+                console.error(error);
+            }
+        } else {
+            return console.log("Plesase enter SKU");
         }
     }
 
     async function handleUpdateProduct() {
-        console.log(product);
         // return;
         const update = Object.entries(product).reduce(
             (acc: any, [key, value]) => {
@@ -57,16 +82,29 @@ function CreateProduct() {
             },
             {}
         );
+
         try {
-            const result = await apiClient.patch(
-                `products/${product._id}`,
-                update
-            );
-            setNotification({
-                type: "success",
-                message: "Product updated successfully!",
-            });
-            console.log(result.data);
+            if (update.image) {
+                if (await handleImageUpload(image, update.image)) {
+                    // Clear the selected image
+                    localStorage.setItem("selectedProductImage", "");
+
+                    const result = await apiClient.patch(
+                        `products/${product._id}`,
+                        update
+                    );
+                    setNotification({
+                        type: "success",
+                        message: "Product updated successfully!",
+                    });
+                    console.log(result.data);
+                }
+            } else {
+                setNotification({
+                    type: ERROR,
+                    message: "Faild to update product image",
+                });
+            }
         } catch (error) {
             setNotification({
                 type: "error",

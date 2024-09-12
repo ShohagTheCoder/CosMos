@@ -1,1 +1,1 @@
-@REM start node start.js
+start node start.js

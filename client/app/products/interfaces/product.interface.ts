@@ -29,6 +29,7 @@ export default interface Product {
     _id?: string;
     SKU: string;
     name: string;
+    image?: string;
     description: string;
     madeIn?: string;
     units: Record<string, Unit>;
@@ -60,6 +61,7 @@ export interface ProductWithID {
     _id: string;
     SKU: string;
     name: string;
+    image: string;
     description?: string;
     madeIn?: string;
     saleUnitsBase: string;
@@ -77,11 +79,9 @@ export interface ProductWithID {
     price: number;
     discount: number;
     extraDiscount: number;
-    stock:
-        | string
-        | {
-              stock: number;
-          };
+    stock: {
+        stock: number;
+    };
     quantity: number;
     count: number;
     subTotal: number;
@@ -91,4 +91,5 @@ export interface ProductWithID {
     purchaseEnable: boolean;
     displaySaleUnit: string;
     displayPurchaseUnit: string;
+    product: Product;
 }

@@ -70,7 +70,7 @@ export class Product extends Document {
     @Prop({ required: true })
     description: string;
 
-    @Prop()
+    @Prop({ default: 'product.jpg' })
     image: string;
 
     @Prop({ type: mongoose.Schema.Types.Mixed, required: true })

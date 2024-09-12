@@ -13,6 +13,7 @@ const initialState: Product = {
     SKU: "",
     name: "",
     description: "",
+    image: "product.jpg",
     units: units.weight,
     prices: [],
     measurements: [],

@@ -57,7 +57,7 @@ function CartProduct() {
                     >
                         <div>
                             <img
-                                src="/product.jpg"
+                                src={`/images/products/${product.image}`}
                                 alt={product.name}
                                 className="w-100 object-cover mr-4"
                                 onClick={() =>

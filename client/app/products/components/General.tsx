@@ -1,4 +1,5 @@
 "use client";
+import ImageInput from "@/app/elements/inputs/ImageInput";
 import NumberInput from "@/app/elements/inputs/NumberInput";
 import TextInput from "@/app/elements/inputs/TextInput";
 import Textarea from "@/app/elements/textarea/Textarea";
@@ -6,10 +7,20 @@ import { updateProductField } from "@/app/store/slices/productSlice";
 import { RootState } from "@/app/store/store";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { ProductWithID } from "../interfaces/product.interface";
 
 function General() {
     const dispatch = useDispatch();
     const product = useSelector((state: RootState) => state.product);
+
+    let src: string | undefined | null = "/images/products/" + product.image;
+    if (product.product && product.image != product.product.image) {
+        src = null;
+    }
+
+    if (product.image != "product.jpg") {
+        src = null;
+    }
 
     return (
         <div className=" bg-gray-800 rounded-lg shadow-lg">
@@ -72,7 +83,16 @@ function General() {
                     placeholder: "Ex: 0 or 3",
                 }}
             />
-
+            <ImageInput
+                src={src}
+                localTempName="selectedProductImage"
+                callback={(image: File) => {
+                    const imageName = product.SKU + "-" + image.name;
+                    dispatch(
+                        updateProductField({ field: "image", value: imageName })
+                    );
+                }}
+            />
             <Textarea
                 value={product.description}
                 onChange={(e) =>
