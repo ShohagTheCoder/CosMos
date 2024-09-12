@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './entities/user.entity';
 import { Model } from 'mongoose';
@@ -36,10 +36,13 @@ export class UsersService {
     }
 
     async findOne(id: string) {
-        // return await this.userModel.findById(id);
-        const user = (await this.userModel.findById(id)).toObject();
-        const { password, ...result } = user;
-        return result;
+        if (id) {
+            const user = (await this.userModel.findById(id)).toObject();
+            const { password, ...result } = user;
+            return result;
+        } else {
+            throw new UnauthorizedException('Id not found');
+        }
     }
 
     async findByUsername(username: string) {
