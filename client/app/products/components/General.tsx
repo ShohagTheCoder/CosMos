@@ -5,7 +5,7 @@ import TextInput from "@/app/elements/inputs/TextInput";
 import Textarea from "@/app/elements/textarea/Textarea";
 import { updateProductField } from "@/app/store/slices/productSlice";
 import { RootState } from "@/app/store/store";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 function General() {
@@ -22,6 +22,10 @@ function General() {
     } else if (product.image) {
         src = "updated";
     }
+
+    useEffect(() => {
+        localStorage.setItem("selectedProductImage", "");
+    }, []);
 
     return (
         <div className=" bg-gray-800 rounded-lg shadow-lg">

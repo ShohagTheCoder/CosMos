@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 function CreateProduct() {
     const dispatch = useDispatch();
     const product = useSelector((state: RootState) => state.product);
+    const [disable, setDisable] = useState(false);
     const [notification, setNotification] = useState<{
         type: NotificationType;
         message: string;
@@ -38,6 +39,7 @@ function CreateProduct() {
     }, []);
 
     async function handleCreateProduct() {
+        setDisable(true);
         // console.log(product);
         // return;
         if (product.SKU.length < 4) {
@@ -66,10 +68,13 @@ function CreateProduct() {
                 message: "Failed to create product.",
             });
             console.error(error);
+        } finally {
+            setDisable(false);
         }
     }
 
     async function handleUpdateProduct() {
+        setDisable(true);
         // console.log(product);
         // return;
         const update = Object.entries(product).reduce(
@@ -107,6 +112,8 @@ function CreateProduct() {
                 message: "Failed to update product.",
             });
             console.error(error);
+        } finally {
+            setDisable(false);
         }
     }
 
@@ -150,11 +157,11 @@ function CreateProduct() {
             />
 
             {product._id ? (
-                <Button onDoubleClick={handleUpdateProduct}>
+                <Button disabled={disable} onDoubleClick={handleUpdateProduct}>
                     Update Product
                 </Button>
             ) : (
-                <Button onDoubleClick={handleCreateProduct}>
+                <Button disabled={disable} onDoubleClick={handleCreateProduct}>
                     Create Product
                 </Button>
             )}

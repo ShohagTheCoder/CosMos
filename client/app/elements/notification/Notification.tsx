@@ -1,12 +1,15 @@
 import React from "react";
 
-// Use a TypeScript enum or union type for NotificationTypes
+// Define NotificationType as before
 export type NotificationType = "none" | "success" | "error" | "warn" | "info";
 
 export interface NotificationProps {
-    type: NotificationType;
-    message: string;
-    className?: string; // Optional prop for custom classes
+    type: NotificationType; // Required field
+    id?: string; // Optional
+    title?: string; // Optional
+    message?: string; // Optional
+    timestamp?: number; // Optional
+    className?: string; // Optional
 }
 
 const notificationStyles = {
@@ -19,10 +22,17 @@ const notificationStyles = {
 
 const Notification: React.FC<NotificationProps> = ({
     type,
-    message,
+    title = "", // Default to empty string if title is not provided
+    message = "", // Default to empty string if message is not provided
+    timestamp,
     className = "",
 }) => {
     const style = notificationStyles[type] || "";
+
+    // Format timestamp if provided, otherwise show an empty string
+    const formattedTime = timestamp
+        ? new Date(timestamp).toLocaleTimeString()
+        : "";
 
     return (
         <div
@@ -68,7 +78,15 @@ const Notification: React.FC<NotificationProps> = ({
                     />
                 )}
             </svg>
-            <span>{message}</span>
+            <div>
+                {title && <strong>{title}</strong>}
+                {message && <p>{message}</p>}
+                {formattedTime && (
+                    <span className="text-sm text-gray-400">
+                        {formattedTime}
+                    </span>
+                )}
+            </div>
         </div>
     );
 };

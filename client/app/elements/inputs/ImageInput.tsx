@@ -24,6 +24,8 @@ const ImageInput: React.FC<ImageInputProps> = ({
         }
     }, [localTempName, src]);
 
+    let previewUrl: string | null = null;
+
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -37,7 +39,16 @@ const ImageInput: React.FC<ImageInputProps> = ({
                 }
             };
             reader.readAsDataURL(file);
-            setPreview(URL.createObjectURL(file)); // Create a preview URL
+
+            // Revoke the previous object URL if it exists
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+            }
+
+            // Create a new preview URL and store it
+            previewUrl = URL.createObjectURL(file);
+            setPreview(previewUrl); // Create a preview URL
+
             callback(file);
         }
     };
