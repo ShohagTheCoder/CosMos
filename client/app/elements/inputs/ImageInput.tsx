@@ -2,19 +2,19 @@ import React, { ChangeEvent, useState, useEffect } from "react";
 
 interface ImageInputProps {
     localTempName: string;
-    src: string | null | undefined;
+    src: string | undefined;
     callback: (image: File) => void;
 }
 
 const ImageInput: React.FC<ImageInputProps> = ({
     localTempName = "cosmos-image",
-    src = null,
+    src = undefined,
     callback,
 }) => {
-    const [preview, setPreview] = useState<string | null>(null);
+    const [preview, setPreview] = useState<string | undefined>(undefined);
 
     useEffect(() => {
-        if (src == null) {
+        if (src == "updated") {
             const storedImage = localStorage.getItem(localTempName);
             if (storedImage) {
                 setPreview(storedImage);

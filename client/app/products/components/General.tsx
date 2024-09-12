@@ -7,19 +7,20 @@ import { updateProductField } from "@/app/store/slices/productSlice";
 import { RootState } from "@/app/store/store";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ProductWithID } from "../interfaces/product.interface";
 
 function General() {
     const dispatch = useDispatch();
     const product = useSelector((state: RootState) => state.product);
 
-    let src: string | undefined | null = "/images/products/" + product.image;
-    if (product.product && product.image != product.product.image) {
-        src = null;
-    }
-
-    if (product.image != "product.jpg") {
-        src = null;
+    let src: string | undefined = undefined;
+    if (
+        product.product &&
+        product.image &&
+        product.image == product.product.image
+    ) {
+        src = "/images/products/" + product.image;
+    } else if (product.image) {
+        src = "updated";
     }
 
     return (

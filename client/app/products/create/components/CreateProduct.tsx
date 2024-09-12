@@ -38,39 +38,39 @@ function CreateProduct() {
     }, []);
 
     async function handleCreateProduct() {
-        if (product.SKU.length > 4 && product.image) {
-            try {
-                if (await handleImageUpload(image, product.image!)) {
-                    // Clear the selected image
-                    localStorage.setItem("selectedProductImage", "");
-
-                    const result = await apiClient.post("products", product);
-                    dispatch(setProductProduct(result.data));
-
-                    setNotification({
-                        type: "success",
-                        message: "Product created successfully!",
-                    });
-                    console.log(result.data);
-                } else {
-                    setNotification({
-                        type: ERROR,
-                        message: "Image upload faild",
-                    });
-                }
-            } catch (error) {
-                setNotification({
-                    type: "error",
-                    message: "Failed to create product.",
-                });
-                console.error(error);
-            }
-        } else {
+        // console.log(product);
+        // return;
+        if (product.SKU.length < 4) {
             return console.log("Plesase enter SKU");
+        }
+
+        try {
+            if (product.image && product.image != "product.png") {
+                await handleImageUpload(image, product.image!);
+
+                // Clear the selected image
+                localStorage.setItem("selectedProductImage", "");
+            }
+
+            const result = await apiClient.post("products", product);
+            dispatch(setProductProduct(result.data));
+
+            setNotification({
+                type: "success",
+                message: "Product created successfully!",
+            });
+            console.log(result.data);
+        } catch (error) {
+            setNotification({
+                type: "error",
+                message: "Failed to create product.",
+            });
+            console.error(error);
         }
     }
 
     async function handleUpdateProduct() {
+        // console.log(product);
         // return;
         const update = Object.entries(product).reduce(
             (acc: any, [key, value]) => {
@@ -85,25 +85,21 @@ function CreateProduct() {
 
         try {
             if (update.image) {
-                if (await handleImageUpload(image, update.image)) {
-                    // Clear the selected image
-                    localStorage.setItem("selectedProductImage", "");
+                await handleImageUpload(image, update.image);
+            }
+            if (await handleImageUpload(image, update.image)) {
+                // Clear the selected image
+                localStorage.setItem("selectedProductImage", "");
 
-                    const result = await apiClient.patch(
-                        `products/${product._id}`,
-                        update
-                    );
-                    setNotification({
-                        type: "success",
-                        message: "Product updated successfully!",
-                    });
-                    console.log(result.data);
-                }
-            } else {
+                const result = await apiClient.patch(
+                    `products/${product._id}`,
+                    update
+                );
                 setNotification({
-                    type: ERROR,
-                    message: "Faild to update product image",
+                    type: "success",
+                    message: "Product updated successfully!",
                 });
+                console.log(result.data);
             }
         } catch (error) {
             setNotification({
