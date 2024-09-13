@@ -625,7 +625,9 @@ export default function Sell({
                             }`}
                             onDoubleClick={() => handleSellPageChange("F5")}
                         >
-                            One
+                            {helper.cartStates["F5"]?.customer?.name
+                                ? helper.cartStates["F5"].customer.name
+                                : "One"}
                         </button>
                         <button
                             className={`py-1 px-3 ${
@@ -635,7 +637,9 @@ export default function Sell({
                             }`}
                             onDoubleClick={() => handleSellPageChange("F6")}
                         >
-                            Two
+                            {helper.cartStates["F6"]?.customer?.name
+                                ? helper.cartStates["F6"].customer.name
+                                : "Two"}
                         </button>
                         <button
                             className={`py-1 px-3 ${
@@ -645,7 +649,9 @@ export default function Sell({
                             }`}
                             onDoubleClick={() => handleSellPageChange("F7")}
                         >
-                            Three
+                            {helper.cartStates["F7"]?.customer?.name
+                                ? helper.cartStates["F7"].customer.name
+                                : "Three"}
                         </button>
                         <button
                             className={`py-1 px-3 ${
@@ -655,7 +661,9 @@ export default function Sell({
                             }`}
                             onDoubleClick={() => handleSellPageChange("F8")}
                         >
-                            Four
+                            {helper.cartStates["F8"]?.customer?.name
+                                ? helper.cartStates["F8"].customer.name
+                                : "Four"}
                         </button>
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 gap-6 py-4 min-h-screen">
