@@ -60,7 +60,7 @@ export default function Dashboard() {
     return (
         <main className="bg-gray-900">
             <Sidebar active="home" />
-            <div className="2xl:container mx-auto py-8 px-4 text-white min-h-screen">
+            <div className="2xl:container mx-auto py-8 px-4 text-white min-h-screen ps-[100px] 2xl:ps-0">
                 {/* Top Navigation Bar */}
                 <div className="flex justify-between items-center mb-8">
                     <div className="text-3xl font-bold">Dashboard</div>

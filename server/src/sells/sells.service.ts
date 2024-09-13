@@ -11,7 +11,6 @@ import { StocksService } from 'src/stocks/stocks.service';
 export class SellsService {
     constructor(
         @InjectModel(Sell.name) private sellModel: Model<SellDocument>,
-        @InjectModel(Stock.name)
         private accountsService: AccountsService,
         private stocksService: StocksService,
     ) {}

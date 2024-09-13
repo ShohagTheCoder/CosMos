@@ -58,6 +58,8 @@ export default function Sell({
         (item) => !item.sellEnable
     );
     const customers = arrayToObjectById(customersArray);
+    const productsLength = products.length;
+    const customersLength = customers.length;
     let [command, setCommand] = useState("");
     const [filteredCustomers, setFilteredCustomers] = useState(customers);
     const dispatch = useDispatch();
@@ -89,7 +91,7 @@ export default function Sell({
                 (e.target as HTMLElement).tagName !== "TEXTAREA" &&
                 (e.target as HTMLElement).tagName !== "INPUT"
             ) {
-                e.preventDefault();
+                // e.preventDefault();
                 command?.focus(); // Focus the command input element
             }
         });
@@ -101,7 +103,7 @@ export default function Sell({
     }, [user]);
 
     useEffect(() => {
-        if (command.length == 3 && /^[1-9]+$/.test(command)) {
+        if (/^[1-9]{3}$/.test(command)) {
             const productKey = command.slice(0, -1);
             const quantity = parseInt(command.slice(2));
             const productId = productsMap[productKey];
@@ -117,11 +119,7 @@ export default function Sell({
             setCommand("");
         }
 
-        if (/^[0-9]+$/.test(command)) {
-            return;
-        }
-
-        if (command.startsWith(" ") && customers) {
+        if (/^\s{2,}/.test(command) && customers) {
             setIsCustomers(true);
 
             const tempFilteredCustomers = Object.values(customers).filter(
@@ -141,7 +139,7 @@ export default function Sell({
             }, {});
 
             setFilteredCustomers(filteredCustomersObject);
-        } else if (products) {
+        } else if (/^(?![0-9\s])[a-zA-Z]*/.test(command) && products) {
             if (isCustomers) {
                 setIsCustomers(false);
             }
@@ -262,6 +260,15 @@ export default function Sell({
         // console.log(e.key);
         // console.log(e.code);
 
+        if (e.code == "Minus") {
+            e.preventDefault();
+            setCommand("");
+            return;
+        }
+
+        const repeatableKeys = ["Backspace", "Space", "Numpad0"];
+        if (repeatableKeys.includes(e.code)) return;
+
         if (pressedKeys.current.has(e.code)) {
             e.preventDefault();
             return;
@@ -282,7 +289,7 @@ export default function Sell({
             return;
         }
 
-        if (!keyPressTimer) {
+        if (command.length == 0 && !keyPressTimer) {
             switch (e.code) {
                 case "NumpadAdd":
                 case "NumpadEnter":
@@ -350,13 +357,25 @@ export default function Sell({
             return;
         }
 
-        if (e.key == "Enter") {
+        if (e.key == "Enter" || e.code == "NumpadAdd") {
             if (command.length <= 4) {
                 if (/^0[1-9][0-9]*$/.test(command)) {
                     e.preventDefault();
                     const quantity = parseInt(command.slice(1));
                     setCommand("");
                     dispatch(updateQuantity({ key: null, quantity }));
+                    stopKeyUpHandler.current = true;
+                    return;
+                }
+            }
+
+            if (command.length >= 4) {
+                if (/^[1-9]{2}0[1-9][0-9]+$/.test(command)) {
+                    e.preventDefault();
+                    setCommand("");
+                    stopKeyUpHandler.current = true;
+                    console.log("Add and update quantity ");
+                    return;
                 }
             }
         }
@@ -533,13 +552,29 @@ export default function Sell({
                                 <Link
                                     className="ms-3"
                                     href={"/actions/purchase"}
+                                    target="_blank"
                                 >
                                     Purchase
                                 </Link>
-                                <Link className="ms-3" href={"/products"}>
+                                <Link
+                                    className="ms-3"
+                                    href={"/sells"}
+                                    target="_blank"
+                                >
+                                    Sells
+                                </Link>
+                                <Link
+                                    className="ms-3"
+                                    href={"/products"}
+                                    target="_blank"
+                                >
                                     Products
                                 </Link>
-                                <Link className="ms-3" href={"/customers"}>
+                                <Link
+                                    className="ms-3"
+                                    href={"/customers"}
+                                    target="_blank"
+                                >
                                     Customers
                                 </Link>
                                 <p className="inline-block mx-4 bg-green-700 py-2 px-3">
