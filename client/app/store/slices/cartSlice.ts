@@ -4,6 +4,9 @@ import getUpdatedProduct from "@/app/functions/getUpdatedProduct";
 import { CustomerWithId } from "@/app/interfaces/customer.inerface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { stat } from "fs";
+import getMeasurementTo from "@/app/functions/getMeasurementTo";
+import updateCart from "../functions/updateCart";
 
 export interface CartState {
     [x: string]: any;
@@ -43,17 +46,14 @@ const cartSlice = createSlice({
                     null
                 );
             } else {
-                product = getUpdatedProduct(
+                state.products[product._id] = getUpdatedProduct(
                     product,
                     product.measurements[0].value,
                     product.measurements[0].unit
                 );
-                state.products[product._id] = product;
-                state.activeProduct = product._id;
             }
-
-            state.totalPrice += product.subTotal;
-            state.due = state.totalPrice - state.paid;
+            state.activeProduct = product._id;
+            return updateCart(state);
         },
         addToCartWith: (
             state: CartState,
@@ -72,38 +72,35 @@ const cartSlice = createSlice({
                     quantity,
                     unit !== undefined ? unit : null
                 );
-                state.totalPrice = getProductsTotalPrice(state.products);
             } else {
-                product = getUpdatedProduct(
+                state.products[product._id] = getUpdatedProduct(
                     product,
                     quantity,
                     unit !== undefined ? unit : product.measurements[0].unit
                 );
-                state.products[product._id] = product;
-                state.totalPrice += product.subTotal;
             }
-
             state.activeProduct = product._id;
-            state.due = state.totalPrice - state.paid;
+            return updateCart(state);
         },
-        removeFromCart: (state, action) => {
-            let productId = action.payload;
-            if (productId == null) productId = state.activeProduct;
-            const removedProduct = state.products[productId];
-
-            if (removedProduct) {
-                const { [productId]: removed, ...rest } = state.products;
-                state.products = rest;
-                state.totalPrice -= removedProduct.subTotal;
-                state.activeProduct = Object.keys(state.products)[
-                    Object.keys(state.products).length - 1
-                ];
+        removeFromCart: (
+            state: CartState,
+            action: PayloadAction<string | null>
+        ) => {
+            let key = action.payload || state.activeProduct;
+            if (key) {
+                const removed = state.products[key];
+                if (removed) {
+                    const { [key]: kick, ...rest } = state.products;
+                    state.products = rest;
+                    state.activeProduct = Object.keys(state.products)[
+                        Object.keys(state.products).length - 1
+                    ];
+                    return updateCart(state);
+                }
             }
-
-            state.due = state.totalPrice - state.paid;
         },
 
-        selectNexProduct: (state, action) => {
+        selectNexProduct: (state: CartState, action: PayloadAction<number>) => {
             if (state.selectedProductIndex == action.payload) {
                 state.selectedProductIndex = 0;
             } else {
@@ -118,7 +115,10 @@ const cartSlice = createSlice({
             state.customerAccount = action.payload;
         },
 
-        selectPreviousProduct: (state, action) => {
+        selectPreviousProduct: (
+            state: CartState,
+            action: PayloadAction<number>
+        ) => {
             if (state.selectedProductIndex == 0) {
                 state.selectedProductIndex = action.payload;
             } else {
@@ -126,7 +126,7 @@ const cartSlice = createSlice({
             }
         },
 
-        resetSelectedProductIndex: (state) => {
+        resetSelectedProductIndex: (state: CartState) => {
             state.selectedProductIndex = 0;
         },
 
@@ -168,7 +168,7 @@ const cartSlice = createSlice({
             }
         },
         updateQuantity: (
-            state,
+            state: CartState,
             action: PayloadAction<{ key: any; quantity: number }>
         ) => {
             let { key, quantity } = action.payload;
@@ -184,74 +184,66 @@ const cartSlice = createSlice({
                     null
                 );
 
-                state.totalPrice = getProductsTotalPrice(state.products);
-                state.due = state.totalPrice - state.paid;
+                return updateCart(state);
             }
         },
-        incrementQuantity: (state: CartState, action) => {
-            let productId = action.payload;
-            if (!productId) {
-                productId = state.activeProduct;
-            }
-            const product = state.products[productId];
-
-            if (product) {
-                const updatedProduct = getUpdatedProduct(
-                    product,
-                    product.quantity + 1,
-                    null
-                );
-                state.products[productId] = updatedProduct;
-                state.totalPrice = getProductsTotalPrice({
-                    ...state.products,
-                    [product._id]: updatedProduct,
-                });
-                state.due = state.totalPrice - state.paid;
+        incrementQuantity: (
+            state: CartState,
+            action: PayloadAction<string | null>
+        ) => {
+            let key = action.payload || state.activeProduct;
+            if (key) {
+                const product = state.products[key];
+                if (product) {
+                    state.products[key] = getUpdatedProduct(
+                        product,
+                        product.quantity + 1,
+                        null
+                    );
+                    return updateCart(state);
+                }
             }
         },
-        decrementQuantity: (state, action) => {
-            let productId = action.payload;
-            if (!productId) {
-                productId = state.activeProduct;
-            }
-            const product = state.products[productId];
+        decrementQuantity: (
+            state: CartState,
+            action: PayloadAction<string | null>
+        ) => {
+            const key = action.payload || state.activeProduct;
+            if (key) {
+                // Find the product
+                const product = state.products[key];
 
-            if (product && product.quantity > 0) {
-                const updatedProduct = getUpdatedProduct(
-                    product,
-                    product.quantity - 1,
-                    null
-                );
-                state.products = {
-                    ...state.products,
-                    [productId]: updatedProduct,
-                };
-                state.totalPrice = getProductsTotalPrice({
-                    ...state.products,
-                    [product._id]: updatedProduct,
-                });
-                state.due = state.totalPrice - state.paid;
+                // If product exist
+                if (product && product.quantity > 0) {
+                    state.products[key] = getUpdatedProduct(
+                        product,
+                        product.quantity - 1,
+                        null
+                    );
+                    return updateCart(state);
+                }
             }
         },
 
         updateUnit: (
             state: CartState,
-            action: PayloadAction<{ key: string; unit: string }>
+            action: PayloadAction<{
+                key: string | null | undefined;
+                unit: string;
+            }>
         ) => {
-            const { key, unit } = action.payload;
-            const product = state.products[key];
-
-            if (product) {
-                const updatedProduct = getUpdatedProduct(product, null, unit);
-                state.products = {
-                    ...state.products,
-                    [key]: updatedProduct,
-                };
-                state.totalPrice = getProductsTotalPrice({
-                    ...state.products,
-                    [product._id]: updatedProduct,
-                });
-                state.due = state.totalPrice - state.paid;
+            let { key, unit } = action.payload;
+            if (!key) key = state.activeProduct;
+            if (key) {
+                const product = state.products[key];
+                if (product) {
+                    state.products[key] = getUpdatedProduct(
+                        product,
+                        null,
+                        unit
+                    );
+                    return updateCart(state);
+                }
             }
         },
 
@@ -259,39 +251,20 @@ const cartSlice = createSlice({
             state: CartState,
             action: PayloadAction<number>
         ) => {
-            const id =
-                state.activeProduct || Object.values(state.products)[0]._id;
-            const product = state.products[id];
+            if (!state.activeProduct) return state;
+            const key = state.activeProduct;
+            const product = state.products[key];
 
             if (product) {
-                const measurements = product.measurements;
-                const length = product.measurements.length;
-
-                let currentMeasurementIndex = getCurrentMeasurement(product);
-                let measurement;
-                if (length <= currentMeasurementIndex + action.payload) {
-                    measurement = measurements[0];
-                } else if (currentMeasurementIndex + action.payload < 0) {
-                    measurement = measurements[length - 1];
-                } else {
-                    measurement =
-                        measurements[currentMeasurementIndex + action.payload];
-                }
-                const updatedProduct = getUpdatedProduct(
+                const measurement = getMeasurementTo(product, action.payload);
+                state.products[key] = getUpdatedProduct(
                     product,
-                    measurement.value - product.quantity,
+                    measurement.value,
                     measurement.unit
                 );
 
-                state.products = {
-                    ...state.products,
-                    [id]: updatedProduct,
-                };
-                state.totalPrice = getProductsTotalPrice({
-                    ...state.products,
-                    [product._id]: updatedProduct,
-                });
-                state.due = state.totalPrice - state.paid;
+                // Update related fields also
+                return updateCart(state);
             }
         },
 
@@ -318,91 +291,88 @@ const cartSlice = createSlice({
             }>
         ) => {
             let { key, amount } = action.payload;
-            if (key == null && state.activeProduct) {
-                key = state.activeProduct;
+            if (!key) key = state.activeProduct;
+            if (key && state.products[key]) {
+                state.products[key] = getUpdatedProduct(
+                    {
+                        ...state.products[key],
+                        discount: amount,
+                    },
+                    null,
+                    null
+                );
+                return updateCart(state);
             }
-            if (!state.products[key] || amount < 0) return;
-            const updatedProduct = getUpdatedProduct(
-                {
-                    ...state.products[key],
-                    discount: amount,
-                },
-                null,
-                null
-            );
-            state.products[key] = updatedProduct;
-            state.totalPrice = getProductsTotalPrice({
-                ...state.products,
-                [key]: updatedProduct,
-            });
-            state.due = state.totalPrice - state.paid;
         },
         updateDiscountAmount: (
             state: CartState,
             action: PayloadAction<{
-                key: any;
+                key: string | null | undefined;
                 amount: number;
             }>
         ) => {
             let { key, amount } = action.payload;
-            if (key == null && state.activeProduct) {
-                key = state.activeProduct;
+            if (!key) key = state.activeProduct;
+
+            if (key) {
+                let product = state.products[key];
+                if (product) {
+                    product.discount += amount;
+                    state.products[key] = getUpdatedProduct(
+                        product,
+                        null,
+                        null
+                    );
+                    return updateCart(state);
+                }
             }
-            if (!state.products[key]) return;
-            let product = state.products[key];
-            product.discount += amount;
-            const updatedProduct = getUpdatedProduct(product, null, null);
-            state.products[key] = updatedProduct;
-            state.totalPrice = getProductsTotalPrice({
-                ...state.products,
-                [key]: updatedProduct,
-            });
-            state.due = state.totalPrice - state.paid;
         },
         addExtraDiscount: (
             state: CartState,
-            action: PayloadAction<{ key: any; amount: number }>
+            action: PayloadAction<{
+                key: string | null | undefined;
+                amount: number;
+            }>
         ) => {
             let { key, amount } = action.payload;
-            if (key == null && state.activeProduct) {
-                key = state.activeProduct;
+            if (!key) key = state.activeProduct;
+
+            if (key && state.products[key]) {
+                state.products[key] = getUpdatedProduct(
+                    {
+                        ...state.products[key],
+                        extraDiscount: amount,
+                    },
+                    null,
+                    null
+                );
+                return updateCart(state);
             }
-            if (!state.products[key] || amount < 0) return;
-            const updatedProduct = getUpdatedProduct(
-                {
-                    ...state.products[key],
-                    extraDiscount: amount,
-                },
-                null,
-                null
-            );
-            state.products[key] = updatedProduct;
-            state.totalPrice = getProductsTotalPrice({
-                ...state.products,
-                [key]: updatedProduct,
-            });
-            state.due = state.totalPrice - state.paid;
         },
         updateExtraDiscountAmount: (
             state: CartState,
-            action: PayloadAction<{ key: any; amount: number }>
+            action: PayloadAction<{
+                key: string | null | undefined;
+                amount: number;
+            }>
         ) => {
             let { key, amount } = action.payload;
-            if (key == null && state.activeProduct) {
-                key = state.activeProduct;
+            if (!key) key = state.activeProduct;
+
+            if (key) {
+                let product = state.products[key];
+                if (product) {
+                    product.extraDiscount += amount;
+                    state.products[key] = getUpdatedProduct(
+                        product,
+                        null,
+                        null
+                    );
+                    return updateCart(state);
+                }
             }
-            if (!state.products[key]) return;
-            let product = state.products[key];
-            product.extraDiscount += amount;
-            const updatedProduct = getUpdatedProduct(product, null, null);
-            state.products[key] = updatedProduct;
-            state.totalPrice = getProductsTotalPrice({
-                ...state.products,
-                [key]: updatedProduct,
-            });
-            state.due = state.totalPrice - state.paid;
         },
-        setUser: (state: CartState, action) => {
+        setUser: (state: CartState, action: PayloadAction<any>) => {
             if (action.payload._id) {
                 state.user = action.payload;
             }
