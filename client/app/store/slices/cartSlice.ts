@@ -39,16 +39,15 @@ const cartSlice = createSlice({
             if (existingProduct) {
                 state.products[product._id] = getUpdatedProduct(
                     existingProduct,
-                    1,
+                    existingProduct.quantity + 1,
                     null
                 );
             } else {
-                product = getUpdatedProduct(
+                state.products[product._id] = getUpdatedProduct(
                     product,
-                    product.measurements[0].value - 1,
+                    product.measurements[0].value,
                     product.measurements[0].unit
                 );
-                state.products = { ...state.products, [product._id]: product };
                 state.activeProduct = product._id;
             }
 
@@ -109,30 +108,51 @@ const cartSlice = createSlice({
                 state.due = state.totalPrice - paid;
             }
         },
+        updateSalePrice: (
+            state: CartState,
+            action: PayloadAction<{ key: any; amount: number }>
+        ) => {
+            let { key, amount } = action.payload;
+            if (key == null) {
+                key = state.activeProduct;
+            }
+            const product = state.products[key];
 
+            if (product) {
+                product.decreasePrice += amount;
+                state.products[key] = getUpdatedProduct(product, null, null);
+            }
+        },
+        resetSalePrice: (state: CartState, action: PayloadAction<any>) => {
+            let key = action.payload;
+            if (key == null) {
+                key = state.activeProduct;
+            }
+            const product = state.products[key];
+
+            if (product && product.decreasePrice != 0) {
+                product.decreasePrice = 0;
+                state.products[key] = getUpdatedProduct(product, null, null);
+            }
+        },
         updateQuantity: (
             state,
-            action: PayloadAction<{ key: string; quantity: number }>
+            action: PayloadAction<{ key: any; quantity: number }>
         ) => {
             let { key, quantity } = action.payload;
-            if (!quantity) quantity = 0;
-            if (quantity > 1000) return;
+            if (key == null) {
+                key = state.activeProduct;
+            }
             const product = state.products[key];
 
             if (product && product.quantity >= 0) {
-                const updatedProduct = getUpdatedProduct(
+                state.products[key] = getUpdatedProduct(
                     product,
-                    quantity - product.quantity,
+                    quantity,
                     null
                 );
-                state.products = {
-                    ...state.products,
-                    [key]: updatedProduct,
-                };
-                state.totalPrice = getProductsTotalPrice({
-                    ...state.products,
-                    [product._id]: updatedProduct,
-                });
+
+                state.totalPrice = getProductsTotalPrice(state.products);
                 state.due = state.totalPrice - state.paid;
             }
         },
@@ -144,7 +164,11 @@ const cartSlice = createSlice({
             const product = state.products[productId];
 
             if (product) {
-                const updatedProduct = getUpdatedProduct(product, 1, null);
+                const updatedProduct = getUpdatedProduct(
+                    product,
+                    product.quantity + 1,
+                    null
+                );
                 state.products[productId] = updatedProduct;
                 state.totalPrice = getProductsTotalPrice({
                     ...state.products,
@@ -161,7 +185,11 @@ const cartSlice = createSlice({
             const product = state.products[productId];
 
             if (product && product.quantity > 0) {
-                const updatedProduct = getUpdatedProduct(product, -1, null);
+                const updatedProduct = getUpdatedProduct(
+                    product,
+                    product.quantity - 1,
+                    null
+                );
                 state.products = {
                     ...state.products,
                     [productId]: updatedProduct,
@@ -252,9 +280,15 @@ const cartSlice = createSlice({
 
         addDiscount: (
             state: CartState,
-            action: PayloadAction<{ key: string; amount: number }>
+            action: PayloadAction<{
+                key: any;
+                amount: number;
+            }>
         ) => {
-            const { key, amount } = action.payload;
+            let { key, amount } = action.payload;
+            if (key == null && state.activeProduct) {
+                key = state.activeProduct;
+            }
             if (!state.products[key] || amount < 0) return;
             const updatedProduct = getUpdatedProduct(
                 {
@@ -271,11 +305,36 @@ const cartSlice = createSlice({
             });
             state.due = state.totalPrice - state.paid;
         },
+        updateDiscountAmount: (
+            state: CartState,
+            action: PayloadAction<{
+                key: any;
+                amount: number;
+            }>
+        ) => {
+            let { key, amount } = action.payload;
+            if (key == null && state.activeProduct) {
+                key = state.activeProduct;
+            }
+            if (!state.products[key]) return;
+            let product = state.products[key];
+            product.discount += amount;
+            const updatedProduct = getUpdatedProduct(product, null, null);
+            state.products[key] = updatedProduct;
+            state.totalPrice = getProductsTotalPrice({
+                ...state.products,
+                [key]: updatedProduct,
+            });
+            state.due = state.totalPrice - state.paid;
+        },
         addExtraDiscount: (
             state: CartState,
-            action: PayloadAction<{ key: string; amount: number }>
+            action: PayloadAction<{ key: any; amount: number }>
         ) => {
-            const { key, amount } = action.payload;
+            let { key, amount } = action.payload;
+            if (key == null && state.activeProduct) {
+                key = state.activeProduct;
+            }
             if (!state.products[key] || amount < 0) return;
             const updatedProduct = getUpdatedProduct(
                 {
@@ -285,6 +344,25 @@ const cartSlice = createSlice({
                 null,
                 null
             );
+            state.products[key] = updatedProduct;
+            state.totalPrice = getProductsTotalPrice({
+                ...state.products,
+                [key]: updatedProduct,
+            });
+            state.due = state.totalPrice - state.paid;
+        },
+        updateExtraDiscountAmount: (
+            state: CartState,
+            action: PayloadAction<{ key: any; amount: number }>
+        ) => {
+            let { key, amount } = action.payload;
+            if (key == null && state.activeProduct) {
+                key = state.activeProduct;
+            }
+            if (!state.products[key]) return;
+            let product = state.products[key];
+            product.extraDiscount += amount;
+            const updatedProduct = getUpdatedProduct(product, null, null);
             state.products[key] = updatedProduct;
             state.totalPrice = getProductsTotalPrice({
                 ...state.products,
@@ -305,6 +383,8 @@ export const {
     removeFromCart,
     updatePaid,
     updateQuantity,
+    updateDiscountAmount,
+    updateExtraDiscountAmount,
     incrementQuantity,
     decrementQuantity,
     clearCart,
@@ -319,5 +399,7 @@ export const {
     addDiscount,
     addExtraDiscount,
     setUser,
+    updateSalePrice,
+    resetSalePrice,
 } = cartSlice.actions;
 export default cartSlice.reducer;

@@ -1,3 +1,4 @@
+import getStockLine from "@/app/functions/getStockLine";
 import getProductUnitpurchasePrice from "@/app/functions/purchase/getProductUnitPrice";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { convertStandardToBnBD } from "@/app/utils/numberFormat";
@@ -46,13 +47,7 @@ export default function PurchaseProductsCard({
                         <p className="text-gray-300 text-base mb-1">
                             {product.description}
                         </p>
-                        <p>
-                            #{" "}
-                            {product.stock.stock /
-                                product.units[product.displayPurchaseUnit]
-                                    .value}{" "}
-                            {product.displayPurchaseUnit}
-                        </p>
+                        <p># {getStockLine(product.stock, product.units)}</p>
                         <p className="font-semibold text-xl text-green-400 inline-block">
                             {convertStandardToBnBD(
                                 getProductUnitpurchasePrice(product) *

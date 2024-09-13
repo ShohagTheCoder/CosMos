@@ -59,6 +59,7 @@ export default interface Product {
 
 export interface ProductWithID {
     _id: string;
+    decreasePrice: number;
     SKU: string;
     name: string;
     image: string;

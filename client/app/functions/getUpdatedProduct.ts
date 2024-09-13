@@ -12,7 +12,7 @@ export default function getUpdatedProduct(
 ): ProductWithID {
     // If new quantity
     if (quantity != null) {
-        product.quantity += quantity;
+        product.quantity = quantity;
     }
 
     // If new unit

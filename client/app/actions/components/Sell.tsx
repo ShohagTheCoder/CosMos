@@ -1,5 +1,4 @@
 "use client";
-
 import Sidebar from "@/app/components/Sidebar";
 import { CustomerWithId } from "@/app/interfaces/customer.inerface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
@@ -11,17 +10,22 @@ import {
     decrementQuantity,
     incrementQuantity,
     removeFromCart,
+    resetSalePrice,
     resetSelectedProductIndex,
     selectNexProduct,
     selectPreviousProduct,
     setUser,
     shiftMeasurementTo,
+    updateDiscountAmount,
+    updateExtraDiscountAmount,
+    updateQuantity,
+    updateSalePrice,
 } from "@/app/store/slices/cartSlice";
 import { RootState } from "@/app/store/store";
 import apiClient from "@/app/utils/apiClient";
 import { ERROR, SUCCESS } from "@/app/utils/constants/message";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CustomerCard from "./components/CustomerCard";
 import CartProduct from "./components/CartProduct";
@@ -92,6 +96,20 @@ export default function Sell({
     }, [user]);
 
     useEffect(() => {
+        if (command.length == 3 && /^[1-9]+$/.test(command)) {
+            switch (command) {
+                case "111":
+                    dispatch(addToCart(products["66d0a671156ec0fcee3d488d"]));
+                    break;
+                case "121":
+                    dispatch(addToCart(products["66d0aa8f156ec0fcee3d4919"]));
+                    break;
+                default:
+                    break;
+            }
+            setCommand("");
+        }
+
         if (command.startsWith(" ") && customers) {
             setIsCustomers(true);
 
@@ -198,10 +216,139 @@ export default function Sell({
         }
     }
 
+    // Use useRef to persist pressedKeys
     let [isShift, setIsShift] = useState(false);
+    const pressedKeys = useRef(new Set<string>());
+    let keyPressTimer: any;
+    let longPressed = useRef(false);
+    let groupPressed = useRef(false);
+    let stopKeyUpHandler = useRef(false);
+    const longPressDuration = 600;
 
-    function handleKeyDown(e: any): void {
+    const handleLongKeyPress = (e: KeyboardEvent) => {
+        longPressed.current = true;
+        e.preventDefault();
+        switch (e.code) {
+            case "NumpadAdd":
+                changeCartActiveProductTo(-1);
+                break;
+            case "NumpadEnter":
+                changeCartActiveProductTo(1);
+                break;
+        }
+    };
+    const clearKeyPressTimer = () => {
+        if (keyPressTimer) clearTimeout(keyPressTimer);
+    };
+
+    const handleGroupPressed = () => {
+        groupPressed.current = true;
+        console.log("special command");
+    };
+
+    function handleKeyDown(e: KeyboardEvent): void {
+        // console.log("---------------------------------");
         // console.log(e.key);
+        // console.log(e.code);
+
+        if (pressedKeys.current.has(e.code)) {
+            e.preventDefault();
+            return;
+        }
+
+        // Add to pressed keys
+        pressedKeys.current.add(e.code);
+        groupPressed.current = false;
+
+        if (e.code == "NumpadSubtract") {
+            e.preventDefault();
+            setCommand(command.slice(0, -1));
+            return;
+        }
+
+        if (!keyPressTimer) {
+            switch (e.code) {
+                case "NumpadAdd":
+                case "NumpadEnter":
+                    e.preventDefault();
+                    keyPressTimer = setTimeout(
+                        () => handleLongKeyPress(e),
+                        longPressDuration
+                    );
+                    break;
+            }
+        }
+
+        // Detect special key press
+        if (
+            (pressedKeys.current.has("NumpadEnter") && e.code == "NumpadAdd") ||
+            (pressedKeys.current.has("NumpadAdd") && e.code == "NumpadEnter")
+        ) {
+            e.preventDefault();
+            handleGroupPressed();
+            return;
+        }
+        if (
+            (pressedKeys.current.has("PageUp") && e.code == "PageDown") ||
+            (pressedKeys.current.has("PageDown") && e.code == "PageUp")
+        ) {
+            e.preventDefault();
+            groupPressed.current = true;
+            dispatch(resetSalePrice(null));
+            return;
+        }
+
+        if (/^\.\d*$/.test(command)) {
+            switch (e.code) {
+                case "ArrowUp":
+                case "NumpadAdd":
+                    e.preventDefault();
+                    dispatch(
+                        updateExtraDiscountAmount({ key: null, amount: 1 })
+                    );
+                    break;
+                case "ArrowDown":
+                case "NumpadEnter":
+                    e.preventDefault();
+                    dispatch(
+                        updateExtraDiscountAmount({ key: null, amount: -1 })
+                    );
+                    break;
+            }
+            return;
+        }
+
+        if (/^\.\.\d*$/.test(command)) {
+            switch (e.code) {
+                case "ArrowUp":
+                case "NumpadAdd":
+                    e.preventDefault();
+                    dispatch(updateDiscountAmount({ key: null, amount: 1 }));
+                    break;
+                case "ArrowDown":
+                case "NumpadEnter":
+                    e.preventDefault();
+                    dispatch(updateDiscountAmount({ key: null, amount: -1 }));
+                    break;
+            }
+            return;
+        }
+
+        if (e.key == "Enter") {
+            if (command.length <= 4) {
+                if (/^0[1-9][0-9]*$/.test(command)) {
+                    e.preventDefault();
+                    const quantity = parseInt(command.slice(1));
+                    setCommand("");
+                    dispatch(updateQuantity({ key: null, quantity }));
+                }
+            }
+        }
+
+        if (e.key == "Enter" && command.length > 0) {
+            stopKeyUpHandler.current = true;
+        }
+
         let max = 0;
         switch (e.key) {
             case "Shift":
@@ -223,7 +370,7 @@ export default function Sell({
 
             case "ArrowDown":
                 if (isShift) {
-                    changeCartActiveProductTo(+1);
+                    changeCartActiveProductTo(1);
                 } else {
                     dispatch(decrementQuantity(false));
                 }
@@ -286,13 +433,6 @@ export default function Sell({
                         handleAddCustomer();
                         setCommand("");
                     }
-                } else {
-                    if (cart.totalPrice == 0) break;
-                    if (forceOrder >= 5) {
-                        handleCompleteSell();
-                    } else {
-                        forceOrder++;
-                    }
                 }
                 break;
             case "Delete":
@@ -303,10 +443,53 @@ export default function Sell({
     }
 
     function handleKeyUp(e: any): void {
+        clearKeyPressTimer();
+        keyPressTimer = null;
+        pressedKeys.current.clear();
+
+        // console.log("Log pressed : ", longPressed.current);
+        if (longPressed.current) {
+            longPressed.current = false;
+            return;
+        }
+
+        // console.log("Group pressed : ", groupPressed.current);
+        if (groupPressed.current) {
+            return;
+        }
+
         switch (e.key) {
             case "Shift":
                 setIsShift(false);
                 break;
+        }
+
+        switch (e.key) {
+            case "PageUp":
+                dispatch(updateSalePrice({ key: null, amount: -1 }));
+                break;
+            case "PageDown":
+                dispatch(updateSalePrice({ key: null, amount: 1 }));
+                break;
+        }
+
+        if (stopKeyUpHandler.current) {
+            stopKeyUpHandler.current = false;
+            return;
+        }
+
+        if (command.length == 0) {
+            switch (e.code) {
+                case "NumpadAdd":
+                    e.preventDefault();
+                    dispatch(incrementQuantity(null));
+                    break;
+
+                case "NumpadEnter":
+                    e.preventDefault();
+                    dispatch(decrementQuantity(null));
+                    break;
+            }
         }
     }
 

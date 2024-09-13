@@ -107,6 +107,9 @@ export class Product extends Document {
     @Prop()
     hasResources: boolean;
 
+    @Prop({ default: 0 })
+    decreasePrice: number;
+
     @Prop({ type: mongoose.Schema.Types.Mixed })
     resources: Record<string, Resource>;
 
