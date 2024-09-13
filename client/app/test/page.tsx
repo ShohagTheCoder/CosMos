@@ -1,54 +1,65 @@
 "use client";
-import React from "react";
-import Tab from "../elements/tab/Tab";
-import CreateProduct from "../products/create/components/CreateProduct";
+import React, { useRef, useState } from "react";
+import sortDraggedItems from "../functions/sortDraggedItems";
 
 const ExamplePage: React.FC = () => {
-    const tabs = [
+    const [people, setPeople] = useState([
         {
-            id: "tab1",
-            title: "Tab 1",
-            content: <div>Content for Tab 1</div>,
+            id: 1,
+            name: "Shohag Ahmed",
         },
         {
-            id: "tab2",
-            title: "Tab 2",
-            content: <div>Content for Tab 2</div>,
+            id: 2,
+            name: "Foysal Ahmed",
         },
         {
-            id: "tab3",
-            title: "Tab 3",
-            content: <CreateProduct />,
+            id: 3,
+            name: "Imran Ahmed",
         },
-    ];
+        {
+            id: 4,
+            name: "Abdullah Ahmed",
+        },
+    ]);
 
-    const options: {
-        navigator?: boolean;
-        classes?: {
-            container?: string;
-            tabButton?: string;
-            tabHeader?: string;
-            tabContent?: string;
-            buttonContainer?: string;
-            button?: string;
-        };
-        titleAlignment?: "start" | "center" | "end"; // Correct type
-    } = {
-        navigator: true,
-        classes: {
-            container: "my-custom-container-class",
-            tabButton: "my-custom-tab-button-class",
-            tabHeader: "my-custom-tab-header-class",
-            tabContent: "my-custom-tab-content-class",
-            buttonContainer: "my-custom-button-container-class",
-            button: "my-custom-button-class",
-        },
-        titleAlignment: "center", // Ensure this value matches the allowed types
-    };
+    const dragPerson = useRef<number>(0);
+    const draggedOverPerson = useRef<number>(0);
+
+    function handleSort() {
+        setPeople(
+            sortDraggedItems(
+                people,
+                dragPerson.current,
+                draggedOverPerson.current
+            )
+        );
+    }
 
     return (
-        <div className="p-4">
-            <Tab tabs={tabs} options={options} />
+        <div className="flex justify-center items-center h-screen">
+            <div>
+                {people.map((item, index) => (
+                    <div
+                        key={index}
+                        className="py-2 px-3 bg-gray-700 mb-3 rounded-md flex items-center justify-between"
+                        onDragEnter={() => (draggedOverPerson.current = index)}
+                        onDragOver={(e) => e.preventDefault()} // To allow dropping
+                        onDrop={handleSort} // Handle sort on drop
+                    >
+                        <p className="text-white">
+                            {item.id} : {item.name}
+                        </p>
+                        {/* Drag handle */}
+                        <button
+                            className="cursor-grab bg-gray-500 hover:bg-gray-600 p-2 rounded-md text-white ml-3"
+                            draggable
+                            onDragStart={() => (dragPerson.current = index)}
+                        >
+                            Drag
+                        </button>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };

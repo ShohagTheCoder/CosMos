@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
     addPurchasePrice,
@@ -9,6 +9,7 @@ import {
 } from "@/app/store/slices/productSlice";
 import { RootState } from "@/app/store/store";
 import Switch from "@/app/elements/switch/Switch";
+import sortDraggedItems from "@/app/functions/sortDraggedItems";
 
 function PurchasePrices() {
     const dispatch = useDispatch();
@@ -21,6 +22,26 @@ function PurchasePrices() {
     ) {
         const divider = product.units[purchasePrices[key].unit].value;
         dispatch(updatePurchasePricePrice({ key, price: value / divider }));
+    }
+
+    // Drag section
+    const dragItem = useRef(0);
+    const draggedOverItem = useRef(0);
+
+    function handleSort(group: string) {
+        if (group != "purchasePrices") {
+            return;
+        }
+        dispatch(
+            updateProductField({
+                field: "purchasePrices",
+                value: sortDraggedItems(
+                    purchasePrices,
+                    dragItem.current,
+                    draggedOverItem.current
+                ),
+            })
+        );
     }
 
     return (
@@ -43,8 +64,20 @@ function PurchasePrices() {
             {product.purchaseEnable ? (
                 <div>
                     {purchasePrices.map((price, key) => (
-                        <div key={key}>
+                        <div
+                            key={key}
+                            onDragEnter={() => (draggedOverItem.current = key)}
+                            onDragEnd={() => handleSort("purchasePrices")}
+                            onDragOver={(e) => e.preventDefault()}
+                        >
                             <div className="price bg-gray-900 p-2">
+                                <button
+                                    draggable
+                                    onDragStart={() => (dragItem.current = key)}
+                                    className="h-[30px] w-[30px] bg-gray-800 mr-3 rounded"
+                                >
+                                    &#x2630;
+                                </button>
                                 Purchase Unit :{" "}
                                 <select
                                     className="h-[40px] bg-black text-white p-2"

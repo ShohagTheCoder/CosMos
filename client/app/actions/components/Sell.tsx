@@ -234,7 +234,7 @@ export default function Sell({
     // Use useRef to persist pressedKeys
     let [isShift, setIsShift] = useState(false);
     const pressedKeys = useRef(new Set<string>());
-    let keyPressTimer: any;
+    let keyPressTimer: any = null;
     let longPressed = useRef(false);
     let groupPressed = useRef(false);
     let stopKeyUpHandler = useRef(false);
@@ -251,9 +251,6 @@ export default function Sell({
                 changeCartActiveProductTo(1);
                 break;
         }
-    };
-    const clearKeyPressTimer = () => {
-        if (keyPressTimer) clearTimeout(keyPressTimer);
     };
 
     const handleGroupPressed = () => {
@@ -310,7 +307,7 @@ export default function Sell({
         if (
             longPressKeys.includes(e.code) &&
             command.length == 0 &&
-            !keyPressTimer
+            keyPressTimer == null
         ) {
             switch (e.code) {
                 case "NumpadAdd":
@@ -320,12 +317,7 @@ export default function Sell({
                         () => handleLongKeyPress(e),
                         longPressDuration
                     );
-                    return;
-                case "F9":
-                    keyPressTimer = setTimeout(() => {
-                        window.location.href = "./purchase";
-                    }, longPressDuration);
-                    return;
+                    break;
             }
         }
 
@@ -464,7 +456,6 @@ export default function Sell({
                     }
                 }
                 break;
-
             case "ArrowRight":
                 e.preventDefault();
                 if (filteredCustomers && filteredProducts) {
@@ -517,8 +508,10 @@ export default function Sell({
     }
 
     function handleKeyUp(e: any): void {
-        clearKeyPressTimer();
-        keyPressTimer = null;
+        if (keyPressTimer !== null) {
+            clearTimeout(keyPressTimer);
+            keyPressTimer = null;
+        }
         pressedKeys.current.clear();
 
         // console.log("Log pressed : ", longPressed.current);

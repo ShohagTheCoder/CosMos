@@ -103,7 +103,10 @@ export default function UnitsTab() {
                                 <p className="mt-2 text-gray-400">
                                     Display sale price:{" "}
                                     <span className="font-semibold text-white">
-                                        {getProductUnitPrice(product) *
+                                        {getProductUnitPrice({
+                                            ...product,
+                                            unit: product.displaySaleUnit!,
+                                        }) *
                                             product.units[
                                                 product.displaySaleUnit!
                                             ].value}
@@ -138,7 +141,10 @@ export default function UnitsTab() {
                                 <p className="mt-2 text-gray-400">
                                     Display purchase price:{" "}
                                     <span className="font-semibold text-white">
-                                        {getProductUnitpurchasePrice(product) *
+                                        {getProductUnitpurchasePrice({
+                                            ...product,
+                                            unit: product.displayPurchaseUnit!,
+                                        }) *
                                             product.units[
                                                 product.displayPurchaseUnit!
                                             ].value}
