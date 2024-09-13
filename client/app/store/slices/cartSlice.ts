@@ -43,15 +43,47 @@ const cartSlice = createSlice({
                     null
                 );
             } else {
-                state.products[product._id] = getUpdatedProduct(
+                product = getUpdatedProduct(
                     product,
                     product.measurements[0].value,
                     product.measurements[0].unit
                 );
+                state.products[product._id] = product;
                 state.activeProduct = product._id;
             }
 
             state.totalPrice += product.subTotal;
+            state.due = state.totalPrice - state.paid;
+        },
+        addToCartWith: (
+            state: CartState,
+            action: PayloadAction<{
+                product: ProductWithID;
+                quantity: number;
+                unit?: string;
+            }>
+        ) => {
+            let { product, quantity, unit } = action.payload;
+            const existingProduct = state.products[product._id];
+
+            if (existingProduct) {
+                state.products[product._id] = getUpdatedProduct(
+                    existingProduct,
+                    quantity,
+                    unit !== undefined ? unit : null
+                );
+                state.totalPrice = getProductsTotalPrice(state.products);
+            } else {
+                product = getUpdatedProduct(
+                    product,
+                    quantity,
+                    unit !== undefined ? unit : product.measurements[0].unit
+                );
+                state.products[product._id] = product;
+                state.totalPrice += product.subTotal;
+            }
+
+            state.activeProduct = product._id;
             state.due = state.totalPrice - state.paid;
         },
         removeFromCart: (state, action) => {
@@ -380,6 +412,7 @@ const cartSlice = createSlice({
 
 export const {
     addToCart,
+    addToCartWith,
     removeFromCart,
     updatePaid,
     updateQuantity,

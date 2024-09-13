@@ -6,6 +6,7 @@ import {
     addCustomer,
     addCustomerAccount,
     addToCart,
+    addToCartWith,
     changeActiveProduct,
     decrementQuantity,
     incrementQuantity,
@@ -39,6 +40,7 @@ import SupplierCard from "./components/SupplierCard";
 import { logout } from "../functions/authHandlers";
 import ProductsCard from "./ProductsCard";
 import { arrayToObjectById } from "../functions/arrayToObjectById";
+import productsMap from "@/app/utils/productsMap";
 
 interface SellProps {
     productsArray: ProductWithID[];
@@ -78,14 +80,17 @@ export default function Sell({
         }
 
         window.addEventListener("keydown", (e: any) => {
-            if (e.key == "Tab") e.preventDefault();
+            if (e.key === "Tab") e.preventDefault(); // Prevent tab default behavior
+
             let command = document.getElementById("command");
+
             if (
-                document.activeElement != command &&
-                e.target.tagName != "TEXTAREA" &&
-                e.target.tagName != "INPUT"
+                document.activeElement !== command &&
+                (e.target as HTMLElement).tagName !== "TEXTAREA" &&
+                (e.target as HTMLElement).tagName !== "INPUT"
             ) {
-                command?.focus();
+                e.preventDefault();
+                command?.focus(); // Focus the command input element
             }
         });
 
@@ -97,17 +102,23 @@ export default function Sell({
 
     useEffect(() => {
         if (command.length == 3 && /^[1-9]+$/.test(command)) {
-            switch (command) {
-                case "111":
-                    dispatch(addToCart(products["66d0a671156ec0fcee3d488d"]));
-                    break;
-                case "121":
-                    dispatch(addToCart(products["66d0aa8f156ec0fcee3d4919"]));
-                    break;
-                default:
-                    break;
+            const productKey = command.slice(0, -1);
+            const quantity = parseInt(command.slice(2));
+            const productId = productsMap[productKey];
+
+            if (productId) {
+                dispatch(
+                    addToCartWith({
+                        product: products[productId],
+                        quantity,
+                    })
+                );
             }
             setCommand("");
+        }
+
+        if (/^[0-9]+$/.test(command)) {
+            return;
         }
 
         if (command.startsWith(" ") && customers) {
@@ -260,6 +271,11 @@ export default function Sell({
         pressedKeys.current.add(e.code);
         groupPressed.current = false;
 
+        const specialKeys = ["Enter", "NumpadAdd", "NumpadSubtract"];
+        if (specialKeys.includes(e.code)) {
+            e.preventDefault();
+        }
+
         if (e.code == "NumpadSubtract") {
             e.preventDefault();
             setCommand(command.slice(0, -1));
@@ -347,6 +363,8 @@ export default function Sell({
 
         if (e.key == "Enter" && command.length > 0) {
             stopKeyUpHandler.current = true;
+            clearKeyPressTimer();
+            keyPressTimer = null;
         }
 
         let max = 0;
