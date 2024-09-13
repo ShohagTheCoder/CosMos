@@ -218,7 +218,11 @@ const productSlice = createSlice({
         removePrice: (state: Product, action: PayloadAction<number>) => {
             const index = action.payload;
             // Check if index is valid before removing
-            if (index >= 0 && index < state.prices.length) {
+            if (
+                index >= 0 &&
+                index < state.prices.length &&
+                state.prices.length > 1
+            ) {
                 state.prices.splice(index, 1); // Remove one item at the given index
             }
         },
@@ -248,7 +252,11 @@ const productSlice = createSlice({
         removeMeasurement: (state: Product, action: PayloadAction<number>) => {
             const index = action.payload;
             // Check if index is valid before removing
-            if (index >= 0 && index < state.measurements.length) {
+            if (
+                index >= 0 &&
+                index < state.measurements.length &&
+                state.measurements.length > 1
+            ) {
                 state.measurements.splice(index, 1); // Remove one item at the given index
             }
         },
@@ -295,8 +303,12 @@ const productSlice = createSlice({
         ) => {
             const index = action.payload;
             // Check if index is valid before removing
-            if (index >= 0 && index < state.prices.length) {
-                state.prices.splice(index, 1); // Remove one item at the given index
+            if (
+                index >= 0 &&
+                index < state.purchasePrices.length &&
+                state.purchasePrices.length > 1
+            ) {
+                state.purchasePrices.splice(index, 1); // Remove one item at the given index
             }
         },
         updatePurchaseMeasurementUnit: (
@@ -331,8 +343,12 @@ const productSlice = createSlice({
         ) => {
             const index = action.payload;
             // Check if index is valid before removing
-            if (index >= 0 && index < state.measurements.length) {
-                state.measurements.splice(index, 1); // Remove one item at the given index
+            if (
+                index >= 0 &&
+                index < state.purchaseMeasurements.length &&
+                state.purchaseMeasurements.length > 1
+            ) {
+                state.purchaseMeasurements.splice(index, 1); // Remove one item at the given index
             }
         },
         // Others
