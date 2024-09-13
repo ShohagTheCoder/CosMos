@@ -5,6 +5,8 @@ import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import {
     addCustomer,
     addCustomerAccount,
+    addDiscount,
+    addExtraDiscount,
     addToCart,
     addToCartWith,
     changeActiveProduct,
@@ -139,7 +141,7 @@ export default function Sell({
             }, {});
 
             setFilteredCustomers(filteredCustomersObject);
-        } else if (/^(?![0-9\s])[a-zA-Z]*/.test(command) && products) {
+        } else if (/^(?![0-9\s.])[a-zA-Z]*/.test(command) && products) {
             if (isCustomers) {
                 setIsCustomers(false);
             }
@@ -276,8 +278,10 @@ export default function Sell({
 
         // Add to pressed keys
         pressedKeys.current.add(e.code);
+        // Remove previous saved key so we can click again if keyup even occur in the keyup handler
         groupPressed.current = false;
 
+        // Important: Prevent special keys to print character if have
         const specialKeys = ["Enter", "NumpadAdd", "NumpadSubtract"];
         if (specialKeys.includes(e.code)) {
             e.preventDefault();
@@ -309,6 +313,8 @@ export default function Sell({
         ) {
             e.preventDefault();
             handleGroupPressed();
+            groupPressed.current = true;
+            stopKeyUpHandler.current = true;
             return;
         }
         if (
@@ -317,27 +323,8 @@ export default function Sell({
         ) {
             e.preventDefault();
             groupPressed.current = true;
+            stopKeyUpHandler.current = true;
             dispatch(resetSalePrice(null));
-            return;
-        }
-
-        if (/^\.\d*$/.test(command)) {
-            switch (e.code) {
-                case "ArrowUp":
-                case "NumpadAdd":
-                    e.preventDefault();
-                    dispatch(
-                        updateExtraDiscountAmount({ key: null, amount: 1 })
-                    );
-                    break;
-                case "ArrowDown":
-                case "NumpadEnter":
-                    e.preventDefault();
-                    dispatch(
-                        updateExtraDiscountAmount({ key: null, amount: -1 })
-                    );
-                    break;
-            }
             return;
         }
 
@@ -354,7 +341,6 @@ export default function Sell({
                     dispatch(updateDiscountAmount({ key: null, amount: -1 }));
                     break;
             }
-            return;
         }
 
         if (e.key == "Enter" || e.code == "NumpadAdd") {
@@ -374,17 +360,46 @@ export default function Sell({
                     e.preventDefault();
                     setCommand("");
                     stopKeyUpHandler.current = true;
-                    console.log("Add and update quantity ");
+                    const key = command.slice(0, 2);
+                    const quantity = parseInt(command.slice(2));
+                    const productId = productsMap[key];
+                    if (productId) {
+                        dispatch(
+                            addToCartWith({
+                                product: products[productId],
+                                quantity,
+                            })
+                        );
+                    }
                     return;
                 }
             }
+
+            // To add extra discount amount dynamically with one . at the start
+            if (/^\.[1-9][0-9]*$/.test(command)) {
+                e.preventDefault();
+                let amount = parseInt(command.slice(1));
+                setCommand("");
+                dispatch(addExtraDiscount({ key: null, amount }));
+                return;
+            }
+
+            // To add discount amount dynamically with two .. at the start
+            if (/^\.\.[1-9][0-9]*$/.test(command)) {
+                e.preventDefault();
+                let amount = parseInt(command.slice(1));
+                setCommand("");
+                dispatch(addDiscount({ key: null, amount }));
+                return;
+            }
         }
 
-        if (e.key == "Enter" && command.length > 0) {
-            stopKeyUpHandler.current = true;
-            clearKeyPressTimer();
-            keyPressTimer = null;
-        }
+        // if (e.key == "Enter" && command.length > 0) {
+        //     console.log("Enter");
+        //     stopKeyUpHandler.current = true;
+        //     clearKeyPressTimer();
+        //     keyPressTimer = null;
+        // }
 
         let max = 0;
         switch (e.key) {
@@ -455,7 +470,10 @@ export default function Sell({
                     filteredCustomers &&
                     filteredProducts
                 ) {
-                    if (Object.keys(filteredProducts).length > 0) {
+                    if (
+                        Object.keys(filteredProducts).length > 0 &&
+                        /^[a-zA-Z]+/.test(command)
+                    ) {
                         const product = {
                             ...Object.values(filteredProducts)[
                                 cart.selectedProductIndex
@@ -495,6 +513,11 @@ export default function Sell({
             return;
         }
 
+        if (stopKeyUpHandler.current) {
+            stopKeyUpHandler.current = false;
+            return;
+        }
+
         switch (e.key) {
             case "Shift":
                 setIsShift(false);
@@ -510,11 +533,6 @@ export default function Sell({
                 break;
         }
 
-        if (stopKeyUpHandler.current) {
-            stopKeyUpHandler.current = false;
-            return;
-        }
-
         if (command.length == 0) {
             switch (e.code) {
                 case "NumpadAdd":
@@ -526,6 +544,25 @@ export default function Sell({
                     e.preventDefault();
                     dispatch(decrementQuantity(null));
                     break;
+            }
+        }
+
+        if (/^\.\d*$/.test(command)) {
+            switch (e.code) {
+                case "ArrowUp":
+                case "NumpadAdd":
+                    e.preventDefault();
+                    dispatch(
+                        updateExtraDiscountAmount({ key: null, amount: 1 })
+                    );
+                    return;
+                case "ArrowDown":
+                case "NumpadEnter":
+                    e.preventDefault();
+                    dispatch(
+                        updateExtraDiscountAmount({ key: null, amount: -1 })
+                    );
+                    return;
             }
         }
     }
