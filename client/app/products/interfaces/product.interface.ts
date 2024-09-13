@@ -55,11 +55,12 @@ export default interface Product {
     purchaseEnable: boolean;
     displaySaleUnit?: string;
     displayPurchaseUnit?: string;
+    updatePrice: number;
 }
 
 export interface ProductWithID {
     _id: string;
-    decreasePrice: number;
+    updatePrice: number;
     SKU: string;
     name: string;
     image: string;

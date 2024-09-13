@@ -14,6 +14,7 @@ const initialState: Product = {
     name: "",
     description: "",
     units: units.weight,
+    updatePrice: 0,
     prices: [],
     measurements: [],
     saleUnitsBase: "",

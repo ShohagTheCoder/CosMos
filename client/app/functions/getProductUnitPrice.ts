@@ -20,5 +20,5 @@ export default function getProductUnitPrice(
         }
     }
 
-    return result - product.decreasePrice;
+    return result - product.updatePrice;
 }

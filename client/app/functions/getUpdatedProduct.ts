@@ -1,34 +1,33 @@
-import Product, {
-    ProductWithID,
-} from "../products/interfaces/product.interface";
+import { ProductWithID } from "../products/interfaces/product.interface";
 import getProductCount from "./getProductCount";
 import getProductSubTotalPrice from "./getProductSubTotalPrice";
 import getProductUnitPrice from "./getProductUnitPrice";
 
 export default function getUpdatedProduct(
     product: ProductWithID,
-    quantity: any,
-    unit: any
+    quantity: number | null,
+    unit: string | null
 ): ProductWithID {
+    let item = { ...product };
     // If new quantity
-    if (quantity != null) {
-        product.quantity = quantity;
+    if (quantity !== null) {
+        item.quantity = quantity;
     }
 
     // If new unit
-    if (unit != null) {
+    if (unit !== null) {
         // Update discount value on unit change
-        product.discount =
-            (product.units[unit].value / product.units[product.unit].value) *
-            product.discount;
+        item.discount =
+            (item.units[unit].value / item.units[item.unit].value) *
+            item.discount;
         // Update unit
-        product.unit = unit;
+        item.unit = unit;
     }
 
     // Update price, count and subTotal
-    product.price = getProductUnitPrice(product);
-    product.count = getProductCount(product);
-    product.subTotal = getProductSubTotalPrice(product);
+    item.price = getProductUnitPrice(item);
+    item.count = getProductCount(item);
+    item.subTotal = getProductSubTotalPrice(item);
 
-    return product;
+    return item;
 }

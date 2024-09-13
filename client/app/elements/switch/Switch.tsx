@@ -18,9 +18,11 @@ const Switch: React.FC<SwitchProps> = ({
     };
 
     return (
-        <div className={`flex items-center mb-3 py-2 px-4 ${className}`}>
-            <p className="inline-block mr-3">{label}</p>
-            <div className="pt-2">
+        <div
+            className={`flex items-center justify-between gap-3 mb-3 py-2 px-4 ${className}`}
+        >
+            {label ? <p className="inline-block">{label}</p> : ""}
+            <div className="h-full flex items-center">
                 <label className="relative inline-flex items-center cursor-pointer">
                     <input
                         type="checkbox"

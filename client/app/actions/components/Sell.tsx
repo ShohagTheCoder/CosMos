@@ -9,15 +9,18 @@ import {
     addExtraDiscount,
     addToCart,
     addToCartWith,
+    CartState,
     changeActiveProduct,
     decrementQuantity,
     incrementQuantity,
+    initialCartState,
     removeFromCart,
     resetSalePrice,
     resetSelectedProductIndex,
     selectNexProduct,
     selectPreviousProduct,
     setUser,
+    setWholeCart,
     shiftMeasurementTo,
     updateDiscountAmount,
     updateExtraDiscountAmount,
@@ -43,6 +46,7 @@ import { logout } from "../functions/authHandlers";
 import ProductsCard from "./ProductsCard";
 import { arrayToObjectById } from "../functions/arrayToObjectById";
 import productsMap from "@/app/utils/productsMap";
+import { updateHelperField } from "@/app/store/slices/helperSlice";
 
 interface SellProps {
     productsArray: ProductWithID[];
@@ -60,8 +64,6 @@ export default function Sell({
         (item) => !item.sellEnable
     );
     const customers = arrayToObjectById(customersArray);
-    const productsLength = products.length;
-    const customersLength = customers.length;
     let [command, setCommand] = useState("");
     const [filteredCustomers, setFilteredCustomers] = useState(customers);
     const dispatch = useDispatch();
@@ -70,7 +72,8 @@ export default function Sell({
     const [filteredProducts, setFilteredProducts] = useState(products);
     const [isCustomers, setIsCustomers] = useState(false);
     let noteRef = useRef<HTMLTextAreaElement>(null);
-    let forceOrder = 1;
+    const helper = useSelector((state: RootState) => state.helper);
+    const activeSellPage = useRef("F5");
 
     const [notification, setNotification] = useState<NotificationProps>({
         type: "none",
@@ -84,25 +87,19 @@ export default function Sell({
         }
 
         window.addEventListener("keydown", (e: any) => {
-            if (e.key === "Tab") e.preventDefault(); // Prevent tab default behavior
-
-            let command = document.getElementById("command");
-
-            if (
-                document.activeElement !== command &&
-                (e.target as HTMLElement).tagName !== "TEXTAREA" &&
-                (e.target as HTMLElement).tagName !== "INPUT"
-            ) {
-                // e.preventDefault();
-                command?.focus(); // Focus the command input element
+            const usedKeys = ["F5", "F6", "F7", "F8", "F9"];
+            if (usedKeys.includes(e.key)) {
+                e.preventDefault(); // Prevent tab default behavior
             }
+            let command = document.getElementById("command");
+            command?.focus(); // Focus the command input element
         });
 
         // Cleanup funtion to remove the evern listener
         return () => {
             window.removeEventListener("keydown", () => {});
         };
-    }, [user]);
+    }, [dispatch, user]);
 
     useEffect(() => {
         if (/^[1-9]{3}$/.test(command)) {
@@ -169,7 +166,14 @@ export default function Sell({
         if (cart.selectedProductIndex > 0) {
             dispatch(resetSelectedProductIndex());
         }
-    }, [command]);
+    }, [
+        cart.selectedProductIndex,
+        command,
+        customers,
+        dispatch,
+        isCustomers,
+        products,
+    ]);
 
     async function handleCompleteSell() {
         try {
@@ -293,7 +297,21 @@ export default function Sell({
             return;
         }
 
-        if (command.length == 0 && !keyPressTimer) {
+        // Handle sell page navigation
+        const sellPageNavigationKeys = ["F5", "F6", "F7", "F8"];
+        if (sellPageNavigationKeys.includes(e.key)) {
+            e.preventDefault();
+            stopKeyUpHandler.current = true;
+            handleSellPageChange(e.key);
+            return;
+        }
+
+        const longPressKeys = ["NumpadAdd", "NumpadEnter", "F9"];
+        if (
+            longPressKeys.includes(e.code) &&
+            command.length == 0 &&
+            !keyPressTimer
+        ) {
             switch (e.code) {
                 case "NumpadAdd":
                 case "NumpadEnter":
@@ -302,7 +320,12 @@ export default function Sell({
                         () => handleLongKeyPress(e),
                         longPressDuration
                     );
-                    break;
+                    return;
+                case "F9":
+                    keyPressTimer = setTimeout(() => {
+                        window.location.href = "./purchase";
+                    }, longPressDuration);
+                    return;
             }
         }
 
@@ -416,7 +439,7 @@ export default function Sell({
                 if (isShift) {
                     changeCartActiveProductTo(-1);
                 } else {
-                    dispatch(incrementQuantity(false));
+                    dispatch(incrementQuantity(null));
                 }
                 break;
 
@@ -424,7 +447,7 @@ export default function Sell({
                 if (isShift) {
                     changeCartActiveProductTo(1);
                 } else {
-                    dispatch(decrementQuantity(false));
+                    dispatch(decrementQuantity(null));
                 }
                 break;
 
@@ -454,10 +477,6 @@ export default function Sell({
                         dispatch(shiftMeasurementTo(1));
                     }
                 }
-                break;
-            case "F9":
-                e.preventDefault();
-                window.location.href = "./purchase";
                 break;
             case "F10":
                 e.preventDefault();
@@ -492,7 +511,7 @@ export default function Sell({
                 break;
             case "Delete":
                 e.preventDefault();
-                dispatch(removeFromCart(cart.activeProduct));
+                dispatch(removeFromCart(null));
                 break;
         }
     }
@@ -571,6 +590,21 @@ export default function Sell({
         dispatch(addToCart(product));
     }
 
+    function handleSellPageChange(sellPageKey: string) {
+        if (sellPageKey == activeSellPage.current) return;
+        let cartStates: Record<string, CartState> = { ...helper.cartStates };
+        cartStates[activeSellPage.current] = cart;
+        dispatch(updateHelperField({ field: "cartStates", value: cartStates }));
+        dispatch(setWholeCart(cartStates[sellPageKey] || initialCartState));
+        activeSellPage.current = sellPageKey;
+    }
+
+    // function handleSellPageBack() {
+    //     let cart = helper.cartStates[0];
+    //     console.log(cart);
+    //     dispatch(setWholeCart(cart));
+    // }
+
     return (
         <main>
             <SellReceipt />
@@ -582,6 +616,48 @@ export default function Sell({
                     className="justify-center"
                 />
                 <div className="ps-[94px] 2xl:ps-[150px] pe-3 bg-white dark:bg-gray-950">
+                    <div className="flex gap-4 pt-3">
+                        <button
+                            className={`py-1 px-3 ${
+                                activeSellPage.current == "F5"
+                                    ? "bg-green-700"
+                                    : ""
+                            }`}
+                            onDoubleClick={() => handleSellPageChange("F5")}
+                        >
+                            One
+                        </button>
+                        <button
+                            className={`py-1 px-3 ${
+                                activeSellPage.current == "F6"
+                                    ? "bg-green-700"
+                                    : ""
+                            }`}
+                            onDoubleClick={() => handleSellPageChange("F6")}
+                        >
+                            Two
+                        </button>
+                        <button
+                            className={`py-1 px-3 ${
+                                activeSellPage.current == "F7"
+                                    ? "bg-green-700"
+                                    : ""
+                            }`}
+                            onDoubleClick={() => handleSellPageChange("F7")}
+                        >
+                            Three
+                        </button>
+                        <button
+                            className={`py-1 px-3 ${
+                                activeSellPage.current == "F8"
+                                    ? "bg-green-700"
+                                    : ""
+                            }`}
+                            onDoubleClick={() => handleSellPageChange("F8")}
+                        >
+                            Four
+                        </button>
+                    </div>
                     <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 gap-6 py-4 min-h-screen">
                         <div className="col-span-8 lg:col-span-5">
                             <div className="p-3 border-2 border-dashed border-slate-500 mb-3">

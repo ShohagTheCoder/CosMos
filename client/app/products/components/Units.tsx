@@ -15,6 +15,7 @@ import { Unit } from "../interfaces/product.interface";
 import PurchasePrices from "./PurchasePrices";
 import PurchaseMeasurements from "./PurchaseMeasurements";
 import SelectInput from "@/app/elements/select/SelectInput";
+import Switch from "@/app/elements/switch/Switch";
 
 function Units() {
     const dispatch = useDispatch();
@@ -73,9 +74,10 @@ function Units() {
                     <thead>
                         <tr>
                             <th className="py-1 px-2 border">Unit</th>
-                            <th className="py-1 px-2 border">Label</th>{" "}
+                            <th className="py-1 px-2 border">Label</th>
                             <th className="py-1 px-2 border">Value * base</th>
-                            <th className="py-1 px-2 border">Compare</th>{" "}
+                            <th className="py-1 px-2 border">Compare</th>
+                            <th className="py-1 px-2 border">Enable</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -138,6 +140,14 @@ function Units() {
                                                 " " +
                                                 product.saleUnitsBase}
                                         </td>
+                                        <td className="border">
+                                            <Switch
+                                                checked={true}
+                                                label=""
+                                                onChange={(e) => console.log(e)}
+                                                className="!m-0 !gap-0 !justify-end"
+                                            />
+                                        </td>
                                     </tr>
                                 );
                             } else {
@@ -175,6 +185,16 @@ function Units() {
                                                         " " +
                                                         product.saleUnitsBase}
                                                 </td>
+                                                <td className="border">
+                                                    <Switch
+                                                        checked={true}
+                                                        label=""
+                                                        onChange={(e) =>
+                                                            console.log(e)
+                                                        }
+                                                        className="!m-0 !gap-0 !justify-end"
+                                                    />
+                                                </td>
                                             </>
                                         ) : (
                                             <>
@@ -194,6 +214,16 @@ function Units() {
                                                         unit.value +
                                                         " " +
                                                         product.saleUnitsBase}
+                                                </td>
+                                                <td className="border">
+                                                    <Switch
+                                                        checked={true}
+                                                        label=""
+                                                        onChange={(e) =>
+                                                            console.log(e)
+                                                        }
+                                                        className="!m-0 !gap-0 !justify-end"
+                                                    />
                                                 </td>
                                             </>
                                         )}

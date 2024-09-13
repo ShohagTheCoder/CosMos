@@ -1,10 +1,7 @@
-import getProductsTotalPrice from "@/app/functions/getProductsTotalPrice";
-import getCurrentMeasurement from "@/app/functions/getCurrentMeasurement";
 import getUpdatedProduct from "@/app/functions/getUpdatedProduct";
 import { CustomerWithId } from "@/app/interfaces/customer.inerface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { stat } from "fs";
 import getMeasurementTo from "@/app/functions/getMeasurementTo";
 import updateCart from "../functions/updateCart";
 
@@ -20,7 +17,7 @@ export interface CartState {
     customerAccount: any;
 }
 
-const initialState: CartState = {
+export const initialCartState: CartState = {
     selectedProductIndex: 0,
     products: {},
     totalPrice: 0,
@@ -33,7 +30,7 @@ const initialState: CartState = {
 
 const cartSlice = createSlice({
     name: "cart",
-    initialState,
+    initialState: initialCartState,
     reducers: {
         addToCart: (state: CartState, action: PayloadAction<ProductWithID>) => {
             let product = action.payload;
@@ -131,11 +128,8 @@ const cartSlice = createSlice({
         },
 
         updatePaid: (state: CartState, action: PayloadAction<number>) => {
-            let paid = action.payload;
-            if (!paid) {
-                paid = 0;
-            }
-            if (paid < 100000) {
+            let paid = action.payload || 0;
+            if (paid > 0) {
                 state.paid = paid;
                 state.due = state.totalPrice - paid;
             }
@@ -151,7 +145,7 @@ const cartSlice = createSlice({
             const product = state.products[key];
 
             if (product) {
-                product.decreasePrice += amount;
+                product.updatePrice += amount;
                 state.products[key] = getUpdatedProduct(product, null, null);
             }
         },
@@ -162,8 +156,8 @@ const cartSlice = createSlice({
             }
             const product = state.products[key];
 
-            if (product && product.decreasePrice != 0) {
-                product.decreasePrice = 0;
+            if (product && product.updatePrice != 0) {
+                product.updatePrice = 0;
                 state.products[key] = getUpdatedProduct(product, null, null);
             }
         },
@@ -377,6 +371,12 @@ const cartSlice = createSlice({
                 state.user = action.payload;
             }
         },
+        resetCart: () => {
+            return initialCartState;
+        },
+        setWholeCart: (state: CartState, action: PayloadAction<CartState>) => {
+            return action.payload;
+        },
     },
 });
 
@@ -404,5 +404,7 @@ export const {
     setUser,
     updateSalePrice,
     resetSalePrice,
+    setWholeCart,
+    resetCart,
 } = cartSlice.actions;
 export default cartSlice.reducer;
