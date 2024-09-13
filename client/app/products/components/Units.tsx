@@ -240,6 +240,7 @@ function Units() {
                     Add Unit
                 </button>
             </div>
+            <p className="bg-yellow-700 py-3 px-4 mb-3">Sell section</p>
             <Prices />
             <Measurements />
             <p className="bg-yellow-700 py-3 px-4 mb-3">Purchase section</p>

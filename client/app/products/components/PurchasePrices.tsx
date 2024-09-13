@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
     addPurchasePrice,
+    removePurchasePrice,
     updateProductField,
     updatePurchasePriceMax,
     updatePurchasePricePrice,
@@ -10,6 +11,7 @@ import {
 import { RootState } from "@/app/store/store";
 import Switch from "@/app/elements/switch/Switch";
 import sortDraggedItems from "@/app/functions/sortDraggedItems";
+import NumberInputControl from "@/app/elements/inputs/NumberInputControl";
 
 function PurchasePrices() {
     const dispatch = useDispatch();
@@ -70,15 +72,15 @@ function PurchasePrices() {
                             onDragEnd={() => handleSort("purchasePrices")}
                             onDragOver={(e) => e.preventDefault()}
                         >
-                            <div className="price bg-gray-900 p-2">
+                            <div className="bg-gray-900 p-2 flex flex-wrap justify-start items-center">
                                 <button
                                     draggable
                                     onDragStart={() => (dragItem.current = key)}
-                                    className="h-[30px] w-[30px] bg-gray-800 mr-3 rounded"
+                                    className="h-[30px] w-[30px] bg-gray-800 rounded"
                                 >
                                     &#x2630;
                                 </button>
-                                Purchase Unit :{" "}
+                                <p className="mx-3">Unit : </p>
                                 <select
                                     className="h-[40px] bg-black text-white p-2"
                                     value={price.unit}
@@ -100,35 +102,33 @@ function PurchasePrices() {
                                         )
                                     )}
                                 </select>{" "}
-                                Max :{" "}
-                                <input
-                                    type="number"
-                                    className="h-[30px] bg-black w-[60px] text-white p-2"
+                                <p className="mx-3">Max : </p>
+                                <NumberInputControl
                                     value={price.max}
-                                    onChange={(e) =>
+                                    onChange={(max) =>
                                         dispatch(
                                             updatePurchasePriceMax({
                                                 key,
-                                                max: e.target.value,
+                                                max,
                                             })
                                         )
                                     }
                                 />
-                                Price : 1 {product.saleUnitsBase} =
-                                <input
-                                    type="number"
-                                    className="h-[30px] bg-black w-[100px] text-white p-2"
+                                <p className="mx-3">
+                                    Price : 1 {product.saleUnitsBase} =
+                                </p>
+                                <NumberInputControl
                                     value={price.price}
-                                    onChange={(e) =>
+                                    onChange={(price) =>
                                         dispatch(
                                             updatePurchasePricePrice({
                                                 key,
-                                                price: e.target.value,
+                                                price,
                                             })
                                         )
                                     }
                                 />
-                                ৳
+                                <p className="mx-3">৳</p>
                                 {price.unit == product.saleUnitsBase ? (
                                     ""
                                 ) : (
@@ -156,6 +156,14 @@ function PurchasePrices() {
                                         ৳
                                     </>
                                 )}
+                                <button
+                                    onDoubleClick={() =>
+                                        dispatch(removePurchasePrice(key))
+                                    }
+                                    className="h-[30px] w-[30px] bg-gray-700 text-white flex items-center justify-center mr-3 rounded ms-auto"
+                                >
+                                    <span className="text-l">&#x1F534;</span>
+                                </button>
                             </div>
                         </div>
                     ))}

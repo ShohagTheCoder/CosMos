@@ -215,6 +215,13 @@ const productSlice = createSlice({
         addPrice: (state: Product) => {
             state.prices.push(state.prices[state.prices.length - 1]);
         },
+        removePrice: (state: Product, action: PayloadAction<number>) => {
+            const index = action.payload;
+            // Check if index is valid before removing
+            if (index >= 0 && index < state.prices.length) {
+                state.prices.splice(index, 1); // Remove one item at the given index
+            }
+        },
         updateMeasurementUnit: (
             state: Product,
             action: PayloadAction<{ key: number; unit: any }>
@@ -237,6 +244,13 @@ const productSlice = createSlice({
             state.measurements.push(
                 state.measurements[state.measurements.length - 1]
             );
+        },
+        removeMeasurement: (state: Product, action: PayloadAction<number>) => {
+            const index = action.payload;
+            // Check if index is valid before removing
+            if (index >= 0 && index < state.measurements.length) {
+                state.measurements.splice(index, 1); // Remove one item at the given index
+            }
         },
         /* Purchse section */
         updatePurchasePriceMax: (
@@ -275,6 +289,16 @@ const productSlice = createSlice({
                 state.purchasePrices[state.purchasePrices.length - 1]
             );
         },
+        removePurchasePrice: (
+            state: Product,
+            action: PayloadAction<number>
+        ) => {
+            const index = action.payload;
+            // Check if index is valid before removing
+            if (index >= 0 && index < state.prices.length) {
+                state.prices.splice(index, 1); // Remove one item at the given index
+            }
+        },
         updatePurchaseMeasurementUnit: (
             state: Product,
             action: PayloadAction<{ key: number; unit: any }>
@@ -300,6 +324,16 @@ const productSlice = createSlice({
                     state.purchaseMeasurements.length - 1
                 ]
             );
+        },
+        removePurchaseMeasurement: (
+            state: Product,
+            action: PayloadAction<number>
+        ) => {
+            const index = action.payload;
+            // Check if index is valid before removing
+            if (index >= 0 && index < state.measurements.length) {
+                state.measurements.splice(index, 1); // Remove one item at the given index
+            }
         },
         // Others
         updateUnit: (state: Product, action: PayloadAction<string>) => {
@@ -353,6 +387,10 @@ export const {
     toggleProductHasResources,
     addResource,
     setProductProduct,
+    removeMeasurement,
+    removePrice,
+    removePurchaseMeasurement,
+    removePurchasePrice,
 } = productSlice.actions;
 
 export default productSlice.reducer;

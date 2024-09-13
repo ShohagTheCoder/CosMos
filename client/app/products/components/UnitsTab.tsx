@@ -77,6 +77,9 @@ export default function UnitsTab() {
                             <Units />
                         </div>
                     </div>
+                    <p className="bg-yellow-700 py-3 px-4 mb-3">
+                        Others section
+                    </p>
                     <div className="grid grid-cols-6 gap-4">
                         {product.sellEnable ? (
                             <div className="col-span-3">

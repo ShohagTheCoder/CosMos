@@ -2,12 +2,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import {
     addPurchaseMeasurement,
+    removePurchaseMeasurement,
     updateProductField,
     updatePurchaseMeasurementUnit,
     updatePurchaseMeasurementValue,
 } from "@/app/store/slices/productSlice";
 import sortDraggedItems from "@/app/functions/sortDraggedItems";
 import { useRef } from "react";
+import NumberInputControl from "@/app/elements/inputs/NumberInputControl";
 
 function PurchaseMeasurements() {
     const dispatch = useDispatch();
@@ -45,15 +47,15 @@ function PurchaseMeasurements() {
                             onDragEnd={() => handleSort("purchaseMeasurements")}
                             onDragOver={(e) => e.preventDefault()}
                         >
-                            <div className="measurement bg-gray-900 p-2">
+                            <div className="bg-gray-900 p-2 flex flex-wrap justify-start items-center">
                                 <button
                                     draggable
                                     onDragStart={() => (dragItem.current = key)}
-                                    className="h-[30px] w-[30px] bg-gray-800 mr-3 rounded"
+                                    className="h-[30px] w-[30px] bg-gray-800 rounded"
                                 >
                                     &#x2630;
                                 </button>
-                                Purchase Unit :{" "}
+                                <p className="mx-3">Unit :</p>
                                 <select
                                     className="h-[40px] bg-black text-white p-2"
                                     value={measurement.unit}
@@ -74,20 +76,26 @@ function PurchaseMeasurements() {
                                         )
                                     )}
                                 </select>
-                                Value :{" "}
-                                <input
-                                    type="number"
-                                    className="h-[30px] bg-black w-[60px] text-white p-2"
+                                <p className="mx-3">Value :</p>
+                                <NumberInputControl
                                     value={measurement.value}
-                                    onChange={(e) =>
+                                    onChange={(value) =>
                                         dispatch(
                                             updatePurchaseMeasurementValue({
                                                 key,
-                                                value: parseInt(e.target.value),
+                                                value,
                                             })
                                         )
                                     }
                                 />
+                                <button
+                                    onDoubleClick={() =>
+                                        dispatch(removePurchaseMeasurement(key))
+                                    }
+                                    className="h-[30px] w-[30px] bg-gray-700 text-white flex items-center justify-center mr-3 rounded ms-auto"
+                                >
+                                    <span className="text-l">&#x1F534;</span>
+                                </button>
                             </div>
                         </div>
                     ))}
