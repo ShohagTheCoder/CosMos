@@ -30,7 +30,7 @@ import {
 import { RootState } from "@/app/store/store";
 import apiClient from "@/app/utils/apiClient";
 import { ERROR, SUCCESS } from "@/app/utils/constants/message";
-import Link from "next/link";
+import a from "next/a";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CustomerCard from "./components/CustomerCard";
@@ -662,35 +662,35 @@ export default function Sell({
                     <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 gap-6 py-4 min-h-screen">
                         <div className="col-span-8 lg:col-span-5">
                             <div className="p-3 border-2 border-dashed border-slate-500 mb-3">
-                                <Link href={"/"}>Home</Link>
-                                <Link
+                                <a href={"/"}>Home</a>
+                                <a
                                     className="ms-3"
                                     href={"/actions/purchase"}
                                     target="_blank"
                                 >
                                     Purchase
-                                </Link>
-                                <Link
+                                </a>
+                                <a
                                     className="ms-3"
                                     href={"/sells"}
                                     target="_blank"
                                 >
                                     Sells
-                                </Link>
-                                <Link
+                                </a>
+                                <a
                                     className="ms-3"
                                     href={"/products"}
                                     target="_blank"
                                 >
                                     Products
-                                </Link>
-                                <Link
+                                </a>
+                                <a
                                     className="ms-3"
                                     href={"/customers"}
                                     target="_blank"
                                 >
                                     Customers
-                                </Link>
+                                </a>
                                 <p className="inline-block mx-4 bg-green-700 py-2 px-3">
                                     {user.name}
                                 </p>

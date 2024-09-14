@@ -1,7 +1,6 @@
 import React from "react";
 import "./style.css";
 import Icon from "./Icon";
-import Link from "next/link";
 
 function Sidebar({ active = "home" }: { active: string }) {
     function getBtnStyleClass(value: string) {
@@ -15,27 +14,27 @@ function Sidebar({ active = "home" }: { active: string }) {
             <div className="h-full flex justify-center items-center">
                 <div className="flex flex-col justify-center items-center gap-5">
                     <button className={getBtnStyleClass("home")}>
-                        <Link href={"/"}>
+                        <a href={"/"}>
                             <Icon type={"home"} />
-                        </Link>
+                        </a>
                     </button>
                     <button className={getBtnStyleClass("sell")}>
-                        <Link href={"/actions/sell"}>
+                        <a href={"/actions/sell"}>
                             <Icon type={"sell"} />
-                        </Link>
+                        </a>
                     </button>
                     <button className={getBtnStyleClass("purchase")}>
-                        <Link href={"/actions/purchase"}>
+                        <a href={"/actions/purchase"}>
                             <Icon type={"products"} />
-                        </Link>
+                        </a>
                     </button>
                     <button className={getBtnStyleClass("users")}>
                         <Icon type={"user"} />
                     </button>
                     <button className={getBtnStyleClass("settings")}>
-                        <Link href={"/settings"}>
+                        <a href={"/settings"}>
                             <Icon type={"settings"} />
-                        </Link>
+                        </a>
                     </button>
                 </div>
             </div>

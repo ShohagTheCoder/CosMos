@@ -7,7 +7,7 @@ export interface NotificationProps {
     type: NotificationType; // Required field
     id?: string; // Optional
     title?: string; // Optional
-    message?: string; // Optional
+    message: string; // Optional
     timestamp?: number; // Optional
     className?: string; // Optional
 }
@@ -21,7 +21,7 @@ const notificationStyles = {
 };
 
 const Notification: React.FC<NotificationProps> = ({
-    type,
+    type = "none",
     title = "", // Default to empty string if title is not provided
     message = "", // Default to empty string if message is not provided
     timestamp,
