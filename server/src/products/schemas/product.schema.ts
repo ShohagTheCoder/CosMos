@@ -19,6 +19,9 @@ export class Unit {
 
     @Prop()
     base: string;
+
+    @Prop()
+    enable: boolean;
 }
 
 @Schema()
@@ -116,11 +119,24 @@ export class Product extends Document {
     @Prop()
     resourcesCost: number;
 
-    @Prop()
-    discount?: number;
+    @Prop({ default: true })
+    discountEnable: boolean;
+
+    @Prop({ default: 0 })
+    discount: number;
 
     @Prop()
-    extraDiscount?: number;
+    discounts?: number[];
+
+    @Prop({
+        default: function (this: Product) {
+            return Math.floor(this.price / 5);
+        },
+    })
+    maximumDiscount: number;
+
+    @Prop({ default: 0 })
+    extraDiscount: number;
 
     @Prop({ default: true })
     sellEnable: boolean;

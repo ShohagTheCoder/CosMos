@@ -12,17 +12,19 @@ import { RootState } from "@/app/store/store";
 import Switch from "@/app/elements/switch/Switch";
 import sortDraggedItems from "@/app/functions/sortDraggedItems";
 import NumberInputControl from "@/app/elements/inputs/NumberInputControl";
+import getUnits from "@/app/functions/getUnits";
 
 function Prices() {
     const dispatch = useDispatch();
     const product = useSelector((state: RootState) => state.product);
+    const units = getUnits(product.units);
     const prices = product.prices;
 
     function handleUpdateProductPriceByPricesUnitValue(
         key: number,
         value: number
     ) {
-        const divider = product.units[prices[key].unit].value;
+        const divider = units[prices[key].unit].value;
         dispatch(updatePricePrice({ key, price: value / divider }));
     }
 
@@ -72,7 +74,7 @@ function Prices() {
                             onDragEnd={() => handleSort("prices")}
                             onDragOver={(e) => e.preventDefault()}
                         >
-                            <div className="bg-gray-900 p-2 flex flex-wrap justify-start items-center">
+                            <div className="bg-gray-900 p-2 flex flex-wrap justify-start items-center gap-3">
                                 <button
                                     draggable
                                     onDragStart={() => (dragItem.current = key)}
@@ -80,12 +82,11 @@ function Prices() {
                                 >
                                     &#x2630;
                                 </button>
-                                <p className="mx-3">Unit :</p>
+                                <p>Unit :</p>
                                 <select
                                     className="h-[40px] bg-black text-white p-2"
                                     value={price.unit}
                                     onChange={(e) => {
-                                        console.log(product);
                                         dispatch(
                                             updatePriceUnit({
                                                 key,
@@ -94,7 +95,7 @@ function Prices() {
                                         );
                                     }}
                                 >
-                                    {Object.values(product.units).map(
+                                    {Object.values(units).map(
                                         (unit: any, key: number) => (
                                             <option key={key} value={unit.unit}>
                                                 {unit.label}
@@ -102,7 +103,7 @@ function Prices() {
                                         )
                                     )}
                                 </select>
-                                <p className="mx-3">Max :</p>
+                                <p>Max :</p>
                                 <NumberInputControl
                                     value={price.max}
                                     onChange={(max) =>
@@ -114,9 +115,7 @@ function Prices() {
                                         )
                                     }
                                 />
-                                <p className="mx-3">
-                                    Price : 1 {product.saleUnitsBase} =
-                                </p>
+                                <p>Price : 1 {product.saleUnitsBase} =</p>
                                 <NumberInputControl
                                     value={price.price}
                                     onChange={(price) =>
@@ -128,34 +127,28 @@ function Prices() {
                                         )
                                     }
                                 />
-                                <p className="mx-3">৳</p>
+                                <p>৳</p>
                                 {price.unit == product.saleUnitsBase ? (
                                     ""
                                 ) : (
-                                    <>
-                                        {" | 1 "}
-                                        {product.units[price.unit].label}
-                                        <input
-                                            type="number"
-                                            className="h-[30px] bg-black w-[100px] text-white p-2"
-                                            step={
-                                                product.units[price.unit]
-                                                    .value / 2
-                                            }
+                                    <div className="flex gap-3 items-center">
+                                        <p>| 1 {price.unit}</p>
+                                        <NumberInputControl
                                             value={Math.ceil(
                                                 price.price *
-                                                    product.units[price.unit]
-                                                        .value
+                                                    units[price.unit].value
                                             )}
-                                            onChange={(e) =>
+                                            onChange={(value) =>
                                                 handleUpdateProductPriceByPricesUnitValue(
                                                     key,
-                                                    parseInt(e.target.value)
+                                                    value
                                                 )
                                             }
+                                            inputClassName="w-20"
+                                            step={units[price.unit].value / 2}
                                         />
-                                        ৳
-                                    </>
+                                        <p>৳</p>
+                                    </div>
                                 )}
                                 <button
                                     onDoubleClick={() =>

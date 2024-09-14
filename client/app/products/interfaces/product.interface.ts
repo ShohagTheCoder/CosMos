@@ -9,6 +9,7 @@ export interface Unit {
     dynamic: boolean;
     dynamicValue: boolean;
     value: number;
+    enable: boolean;
 }
 
 export interface Price {
@@ -45,9 +46,10 @@ export default interface Product {
     priority: number;
     saleUnitsBase: string;
     purchaseUnitsBase?: string;
+    count: number;
     discount: number;
     extraDiscount: number;
-    quantity?: number;
+    quantity: number;
     subTotal?: number;
     stockLow: number;
     stockAlert: number;
@@ -58,40 +60,11 @@ export default interface Product {
     updatePrice: number;
 }
 
-export interface ProductWithID {
-    _id: string;
-    updatePrice: number;
-    SKU: string;
-    name: string;
-    image: string;
-    description?: string;
-    madeIn?: string;
-    saleUnitsBase: string;
-    purchaseUnitsBase: string;
-    units: Record<string, Unit>;
-    prices: Price[];
-    priority: number;
-    measurements: Measurement[];
-    purchasePrices: Price[];
-    purchaseMeasurements: Measurement[];
-    hasResources: boolean;
-    resources: Record<string, Resource>;
-    resourcesCost: number;
-    unit: string;
-    price: number;
-    discount: number;
-    extraDiscount: number;
+export interface ProductWithID extends Product {
+    _id: string; // Since Product has _id as optional, you can enforce it here
     stock: {
         stock: number;
     };
-    quantity: number;
-    count: number;
     subTotal: number;
-    stockLow: number;
-    stockAlert: number;
-    sellEnable: boolean;
-    purchaseEnable: boolean;
-    displaySaleUnit: string;
-    displayPurchaseUnit: string;
-    product: Product;
+    product: Product; // If this is a reference back to Product
 }

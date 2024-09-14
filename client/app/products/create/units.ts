@@ -6,7 +6,7 @@ interface UnitBases {
     volume: Record<string, Unit>;
 }
 
-const units: UnitBases = {
+const savedUnits: UnitBases = {
     weight: {
         g: {
             label: "Gram",
@@ -14,6 +14,7 @@ const units: UnitBases = {
             value: 0.001,
             dynamic: false,
             dynamicValue: false,
+            enable: false,
         },
         kg: {
             label: "Kilogram",
@@ -21,13 +22,7 @@ const units: UnitBases = {
             value: 1,
             dynamic: false,
             dynamicValue: false,
-        },
-        qt: {
-            label: "Quintal",
-            unit: "qt",
-            value: 100,
-            dynamic: false,
-            dynamicValue: false,
+            enable: true,
         },
         bag: {
             label: "Bag",
@@ -35,13 +30,15 @@ const units: UnitBases = {
             value: 50,
             dynamic: false,
             dynamicValue: true,
+            enable: true,
         },
-        undefined: {
-            label: "Undefined",
-            unit: "undefined",
-            value: 1,
-            dynamic: true,
-            dynamicValue: true,
+        qt: {
+            label: "Quintal",
+            unit: "qt",
+            value: 100,
+            dynamic: false,
+            dynamicValue: false,
+            enable: true,
         },
     },
     pices: {
@@ -51,6 +48,7 @@ const units: UnitBases = {
             value: 1,
             dynamic: false,
             dynamicValue: false,
+            enable: true,
         },
         box: {
             label: "Box",
@@ -58,6 +56,7 @@ const units: UnitBases = {
             value: 12,
             dynamic: false,
             dynamicValue: true,
+            enable: false,
         },
     },
     volume: {
@@ -67,6 +66,7 @@ const units: UnitBases = {
             value: 1,
             dynamic: false,
             dynamicValue: false,
+            enable: true,
         },
         btl: {
             label: "Bottle",
@@ -74,8 +74,9 @@ const units: UnitBases = {
             value: 5,
             dynamic: false,
             dynamicValue: true,
+            enable: false,
         },
     },
 };
 
-export { units };
+export default savedUnits;

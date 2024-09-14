@@ -4,7 +4,7 @@ import Product, {
     Unit,
 } from "@/app/products/interfaces/product.interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { units } from "@/app/products/create/units";
+import savedUnits from "@/app/products/create/units";
 import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 import { getUpdatedSaleUnitsBase } from "@/app/functions/getUpdatedSaleUnitsBase";
 import updatePricesForNewBase from "@/app/functions/updatePricesForNewBase";
@@ -13,7 +13,7 @@ const initialState: Product = {
     SKU: "",
     name: "",
     description: "",
-    units: units.weight,
+    units: savedUnits.weight,
     updatePrice: 0,
     prices: [],
     measurements: [],
@@ -25,6 +25,8 @@ const initialState: Product = {
     sellEnable: true,
     purchaseEnable: true,
     priority: 1,
+    quantity: 1,
+    count: 1,
     discount: 0,
     extraDiscount: 0,
     stockAlert: 10,
@@ -55,31 +57,56 @@ const productSlice = createSlice({
             state: Product,
             action: PayloadAction<{ base: string; units: Record<string, Unit> }>
         ) => {
-            const { base, units } = action.payload;
+            let { base, units } = action.payload;
+
             state.saleUnitsBase = base;
             state.units = units;
-            state.prices[0] = {
-                unit: base,
-                max: 1,
-                price: 1,
-            };
-            state.measurements[0] = {
-                unit: base,
-                value: 1,
-            };
-            state.purchasePrices[0] = {
-                unit: base,
-                max: 1,
-                price: 1,
-            };
-            state.purchaseMeasurements[0] = {
-                unit: base,
-                value: 1,
-            };
+
+            // Ensure arrays exist before accessing index 0
+            if (!state.prices.length)
+                state.prices.push({ unit: base, max: 1, price: 1 });
+            else state.prices[0] = { unit: base, max: 1, price: 1 };
+
+            if (!state.measurements.length)
+                state.measurements.push({ unit: base, value: 1 });
+            else state.measurements[0] = { unit: base, value: 1 };
+
+            if (!state.purchasePrices.length)
+                state.purchasePrices.push({ unit: base, max: 1, price: 1 });
+            else state.purchasePrices[0] = { unit: base, max: 1, price: 1 };
+
+            if (!state.purchaseMeasurements.length)
+                state.purchaseMeasurements.push({ unit: base, value: 1 });
+            else state.purchaseMeasurements[0] = { unit: base, value: 1 };
+
             state.unit = base;
             state.displaySaleUnit = base;
             state.displayPurchaseUnit = base;
         },
+        removeUnit: (state: Product, action: PayloadAction<string>) => {
+            const key = action.payload;
+
+            // Ensure the unit being removed is not the current sale unit
+            if (key !== state.saleUnitsBase) {
+                // Delete the unit from the units object
+                delete state.units[key];
+
+                // Optionally, check and clean up related fields if they depend on the removed unit
+                state.prices = state.prices.filter(
+                    (price) => price.unit !== key
+                );
+                state.measurements = state.measurements.filter(
+                    (measurement) => measurement.unit !== key
+                );
+                state.purchasePrices = state.purchasePrices.filter(
+                    (purchasePrice) => purchasePrice.unit !== key
+                );
+                state.purchaseMeasurements = state.purchaseMeasurements.filter(
+                    (purchaseMeasurement) => purchaseMeasurement.unit !== key
+                );
+            }
+        },
+
         addDynamicUnit: (
             state: Product,
             action: PayloadAction<{
@@ -92,6 +119,7 @@ const productSlice = createSlice({
                 ...action.payload,
                 dynamic: true,
                 dynamicValue: true,
+                enable: true,
             };
         },
         updateUnitsDynamicValue: (
@@ -109,6 +137,42 @@ const productSlice = createSlice({
             const { key, value } = action.payload;
             state.units[key].label = value;
         },
+        toggleUnitEnable: (
+            state: Product,
+            action: PayloadAction<{ key: string; enable: boolean }>
+        ) => {
+            const { key, enable } = action.payload;
+            if (key !== state.unit) {
+                state.units[key].enable = enable;
+
+                if (!enable) {
+                    let prices = state.prices;
+                    for (let index in prices) {
+                        if (prices[index].unit == key) {
+                            state.prices[index].unit = state.unit;
+                        }
+                    }
+                    let purchasePrices = state.purchasePrices;
+                    for (let index in purchasePrices) {
+                        if (purchasePrices[index].unit == key) {
+                            state.purchasePrices[index].unit = state.unit;
+                        }
+                    }
+                    let measurements = state.measurements;
+                    for (let index in measurements) {
+                        if (measurements[index].unit == key) {
+                            state.measurements[index].unit = state.unit;
+                        }
+                    }
+                    let purchaseMeasurements = state.purchaseMeasurements;
+                    for (let index in purchaseMeasurements) {
+                        if (purchaseMeasurements[index].unit == key) {
+                            state.purchaseMeasurements[index].unit = state.unit;
+                        }
+                    }
+                }
+            }
+        },
         updateDynamicUnitUnit: (
             state: Product,
             action: PayloadAction<{ key: string; value: string }>
@@ -122,8 +186,10 @@ const productSlice = createSlice({
         ) => {
             const key = action.payload;
             const unit = state.units[key];
-            state.units[unit.unit] = unit;
-            delete state.units[key];
+            if (unit && unit.unit.length > 0 && unit.unit != key) {
+                state.units[unit.unit] = unit;
+                delete state.units[key];
+            }
         },
         changeSaleUnitsBase: (
             state: Product,
@@ -135,6 +201,8 @@ const productSlice = createSlice({
             state.saleUnitsBase = base;
             state.unit = base;
             state.price = getProductUnitPrice(state);
+            // Safeguard units[base] existence
+            state.units[base].enable = true;
         },
 
         // updateProductResourceProduct: (
@@ -378,10 +446,12 @@ export const {
     updatePurchasePriceUnit,
     updatePurchasePricePrice,
     addDynamicUnit,
+    removeUnit,
     addPurchasePrice,
     updatePurchaseMeasurementUnit,
     updatePurchaseMeasurementValue,
     addPurchaseMeasurement,
+    toggleUnitEnable,
     selectUnits,
     updatePriceMax,
     updatePriceUnit,

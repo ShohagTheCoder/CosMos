@@ -6,6 +6,7 @@ interface NumberInputControlProps {
     className?: string;
     buttonClassName?: string;
     inputClassName?: string;
+    step?: number;
 }
 
 const NumberInputControl: React.FC<NumberInputControlProps> = ({
@@ -14,13 +15,14 @@ const NumberInputControl: React.FC<NumberInputControlProps> = ({
     className = "",
     buttonClassName = "",
     inputClassName = "",
+    step = 1,
 }) => {
     const handleDecrement = () => {
-        onChange(value - 1);
+        onChange(value - step);
     };
 
     const handleIncrement = () => {
-        onChange(value + 1);
+        onChange(value + step);
     };
 
     return (
@@ -33,7 +35,7 @@ const NumberInputControl: React.FC<NumberInputControlProps> = ({
             </button>
             <input
                 type="number"
-                step="any" // Allows decimal input
+                step={step} // Allows decimal input
                 className={`h-8 bg-black w-10 text-white text-center outline-none border-none no-spin ${inputClassName}`}
                 value={value}
                 onChange={(e) => onChange(parseFloat(e.target.value) || 0)}

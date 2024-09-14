@@ -1,10 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 import "./style.css";
-import CreateProductTabs from "./components/CreateProductTabs";
 import Tab from "@/app/elements/tab/Tab";
-import Main from "./components/Main";
-import Units from "../components/Units";
 import Resources from "./components/Resources";
 import CreateProduct from "./components/CreateProduct";
 import General from "../components/General";

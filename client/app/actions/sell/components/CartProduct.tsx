@@ -15,6 +15,7 @@ import {
     convertStandardToBnBD,
 } from "@/app/utils/numberFormat";
 import { RootState } from "@/app/store/store";
+import getUnits from "@/app/functions/getUnits";
 
 export interface Product {
     _id: string; // MongoDB unique identifier
@@ -204,16 +205,16 @@ function CartProduct() {
                                             )
                                         }
                                     >
-                                        {Object.values(product.units).map(
-                                            (unit) => (
-                                                <option
-                                                    key={unit.unit}
-                                                    value={unit.unit}
-                                                >
-                                                    {unit.unit}
-                                                </option>
-                                            )
-                                        )}
+                                        {Object.values(
+                                            getUnits(product.units)
+                                        ).map((unit) => (
+                                            <option
+                                                key={unit.unit}
+                                                value={unit.unit}
+                                            >
+                                                {unit.unit}
+                                            </option>
+                                        ))}
                                     </select>
                                 </div>
                             </div>

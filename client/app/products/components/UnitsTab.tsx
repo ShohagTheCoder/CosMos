@@ -1,21 +1,22 @@
 import React from "react";
 import Units from "./Units";
-import { units } from "../create/units";
 import { Unit } from "../interfaces/product.interface";
 import { useDispatch, useSelector } from "react-redux";
 import {
     selectUnits,
     updateProductField,
-    updateUnit,
 } from "@/app/store/slices/productSlice";
 import { RootState } from "@/app/store/store";
 import SelectInput from "@/app/elements/select/SelectInput";
 import getProductUnitpurchasePrice from "@/app/functions/purchase/getProductUnitPrice";
 import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
+import getUnits from "@/app/functions/getUnits";
+import savedUnits from "../create/units";
 
 export default function UnitsTab() {
     const dispatch = useDispatch();
     const product = useSelector((state: RootState) => state.product);
+    const units = getUnits(product.units);
 
     return (
         <div className="tab bg-gray-800 rounded-lg shadow-lg">
@@ -31,7 +32,7 @@ export default function UnitsTab() {
                                 dispatch(
                                     selectUnits({
                                         base: "kg",
-                                        units: units.weight,
+                                        units: savedUnits.weight,
                                     })
                                 )
                             }
@@ -44,7 +45,7 @@ export default function UnitsTab() {
                                 dispatch(
                                     selectUnits({
                                         base: "pcs",
-                                        units: units.pices,
+                                        units: savedUnits.pices,
                                     })
                                 )
                             }
@@ -57,7 +58,7 @@ export default function UnitsTab() {
                                 dispatch(
                                     selectUnits({
                                         base: "ltr",
-                                        units: units.volume,
+                                        units: savedUnits.volume,
                                     })
                                 )
                             }
@@ -95,12 +96,12 @@ export default function UnitsTab() {
                                     }
                                     options={{
                                         label: "Display sale price unit",
-                                        options: Object.values(
-                                            product.units
-                                        ).map((unit: Unit) => ({
-                                            label: unit.label,
-                                            value: unit.unit,
-                                        })),
+                                        options: Object.values(units).map(
+                                            (unit: Unit) => ({
+                                                label: unit.label,
+                                                value: unit.unit,
+                                            })
+                                        ),
                                     }}
                                 />
                                 <p className="mt-2 text-gray-400">
@@ -110,9 +111,8 @@ export default function UnitsTab() {
                                             ...product,
                                             unit: product.displaySaleUnit!,
                                         }) *
-                                            product.units[
-                                                product.displaySaleUnit!
-                                            ].value}
+                                            units[product.displaySaleUnit!]
+                                                .value}
                                     </span>
                                 </p>
                             </div>
@@ -133,12 +133,12 @@ export default function UnitsTab() {
                                     }
                                     options={{
                                         label: "Display purchase price unit",
-                                        options: Object.values(
-                                            product.units
-                                        ).map((unit: Unit) => ({
-                                            label: unit.label,
-                                            value: unit.unit,
-                                        })),
+                                        options: Object.values(units).map(
+                                            (unit: Unit) => ({
+                                                label: unit.label,
+                                                value: unit.unit,
+                                            })
+                                        ),
                                     }}
                                 />
                                 <p className="mt-2 text-gray-400">
@@ -148,9 +148,8 @@ export default function UnitsTab() {
                                             ...product,
                                             unit: product.displayPurchaseUnit!,
                                         }) *
-                                            product.units[
-                                                product.displayPurchaseUnit!
-                                            ].value}
+                                            units[product.displayPurchaseUnit!]
+                                                .value}
                                     </span>
                                 </p>
                             </div>

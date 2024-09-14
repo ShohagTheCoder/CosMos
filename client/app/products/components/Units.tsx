@@ -6,6 +6,8 @@ import {
     addDynamicUnit,
     changeSaleUnitsBase,
     remapDynamicUnitUnit,
+    removeUnit,
+    toggleUnitEnable,
     updateDynamicUnitLabel,
     updateDynamicUnitUnit,
     updateUnitsDynamicValue,
@@ -28,21 +30,6 @@ function Units() {
         dispatch(updateUnitsDynamicValue({ key: unit, value }));
     }
 
-    function handleDynamicUnitUnit(unit: string, value: string) {
-        dispatch(updateDynamicUnitUnit({ key: unit, value }));
-    }
-
-    function handleDynamicUnitUnitRemap(unit: string) {
-        dispatch(remapDynamicUnitUnit(unit));
-    }
-    function handleDynamicUnitLabel(unit: string, value: string) {
-        dispatch(updateDynamicUnitLabel({ key: unit, value }));
-    }
-
-    function handleChangeSaleUnitsBase(e: any) {
-        dispatch(changeSaleUnitsBase(e.target.value));
-    }
-
     function handleAddDynamicUnit() {
         dispatch(
             addDynamicUnit({
@@ -58,7 +45,9 @@ function Units() {
             <div className="grid grid-cols-3">
                 <SelectInput
                     value={product.saleUnitsBase}
-                    onChange={handleChangeSaleUnitsBase}
+                    onChange={(e) =>
+                        dispatch(changeSaleUnitsBase(e.target.value))
+                    }
                     options={{
                         label: "Product base unit",
                         options: Object.values(units).map((unit: Unit) => ({
@@ -77,29 +66,33 @@ function Units() {
                             <th className="py-1 px-2 border">Label</th>
                             <th className="py-1 px-2 border">Value * base</th>
                             <th className="py-1 px-2 border">Compare</th>
-                            <th className="py-1 px-2 border">Enable</th>
+                            <th className="py-1 pe-5 border text-end">
+                                Enable
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
-                        {Object.entries(units).map(([key, unit]) => {
-                            if (unit.dynamic) {
-                                return (
-                                    <tr
-                                        key={key}
-                                        className="unit bg-gray-800 p-2"
-                                    >
+                        {Object.entries(units).map(([key, unit]) => (
+                            <tr key={key} className="unit bg-gray-800 p-2">
+                                {unit.dynamic ? (
+                                    <>
                                         <td className="py-1 px-2 border">
                                             <input
                                                 type="text"
                                                 onChange={(e) =>
-                                                    handleDynamicUnitUnit(
-                                                        key,
-                                                        e.target.value
+                                                    dispatch(
+                                                        updateDynamicUnitUnit({
+                                                            key,
+                                                            value: e.target
+                                                                .value,
+                                                        })
                                                     )
                                                 }
                                                 onBlur={() =>
-                                                    handleDynamicUnitUnitRemap(
-                                                        key
+                                                    dispatch(
+                                                        remapDynamicUnitUnit(
+                                                            key
+                                                        )
                                                     )
                                                 }
                                                 className="h-[30px] bg-black w-[100px] text-white p-2"
@@ -110,9 +103,12 @@ function Units() {
                                             <input
                                                 type="text"
                                                 onChange={(e) =>
-                                                    handleDynamicUnitLabel(
-                                                        unit.unit,
-                                                        e.target.value
+                                                    dispatch(
+                                                        updateDynamicUnitLabel({
+                                                            key: unit.unit,
+                                                            value: e.target
+                                                                .value,
+                                                        })
                                                     )
                                                 }
                                                 className="h-[30px] bg-black w-[100px] text-white p-2"
@@ -140,22 +136,21 @@ function Units() {
                                                 " " +
                                                 product.saleUnitsBase}
                                         </td>
-                                        <td className="border">
-                                            <Switch
-                                                checked={true}
-                                                label=""
-                                                onChange={(e) => console.log(e)}
-                                                className="!m-0 !gap-0 !justify-end"
-                                            />
+                                        <td className="py-1 px-2 border">
+                                            <button
+                                                onDoubleClick={() =>
+                                                    dispatch(removeUnit(key))
+                                                }
+                                                className="h-[30px] w-[30px] bg-gray-700 text-white flex items-center justify-center mr-3 rounded ms-auto"
+                                            >
+                                                <span className="text-l">
+                                                    &#x1F534;
+                                                </span>
+                                            </button>
                                         </td>
-                                    </tr>
-                                );
-                            } else {
-                                return (
-                                    <tr
-                                        key={unit.unit}
-                                        className="unit bg-gray-800 p-2"
-                                    >
+                                    </>
+                                ) : (
+                                    <>
                                         {unit.dynamicValue == true ? (
                                             <>
                                                 <td className="py-1 px-2 border">
@@ -185,16 +180,6 @@ function Units() {
                                                         " " +
                                                         product.saleUnitsBase}
                                                 </td>
-                                                <td className="border">
-                                                    <Switch
-                                                        checked={true}
-                                                        label=""
-                                                        onChange={(e) =>
-                                                            console.log(e)
-                                                        }
-                                                        className="!m-0 !gap-0 !justify-end"
-                                                    />
-                                                </td>
                                             </>
                                         ) : (
                                             <>
@@ -215,22 +200,27 @@ function Units() {
                                                         " " +
                                                         product.saleUnitsBase}
                                                 </td>
-                                                <td className="border">
-                                                    <Switch
-                                                        checked={true}
-                                                        label=""
-                                                        onChange={(e) =>
-                                                            console.log(e)
-                                                        }
-                                                        className="!m-0 !gap-0 !justify-end"
-                                                    />
-                                                </td>
                                             </>
                                         )}
-                                    </tr>
-                                );
-                            }
-                        })}
+                                        <td className="border">
+                                            <Switch
+                                                checked={unit.enable}
+                                                label=""
+                                                onChange={(enable) =>
+                                                    dispatch(
+                                                        toggleUnitEnable({
+                                                            key,
+                                                            enable,
+                                                        })
+                                                    )
+                                                }
+                                                className="!m-0 !gap-0 !justify-end"
+                                            />
+                                        </td>
+                                    </>
+                                )}
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
                 <button

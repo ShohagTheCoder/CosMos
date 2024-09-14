@@ -10,6 +10,7 @@ import {
 } from "@/app/store/slices/productSlice";
 import sortDraggedItems from "@/app/functions/sortDraggedItems";
 import NumberInputControl from "@/app/elements/inputs/NumberInputControl";
+import getUnits from "@/app/functions/getUnits";
 
 function Measurements() {
     const dispatch = useDispatch();
@@ -47,7 +48,7 @@ function Measurements() {
                             onDragEnd={() => handleSort("measurements")}
                             onDragOver={(e) => e.preventDefault()}
                         >
-                            <div className="bg-gray-900 p-2 flex flex-wrap justify-start items-center">
+                            <div className="bg-gray-900 p-2 flex flex-wrap gap-3 justify-start items-center">
                                 <button
                                     draggable
                                     onDragStart={() => (dragItem.current = key)}
@@ -55,7 +56,7 @@ function Measurements() {
                                 >
                                     &#x2630;
                                 </button>
-                                <p className="mx-3">Unit :</p>
+                                <p>Unit :</p>
                                 <select
                                     className="h-[40px] bg-black text-white p-2"
                                     value={measurement.unit}
@@ -68,7 +69,7 @@ function Measurements() {
                                         )
                                     }
                                 >
-                                    {Object.values(product.units).map(
+                                    {Object.values(getUnits(product.units)).map(
                                         (unit: any, key: number) => (
                                             <option key={key} value={unit.unit}>
                                                 {unit.label}
@@ -76,7 +77,7 @@ function Measurements() {
                                         )
                                     )}
                                 </select>
-                                <p className="mx-3">Value :</p>
+                                <p>Value :</p>
                                 <NumberInputControl
                                     value={measurement.value}
                                     onChange={(value) =>
