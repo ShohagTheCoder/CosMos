@@ -20,7 +20,7 @@ export class Unit {
     @Prop()
     base: string;
 
-    @Prop()
+    @Prop({ default: true })
     enable: boolean;
 }
 

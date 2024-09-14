@@ -66,5 +66,7 @@ export interface ProductWithID extends Product {
         stock: number;
     };
     subTotal: number;
+    displaySaleUnit: string;
+    displayPurchaseUnit: string;
     product: Product; // If this is a reference back to Product
 }

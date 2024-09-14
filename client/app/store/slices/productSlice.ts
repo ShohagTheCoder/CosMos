@@ -60,6 +60,7 @@ const productSlice = createSlice({
             let { base, units } = action.payload;
 
             state.saleUnitsBase = base;
+            if (!units[base].enable) units[base].enable = true;
             state.units = units;
 
             // Ensure arrays exist before accessing index 0
@@ -104,6 +105,11 @@ const productSlice = createSlice({
                 state.purchaseMeasurements = state.purchaseMeasurements.filter(
                     (purchaseMeasurement) => purchaseMeasurement.unit !== key
                 );
+
+                if (state.displaySaleUnit == key)
+                    state.displaySaleUnit = state.unit;
+                if (state.displayPurchaseUnit == key)
+                    state.displayPurchaseUnit = state.unit;
             }
         },
 

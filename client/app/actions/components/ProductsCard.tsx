@@ -1,15 +1,12 @@
-import getBiggestUnitFor from "@/app/functions/getBiggestUnitFor";
 import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 import getStockLine from "@/app/functions/getStockLine";
-import {
-    ProductWithID,
-    Unit,
-} from "@/app/products/interfaces/product.interface";
+import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { convertStandardToBnBD } from "@/app/utils/numberFormat";
 import React, { useState } from "react";
 
 interface ProductsCardProps {
     selected: number;
+    // eslint-disable-next-line no-unused-vars
     callback: (product: ProductWithID) => void;
     products: Record<string, ProductWithID> | undefined;
 }

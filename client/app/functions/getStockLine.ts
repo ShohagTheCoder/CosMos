@@ -1,12 +1,14 @@
 import { Unit } from "../products/interfaces/product.interface";
 import getBiggestUnitFor from "./getBiggestUnitFor";
+import getUnits from "./getUnits";
 
 export default function getStockLine(stock: any, units: Record<string, Unit>) {
     let output = "";
     let quantity = stock.stock;
+    let unitsClone = getUnits(units);
 
     while (quantity > 0) {
-        const unit = getBiggestUnitFor(quantity, units);
+        const unit = getBiggestUnitFor(quantity, unitsClone);
         if (unit) {
             let value = Math.floor(quantity / unit.value); // Get the number of units
             quantity -= value * unit.value; // Reduce quantity by the total value of those units

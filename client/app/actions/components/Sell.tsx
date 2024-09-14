@@ -30,7 +30,6 @@ import {
 import { RootState } from "@/app/store/store";
 import apiClient from "@/app/utils/apiClient";
 import { ERROR, SUCCESS } from "@/app/utils/constants/message";
-import a from "next/a";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CustomerCard from "./components/CustomerCard";
@@ -99,7 +98,8 @@ export default function Sell({
         return () => {
             window.removeEventListener("keydown", () => {});
         };
-    }, [dispatch, user]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         if (/^[1-9]{3}$/.test(command)) {
@@ -166,14 +166,8 @@ export default function Sell({
         if (cart.selectedProductIndex > 0) {
             dispatch(resetSelectedProductIndex());
         }
-    }, [
-        cart.selectedProductIndex,
-        command,
-        customers,
-        dispatch,
-        isCustomers,
-        products,
-    ]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [command]);
 
     async function handleCompleteSell() {
         try {

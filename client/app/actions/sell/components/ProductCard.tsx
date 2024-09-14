@@ -1,6 +1,4 @@
-import Product, {
-    ProductWithID,
-} from "@/app/products/interfaces/product.interface";
+import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { addToCart } from "@/app/store/slices/cartSlice";
 import { RootState } from "@/app/store/store";
 import React from "react";
