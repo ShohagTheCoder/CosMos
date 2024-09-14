@@ -170,8 +170,11 @@ const cartSlice = createSlice({
                 key = state.activeProduct;
             }
             const product = state.products[key];
+            if (!quantity || quantity < 0) {
+                quantity = 0;
+            }
 
-            if (product && product.quantity >= 0) {
+            if (product) {
                 state.products[key] = getUpdatedProduct(
                     product,
                     quantity,

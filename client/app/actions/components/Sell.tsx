@@ -86,6 +86,11 @@ export default function Sell({
         }
 
         window.addEventListener("keydown", (e: any) => {
+            // Return if already focused on another input or textare
+            if (["TEXTAREA", "INPUT"].includes(e.target.tagName)) {
+                return;
+            }
+
             const usedKeys = ["F5", "F6", "F7", "F8", "F9"];
             if (usedKeys.includes(e.key)) {
                 e.preventDefault(); // Prevent tab default behavior
@@ -138,7 +143,7 @@ export default function Sell({
             }, {});
 
             setFilteredCustomers(filteredCustomersObject);
-        } else if (/^(?![0-9\s.])[a-zA-Z]*/.test(command) && products) {
+        } else if (/^(?![0-9\s.])[a-zA-Z]{2,}/.test(command) && products) {
             if (isCustomers) {
                 setIsCustomers(false);
             }
@@ -160,6 +165,8 @@ export default function Sell({
             }, {});
 
             setFilteredProducts(filteredProductsObject);
+        } else if (command.length == 0) {
+            setFilteredProducts(products);
         }
 
         // Reset selected product index
@@ -271,6 +278,21 @@ export default function Sell({
             return;
         }
 
+        if (
+            command.length == 1 &&
+            /^[a-zA-Z]$/.test(command) &&
+            command == e.key
+        ) {
+            let productKey = productsMap[command];
+            if (!productKey) return;
+            let product = products[productKey];
+            if (!product) return;
+            e.preventDefault();
+            setCommand("");
+            dispatch(addToCart(product));
+            return;
+        }
+
         // Add to pressed keys
         pressedKeys.current.add(e.code);
         // Remove previous saved key so we can click again if keyup even occur in the keyup handler
@@ -297,7 +319,7 @@ export default function Sell({
             return;
         }
 
-        const longPressKeys = ["NumpadAdd", "NumpadEnter", "F9"];
+        const longPressKeys = ["NumpadAdd", "NumpadEnter", "F9", "Delete"];
         if (
             longPressKeys.includes(e.code) &&
             command.length == 0 &&
@@ -312,6 +334,11 @@ export default function Sell({
                         longPressDuration
                     );
                     break;
+                case "Delete":
+                    e.preventDefault();
+                    keyPressTimer = setTimeout(() => {
+                        dispatch(removeFromCart(null));
+                    }, longPressDuration);
             }
         }
 
@@ -493,10 +520,6 @@ export default function Sell({
                         setCommand("");
                     }
                 }
-                break;
-            case "Delete":
-                e.preventDefault();
-                dispatch(removeFromCart(null));
                 break;
         }
     }
