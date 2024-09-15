@@ -5,17 +5,17 @@ import getProductUnitPrice from "./getProductUnitPrice";
 
 export default function getUpdatedProduct(
     product: ProductWithID,
-    quantity: number | null,
-    unit: string | null
+    quantity: number | undefined,
+    unit: string | undefined
 ): ProductWithID {
     let item = { ...product };
     // If new quantity
-    if (quantity !== null) {
+    if (quantity) {
         item.quantity = quantity;
     }
 
     // If new unit
-    if (unit !== null) {
+    if (unit) {
         // Update discount value on unit change
         item.discount =
             (item.units[unit].value / item.units[item.unit].value) *

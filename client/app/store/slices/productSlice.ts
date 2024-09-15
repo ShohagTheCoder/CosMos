@@ -133,8 +133,10 @@ const productSlice = createSlice({
             action: PayloadAction<{ key: string; value: number }>
         ) => {
             const { key, value } = action.payload;
-            state.units[key].value = value;
-            state.price = Math.ceil(getProductUnitPrice(state));
+            if (value > 0) {
+                state.units[key].value = value;
+                state.price = Math.ceil(getProductUnitPrice(state));
+            }
         },
         updateDynamicUnitLabel: (
             state: Product,

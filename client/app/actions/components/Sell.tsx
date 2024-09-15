@@ -255,7 +255,7 @@ export default function Sell({
     // Use useRef to persist pressedKeys
     let [isShift, setIsShift] = useState(false);
     const pressedKeys = useRef(new Set<string>());
-    let keyPressTimer: any = null;
+    let keyPressTimer: any = undefined;
     let longPressed = useRef(false);
     let groupPressed = useRef(false);
     let stopKeyUpHandler = useRef(false);
@@ -282,9 +282,9 @@ export default function Sell({
     };
 
     function stopLongPress() {
-        if (keyPressTimer !== null) {
+        if (keyPressTimer !== undefined) {
             clearTimeout(keyPressTimer);
-            keyPressTimer = null;
+            keyPressTimer = undefined;
         }
     }
 
@@ -357,7 +357,7 @@ export default function Sell({
             "ArrowDown",
             "NumpadSubtract",
         ];
-        if (longPressKeys.includes(e.code) && keyPressTimer == null) {
+        if (longPressKeys.includes(e.code) && keyPressTimer == undefined) {
             switch (e.code) {
                 case "NumpadAdd":
                 case "NumpadEnter":
@@ -380,7 +380,7 @@ export default function Sell({
                     e.preventDefault();
                     keyPressTimer = setTimeout(() => {
                         longPressed.current = true;
-                        dispatch(removeFromCart(null));
+                        dispatch(removeFromCart(undefined));
                     }, longPressDuration);
                     break;
             }
@@ -404,7 +404,7 @@ export default function Sell({
             e.preventDefault();
             groupPressed.current = true;
             stopKeyUpHandler.current = true;
-            dispatch(resetSalePrice(null));
+            dispatch(resetSalePrice(undefined));
             return;
         }
 
@@ -415,23 +415,32 @@ export default function Sell({
             return;
         }
 
+        if (e.code == "NumpadDecimal") {
+            if (command == "..") {
+                stopKeyUpHandler.current = true;
+                e.preventDefault();
+                setCommand("");
+                return;
+            }
+        }
+
         if (e.code == "Numpad0") {
             switch (command) {
                 case ".":
                     e.preventDefault();
-                    dispatch(addExtraDiscount({ key: null, amount: 10 }));
+                    dispatch(addExtraDiscount({ key: undefined, amount: 10 }));
                     setCommand("");
                     return;
 
                 case "..":
                     e.preventDefault();
                     setCommand("");
-                    dispatch(addDiscount({ key: null, amount: 10 }));
+                    dispatch(addDiscount({ key: undefined, amount: 10 }));
                     return;
                 case "...":
                     e.preventDefault();
                     setCommand("");
-                    dispatch(setSalePrice({ key: null, amount: 10 }));
+                    dispatch(setSalePrice({ key: undefined, amount: 10 }));
                     return;
                 case "0.":
                     e.preventDefault();
@@ -442,11 +451,26 @@ export default function Sell({
         }
 
         if (e.key == "Enter" || e.code == "NumpadAdd") {
+            if (/^[1-9]$/.test(command)) {
+                stopLongPress();
+                stopKeyUpHandler.current = true;
+                e.preventDefault();
+                setCommand("");
+                dispatch(
+                    updateQuantity({
+                        key: undefined,
+                        quantity: parseInt(command),
+                    })
+                );
+                return;
+            }
+
             if (/^[a-zA-Z]$/.test(command)) {
                 let productKey = productsMap[command];
                 if (!productKey) return;
                 let product = products[productKey];
                 if (!product) return;
+                stopKeyUpHandler.current = true;
                 stopLongPress();
                 e.preventDefault();
                 setCommand("");
@@ -455,10 +479,10 @@ export default function Sell({
             }
 
             if (/^0\.[1-9]*[0-9]*$/.test(command)) {
+                stopLongPress();
                 stopKeyUpHandler.current = true;
                 e.preventDefault();
                 setCommand("");
-                stopLongPress();
 
                 if (command == "0.") {
                     dispatch(updatePaid(cart.totalPrice));
@@ -477,11 +501,11 @@ export default function Sell({
             if (command.length <= 4) {
                 if (/^0[1-9][0-9]*$/.test(command)) {
                     stopLongPress();
+                    stopKeyUpHandler.current = true;
                     e.preventDefault();
                     const quantity = parseInt(command.slice(1));
                     setCommand("");
-                    dispatch(updateQuantity({ key: null, quantity }));
-                    stopKeyUpHandler.current = true;
+                    dispatch(updateQuantity({ key: undefined, quantity }));
                     return;
                 }
             }
@@ -489,9 +513,9 @@ export default function Sell({
             if (command.length >= 4) {
                 if (/^[1-9]{2}0[1-9][0-9]+$/.test(command)) {
                     stopLongPress();
+                    stopKeyUpHandler.current = true;
                     e.preventDefault();
                     setCommand("");
-                    stopKeyUpHandler.current = true;
                     const key = command.slice(0, 2);
                     const quantity = parseInt(command.slice(2));
                     const productId = productsMap[key];
@@ -510,20 +534,22 @@ export default function Sell({
             // To add extra discount amount dynamically with one . at the start
             if (/^\.[1-9][0-9]*$/.test(command)) {
                 stopLongPress();
+                stopKeyUpHandler.current = true;
                 e.preventDefault();
                 let amount = parseInt(command.slice(1));
                 setCommand("");
-                dispatch(addExtraDiscount({ key: null, amount }));
+                dispatch(addExtraDiscount({ key: undefined, amount }));
                 return;
             }
 
             // To add discount amount dynamically with two .. at the start
             if (/^\.\.[1-9][0-9]*$/.test(command)) {
                 stopLongPress();
+                stopKeyUpHandler.current = true;
                 e.preventDefault();
                 let amount = parseInt(command.slice(2));
                 setCommand("");
-                dispatch(addDiscount({ key: null, amount }));
+                dispatch(addDiscount({ key: undefined, amount }));
                 return;
             }
         }
@@ -532,7 +558,7 @@ export default function Sell({
         //     console.log("Enter");
         //     stopKeyUpHandler.current = true;
         //     clearKeyPressTimer();
-        //     keyPressTimer = null;
+        //     keyPressTimer = undefined;
         // }
 
         let max = 0;
@@ -607,9 +633,9 @@ export default function Sell({
     }
 
     function handleKeyUp(e: any): void {
-        if (keyPressTimer !== null) {
+        if (keyPressTimer !== undefined) {
             clearTimeout(keyPressTimer);
-            keyPressTimer = null;
+            keyPressTimer = undefined;
         }
         pressedKeys.current.clear();
 
@@ -638,10 +664,10 @@ export default function Sell({
 
         switch (e.key) {
             case "PageUp":
-                dispatch(updateSalePrice({ key: null, amount: -1 }));
+                dispatch(updateSalePrice({ key: undefined, amount: -1 }));
                 return;
             case "PageDown":
-                dispatch(updateSalePrice({ key: null, amount: 1 }));
+                dispatch(updateSalePrice({ key: undefined, amount: 1 }));
                 return;
         }
 
@@ -657,14 +683,14 @@ export default function Sell({
                 case "NumpadAdd":
                 case "ArrowUp":
                     e.preventDefault();
-                    dispatch(incrementQuantity(null));
-                    break;
+                    dispatch(incrementQuantity(undefined));
+                    return;
 
                 case "NumpadEnter":
                 case "ArrowDown":
                     e.preventDefault();
-                    dispatch(decrementQuantity(null));
-                    break;
+                    dispatch(decrementQuantity(undefined));
+                    return;
             }
         }
 
@@ -673,13 +699,18 @@ export default function Sell({
             switch (e.code) {
                 case "ArrowUp":
                 case "NumpadAdd":
+                    console.log("Up");
                     e.preventDefault();
-                    dispatch(updateDiscountAmount({ key: null, amount: 1 }));
+                    dispatch(
+                        updateDiscountAmount({ key: undefined, amount: 1 })
+                    );
                     return;
                 case "ArrowDown":
                 case "NumpadEnter":
                     e.preventDefault();
-                    dispatch(updateDiscountAmount({ key: null, amount: -1 }));
+                    dispatch(
+                        updateDiscountAmount({ key: undefined, amount: -1 })
+                    );
                     return;
             }
         }
@@ -688,16 +719,20 @@ export default function Sell({
             switch (e.code) {
                 case "ArrowUp":
                 case "NumpadAdd":
+                    console.log("Up");
                     e.preventDefault();
                     dispatch(
-                        updateExtraDiscountAmount({ key: null, amount: 1 })
+                        updateExtraDiscountAmount({ key: undefined, amount: 1 })
                     );
                     return;
                 case "ArrowDown":
                 case "NumpadEnter":
                     e.preventDefault();
                     dispatch(
-                        updateExtraDiscountAmount({ key: null, amount: -1 })
+                        updateExtraDiscountAmount({
+                            key: undefined,
+                            amount: -1,
+                        })
                     );
                     return;
             }

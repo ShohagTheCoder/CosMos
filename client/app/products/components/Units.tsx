@@ -18,14 +18,14 @@ import PurchasePrices from "./PurchasePrices";
 import PurchaseMeasurements from "./PurchaseMeasurements";
 import SelectInput from "@/app/elements/select/SelectInput";
 import Switch from "@/app/elements/switch/Switch";
+import NumberInputControl from "@/app/elements/inputs/NumberInputControl";
 
 function Units() {
     const dispatch = useDispatch();
     const product = useSelector((state: RootState) => state.product);
     const units = product.units;
 
-    function handleDynamicValue(unit: string, sValue: string) {
-        const value = parseInt(sValue);
+    function handleDynamicValue(unit: string, value: number) {
         if (value > 100 || value < 0) return;
         dispatch(updateUnitsDynamicValue({ key: unit, value }));
     }
@@ -116,16 +116,15 @@ function Units() {
                                             />
                                         </td>
                                         <td className="py-1 px-2 border">
-                                            <input
-                                                type="number"
-                                                onChange={(e) =>
+                                            <NumberInputControl
+                                                value={unit.value}
+                                                onChange={(value) =>
                                                     handleDynamicValue(
                                                         unit.unit,
-                                                        e.target.value
+                                                        value
                                                     )
                                                 }
-                                                className="h-[30px] bg-black w-[60px] text-white p-2"
-                                                value={unit.value}
+                                                inputClassName="!w-12"
                                             />
                                         </td>
                                         <td className="py-1 px-2 border">
@@ -160,16 +159,15 @@ function Units() {
                                                     {unit.label}
                                                 </td>
                                                 <td className="py-1 px-2 border">
-                                                    <input
-                                                        type="number"
-                                                        onChange={(e) =>
+                                                    <NumberInputControl
+                                                        value={unit.value}
+                                                        onChange={(value) =>
                                                             handleDynamicValue(
                                                                 unit.unit,
-                                                                e.target.value
+                                                                value
                                                             )
                                                         }
-                                                        className="h-[30px] bg-black w-[60px] text-white p-2"
-                                                        value={unit.value}
+                                                        inputClassName="!w-12"
                                                     />
                                                 </td>
                                                 <td className="py-1 px-2 border">
