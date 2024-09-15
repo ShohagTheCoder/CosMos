@@ -87,6 +87,7 @@ const cartSlice = createSlice({
             if (key) {
                 const removed = state.products[key];
                 if (removed) {
+                    // eslint-disable-next-line no-unused-vars
                     const { [key]: kick, ...rest } = state.products;
                     state.products = rest;
                     state.activeProduct = Object.keys(state.products)[
@@ -134,6 +135,22 @@ const cartSlice = createSlice({
                 state.due = state.totalPrice - paid;
             }
         },
+        setSalePrice: (
+            state: CartState,
+            action: PayloadAction<{ key: any; amount: number }>
+        ) => {
+            let { key, amount } = action.payload;
+            if (key == null) {
+                key = state.activeProduct;
+            }
+            let product = state.products[key];
+
+            if (product) {
+                product.updatePrice = amount;
+                state.products[key] = getUpdatedProduct(product, null, null);
+                return updateCart(state);
+            }
+        },
         updateSalePrice: (
             state: CartState,
             action: PayloadAction<{ key: any; amount: number }>
@@ -147,6 +164,7 @@ const cartSlice = createSlice({
             if (product) {
                 product.updatePrice += amount;
                 state.products[key] = getUpdatedProduct(product, null, null);
+                return updateCart(state);
             }
         },
         resetSalePrice: (state: CartState, action: PayloadAction<any>) => {
@@ -409,5 +427,6 @@ export const {
     resetSalePrice,
     setWholeCart,
     resetCart,
+    setSalePrice,
 } = cartSlice.actions;
 export default cartSlice.reducer;

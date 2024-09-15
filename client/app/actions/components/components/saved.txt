@@ -67,7 +67,6 @@ export default function Sell({
 
     const customers = useMemo(
         () => arrayToObjectById(customersArray),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         [productsArray]
     );
     let [command, setCommand] = useState("");
@@ -97,16 +96,9 @@ export default function Sell({
             if (["TEXTAREA", "INPUT"].includes(e.target.tagName)) {
                 return;
             }
+            console.log("window.keydown");
 
-            const usedKeys = [
-                "F5",
-                "F6",
-                "F7",
-                "F8",
-                "F9",
-                "PageUp",
-                "PageDown",
-            ];
+            const usedKeys = ["F5", "F6", "F7", "F8", "F9"];
             if (usedKeys.includes(e.key)) {
                 e.preventDefault(); // Prevent tab default behavior
             }
@@ -260,11 +252,9 @@ export default function Sell({
         e.preventDefault();
         switch (e.code) {
             case "NumpadAdd":
-            case "ArrowUp":
                 changeCartActiveProductTo(-1);
                 break;
             case "NumpadEnter":
-            case "ArrowDown":
                 changeCartActiveProductTo(1);
                 break;
         }
@@ -335,14 +325,7 @@ export default function Sell({
             return;
         }
 
-        const longPressKeys = [
-            "NumpadAdd",
-            "NumpadEnter",
-            "F9",
-            "Delete",
-            "ArrowUp",
-            "ArrowDown",
-        ];
+        const longPressKeys = ["NumpadAdd", "NumpadEnter", "F9", "Delete"];
         if (
             longPressKeys.includes(e.code) &&
             command.length == 0 &&
@@ -351,8 +334,6 @@ export default function Sell({
             switch (e.code) {
                 case "NumpadAdd":
                 case "NumpadEnter":
-                case "ArrowUp":
-                case "ArrowDown":
                     e.preventDefault();
                     keyPressTimer = setTimeout(
                         () => handleLongKeyPress(e),
@@ -364,7 +345,6 @@ export default function Sell({
                     keyPressTimer = setTimeout(() => {
                         dispatch(removeFromCart(null));
                     }, longPressDuration);
-                    break;
             }
         }
 
@@ -390,26 +370,18 @@ export default function Sell({
             return;
         }
 
-        // Dont go down. Work has done
-        const notToHandleKeys = ["PageUp", "PageDown"];
-        if (notToHandleKeys.includes(e.key)) {
-            e.preventDefault();
-            return;
-        }
-
-        // Handle extra discount amount up and down with NumpadEnter and NumpadAdd
         if (/^\.\.\d*$/.test(command)) {
             switch (e.code) {
                 case "ArrowUp":
                 case "NumpadAdd":
                     e.preventDefault();
                     dispatch(updateDiscountAmount({ key: null, amount: 1 }));
-                    return;
+                    break;
                 case "ArrowDown":
                 case "NumpadEnter":
                     e.preventDefault();
                     dispatch(updateDiscountAmount({ key: null, amount: -1 }));
-                    return;
+                    break;
             }
         }
 
@@ -515,6 +487,24 @@ export default function Sell({
                 noteRef.current?.focus();
                 break;
 
+            case "ArrowUp":
+                e.preventDefault();
+                if (isShift) {
+                    changeCartActiveProductTo(-1);
+                } else {
+                    dispatch(incrementQuantity(null));
+                }
+                break;
+
+            case "ArrowDown":
+                e.preventDefault();
+                if (isShift) {
+                    changeCartActiveProductTo(1);
+                } else {
+                    dispatch(decrementQuantity(null));
+                }
+                break;
+
             case "ArrowLeft":
                 e.preventDefault();
                 if (filteredCustomers && filteredProducts) {
@@ -607,29 +597,9 @@ export default function Sell({
         switch (e.key) {
             case "PageUp":
                 dispatch(updateSalePrice({ key: null, amount: -1 }));
-                return;
+                break;
             case "PageDown":
                 dispatch(updateSalePrice({ key: null, amount: 1 }));
-                return;
-        }
-
-        switch (e.key) {
-            case "ArrowUp":
-                e.preventDefault();
-                if (isShift) {
-                    changeCartActiveProductTo(-1);
-                } else {
-                    dispatch(incrementQuantity(null));
-                }
-                break;
-
-            case "ArrowDown":
-                e.preventDefault();
-                if (isShift) {
-                    changeCartActiveProductTo(1);
-                } else {
-                    dispatch(decrementQuantity(null));
-                }
                 break;
         }
 

@@ -30,6 +30,8 @@ function CartProduct() {
     const dispatch = useDispatch();
     let cart = useSelector((state: RootState) => state.cart);
 
+    console.log("Cart product page");
+
     const handleDecrement = (_id: string) => {
         let product = cart.products[_id];
         if (product.quantity > 0) {
@@ -88,15 +90,17 @@ function CartProduct() {
                                         type="text"
                                         className="bg-slate-900 w-[60px] py-1 px-2 outline-none"
                                         value={convertStandardToBnBD(
-                                            product.price
+                                            product.price - product.updatePrice
                                         )}
                                         onChange={(e) =>
                                             dispatch(
                                                 addDiscount({
                                                     key: product._id,
-                                                    amount: convertBnBDToStandard(
-                                                        e.target.value
-                                                    ),
+                                                    amount:
+                                                        product.price -
+                                                        convertBnBDToStandard(
+                                                            e.target.value
+                                                        ),
                                                 })
                                             )
                                         }
