@@ -190,7 +190,7 @@ const cartSlice = createSlice({
             state: CartState,
             action: PayloadAction<{ key: string | undefined; quantity: number }>
         ) => {
-            let { key, quantity } = action.payload || state.activeProduct;
+            let { key = state.activeProduct, quantity } = action.payload;
             if (key && quantity >= 0) {
                 const product = state.products[key];
                 if (product) {
