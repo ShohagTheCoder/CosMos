@@ -30,7 +30,7 @@ function CartProduct() {
     const dispatch = useDispatch();
     let cart = useSelector((state: RootState) => state.cart);
 
-    console.log("Cart product page");
+    // console.log("Cart product page");
 
     const handleDecrement = (_id: string) => {
         let product = cart.products[_id];

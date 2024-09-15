@@ -25,6 +25,7 @@ import {
     shiftMeasurementTo,
     updateDiscountAmount,
     updateExtraDiscountAmount,
+    updatePaid,
     updateQuantity,
     updateSalePrice,
 } from "@/app/store/slices/cartSlice";
@@ -141,20 +142,17 @@ export default function Sell({
 
         if (/^\s{2,}/.test(command) && customers) {
             setIsCustomers(true);
-
-            const tempFilteredCustomers = Object.values(customers).filter(
-                (customer) => {
-                    return customer.name
-                        .toLowerCase()
-                        .includes(command.trim().toLowerCase());
-                }
-            );
-
             // Convert filtered array back to object
-            const filteredCustomersObject = tempFilteredCustomers.reduce<
+            const filteredCustomersObject = Object.entries(customers).reduce<
                 Record<string, CustomerWithId>
-            >((acc, customer) => {
-                acc[customer._id] = customer;
+            >((acc, [key, customer]) => {
+                if (
+                    customer.name
+                        .toLowerCase()
+                        .includes(command.trim().toLowerCase())
+                ) {
+                    acc[key] = customer;
+                }
                 return acc;
             }, {});
 
@@ -179,8 +177,16 @@ export default function Sell({
             }, {});
 
             setFilteredProducts(filteredProductsObject);
-        } else if (command.length == 0) {
+        } else if (command.length == 0 || command == " ") {
+            if (isCustomers) {
+                setIsCustomers(false);
+            }
             setFilteredProducts(products);
+        } else if (command == "  ") {
+            if (!isCustomers) {
+                setIsCustomers(true);
+            }
+            setFilteredCustomers(customers);
         }
 
         // Reset selected product index
@@ -275,6 +281,13 @@ export default function Sell({
         console.log("special command");
     };
 
+    function stopLongPress() {
+        if (keyPressTimer !== null) {
+            clearTimeout(keyPressTimer);
+            keyPressTimer = null;
+        }
+    }
+
     function handleKeyDown(e: KeyboardEvent): void {
         // console.log("---------------------------------");
         // console.log(e.key);
@@ -314,16 +327,16 @@ export default function Sell({
         // Remove previous saved key so we can click again if keyup even occur in the keyup handler
         groupPressed.current = false;
 
-        // Important: Prevent special keys to print character if have
-        const specialKeys = ["Enter", "NumpadAdd", "NumpadSubtract"];
+        // Important: preventDefault special keys
+        const specialKeys = [
+            "Enter",
+            "NumpadAdd",
+            "NumpadSubtract",
+            "ArrowUp",
+            "ArrowDown",
+        ];
         if (specialKeys.includes(e.code)) {
             e.preventDefault();
-        }
-
-        if (e.code == "NumpadSubtract") {
-            e.preventDefault();
-            setCommand(command.slice(0, -1));
-            return;
         }
 
         // Handle sell page navigation
@@ -342,12 +355,9 @@ export default function Sell({
             "Delete",
             "ArrowUp",
             "ArrowDown",
+            "NumpadSubtract",
         ];
-        if (
-            longPressKeys.includes(e.code) &&
-            command.length == 0 &&
-            keyPressTimer == null
-        ) {
+        if (longPressKeys.includes(e.code) && keyPressTimer == null) {
             switch (e.code) {
                 case "NumpadAdd":
                 case "NumpadEnter":
@@ -359,9 +369,17 @@ export default function Sell({
                         longPressDuration
                     );
                     break;
+                case "NumpadSubtract":
+                    e.preventDefault();
+                    keyPressTimer = setTimeout(() => {
+                        longPressed.current = true;
+                        setCommand("");
+                    }, longPressDuration);
+                    break;
                 case "Delete":
                     e.preventDefault();
                     keyPressTimer = setTimeout(() => {
+                        longPressed.current = true;
                         dispatch(removeFromCart(null));
                     }, longPressDuration);
                     break;
@@ -397,22 +415,6 @@ export default function Sell({
             return;
         }
 
-        // Handle extra discount amount up and down with NumpadEnter and NumpadAdd
-        if (/^\.\.\d*$/.test(command)) {
-            switch (e.code) {
-                case "ArrowUp":
-                case "NumpadAdd":
-                    e.preventDefault();
-                    dispatch(updateDiscountAmount({ key: null, amount: 1 }));
-                    return;
-                case "ArrowDown":
-                case "NumpadEnter":
-                    e.preventDefault();
-                    dispatch(updateDiscountAmount({ key: null, amount: -1 }));
-                    return;
-            }
-        }
-
         if (e.code == "Numpad0") {
             switch (command) {
                 case ".":
@@ -423,32 +425,58 @@ export default function Sell({
 
                 case "..":
                     e.preventDefault();
-                    dispatch(addDiscount({ key: null, amount: 10 }));
                     setCommand("");
+                    dispatch(addDiscount({ key: null, amount: 10 }));
                     return;
                 case "...":
-                    console.log("Three dont");
                     e.preventDefault();
-                    dispatch(setSalePrice({ key: null, amount: 10 }));
                     setCommand("");
+                    dispatch(setSalePrice({ key: null, amount: 10 }));
+                    return;
+                case "0.":
+                    e.preventDefault();
+                    setCommand("");
+                    dispatch(updatePaid(0));
                     return;
             }
         }
 
         if (e.key == "Enter" || e.code == "NumpadAdd") {
-            if (command.length == 1) {
+            if (/^[a-zA-Z]$/.test(command)) {
                 let productKey = productsMap[command];
                 if (!productKey) return;
                 let product = products[productKey];
                 if (!product) return;
+                stopLongPress();
                 e.preventDefault();
                 setCommand("");
                 dispatch(addToCart(product));
                 return;
             }
 
+            if (/^0\.[1-9]*[0-9]*$/.test(command)) {
+                stopKeyUpHandler.current = true;
+                e.preventDefault();
+                setCommand("");
+                stopLongPress();
+
+                if (command == "0.") {
+                    dispatch(updatePaid(cart.totalPrice));
+                    return;
+                }
+
+                if (command.length > 2) {
+                    let amount = parseInt(command.slice(2));
+                    if (amount) {
+                        dispatch(updatePaid(amount));
+                    }
+                    return;
+                }
+            }
+
             if (command.length <= 4) {
                 if (/^0[1-9][0-9]*$/.test(command)) {
+                    stopLongPress();
                     e.preventDefault();
                     const quantity = parseInt(command.slice(1));
                     setCommand("");
@@ -460,6 +488,7 @@ export default function Sell({
 
             if (command.length >= 4) {
                 if (/^[1-9]{2}0[1-9][0-9]+$/.test(command)) {
+                    stopLongPress();
                     e.preventDefault();
                     setCommand("");
                     stopKeyUpHandler.current = true;
@@ -480,6 +509,7 @@ export default function Sell({
 
             // To add extra discount amount dynamically with one . at the start
             if (/^\.[1-9][0-9]*$/.test(command)) {
+                stopLongPress();
                 e.preventDefault();
                 let amount = parseInt(command.slice(1));
                 setCommand("");
@@ -489,8 +519,9 @@ export default function Sell({
 
             // To add discount amount dynamically with two .. at the start
             if (/^\.\.[1-9][0-9]*$/.test(command)) {
+                stopLongPress();
                 e.preventDefault();
-                let amount = parseInt(command.slice(1));
+                let amount = parseInt(command.slice(2));
                 setCommand("");
                 dispatch(addDiscount({ key: null, amount }));
                 return;
@@ -590,6 +621,7 @@ export default function Sell({
 
         // console.log("Group pressed : ", groupPressed.current);
         if (groupPressed.current) {
+            groupPressed.current = false;
             return;
         }
 
@@ -613,37 +645,42 @@ export default function Sell({
                 return;
         }
 
-        switch (e.key) {
-            case "ArrowUp":
-                e.preventDefault();
-                if (isShift) {
-                    changeCartActiveProductTo(-1);
-                } else {
-                    dispatch(incrementQuantity(null));
-                }
-                break;
-
-            case "ArrowDown":
-                e.preventDefault();
-                if (isShift) {
-                    changeCartActiveProductTo(1);
-                } else {
-                    dispatch(decrementQuantity(null));
-                }
-                break;
+        if (e.code == "NumpadSubtract") {
+            console.log("NUmp");
+            e.preventDefault();
+            setCommand(command.slice(0, -1));
+            return;
         }
 
         if (command.length == 0) {
             switch (e.code) {
                 case "NumpadAdd":
+                case "ArrowUp":
                     e.preventDefault();
                     dispatch(incrementQuantity(null));
                     break;
 
                 case "NumpadEnter":
+                case "ArrowDown":
                     e.preventDefault();
                     dispatch(decrementQuantity(null));
                     break;
+            }
+        }
+
+        // Handle extra discount amount up and down with NumpadEnter and NumpadAdd
+        if (/^\.\.\d*$/.test(command)) {
+            switch (e.code) {
+                case "ArrowUp":
+                case "NumpadAdd":
+                    e.preventDefault();
+                    dispatch(updateDiscountAmount({ key: null, amount: 1 }));
+                    return;
+                case "ArrowDown":
+                case "NumpadEnter":
+                    e.preventDefault();
+                    dispatch(updateDiscountAmount({ key: null, amount: -1 }));
+                    return;
             }
         }
 

@@ -14,7 +14,7 @@ interface ProductsCardProps {
 function ProductsCard({ selected, callback, products }: ProductsCardProps) {
     const [showProductImage, setShowProductImage] = useState(true);
 
-    console.log("Products card");
+    // console.log("Products card");
 
     function handleCallback(id: string) {
         if (products) {

@@ -130,7 +130,7 @@ const cartSlice = createSlice({
 
         updatePaid: (state: CartState, action: PayloadAction<number>) => {
             let paid = action.payload || 0;
-            if (paid > 0) {
+            if (paid >= 0 && state.customer) {
                 state.paid = paid;
                 state.due = state.totalPrice - paid;
             }
