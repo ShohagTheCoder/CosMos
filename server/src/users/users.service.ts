@@ -37,9 +37,14 @@ export class UsersService {
 
     async findOne(id: string) {
         if (id) {
-            const user = (await this.userModel.findById(id)).toObject();
-            const { password, ...result } = user;
-            return result;
+            const user = await this.userModel.findById(id);
+            if (user) {
+                user.toObject();
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+                const { password, ...result } = user;
+                return result;
+            }
+            throw new UnauthorizedException('User not found');
         } else {
             throw new UnauthorizedException('Id not found');
         }
