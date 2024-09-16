@@ -37,9 +37,9 @@ export class UsersService {
 
     async findOne(id: string) {
         if (id) {
-            const user = await this.userModel.findById(id);
+            let user = await this.userModel.findById(id);
             if (user) {
-                user.toObject();
+                user = user.toObject();
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
                 const { password, ...result } = user;
                 return result;
