@@ -312,7 +312,11 @@ const cartSlice = createSlice({
             if (key) {
                 let product = state.products[key];
 
-                if (product && amount < product.price - product.updatePrice) {
+                if (
+                    product &&
+                    amount < (product.price + 1) / 2 &&
+                    amount >= 0
+                ) {
                     state.products[key] = getUpdatedProduct(
                         {
                             ...product,
@@ -338,8 +342,7 @@ const cartSlice = createSlice({
 
                 if (
                     product &&
-                    product.discount + amount <
-                        product.price - product.updatePrice
+                    product.discount + amount < (product.price + 1) / 2
                 ) {
                     product.discount += amount;
                     state.products[key] = getUpdatedProduct(
@@ -361,7 +364,12 @@ const cartSlice = createSlice({
             let { key = state.activeProduct, amount } = action.payload;
             if (key) {
                 let product = state.products[key];
-                if (product && amount < product.subTotal) {
+                console.log(product.subTotal, amount);
+                if (
+                    product &&
+                    amount < product.price * product.count &&
+                    amount >= 0
+                ) {
                     state.products[key] = getUpdatedProduct(
                         {
                             ...product,
@@ -384,10 +392,11 @@ const cartSlice = createSlice({
             let { key = state.activeProduct, amount } = action.payload;
             if (key) {
                 let product = state.products[key];
-                console.log("Called");
+                console.log(product.extraDiscount, amount);
                 if (
                     product &&
-                    product.extraDiscount + amount < product.subTotal
+                    product.extraDiscount + amount <
+                        product.price * product.count
                 ) {
                     product.extraDiscount += amount;
                     state.products[key] = getUpdatedProduct(

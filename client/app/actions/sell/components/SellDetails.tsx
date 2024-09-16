@@ -1,9 +1,6 @@
 import { updatePaid } from "@/app/store/slices/cartSlice";
 import { RootState } from "@/app/store/store";
-import {
-    convertBnBDToStandard,
-    convertStandardToBnBD,
-} from "@/app/utils/numberFormat";
+import { convertBnBDToStandard } from "@/app/utils/numberFormat";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -24,7 +21,7 @@ function SellDetails() {
             <div className="single-row flex justify-between items-center">
                 <p className=" text-lg font-semibold pt-1">সর্বমোট :</p>
                 <p className=" text-lg font-semibold pt-1">
-                    {convertStandardToBnBD(cart.totalPrice)}
+                    {cart.totalPrice}
                     <span> ৳</span>
                 </p>
             </div>
@@ -36,7 +33,7 @@ function SellDetails() {
                             <input
                                 className="no-spin w-100 text-end bg-black outline-none text-white"
                                 type="text"
-                                value={convertStandardToBnBD(cart.paid)}
+                                value={cart.paid}
                                 onChange={handleUpdatePaid}
                             />
                             <span> ৳</span>
@@ -49,7 +46,7 @@ function SellDetails() {
                                     নতুন জমা :
                                 </p>
                                 <p className=" text-lg font-semibold py-1">
-                                    {convertStandardToBnBD(Math.abs(cart.due))}
+                                    {Math.abs(cart.due)}
                                     <span> ৳</span>
                                 </p>
                             </>
@@ -59,7 +56,7 @@ function SellDetails() {
                                     নতুন বাকি :
                                 </p>
                                 <p className=" text-lg font-semibold py-1">
-                                    {convertStandardToBnBD(cart.due)}
+                                    {cart.due}
                                     <span> ৳</span>
                                 </p>
                             </>
@@ -73,10 +70,7 @@ function SellDetails() {
                                         আগের বাকি :
                                     </p>
                                     <p className=" text-lg font-semibold py-1">
-                                        {convertStandardToBnBD(
-                                            Math.abs(customerAccount.balance)
-                                        )}{" "}
-                                        ৳
+                                        {Math.abs(customerAccount.balance)} ৳
                                     </p>
                                 </>
                             ) : (
@@ -85,10 +79,7 @@ function SellDetails() {
                                         আগের জমা :
                                     </p>
                                     <p className=" text-lg font-semibold py-1">
-                                        {convertStandardToBnBD(
-                                            customerAccount.balance
-                                        )}{" "}
-                                        ৳
+                                        {customerAccount.balance} ৳
                                     </p>
                                 </>
                             )}
@@ -100,11 +91,8 @@ function SellDetails() {
                                         মোট জমা :{" "}
                                     </p>
                                     <p className=" text-lg font-semibold py-1">
-                                        {convertStandardToBnBD(
-                                            Math.abs(
-                                                customerAccount.balance -
-                                                    cart.due
-                                            )
+                                        {Math.abs(
+                                            customerAccount.balance - cart.due
                                         )}{" "}
                                         ৳
                                     </p>
@@ -115,11 +103,8 @@ function SellDetails() {
                                         মোট বাকি :{" "}
                                     </p>
                                     <p className=" text-lg font-semibold py-1">
-                                        {convertStandardToBnBD(
-                                            Math.abs(
-                                                customerAccount.balance -
-                                                    cart.due
-                                            )
+                                        {Math.abs(
+                                            customerAccount.balance - cart.due
                                         )}{" "}
                                         ৳
                                     </p>

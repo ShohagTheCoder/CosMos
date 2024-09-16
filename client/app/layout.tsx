@@ -21,7 +21,7 @@ export default async function RootLayout({
         console.log("faild to fetch settings");
     }
 
-    // If dark mode available add it
+    // If dark mode availabel add it
     let interCalss = inter.className;
     if (settings) {
         const darkMode = settings.darkMode ? "dark" : "light";

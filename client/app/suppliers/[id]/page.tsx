@@ -235,7 +235,7 @@ export default function ViewSupplier() {
                                 })}
                             </ul>
                         ) : (
-                            <p>No products available for this supplier.</p>
+                            <p>No products availabel for this supplier.</p>
                         )}
                     </div>
                 </div>

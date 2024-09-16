@@ -29,7 +29,9 @@ function Sidebar({ active = "home" }: { active: string }) {
                         </a>
                     </button>
                     <button className={getBtnStyleClass("users")}>
-                        <Icon type={"user"} />
+                        <a href="/customers">
+                            <Icon type={"user"} />
+                        </a>
                     </button>
                     <button className={getBtnStyleClass("settings")}>
                         <a href={"/settings"}>

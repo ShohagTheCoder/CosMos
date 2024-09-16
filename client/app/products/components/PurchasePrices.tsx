@@ -49,7 +49,7 @@ function PurchasePrices() {
     }
 
     return (
-        <div className="border border-gray-500 mb-4">
+        <div className="bg-gray-700 mb-4">
             <div>
                 <Switch
                     checked={product.purchaseEnable}
@@ -62,7 +62,7 @@ function PurchasePrices() {
                         )
                     }
                     label="This product will be purchased"
-                    className="justify-between bg-gray-900"
+                    className="justify-between bg-gray-700 !mb-0 !py-3"
                 />
             </div>
             {product.purchaseEnable ? (
@@ -164,7 +164,7 @@ function PurchasePrices() {
                     <div>
                         <button
                             onClick={() => dispatch(addPurchasePrice())}
-                            className="font-bold bg-green-800 text-white border border-green-700 rounded-md px-3 py-1 my-2"
+                            className="w-full font-bold bg-gray-700 text-white hover:bg-green-700 px-3 py-2"
                         >
                             Add Price
                         </button>

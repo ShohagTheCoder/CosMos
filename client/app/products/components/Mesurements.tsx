@@ -38,7 +38,7 @@ function Measurements() {
     }
 
     return (
-        <div className="border border-gray-500 mb-4">
+        <div className="bg-gray-700 mb-4">
             {product.sellEnable ? (
                 <div>
                     {measurements.map((measurement, key) => (
@@ -102,7 +102,7 @@ function Measurements() {
                     ))}
                     <div>
                         <button
-                            className="font-bold bg-green-800 text-white border border-green-700 rounded-md px-3 py-1 my-2"
+                            className="w-full font-bold bg-gray-700 text-white hover:bg-green-700 px-3 py-2"
                             onClick={() => dispatch(addMeasurement())}
                         >
                             Add Measurement

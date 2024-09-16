@@ -158,12 +158,12 @@ export default function Products() {
                 type={notification.type}
                 message={notification.message}
             />
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-start gap-6 mb-4">
                 <h2 className="text-2xl font-bold">Products</h2>
                 <Link
                     href="/products/create"
                     target="_blank"
-                    className="btn btn-primary"
+                    className="bg-gray-700 py-2 px-3 hover:bg-green-700 rounded-md"
                 >
                     Create
                 </Link>

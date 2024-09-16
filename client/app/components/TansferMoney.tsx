@@ -67,7 +67,7 @@ function TansferMoney({ account, callback, handleClose }: any) {
                             ""
                         )}
                         <div className="bg-green-800 py-3 px-4 mb-3">
-                            <p>Available Balance : {account.balance} ৳</p>
+                            <p>Availabel Balance : {account.balance} ৳</p>
                         </div>
                         <div>
                             <input

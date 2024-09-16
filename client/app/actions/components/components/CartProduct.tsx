@@ -8,23 +8,12 @@ import {
     addDiscount,
     addExtraDiscount,
     updateUnit,
+    updateDiscountAmount,
 } from "@/app/store/slices/cartSlice"; // Assuming your cart slice location
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
-import {
-    convertBnBDToStandard,
-    convertStandardToBnBD,
-} from "@/app/utils/numberFormat";
 import { RootState } from "@/app/store/store";
 import getUnits from "@/app/functions/getUnits";
-
-export interface Product {
-    _id: string; // MongoDB unique identifier
-    name: string;
-    price: number;
-    description?: string;
-    madeIn?: string; // Added based on your document structure
-    quantity: number;
-}
+import NumberInputControl from "@/app/elements/inputs/NumberInputControl";
 
 function CartProduct() {
     const dispatch = useDispatch();
@@ -44,212 +33,242 @@ function CartProduct() {
         dispatch(incrementQuantity(product._id)); // Increment quantity
     };
 
+    function getProductForCart(p: ProductWithID) {
+        let product: any = { ...p };
+        let units = product.units;
+        product.mainPrice = product.price - product.updatePrice;
+        product.saleUnitsBase = units[product.saleUnitsBase];
+        product.unit = units[product.unit];
+        product.price =
+            product.mainPrice - product.discount / product.unit.value;
+        return product;
+    }
+
     return (
         <div className="cart">
-            {Object.values(cart.products).map((product: ProductWithID) => (
-                <div
-                    key={product._id}
-                    className="mb-3 border-dashed border-2 border-slate-500"
-                >
+            {Object.values(cart.products).map((p: ProductWithID) => {
+                let product = getProductForCart(p);
+                return (
                     <div
-                        className={`grid grid-cols-4 p-3 gap-3 ${
-                            product._id == cart.activeProduct
-                                ? "bg-green-950"
-                                : ""
-                        }`}
+                        key={product._id}
+                        className="mb-3 border-dashed border-2 border-slate-500"
                     >
-                        <div>
-                            <img
-                                src={`/images/products/${product.image}`}
-                                alt={product.name}
-                                className="w-100 object-cover mr-4"
-                                onClick={() =>
-                                    dispatch(changeActiveProduct(product._id))
-                                }
-                            />
-                        </div>
-                        <div className="overflow-hidden col-span-3">
-                            <div className="flex flex-wrap justify-between">
-                                <h3 className="text-lg font-medium">
+                        <div
+                            className={`p-3 flex flex-col gap-3 ${
+                                product._id == cart.activeProduct
+                                    ? "bg-green-950"
+                                    : ""
+                            }`}
+                        >
+                            <div>
+                                <p className="text-lg font-medium m-0">
                                     {product.name}
-                                </h3>
-                                <div className="flex flex-wrap place-content-end">
-                                    <p className="text-lg font-medium">
-                                        মোট :{" "}
-                                        {product.subTotal.toLocaleString(
-                                            "Bn-bd"
-                                        )}
-                                        <span> ৳</span>
-                                    </p>
-                                </div>
+                                </p>
                             </div>
-                            <div className="flex flex-wrap">
-                                <p className="text-gray-200">
-                                    {`১ ${product.saleUnitsBase} = `}
-                                    <input
-                                        type="text"
-                                        className="bg-slate-900 w-[60px] py-1 px-2 outline-none"
-                                        value={convertStandardToBnBD(
-                                            product.price - product.updatePrice
-                                        )}
-                                        onChange={(e) =>
+                            <div className="overflow-hidden flex">
+                                <div className="w-[160px] h-auto">
+                                    <img
+                                        src={`/images/products/${product.image}`}
+                                        alt={product.name}
+                                        className="h-full object-cover"
+                                        onClick={() =>
                                             dispatch(
-                                                addDiscount({
-                                                    key: product._id,
-                                                    amount:
-                                                        product.price -
-                                                        convertBnBDToStandard(
-                                                            e.target.value
-                                                        ),
-                                                })
+                                                changeActiveProduct(product._id)
                                             )
                                         }
                                     />
-                                    <span> ৳</span>
-                                </p>
+                                </div>
+                                <div className="flex flex-wrap w-full">
+                                    <table className="text-left text-sm w-full">
+                                        <tbody>
+                                            <tr className="odd:bg-gray-700 ">
+                                                <td className="px-3 py-3">
+                                                    1{" "}
+                                                    {
+                                                        product.saleUnitsBase
+                                                            .label
+                                                    }
+                                                </td>
+                                                <td className="pe-3">
+                                                    {product.mainPrice} ৳
+                                                </td>
+                                                <td className="pe-3">%</td>
+                                                <td className="pe-3 text-center">
+                                                    <p className="no-spin py-1 w-[46px] bg-gray-900 text-center outline-none">
+                                                        {(
+                                                            product.discount /
+                                                            product.unit.value
+                                                        ).toFixed(0)}
+                                                    </p>
+                                                </td>
+                                                <td className="pe-3 text-end">
+                                                    {Math.ceil(product.price)} ৳
+                                                </td>
+                                            </tr>
+                                            <tr className="even:bg-gray-800">
+                                                <td className="px-3 py-3">
+                                                    1 {product.unit.label}
+                                                </td>
+                                                <td className="pe-3">
+                                                    {product.mainPrice *
+                                                        product.unit.value}{" "}
+                                                    ৳
+                                                </td>
+                                                <td className="pe-3">%</td>
+                                                <td className="pe-3">
+                                                    <input
+                                                        type="number"
+                                                        value={product.discount}
+                                                        step={
+                                                            product.unit.value
+                                                        }
+                                                        onChange={(e) =>
+                                                            dispatch(
+                                                                addDiscount({
+                                                                    key: product._id,
+                                                                    amount: parseInt(
+                                                                        e.target
+                                                                            .value
+                                                                    ),
+                                                                })
+                                                            )
+                                                        }
+                                                        className="no-spin h-[30px] w-[46px] bg-gray-900 text-center outline-none"
+                                                    />
+                                                </td>
+                                                <td className="pe-3 text-end">
+                                                    {product.price *
+                                                        product.unit.value}{" "}
+                                                    ৳
+                                                </td>
+                                            </tr>
+                                            <tr className="odd:bg-gray-700">
+                                                <td className="px-3 py-3">
+                                                    {product.quantity +
+                                                        " " +
+                                                        product.unit.label}
+                                                </td>
+                                                <td className="pe-3">
+                                                    {product.price *
+                                                        product.count}{" "}
+                                                    ৳
+                                                </td>
+                                                <td className="pe-3">%</td>
+                                                <td className="pe-3">
+                                                    <input
+                                                        type="number"
+                                                        value={
+                                                            product.extraDiscount
+                                                        }
+                                                        onChange={(e) =>
+                                                            dispatch(
+                                                                addExtraDiscount(
+                                                                    {
+                                                                        key: product._id,
+                                                                        amount: parseInt(
+                                                                            e
+                                                                                .target
+                                                                                .value
+                                                                        ),
+                                                                    }
+                                                                )
+                                                            )
+                                                        }
+                                                        className="no-spin h-[30px] w-[46px] bg-gray-900 text-center outline-none"
+                                                    />
+                                                </td>
+                                                <td className="pe-3 text-lg text-end">
+                                                    {product.subTotal} ৳
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                            <div className="flex flex-wrap items-center">
-                                <p className="">
-                                    {`১ ${product.unit} = `}
-                                    {convertStandardToBnBD(
-                                        product.units[product.unit].value *
-                                            product.price
-                                    )}
-                                    {" ৳ - "}
-                                </p>
-                                <p className="ms-3">
-                                    Dis :
+                            <div className="flex justify-between bg-slate-900 pe-3">
+                                <div className="flex flex-warp">
+                                    <button
+                                        className="h-[40px] w-[40px] select-none hover:bg-green-500 hover:text-white text-2xl bg-gray-300 text-gray-700 border-0"
+                                        onClick={() =>
+                                            handleDecrement(product._id)
+                                        }
+                                    >
+                                        -
+                                    </button>
                                     <input
-                                        type="text"
-                                        className="bg-slate-900 w-[60px] py-1 px-2 outline-none"
-                                        value={convertStandardToBnBD(
-                                            product.discount
-                                        )}
+                                        type="number"
+                                        className="no-spin h-[40px] w-[70px] bg-black  outline-none text-white text-center"
+                                        value={product.quantity}
                                         onChange={(e) =>
                                             dispatch(
-                                                addDiscount({
+                                                updateQuantity({
                                                     key: product._id,
-                                                    amount: convertBnBDToStandard(
+                                                    quantity: parseFloat(
                                                         e.target.value
                                                     ),
                                                 })
                                             )
                                         }
                                     />
-                                </p>
-                                <p className="ms-3">
-                                    {"= "}
-                                    {convertStandardToBnBD(
-                                        product.units[product.unit].value *
-                                            product.price -
-                                            product.discount
-                                    )}{" "}
-                                    {" ৳"}
-                                </p>
-                            </div>
-                            <p>
-                                Extra Discount :
-                                <input
-                                    type="number"
-                                    className="bg-slate-900 w-[60px] py-1 px-2 outline-none"
-                                    value={product.extraDiscount}
-                                    onChange={(e) =>
-                                        dispatch(
-                                            addExtraDiscount({
-                                                key: product._id,
-                                                amount: parseFloat(
-                                                    e.target.value
-                                                ),
-                                            })
-                                        )
-                                    }
-                                />
-                            </p>
-                        </div>
-                        <div className="col-span-4 flex flex-wrap bg-slate-900">
-                            <div className="flex flex-warp">
-                                <button
-                                    className="h-[40px] w-[40px] select-none hover:bg-green-500 hover:text-white text-2xl bg-gray-300 text-gray-700 border-0"
-                                    onClick={() => handleDecrement(product._id)}
-                                >
-                                    -
-                                </button>
-                                <input
-                                    type="number"
-                                    className="no-spin h-[40px] w-[70px] bg-black  outline-none text-white text-center"
-                                    value={product.quantity}
-                                    onChange={(e) =>
-                                        dispatch(
-                                            updateQuantity({
-                                                key: product._id,
-                                                quantity: parseFloat(
-                                                    e.target.value
-                                                ),
-                                            })
-                                        )
-                                    }
-                                />
 
-                                <button
-                                    className="h-[40px] w-[40px] select-none hover:bg-green-500 hover:text-white text-2xl bg-gray-300 text-gray-700 border-0"
-                                    onClick={() => handleIncrement(product._id)}
-                                >
-                                    +
-                                </button>
-                                <div>
-                                    <select
-                                        className="h-[40px] bg-black text-white px-2 outline-none"
-                                        value={product.unit}
-                                        onChange={(e) =>
-                                            dispatch(
-                                                updateUnit({
-                                                    key: product._id,
-                                                    unit: e.target.value,
-                                                })
-                                            )
+                                    <button
+                                        className="h-[40px] w-[40px] select-none hover:bg-green-500 hover:text-white text-2xl bg-gray-300 text-gray-700 border-0"
+                                        onClick={() =>
+                                            handleIncrement(product._id)
                                         }
                                     >
-                                        {Object.values(
-                                            getUnits(product.units)
-                                        ).map((unit) => (
-                                            <option
-                                                key={unit.unit}
-                                                value={unit.unit}
-                                            >
-                                                {unit.unit}
-                                            </option>
-                                        ))}
-                                    </select>
+                                        +
+                                    </button>
+                                    <div>
+                                        <select
+                                            className="h-[40px] bg-black text-white px-2 outline-none"
+                                            value={product.unit.unit}
+                                            onChange={(e) =>
+                                                dispatch(
+                                                    updateUnit({
+                                                        key: product._id,
+                                                        unit: e.target.value,
+                                                    })
+                                                )
+                                            }
+                                        >
+                                            {Object.values(
+                                                getUnits(product.units)
+                                            ).map((unit) => (
+                                                <option
+                                                    key={unit.unit}
+                                                    value={unit.unit}
+                                                >
+                                                    {unit.unit}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="flex flex-wrap items-center ms-3">
-                                <p className="">
+                                <div className="w-auto ms-3">
                                     {product.saleUnitsBase == product.unit ? (
                                         ""
                                     ) : (
-                                        <div>
-                                            ={" "}
-                                            {product.units[product.unit].value +
-                                                " " +
-                                                product.saleUnitsBase +
-                                                " * " +
-                                                product.quantity +
-                                                " = " +
-                                                (
-                                                    product.units[product.unit]
-                                                        .value *
-                                                    product.quantity
-                                                ).toLocaleString() +
-                                                " " +
-                                                product.saleUnitsBase}
+                                        <div className="w-auto h-full gap-3 flex flex-wrap justify-end items-center">
+                                            <p>=</p>
+                                            <p>{product.unit.value}</p>
+                                            <p>{product.saleUnitsBase.label}</p>
+                                            <p>*</p>
+                                            <p>{product.quantity}</p>
+                                            <p>=</p>
+                                            <p>
+                                                {product.unit.value *
+                                                    product.quantity}
+                                            </p>
+                                            <p>{product.saleUnitsBase.label}</p>
                                         </div>
                                     )}
-                                </p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            ))}
+                );
+            })}
         </div>
     );
 }

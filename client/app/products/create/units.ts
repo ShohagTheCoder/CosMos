@@ -17,7 +17,7 @@ const savedUnits: UnitBases = {
             enable: false,
         },
         kg: {
-            label: "Kilogram",
+            label: "KG",
             unit: "kg",
             value: 1,
             dynamic: false,
@@ -33,7 +33,7 @@ const savedUnits: UnitBases = {
             enable: true,
         },
         qt: {
-            label: "Quintal",
+            label: "Q",
             unit: "qt",
             value: 100,
             dynamic: false,
@@ -43,7 +43,7 @@ const savedUnits: UnitBases = {
     },
     pices: {
         pcs: {
-            label: "Pices",
+            label: "Pcs",
             unit: "pcs",
             value: 1,
             dynamic: false,
@@ -61,7 +61,7 @@ const savedUnits: UnitBases = {
     },
     volume: {
         ltr: {
-            label: "Liter",
+            label: "Ltr",
             unit: "ltr",
             value: 1,
             dynamic: false,

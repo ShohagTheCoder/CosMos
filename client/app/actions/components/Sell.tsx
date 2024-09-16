@@ -769,97 +769,82 @@ export default function Sell({
                     className="justify-center"
                 />
                 <div className="ps-[94px] 2xl:ps-[150px] pe-3 bg-white dark:bg-gray-950">
-                    <div className="flex gap-4 pt-3">
-                        <button
-                            className={`py-1 px-3 ${
-                                activeSellPage.current == "F5"
-                                    ? "bg-green-700"
-                                    : ""
-                            }`}
-                            onDoubleClick={() => handleSellPageChange("F5")}
-                        >
-                            {helper.cartStates["F5"]?.customer?.name
-                                ? helper.cartStates["F5"].customer.name
-                                : "One"}
-                        </button>
-                        <button
-                            className={`py-1 px-3 ${
-                                activeSellPage.current == "F6"
-                                    ? "bg-green-700"
-                                    : ""
-                            }`}
-                            onDoubleClick={() => handleSellPageChange("F6")}
-                        >
-                            {helper.cartStates["F6"]?.customer?.name
-                                ? helper.cartStates["F6"].customer.name
-                                : "Two"}
-                        </button>
-                        <button
-                            className={`py-1 px-3 ${
-                                activeSellPage.current == "F7"
-                                    ? "bg-green-700"
-                                    : ""
-                            }`}
-                            onDoubleClick={() => handleSellPageChange("F7")}
-                        >
-                            {helper.cartStates["F7"]?.customer?.name
-                                ? helper.cartStates["F7"].customer.name
-                                : "Three"}
-                        </button>
-                        <button
-                            className={`py-1 px-3 ${
-                                activeSellPage.current == "F8"
-                                    ? "bg-green-700"
-                                    : ""
-                            }`}
-                            onDoubleClick={() => handleSellPageChange("F8")}
-                        >
-                            {helper.cartStates["F8"]?.customer?.name
-                                ? helper.cartStates["F8"].customer.name
-                                : "Four"}
-                        </button>
-                    </div>
                     <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 gap-6 py-4 min-h-screen">
                         <div className="col-span-8 lg:col-span-5">
-                            <div className="p-3 border-2 border-dashed border-slate-500 mb-3">
-                                <a href={"/"}>Home</a>
-                                <a
-                                    className="ms-3"
-                                    href={"/actions/purchase"}
-                                    target="_blank"
-                                >
-                                    Purchase
-                                </a>
-                                <a
-                                    className="ms-3"
-                                    href={"/sells"}
-                                    target="_blank"
-                                >
-                                    Sells
-                                </a>
-                                <a
-                                    className="ms-3"
-                                    href={"/products"}
-                                    target="_blank"
-                                >
-                                    Products
-                                </a>
-                                <a
-                                    className="ms-3"
-                                    href={"/customers"}
-                                    target="_blank"
-                                >
-                                    Customers
-                                </a>
-                                <p className="inline-block mx-4 bg-green-700 py-2 px-3">
-                                    {user.name}
-                                </p>
-                                <button
-                                    onDoubleClick={logout}
-                                    className="bg-red-700 text-white py-1 px-3 rounded"
-                                >
-                                    Logout
-                                </button>
+                            <div className="p-3 border-2 border-dashed border-slate-500 mb-3 flex justify-between items-center">
+                                <div className="flex gap-3 justify-start">
+                                    <button
+                                        className={`py-1 px-3 ${
+                                            activeSellPage.current == "F5"
+                                                ? "bg-green-700"
+                                                : ""
+                                        }`}
+                                        onDoubleClick={() =>
+                                            handleSellPageChange("F5")
+                                        }
+                                    >
+                                        {helper.cartStates["F5"]?.customer?.name
+                                            ? helper.cartStates["F5"].customer
+                                                  .name
+                                            : "One"}
+                                    </button>
+                                    <button
+                                        className={`py-1 px-3 ${
+                                            activeSellPage.current == "F6"
+                                                ? "bg-green-700"
+                                                : ""
+                                        }`}
+                                        onDoubleClick={() =>
+                                            handleSellPageChange("F6")
+                                        }
+                                    >
+                                        {helper.cartStates["F6"]?.customer?.name
+                                            ? helper.cartStates["F6"].customer
+                                                  .name
+                                            : "Two"}
+                                    </button>
+                                    <button
+                                        className={`py-1 px-3 ${
+                                            activeSellPage.current == "F7"
+                                                ? "bg-green-700"
+                                                : ""
+                                        }`}
+                                        onDoubleClick={() =>
+                                            handleSellPageChange("F7")
+                                        }
+                                    >
+                                        {helper.cartStates["F7"]?.customer?.name
+                                            ? helper.cartStates["F7"].customer
+                                                  .name
+                                            : "Three"}
+                                    </button>
+                                    <button
+                                        className={`py-1 px-3 ${
+                                            activeSellPage.current == "F8"
+                                                ? "bg-green-700"
+                                                : ""
+                                        }`}
+                                        onDoubleClick={() =>
+                                            handleSellPageChange("F8")
+                                        }
+                                    >
+                                        {helper.cartStates["F8"]?.customer?.name
+                                            ? helper.cartStates["F8"].customer
+                                                  .name
+                                            : "Four"}
+                                    </button>
+                                </div>
+                                <div className="border-s-2 border-dashed border-gray-600 ps-4 flex flex-wrap justify-end gap-4 items-center">
+                                    <p className="inline-block bg-green-800 py-1 px-2 rounded">
+                                        {user.name}
+                                    </p>
+                                    <button
+                                        onDoubleClick={logout}
+                                        className="bg-red-800 text-white py-1 px-3 rounded"
+                                    >
+                                        Logout
+                                    </button>
+                                </div>
                             </div>
                             <div className="">
                                 <input

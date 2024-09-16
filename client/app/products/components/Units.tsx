@@ -58,25 +58,32 @@ function Units() {
                     className="mb-3"
                 />
             </div>
-            <div className="border border-gray-500 mb-4">
-                <table className="w-full border-collapse border-gray-600">
+            <div className="mb-4">
+                <table className="w-full border-collapse">
                     <thead>
-                        <tr>
-                            <th className="py-1 px-2 border">Unit</th>
-                            <th className="py-1 px-2 border">Label</th>
-                            <th className="py-1 px-2 border">Value * base</th>
-                            <th className="py-1 px-2 border">Compare</th>
-                            <th className="py-1 pe-5 border text-end">
-                                Enable
+                        <tr className="odd:bg-gray-900">
+                            <th className="py-3 px-4 text-start">Unit</th>
+                            <th className="py-3 px-2 text-start">Label</th>
+                            <th className="py-3 px-2 text-start">
+                                Value * base
                             </th>
+                            <th className="py-3 px-2 text-start">Compare</th>
+                            <th className="py-3 pe-5 text-end">Enable</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {Object.entries(units).map(([key, unit]) => (
-                            <tr key={key} className="unit bg-gray-800 p-2">
+                        {Object.entries(units).map(([key, unit], index) => (
+                            <tr
+                                key={key}
+                                className={`unit p-2 ${
+                                    index % 2 === 0
+                                        ? "bg-gray-700"
+                                        : "bg-gray-900"
+                                }`}
+                            >
                                 {unit.dynamic ? (
                                     <>
-                                        <td className="py-1 px-2 border">
+                                        <td className="py-3 ps-4 pe-2">
                                             <input
                                                 type="text"
                                                 onChange={(e) =>
@@ -99,7 +106,7 @@ function Units() {
                                                 value={unit.unit}
                                             />
                                         </td>
-                                        <td className="py-1 px-2 border">
+                                        <td className="py-1 px-2">
                                             <input
                                                 type="text"
                                                 onChange={(e) =>
@@ -115,7 +122,7 @@ function Units() {
                                                 value={unit.label}
                                             />
                                         </td>
-                                        <td className="py-1 px-2 border">
+                                        <td className="py-1 px-2">
                                             <NumberInputControl
                                                 value={unit.value}
                                                 onChange={(value) =>
@@ -125,9 +132,10 @@ function Units() {
                                                     )
                                                 }
                                                 inputClassName="!w-12"
+                                                buttonClassName="!bg-green-700"
                                             />
                                         </td>
-                                        <td className="py-1 px-2 border">
+                                        <td className="py-1 px-2">
                                             {"1 " +
                                                 unit.label +
                                                 " = " +
@@ -135,12 +143,12 @@ function Units() {
                                                 " " +
                                                 product.saleUnitsBase}
                                         </td>
-                                        <td className="py-1 px-2 border">
+                                        <td className="py-1 px-2">
                                             <button
                                                 onDoubleClick={() =>
                                                     dispatch(removeUnit(key))
                                                 }
-                                                className="h-[30px] w-[30px] bg-gray-700 text-white flex items-center justify-center mr-3 rounded ms-auto"
+                                                className="h-[30px] w-[30px] bg-gray-950 text-white flex items-center justify-center mr-3 rounded ms-auto"
                                             >
                                                 <span className="text-l">
                                                     &#x1F534;
@@ -150,57 +158,38 @@ function Units() {
                                     </>
                                 ) : (
                                     <>
-                                        {unit.dynamicValue == true ? (
-                                            <>
-                                                <td className="py-1 px-2 border">
-                                                    {unit.unit}
-                                                </td>
-                                                <td className="py-1 px-2 border">
-                                                    {unit.label}
-                                                </td>
-                                                <td className="py-1 px-2 border">
-                                                    <NumberInputControl
-                                                        value={unit.value}
-                                                        onChange={(value) =>
-                                                            handleDynamicValue(
-                                                                unit.unit,
-                                                                value
-                                                            )
-                                                        }
-                                                        inputClassName="!w-12"
-                                                    />
-                                                </td>
-                                                <td className="py-1 px-2 border">
-                                                    {"1 " +
-                                                        unit.label +
-                                                        " = " +
-                                                        unit.value +
-                                                        " " +
-                                                        product.saleUnitsBase}
-                                                </td>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <td className="py-1 px-2 border">
-                                                    {unit.unit}
-                                                </td>
-                                                <td className="py-1 px-2 border">
-                                                    {unit.label}
-                                                </td>
-                                                <td className="py-1 px-2 border">
-                                                    {unit.value}
-                                                </td>
-                                                <td className="py-1 px-2 border">
-                                                    {"1 " +
-                                                        unit.label +
-                                                        " = " +
-                                                        unit.value +
-                                                        " " +
-                                                        product.saleUnitsBase}
-                                                </td>
-                                            </>
-                                        )}
-                                        <td className="border">
+                                        <td className="py-1 px-4">
+                                            {unit.unit}
+                                        </td>
+                                        <td className="py-1 px-2">
+                                            {unit.label}
+                                        </td>
+                                        <td className="py-1 px-2">
+                                            {unit.dynamicValue ? (
+                                                <NumberInputControl
+                                                    value={unit.value}
+                                                    onChange={(value) =>
+                                                        handleDynamicValue(
+                                                            unit.unit,
+                                                            value
+                                                        )
+                                                    }
+                                                    inputClassName="!w-12"
+                                                    buttonClassName="!bg-green-700"
+                                                />
+                                            ) : (
+                                                unit.value
+                                            )}
+                                        </td>
+                                        <td className="py-1 px-2">
+                                            {"1 " +
+                                                unit.label +
+                                                " = " +
+                                                unit.value +
+                                                " " +
+                                                product.saleUnitsBase}
+                                        </td>
+                                        <td className="py-1 px-2">
                                             <Switch
                                                 checked={unit.enable}
                                                 label=""
@@ -223,17 +212,21 @@ function Units() {
                 </table>
                 <button
                     onClick={handleAddDynamicUnit}
-                    className="font-bold bg-green-800 text-white border border-green-700 rounded-md px-3 py-1 my-2"
+                    className="w-full font-bold bg-yellow-700 text-white hover:bg-green-700 px-3 py-2"
                 >
                     Add Unit
                 </button>
             </div>
-            <p className="bg-yellow-700 py-3 px-4 mb-3">Sell section</p>
-            <Prices />
-            <Measurements />
-            <p className="bg-yellow-700 py-3 px-4 mb-3">Purchase section</p>
-            <PurchasePrices />
-            <PurchaseMeasurements />
+            <p className="bg-green-700 py-3 px-4">Sell section</p>
+            <div className="mt-3">
+                <Prices />
+                <Measurements />
+            </div>
+            <p className="bg-green-700 py-3 px-4 mt-3">Purchase section</p>
+            <div className="mt-3 mb-3">
+                <PurchasePrices />
+                <PurchaseMeasurements />
+            </div>
         </div>
     );
 }

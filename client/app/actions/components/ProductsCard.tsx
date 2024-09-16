@@ -1,7 +1,6 @@
 import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 import getStockLine from "@/app/functions/getStockLine";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
-import { convertStandardToBnBD } from "@/app/utils/numberFormat";
 import React, { useMemo, useState } from "react";
 
 interface ProductsCardProps {
@@ -52,33 +51,39 @@ function ProductsCard({ selected, callback, products }: ProductsCardProps) {
                             ) : (
                                 ""
                             )}
-                            <div className="p-3">
-                                <h2 className="font-semibold text-xl mb-1">
-                                    {product.name}
-                                </h2>
-                                <p className="text-gray-300 text-base mb-1">
-                                    {product.description}
-                                </p>
-                                <p>
-                                    #{" "}
-                                    {getStockLine(product.stock, product.units)}
-                                </p>
-                                <p className="font-semibold text-xl text-green-400 inline-block">
-                                    {convertStandardToBnBD(
-                                        product.price *
+                            <div>
+                                <div className="p-3">
+                                    <h2 className="font-semibold text-xl mb-1">
+                                        {product.name}
+                                    </h2>
+                                    <p className="text-gray-300 text-base mb-1">
+                                        {product.description}
+                                    </p>
+                                    <p>
+                                        #{" "}
+                                        {getStockLine(
+                                            product.stock,
+                                            product.units
+                                        )}
+                                    </p>
+                                </div>
+                                <div className="flex flex-wrap justify-between items-center bg-slate-700 py-2 px-3">
+                                    <span>
+                                        1{" "}
+                                        {
                                             product.units[
                                                 product.displaySaleUnit
-                                            ].value
-                                    )}
-                                    <span> ৳</span>
-                                </p>
-                                <span className="ms-2">
-                                    1{" "}
-                                    {
-                                        product.units[product.displaySaleUnit]
-                                            .label
-                                    }
-                                </span>
+                                            ].label
+                                        }
+                                    </span>
+                                    <p className="font-semibold text-xl text-green-400 inline-block">
+                                        {product.price *
+                                            product.units[
+                                                product.displaySaleUnit
+                                            ].value}
+                                        <span> ৳</span>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     )
@@ -92,7 +97,7 @@ export default ProductsCard;
 // import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 // import getStockLine from "@/app/functions/getStockLine";
 // import { ProductWithID } from "@/app/products/interfaces/product.interface";
-// import { convertStandardToBnBD } from "@/app/utils/numberFormat";
+// import {  } from "@/app/utils/numberFormat";
 // import React, { useState } from "react";
 
 // interface ProductsCardProps {
@@ -155,7 +160,7 @@ export default ProductsCard;
 //                                     {getStockLine(product.stock, product.units)}
 //                                 </p>
 //                                 <p className="font-semibold text-xl text-green-400 inline-block">
-//                                     {convertStandardToBnBD(
+//                                     {(
 //                                         getProductUnitPrice(product) *
 //                                             product.units[
 //                                                 product.displaySaleUnit
