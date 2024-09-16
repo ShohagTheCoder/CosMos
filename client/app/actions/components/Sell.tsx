@@ -140,7 +140,7 @@ export default function Sell({
             }
         }
 
-        if (/^\s{2,}/.test(command) && customers) {
+        if (/^\s+/.test(command) && customers) {
             setIsCustomers(true);
             // Convert filtered array back to object
             const filteredCustomersObject = Object.entries(customers).reduce<
@@ -165,24 +165,19 @@ export default function Sell({
             let filteredProductsObject = Object.entries(products).reduce<
                 Record<string, ProductWithID>
             >((acc, [key, value]) => {
-                if (
-                    value.name.toLowerCase().includes(command.toLowerCase()) ||
-                    value.description
-                        .toLowerCase()
-                        .includes(command.toLowerCase())
-                ) {
+                if (value.name.toLowerCase().includes(command.toLowerCase())) {
                     acc[key] = value;
                 }
                 return acc;
             }, {});
 
             setFilteredProducts(filteredProductsObject);
-        } else if (command.length == 0 || command == " ") {
+        } else if (command.length == 0) {
             if (isCustomers) {
                 setIsCustomers(false);
             }
             setFilteredProducts(products);
-        } else if (command == "  ") {
+        } else if (command == " ") {
             if (!isCustomers) {
                 setIsCustomers(true);
             }
@@ -386,6 +381,13 @@ export default function Sell({
             }
         }
 
+        if (e.key == "/") {
+            setCommand("");
+        }
+        if (e.key == "*") {
+            setCommand("");
+        }
+
         // Detect special key press
         if (
             (pressedKeys.current.has("NumpadEnter") && e.code == "NumpadAdd") ||
@@ -428,22 +430,6 @@ export default function Sell({
             switch (command) {
                 case ".":
                     e.preventDefault();
-                    dispatch(addExtraDiscount({ key: undefined, amount: 10 }));
-                    setCommand("");
-                    return;
-
-                case "..":
-                    e.preventDefault();
-                    setCommand("");
-                    dispatch(addDiscount({ key: undefined, amount: 10 }));
-                    return;
-                case "...":
-                    e.preventDefault();
-                    setCommand("");
-                    dispatch(setSalePrice({ key: undefined, amount: 10 }));
-                    return;
-                case "0.":
-                    e.preventDefault();
                     setCommand("");
                     dispatch(updatePaid(0));
                     return;
@@ -478,19 +464,19 @@ export default function Sell({
                 return;
             }
 
-            if (/^0\.[1-9]*[0-9]*$/.test(command)) {
+            if (/^\.[1-9]*[0-9]*$/.test(command)) {
                 stopLongPress();
                 stopKeyUpHandler.current = true;
                 e.preventDefault();
                 setCommand("");
 
-                if (command == "0.") {
+                if (command == ".") {
                     dispatch(updatePaid(cart.totalPrice));
                     return;
                 }
 
-                if (command.length > 2) {
-                    let amount = parseInt(command.slice(2));
+                if (command.length > 1) {
+                    let amount = parseInt(command.slice(1));
                     if (amount) {
                         dispatch(updatePaid(amount));
                     }
@@ -532,7 +518,7 @@ export default function Sell({
             }
 
             // To add extra discount amount dynamically with one . at the start
-            if (/^\.[1-9][0-9]*$/.test(command)) {
+            if (/^\/[1-9][0-9]*$/.test(command)) {
                 stopLongPress();
                 stopKeyUpHandler.current = true;
                 e.preventDefault();
@@ -543,11 +529,11 @@ export default function Sell({
             }
 
             // To add discount amount dynamically with two .. at the start
-            if (/^\.\.[1-9][0-9]*$/.test(command)) {
+            if (/^\*[1-9][0-9]*$/.test(command)) {
                 stopLongPress();
                 stopKeyUpHandler.current = true;
                 e.preventDefault();
-                let amount = parseInt(command.slice(2));
+                let amount = parseInt(command.slice(1));
                 setCommand("");
                 dispatch(addDiscount({ key: undefined, amount }));
                 return;
@@ -695,7 +681,7 @@ export default function Sell({
         }
 
         // Handle extra discount amount up and down with NumpadEnter and NumpadAdd
-        if (/^\.\.\d*$/.test(command)) {
+        if (/^\*\d*$/.test(command)) {
             switch (e.code) {
                 case "ArrowUp":
                 case "NumpadAdd":
@@ -715,7 +701,7 @@ export default function Sell({
             }
         }
 
-        if (/^\.\d*$/.test(command)) {
+        if (/^\/\d*$/.test(command)) {
             switch (e.code) {
                 case "ArrowUp":
                 case "NumpadAdd":
