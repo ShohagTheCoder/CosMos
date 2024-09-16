@@ -15,6 +15,7 @@ import { TrashModule } from './trash/trash.module';
 import { AuthModule } from './auth/auth.module';
 import { PurchasesModule } from './purchases/purchases.module';
 import { SettingsModule } from './settings/settings.module';
+import { CommandsModule } from './commands/commands.module';
 
 @Module({
     imports: [
@@ -32,6 +33,7 @@ import { SettingsModule } from './settings/settings.module';
         TrashModule,
         AuthModule,
         SettingsModule,
+        CommandsModule,
     ],
     controllers: [AppController],
     providers: [AppService],

@@ -6,7 +6,7 @@
     "private": true,
     "license": "UNLICENSED",
     "scripts": {
-        "seed": "ts-node src/seeder.ts",
+        "seed": "ts-node -P tsconfig.json src/seeder.ts",
         "build": "nest build",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
         "start": "nest start",

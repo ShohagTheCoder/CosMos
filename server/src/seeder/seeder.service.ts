@@ -1,7 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Product, ProductDocument } from 'src/products/schemas/product.schema';
+import products from './date/products';
+import commands from './date/commands';
+import { Product, ProductDocument } from '../products/schemas/product.schema';
+import { Command, CommandDocument } from '../commands/schemas/command.schema';
 
 @Injectable()
 export class SeederService {
@@ -10,33 +13,50 @@ export class SeederService {
     constructor(
         @InjectModel(Product.name)
         private readonly productModel: Model<ProductDocument>,
+        @InjectModel(Command.name)
+        private readonly commandModel: Model<CommandDocument>,
     ) {}
 
     async seed() {
-        const count = await this.productModel.countDocuments();
-
-        if (count > 0) {
-            this.logger.log('Seeding skipped, data already exists');
-            return;
-        }
         await this.seedProducts();
+        await this.seedCommands(); // Make sure to seed commands
     }
 
     async seedProducts() {
-        const data = [
-            { name: 'Sample 1', description: 'Description 1' },
-            { name: 'Sample 2', description: 'Description 2' },
-        ];
+        const count = await this.productModel.countDocuments();
+
+        if (count > 0) {
+            this.logger.log('Seeding skipped, products already exists');
+            return;
+        }
 
         try {
-            for (const item of data) {
-                await this.productModel.updateOne({ name: item.name }, item, {
-                    upsert: true,
-                });
-            }
-            this.logger.log('Seeding YourEntity completed');
+            const createPromises = products.map((item: any) =>
+                this.productModel.create(item),
+            );
+            await Promise.all(createPromises);
+            this.logger.log('Seeding Products completed');
         } catch (error) {
-            this.logger.error('Failed to seed YourEntity', error);
+            this.logger.error('Failed to seed Products', error);
+        }
+    }
+
+    async seedCommands() {
+        const count = await this.commandModel.countDocuments();
+
+        if (count > 0) {
+            this.logger.log('Seeding skipped, commands already exists');
+            return;
+        }
+
+        try {
+            const updatePromises = commands.map((item: any) =>
+                this.commandModel.create(item),
+            );
+            await Promise.all(updatePromises);
+            this.logger.log('Seeding Commands completed');
+        } catch (error) {
+            this.logger.error('Failed to seed Commands', error);
         }
     }
 }

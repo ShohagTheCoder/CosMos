@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { Stock } from 'src/stocks/schemas/stocks.schema';
+import { Stock } from '../../stocks/schemas/stocks.schema';
 
 // Define nested schemas
 @Schema()
@@ -16,6 +16,9 @@ export class Unit {
 
     @Prop()
     label: string;
+
+    @Prop()
+    dynamicValue: boolean;
 
     @Prop()
     base: string;
