@@ -826,7 +826,7 @@ export default function Sell({
     // }
 
     return (
-        <main>
+        <div className="text-black dark:text-white">
             <SellReceipt />
             <div className="print:hidden">
                 <Sidebar active="sell" />
@@ -838,7 +838,7 @@ export default function Sell({
                 <div className="ps-[94px] 2xl:ps-[150px] pe-3 bg-white dark:bg-gray-950">
                     <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 gap-6 py-4 min-h-screen">
                         <div className="col-span-8 lg:col-span-5">
-                            <div className="p-3 border-2 border-dashed border-slate-500 mb-3 flex justify-between items-center">
+                            <div className="bg-gray-300 dark:bg-gray-950 p-3 border-2 border-dashed border-slate-500 mb-3 flex justify-between items-center">
                                 <div className="flex gap-3 justify-start">
                                     <button
                                         className={`py-1 px-3 ${
@@ -902,7 +902,7 @@ export default function Sell({
                                     </button>
                                 </div>
                                 <div className="border-s-2 border-dashed border-gray-600 ps-4 flex flex-wrap justify-end gap-4 items-center">
-                                    <p className="inline-block bg-green-800 py-1 px-2 rounded">
+                                    <p className="inline-block bg-green-800 py-1 px-3 rounded text-white">
                                         {user.name}
                                     </p>
                                     <button
@@ -921,7 +921,7 @@ export default function Sell({
                                     onKeyDown={handleKeyDown}
                                     onKeyUp={handleKeyUp}
                                     type="text"
-                                    className="border-2 w-full md:w-1/2 xl:w-1/3 border-dashed border-slate-500 bg-black outline-none focus:border-green-500 text-white px-4 py-2 text-lg"
+                                    className="border-2 w-full md:w-1/2 xl:w-1/3 border-dashed border-slate-500 bg-transparent outline-none focus:border-green-500 px-4 py-2 text-lg"
                                     autoFocus
                                 />
                             </div>
@@ -954,7 +954,7 @@ export default function Sell({
                             <div className="">
                                 <textarea
                                     ref={noteRef}
-                                    className="w-full resize-none bg-black text-white p-3 outline-none border-dashed border-2 border-gray-600 placeholder-slate-300 mb-1"
+                                    className="w-full tresize-none p-3 outline-none border-dashed border-2 border-gray-600 placeholder-slate-300 mb-1"
                                     value={note}
                                     onKeyDown={handleNoteKeyDown}
                                     onChange={(e) => setNote(e.target.value)}
@@ -982,6 +982,6 @@ export default function Sell({
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
     );
 }

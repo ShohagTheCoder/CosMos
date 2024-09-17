@@ -10,7 +10,7 @@ function Sidebar({ active = "home" }: { active: string }) {
     }
 
     return (
-        <div className="fixed start-0 top-0 w-[80px] h-full bg-gray-950 border-r-2 border-dashed border-slate-600">
+        <div className="bg-gray-300 dark:bg-gray-900 fixed start-0 top-0 w-[80px] h-full border-r-2 border-dashed border-slate-600">
             <div className="h-full flex justify-center items-center">
                 <div className="flex flex-col justify-center items-center gap-5">
                     <button className={getBtnStyleClass("home")}>

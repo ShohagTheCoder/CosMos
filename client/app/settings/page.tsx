@@ -36,7 +36,7 @@ function Settings() {
                 `settings/${settings._id}`,
                 field
             );
-            setSettings({ ...settings, ...field });
+            window.location.reload();
         } catch (error) {
             console.log(error);
         }

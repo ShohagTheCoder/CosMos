@@ -10,7 +10,7 @@ function SellDetails() {
     const dispatch = useDispatch();
 
     return (
-        <div className="p-3 mb-3 border-dashed border-2 border-gray-600">
+        <div className="bg-transparent p-3 mb-3 border-dashed border-2 border-gray-600">
             <div className="single-row flex justify-between items-center">
                 <p className=" text-lg font-semibold pt-1">সর্বমোট :</p>
                 <p className=" text-lg font-semibold pt-1">

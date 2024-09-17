@@ -21,13 +21,9 @@ function ProductsCard({ selected, callback, products }: ProductsCardProps) {
         }
     }
 
-    // if (!products) {
-    //     return "Loding";
-    // }
-
     return (
         <div>
-            <div className="py-2 px-3 mb-3 bg-gray-800">
+            <div className="py-2 px-3 mb-3 bg-gray-300  dark:bg-gray-800">
                 <button onClick={() => setShowProductImage(!showProductImage)}>
                     #image
                 </button>
@@ -38,8 +34,10 @@ function ProductsCard({ selected, callback, products }: ProductsCardProps) {
                         <div
                             key={product._id}
                             onClick={() => handleCallback(product._id)}
-                            className={`max-w-sm rounded overflow-hidden shadow-xl bg-gray-800 text-white ${
-                                selected == key ? "bg-green-900" : "bg-black"
+                            className={`max-w-sm rounded overflow-hidden shadow-xl bg-gray-300 dark:bg-gray-800 shadow ${
+                                selected == key
+                                    ? "bg-green-200 dark:bg-green-900"
+                                    : ""
                             }`}
                         >
                             {showProductImage ? (
@@ -56,7 +54,7 @@ function ProductsCard({ selected, callback, products }: ProductsCardProps) {
                                     <h2 className="font-semibold text-xl mb-1">
                                         {product.name}
                                     </h2>
-                                    <p className="text-gray-300 text-base mb-1">
+                                    <p className="text-base mb-1">
                                         {product.description}
                                     </p>
                                     <p>
@@ -67,7 +65,7 @@ function ProductsCard({ selected, callback, products }: ProductsCardProps) {
                                         )}
                                     </p>
                                 </div>
-                                <div className="flex flex-wrap justify-between items-center bg-slate-700 py-2 px-3">
+                                <div className="flex flex-wrap justify-between items-center bg-gray-400 dark:bg-slate-700 py-2 px-3">
                                     <span>
                                         1{" "}
                                         {
@@ -76,7 +74,7 @@ function ProductsCard({ selected, callback, products }: ProductsCardProps) {
                                             ].label
                                         }
                                     </span>
-                                    <p className="font-semibold text-xl text-green-400 inline-block">
+                                    <p className="font-semibold text-xl text-green-900 dark:text-green-300 inline-block">
                                         {product.price *
                                             product.units[
                                                 product.displaySaleUnit

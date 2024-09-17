@@ -35,7 +35,7 @@ export default async function RootLayout({
 
     return (
         <html lang="en">
-            <body className={interCalss}>
+            <body className={interCalss + "text-black dark:text-white"}>
                 <ReduxProvider>{children}</ReduxProvider>
             </body>
         </html>

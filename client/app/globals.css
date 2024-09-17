@@ -42,8 +42,3 @@ body {
 .no-spin {
     -moz-appearance: textfield; /* Hides the spin buttons in Firefox */
 }
-
-p {
-    @apply text-white;
-    color: white;
-}
