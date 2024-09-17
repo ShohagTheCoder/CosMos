@@ -14,9 +14,12 @@ function Customers() {
     return (
         <main className="py-8 bg-gray-100 dark:bg-gray-900 min-h-screen transition-colors duration-300">
             <div className="container mx-auto px-4">
+                {/* Title */}
                 <h1 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-gray-100">
                     Customers
                 </h1>
+
+                {/* Customers Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {customers.map((customer: Customer, key) => (
                         <div
@@ -34,13 +37,24 @@ function Customers() {
                                     {customer.phoneNumber}
                                 </p>
                             </div>
-                            <div className="flex justify-end">
-                                <Link
+
+                            {/* Action Buttons */}
+                            <div className="flex justify-between">
+                                {/* View Button */}
+                                <a
+                                    href={`customers/${customer._id}`}
+                                    className="py-2 px-4 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800 transition-colors"
+                                >
+                                    View
+                                </a>
+
+                                {/* Edit Button */}
+                                <a
                                     href={`customers/update/${customer._id}`}
                                     className="py-2 px-4 bg-green-600 dark:bg-green-700 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-800 transition-colors"
                                 >
                                     Edit
-                                </Link>
+                                </a>
                             </div>
                         </div>
                     ))}

@@ -1,17 +1,14 @@
 "use client";
 import apiClient from "@/app/utils/apiClient";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import TansferMoney from "../components/TansferMoney";
 
-function CustomerProfile() {
+export default function Shop() {
     const id = "66c6d8a0b0f83bdb4ed36c97";
     const [sells, setSells] = useState([]);
-    const [account, setAccount] = useState({
-        balance: 0,
-    });
-
+    const [account, setAccount] = useState({ balance: 0 });
     const [tansferMoneyPopup, setTansferMoneyPopup] = useState(false);
+
     function handleTansferMoney(data: any) {
         setTansferMoneyPopup(false);
     }
@@ -22,84 +19,131 @@ function CustomerProfile() {
     }, []);
 
     return (
-        <main>
-            {tansferMoneyPopup ? (
+        <main className="bg-gray-900 text-gray-100 min-h-screen py-6">
+            {tansferMoneyPopup && (
                 <TansferMoney
                     account={account}
                     callback={handleTansferMoney}
                     handleClose={() => setTansferMoneyPopup(false)}
                 />
-            ) : (
-                ""
             )}
 
-            <div className="container mx-auto">
-                <div className="grid grid-cols-4 py-3 gap-3">
-                    <div className="col-span-2 border p-3">
-                        <div className="grid grid-cols-2 gap-3">
-                            <div className="col-span-1">
-                                <img
-                                    src="/profile-picture.jpg"
-                                    alt=""
-                                    className="h-[200px]"
-                                />
-                            </div>
-                            <div className="col-span-1">
-                                <p>Shop Owner</p>
+            <div className="container max-w-3xl mx-auto px-4">
+                {/* Profile and Account Info */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 py-6">
+                    {/* Profile Picture */}
+                    <div className="md:col-span-2 bg-gray-800 shadow-lg rounded-lg p-6">
+                        <div className="flex items-center space-x-6">
+                            <img
+                                src="/profile-picture.jpg"
+                                alt="Profile"
+                                className="h-20 w-20 rounded-full object-cover"
+                            />
+                            <div>
+                                <h2 className="text-2xl font-semibold">
+                                    Shop Owner
+                                </h2>
+                                <p className="text-gray-400">Owner Details</p>
                             </div>
                         </div>
                     </div>
-                    <div className="col-span-2 border p-3">
-                        <div className="grid grid-cols-2 gap-y-3">
-                            <div className="col-span-1">
-                                {account.balance > 0 ? (
-                                    <p>Balance: {account.balance} ৳</p>
-                                ) : (
-                                    <p>Due: {Math.abs(account.balance)} ৳</p>
-                                )}
+
+                    {/* Account Info */}
+                    <div className="md:col-span-2 bg-gray-800 shadow-lg rounded-lg p-6">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <p className="text-gray-400 font-medium">
+                                    {account.balance >= 0 ? (
+                                        <>
+                                            Balance:{" "}
+                                            <span className="text-green-400 font-semibold">
+                                                {account.balance} ৳
+                                            </span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            Due:{" "}
+                                            <span className="text-red-400 font-semibold">
+                                                {Math.abs(account.balance)} ৳
+                                            </span>
+                                        </>
+                                    )}
+                                </p>
                             </div>
-                            <div className="col-span-1">
-                                Sells: {account.balance} ৳
+                            <div>
+                                <p className="text-gray-400 font-medium">
+                                    Sells:{" "}
+                                    <span className="font-semibold">
+                                        {account.balance} ৳
+                                    </span>
+                                </p>
                             </div>
-                            <div className="col-span-1">View account</div>
-                            <div className="col-span-1">
+                            <div className="col-span-2">
                                 <button
                                     onClick={() => setTansferMoneyPopup(true)}
-                                    className="py-2 px-3 bg-blue-700"
+                                    className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium transition duration-300"
                                 >
-                                    Send money
+                                    Send Money
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="container mx-auto">
-                <p className="mb-3">All sells here</p>
-                {sells.map((sell: any) => (
-                    <div key={sell._id} className="sell">
-                        <div className="border p-3">
-                            <p>Seller: {sell.user.name}</p>
-                            {Object.values(sell.products).map(
-                                (product: any) => (
-                                    <div key={product._id} className="product">
-                                        <p>Product Name: {product.name}</p>
-                                        <p>
-                                            Product Quantity: {product.quantity}
-                                        </p>
-                                        <p>Product Price: {product.price}</p>
-                                        <p>
-                                            Product SubTotal: {product.subTotal}
-                                        </p>
-                                    </div>
-                                )
-                            )}
-                        </div>
+
+                {/* Sells Information */}
+                <div className="mt-8">
+                    <h3 className="text-xl font-semibold text-gray-100 mb-4">
+                        All Sells
+                    </h3>
+                    <div className="space-y-4">
+                        {sells.map((sell: any) => (
+                            <div
+                                key={sell._id}
+                                className="bg-gray-800 p-6 rounded-lg shadow-lg"
+                            >
+                                <p className="text-lg font-semibold text-gray-100 mb-2">
+                                    Seller: {sell.user.name}
+                                </p>
+                                <div className="space-y-2">
+                                    {Object.values(sell.products).map(
+                                        (product: any) => (
+                                            <div
+                                                key={product._id}
+                                                className="border-l-4 border-blue-500 pl-4 flex gap-4"
+                                            >
+                                                <p>
+                                                    <span className="font-medium text-gray-400">
+                                                        Product Name:
+                                                    </span>{" "}
+                                                    {product.name}
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium text-gray-400">
+                                                        Quantity:
+                                                    </span>{" "}
+                                                    {product.quantity}
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium text-gray-400">
+                                                        Price:
+                                                    </span>{" "}
+                                                    {product.price} ৳
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium text-gray-400">
+                                                        SubTotal:
+                                                    </span>{" "}
+                                                    {product.subTotal} ৳
+                                                </p>
+                                            </div>
+                                        )
+                                    )}
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                ))}
+                </div>
             </div>
         </main>
     );
 }
-
-export default CustomerProfile;

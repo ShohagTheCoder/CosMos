@@ -12,71 +12,116 @@ async function CustomerProfile({ params }: any) {
     );
 
     return (
-        <main>
-            <div className="container mx-auto">
-                <div className="grid grid-cols-4 py-3 gap-3">
-                    <div className="col-span-2 border p-3">
-                        <div className="grid grid-cols-2 gap-3">
-                            <div className="col-span-1">
-                                <img
-                                    src="/profile-picture.jpg"
-                                    alt=""
-                                    className="h-[200px]"
-                                />
-                            </div>
-                            <div className="col-span-1">
-                                <p>Id: {id}</p>
-                                <p>Name: {customer.name}</p>
-                                <p>Address: {customer.address}</p>
+        <main className="bg-gray-100 dark:bg-gray-900 min-h-screen py-8 transition-colors duration-300">
+            <div className="w-[1000px] mx-auto px-4">
+                {/* Customer Info Section */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    {/* Customer Details */}
+                    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <div className="flex items-center space-x-6">
+                            <img
+                                src="/profile-picture.jpg"
+                                alt="Profile"
+                                className="w-20 h-20 rounded-full object-cover"
+                            />
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                                    {customer.name}
+                                </h2>
+                                <p className="text-gray-600 dark:text-gray-400">
+                                    Phone : {customer.phoneNumber}
+                                </p>
+                                <p className="text-gray-600 dark:text-gray-400">
+                                    Address : {customer.address}
+                                </p>
                             </div>
                         </div>
                     </div>
-                    <div className="col-span-2 border p-3">
-                        <div className="grid grid-cols-2 gap-y-3">
-                            <div className="col-span-1">
-                                {account.balance > 0 ? (
-                                    <p>Balance: {account.balance}</p>
-                                ) : (
-                                    <p>Due: {Math.abs(account.balance)}</p>
-                                )}
+
+                    {/* Account Info */}
+                    <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <p className="text-gray-600 dark:text-gray-400">
+                                    {account.balance > 0 ? (
+                                        <span>
+                                            Balance :{" "}
+                                            <span className="text-green-500 font-semibold">
+                                                {account.balance} ৳
+                                            </span>
+                                        </span>
+                                    ) : (
+                                        <span>
+                                            Due :{" "}
+                                            <span className="text-red-500 font-semibold">
+                                                {Math.abs(account.balance)} ৳
+                                            </span>
+                                        </span>
+                                    )}
+                                </p>
                             </div>
-                            <div className="col-span-1">Sells: 3667tk</div>
-                            <div className="col-span-1">View account</div>
-                            <div className="col-span-1">
-                                <Link
-                                    href="/accounts"
-                                    className="py-2 px-3 bg-blue-700"
-                                >
-                                    Send money
-                                </Link>
+                            <div>
+                                <p className="text-gray-600 dark:text-gray-400 text-end">
+                                    Total purchase : <span>3667 ৳</span>
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="container mx-auto">
-                <p className="mb-3">All sells here</p>
-                {sells.map((sell: any) => (
-                    <div key={sell._id} className="sell">
-                        <div className="border p-3">
-                            <p>Seller: {sell.user.name}</p>
-                            {Object.values(sell.products).map(
-                                (product: any) => (
-                                    <div key={product._id} className="product">
-                                        <p>Product Name: {product.name}</p>
-                                        <p>
-                                            Product Quantity: {product.quantity}
-                                        </p>
-                                        <p>Product Price: {product.price}</p>
-                                        <p>
-                                            Product SubTotal: {product.subTotal}
-                                        </p>
-                                    </div>
-                                )
-                            )}
-                        </div>
+
+                {/* Sells Section */}
+                <div>
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+                        All purchases
+                    </h3>
+                    <div className="space-y-6">
+                        {sells.map((sell: any) => (
+                            <div
+                                key={sell._id}
+                                className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg"
+                            >
+                                <p className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                                    Seller : {sell.user.name}
+                                </p>
+                                <div className="space-y-2">
+                                    {Object.values(sell.products).map(
+                                        (product: any) => (
+                                            <div
+                                                key={product._id}
+                                                className="border-l-4 border-blue-500 pl-4 flex gap-4"
+                                            >
+                                                <p>
+                                                    <span className="font-medium">
+                                                        Product Name:
+                                                    </span>{" "}
+                                                    {product.name}
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium">
+                                                        Quantity:
+                                                    </span>{" "}
+                                                    {product.quantity}
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium">
+                                                        Price:
+                                                    </span>{" "}
+                                                    {product.price} ৳
+                                                </p>
+                                                <p>
+                                                    <span className="font-medium">
+                                                        SubTotal:
+                                                    </span>{" "}
+                                                    {product.subTotal} ৳
+                                                </p>
+                                            </div>
+                                        )
+                                    )}
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                ))}
+                </div>
             </div>
         </main>
     );
