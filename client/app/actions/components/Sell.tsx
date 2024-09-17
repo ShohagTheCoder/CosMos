@@ -30,7 +30,6 @@ import {
 } from "@/app/store/slices/cartSlice";
 import { RootState } from "@/app/store/store";
 import apiClient from "@/app/utils/apiClient";
-import { ERROR, SUCCESS } from "@/app/utils/constants/message";
 import { KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CustomerCard from "./components/CustomerCard";
@@ -38,9 +37,7 @@ import CartProduct from "./components/CartProduct";
 import CustomerDetails from "./components/CustomerDetails";
 import SellDetails from "./components/SellDetails";
 import SellReceipt from "@/app/components/bills/SellReceipt";
-import Notification, {
-    NotificationProps,
-} from "@/app/elements/notification/Notification";
+import Notification from "@/app/elements/notification/Notification";
 import SupplierCard from "./components/SupplierCard";
 import { logout } from "../functions/authHandlers";
 import ProductsCard from "./ProductsCard";
@@ -48,6 +45,7 @@ import { arrayToObjectById } from "../functions/arrayToObjectById";
 import productsMap from "@/app/utils/productsMap";
 import { updateHelperField } from "@/app/store/slices/helperSlice";
 import { productArrayToObject } from "../functions/productArrayToObject";
+import useNotification from "@/app/hooks/useNotification";
 
 interface SellProps {
     productsArray: ProductWithID[];
@@ -81,10 +79,7 @@ export default function Sell({
     const helper = useSelector((state: RootState) => state.helper);
     const activeSellPage = useRef("F5");
 
-    const [notification, setNotification] = useState<NotificationProps>({
-        type: "none",
-        message: "This is a message",
-    });
+    const { notification, success, error } = useNotification();
 
     const commandCounter = useRef({
         name: "unknown",
@@ -203,18 +198,9 @@ export default function Sell({
                 sell.due = 0;
             }
             await apiClient.post("/sells", sell);
-            setNotification({
-                type: SUCCESS,
-                message: "Sell created successfully",
-            });
-            // setTimeout(() => {
-            //     window.location.reload();
-            // }, 3000);
-        } catch (error) {
-            setNotification({
-                type: ERROR,
-                message: "Faild to create sell",
-            });
+            success("Sell created successfully");
+        } catch (e) {
+            error("Faild to create sell");
         }
     }
     async function handleAddCustomer() {
@@ -954,7 +940,7 @@ export default function Sell({
                             <div className="">
                                 <textarea
                                     ref={noteRef}
-                                    className="w-full tresize-none p-3 outline-none border-dashed border-2 border-gray-600 placeholder-slate-300 mb-1"
+                                    className="w-full tresize-none p-3 outline-none border-dashed border-2 border-gray-600 placeholder-slate-300 mb-1 bg-transparent"
                                     value={note}
                                     onKeyDown={handleNoteKeyDown}
                                     onChange={(e) => setNote(e.target.value)}

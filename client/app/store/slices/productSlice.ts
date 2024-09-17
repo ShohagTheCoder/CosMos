@@ -33,6 +33,7 @@ const initialState: Product = {
     stockLow: 50,
     hasResources: false,
     resources: {},
+    brand: undefined,
     resourcesCost: 0,
 };
 

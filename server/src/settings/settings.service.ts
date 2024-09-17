@@ -19,12 +19,14 @@ export class SettingsService {
     }
 
     async findByUserId(id: string) {
-        const setting = await this.settingModel.findOne({
-            user: id,
-        });
+        if (id) {
+            const setting = await this.settingModel.findOne({
+                user: id,
+            });
 
-        if (setting) {
-            return setting.toObject();
+            if (setting) {
+                return setting.toObject();
+            }
         }
         throw new Error('Setting not found');
     }

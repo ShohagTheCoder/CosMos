@@ -57,6 +57,7 @@ export default interface Product {
     purchaseEnable: boolean;
     displaySaleUnit?: string;
     displayPurchaseUnit?: string;
+    brand: string | undefined;
     updatePrice: number;
 }
 
