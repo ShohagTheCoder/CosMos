@@ -23,7 +23,6 @@ export default function LoginPage() {
 
             if (data.success) {
                 // Redirect to sell page on successful login
-                // router.push("/actions/sell");
                 window.location.href = "/actions/sell";
             } else {
                 setError(data.message);

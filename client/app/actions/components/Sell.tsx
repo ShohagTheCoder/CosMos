@@ -87,6 +87,11 @@ export default function Sell({
         message: "This is a message",
     });
 
+    const commandCounter = useRef({
+        name: "unknown",
+        value: 0,
+    });
+
     // Single use effect
     useEffect(() => {
         if (user) {
@@ -273,7 +278,12 @@ export default function Sell({
 
     const handleGroupPressed = () => {
         groupPressed.current = true;
-        console.log("special command");
+        if (keyPressTimer) {
+            clearTimeout(keyPressTimer);
+            keyPressTimer = null;
+        }
+        changeCartActiveProductTo(1);
+        return;
     };
 
     function stopLongPress() {
@@ -388,20 +398,108 @@ export default function Sell({
             setCommand("");
         }
 
-        // Detect special key press
+        // Complete sell
         if (
-            (pressedKeys.current.has("NumpadEnter") && e.code == "NumpadAdd") ||
-            (pressedKeys.current.has("NumpadAdd") && e.code == "NumpadEnter")
+            ["Numpad0", "Numpad1"].every((key) => pressedKeys.current.has(key))
         ) {
+            console.log(pressedKeys.current);
             e.preventDefault();
-            handleGroupPressed();
+            setCommand("");
+            groupPressed.current = true;
+            stopKeyUpHandler.current = true;
+
+            if (commandCounter.current.name === "completeSell") {
+                commandCounter.current.value += 1;
+                if (commandCounter.current.value >= 3) {
+                    commandCounter.current = { name: "unknown", value: 0 };
+                    console.log("Complete sell");
+                }
+            } else {
+                commandCounter.current = { name: "completeSell", value: 1 };
+            }
+
+            return;
+        }
+
+        // Chage cart active product to previous
+        if (pressedKeys.current.has("NumpadEnter") && e.code == "NumpadAdd") {
+            e.preventDefault();
+            groupPressed.current = true;
+            if (keyPressTimer) {
+                clearTimeout(keyPressTimer);
+                keyPressTimer = null;
+            }
+            changeCartActiveProductTo(-1);
             groupPressed.current = true;
             stopKeyUpHandler.current = true;
             return;
         }
+
+        // Chage cart active product to next
+        if (pressedKeys.current.has("NumpadAdd") && e.code == "NumpadEnter") {
+            e.preventDefault();
+            groupPressed.current = true;
+            if (keyPressTimer) {
+                clearTimeout(keyPressTimer);
+                keyPressTimer = null;
+            }
+            changeCartActiveProductTo(1);
+            groupPressed.current = true;
+            stopKeyUpHandler.current = true;
+            return;
+        }
+
+        // Increase discount
         if (
-            (pressedKeys.current.has("PageUp") && e.code == "PageDown") ||
-            (pressedKeys.current.has("PageDown") && e.code == "PageUp")
+            ["Numpad2", "Numpad5"].every((key) => pressedKeys.current.has(key))
+        ) {
+            e.preventDefault();
+            dispatch(updateDiscountAmount({ key: undefined, amount: 1 }));
+            setCommand("");
+            groupPressed.current = true;
+            stopKeyUpHandler.current = true;
+            return;
+        }
+
+        // Decrease discount
+        if (
+            ["Numpad8", "Numpad5"].every((key) => pressedKeys.current.has(key))
+        ) {
+            e.preventDefault();
+            dispatch(updateDiscountAmount({ key: undefined, amount: -1 }));
+            setCommand("");
+            groupPressed.current = true;
+            stopKeyUpHandler.current = true;
+            return;
+        }
+
+        // Increase extra discount
+        if (
+            ["Numpad1", "Numpad4"].every((key) => pressedKeys.current.has(key))
+        ) {
+            e.preventDefault();
+            dispatch(updateExtraDiscountAmount({ key: undefined, amount: 1 }));
+            setCommand("");
+            groupPressed.current = true;
+            stopKeyUpHandler.current = true;
+            return;
+        }
+
+        // Decrease extra discount
+        if (
+            ["Numpad4", "Numpad7"].every((key) => pressedKeys.current.has(key))
+        ) {
+            e.preventDefault();
+            dispatch(updateExtraDiscountAmount({ key: undefined, amount: -1 }));
+            setCommand("");
+            groupPressed.current = true;
+            stopKeyUpHandler.current = true;
+            return;
+        }
+
+        // Rrset product price
+        if (
+            ["PageUp", "PageDown"].every((key) => pressedKeys.current.has(key))
         ) {
             e.preventDefault();
             groupPressed.current = true;
@@ -540,13 +638,6 @@ export default function Sell({
             }
         }
 
-        // if (e.key == "Enter" && command.length > 0) {
-        //     console.log("Enter");
-        //     stopKeyUpHandler.current = true;
-        //     clearKeyPressTimer();
-        //     keyPressTimer = undefined;
-        // }
-
         let max = 0;
         switch (e.key) {
             case "Shift":
@@ -625,18 +716,19 @@ export default function Sell({
         }
         pressedKeys.current.clear();
 
-        // console.log("Log pressed : ", longPressed.current);
+        // If long pressed then return
         if (longPressed.current) {
             longPressed.current = false;
             return;
         }
 
-        // console.log("Group pressed : ", groupPressed.current);
+        // If group pressed then return
         if (groupPressed.current) {
             groupPressed.current = false;
             return;
         }
 
+        // If stop key up handler then return
         if (stopKeyUpHandler.current) {
             stopKeyUpHandler.current = false;
             return;

@@ -364,7 +364,6 @@ const cartSlice = createSlice({
             let { key = state.activeProduct, amount } = action.payload;
             if (key) {
                 let product = state.products[key];
-                console.log(product.subTotal, amount);
                 if (
                     product &&
                     amount < product.price * product.count &&

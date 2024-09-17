@@ -11,6 +11,8 @@ import Resources from "../../create/components/Resources";
 import CreateProduct from "../../create/components/CreateProduct";
 import { RootState } from "@/app/store/store";
 import Tab from "@/app/elements/tab/Tab";
+import PulseLoading from "@/app/elements/loding/PulseLoading";
+import PulseFadeLoading from "@/app/elements/loding/PulseFadeLoading";
 
 function UpdateProduct() {
     const { id } = useParams();
@@ -40,8 +42,8 @@ function UpdateProduct() {
 
     if (!product._id)
         return (
-            <div className="text-center mt-5">
-                <p>Loading</p>
+            <div className="h-svh flex justify-center items-center">
+                <PulseFadeLoading />
             </div>
         );
 

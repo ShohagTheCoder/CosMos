@@ -9,13 +9,13 @@ export function middleware(req: NextRequest) {
 
     if (access_token && verify_access_token(access_token)) {
         const response = NextResponse.next();
-        const user = decodeJwt(access_token);
+        // const user = decodeJwt(access_token);
 
-        // Set user data in cookies
-        response.cookies.set("user-id", String(user.sub), {
-            path: "/",
-            httpOnly: false,
-        });
+        // // Set user data in cookies
+        // response.cookies.set("user-id", String(user.sub), {
+        //     path: "/",
+        //     httpOnly: false,
+        // });
 
         return response;
     } else {

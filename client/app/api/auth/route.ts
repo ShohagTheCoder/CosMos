@@ -1,6 +1,7 @@
 // app/api/auth/route.ts
 import { NextResponse } from "next/server";
 import apiClient from "@/app/utils/apiClient";
+import { decodeJwt } from "./decodeJwt";
 
 export async function POST(req: Request) {
     try {
@@ -18,6 +19,13 @@ export async function POST(req: Request) {
                 httpOnly: true,
                 path: "/",
                 maxAge: 60 * 60 * 24, // 1 day
+            });
+
+            const user = decodeJwt(access_token);
+            // Set user data in cookies
+            response.cookies.set("user-id", String(user.sub), {
+                path: "/",
+                httpOnly: false,
             });
 
             return response;

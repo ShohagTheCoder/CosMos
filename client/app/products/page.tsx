@@ -108,6 +108,8 @@ import { ERROR, NONE, SUCCESS } from "../utils/constants/message";
 import Notification, {
     NotificationProps,
 } from "../elements/notification/Notification";
+import PulseLoading from "../elements/loding/PulseLoading";
+import PulseFadeLoading from "../elements/loding/PulseFadeLoading";
 
 export default function Products() {
     const [products, setProducts] = useState<Product[]>([]);
@@ -150,6 +152,14 @@ export default function Products() {
                 });
             }
         }
+    }
+
+    if (products.length == 0) {
+        return (
+            <div className="h-svh flex justify-center items-center">
+                <PulseFadeLoading />
+            </div>
+        );
     }
 
     return (
