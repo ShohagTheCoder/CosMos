@@ -1,19 +1,18 @@
-// brand.schema.ts mongodb and nestjsimport { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type BrandDocument = Brand & Document;
+export type CategoryDocument = Category & Document;
 
 @Schema({ timestamps: true })
-export class Brand {
+export class Category {
     @Prop({ required: true })
     name: string;
 
-    @Prop({ required: true })
+    @Prop({ default: '' })
     description: string;
 
     @Prop({ default: true })
     isActive: boolean;
 }
 
-export const BrandSchema = SchemaFactory.createForClass(Brand);
+export const CategorySchema = SchemaFactory.createForClass(Category);

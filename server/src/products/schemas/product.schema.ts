@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { Stock } from '../../stocks/schemas/stocks.schema';
 import { Brand } from 'src/brands/schemas/brand.schema';
+import { Category } from 'src/categories/schemas/category.schema';
 
 // Define nested schemas
 @Schema()
@@ -113,6 +114,9 @@ export class Product extends Document {
 
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Brand.name })
     brand: string;
+
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Category.name })
+    category: string;
 
     @Prop()
     hasResources: boolean;

@@ -16,6 +16,7 @@ import { AuthModule } from './auth/auth.module';
 import { PurchasesModule } from './purchases/purchases.module';
 import { SettingsModule } from './settings/settings.module';
 import { CommandsModule } from './commands/commands.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
     imports: [
@@ -34,6 +35,7 @@ import { CommandsModule } from './commands/commands.module';
         AuthModule,
         SettingsModule,
         CommandsModule,
+        CategoriesModule,
     ],
     controllers: [AppController],
     providers: [AppService],
