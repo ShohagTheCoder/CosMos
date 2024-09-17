@@ -1,30 +1,27 @@
-import {
-    Controller,
-    Get,
-    Post,
-    Body,
-    Patch,
-    Param,
-    Delete,
-} from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param } from '@nestjs/common';
 import { SettingsService } from './settings.service';
-import { CreateSettingDto } from './dto/create-setting.dto';
-import { UpdateSettingDto } from './dto/update-setting.dto';
 
 @Controller('settings')
 export class SettingsController {
     constructor(private readonly settingsService: SettingsService) {}
 
-    @Get()
-    get() {
-        return this.settingsService.get();
+    @Get(':id')
+    async findOne(@Param('id') id: string) {
+        return await this.settingsService.findOne(id);
+    }
+
+    @Get('findByUserId/:id')
+    async findByUserId(@Param('id') id: string) {
+        return await this.settingsService.findByUserId(id);
+    }
+
+    @Get('byUserId/:id/darkMode')
+    async darkMode(@Param('id') id: string) {
+        return await this.settingsService.darkMode(id);
     }
 
     @Patch(':id')
-    update(
-        @Param('id') id: string,
-        @Body() updateSettingDto: UpdateSettingDto,
-    ) {
-        return this.settingsService.update(+id, updateSettingDto);
+    async update(@Param('id') id: string, @Body() updateSettingDto: any) {
+        return await this.settingsService.update(id, updateSettingDto);
     }
 }

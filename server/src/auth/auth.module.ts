@@ -12,12 +12,14 @@ import { JwtStrategy } from './jwt.strategy';
 import { UsersService } from 'src/users/users.service';
 import { LocalStrategy } from './local.strategy';
 import { Account, AccountSchema } from 'src/accounts/schemas/account.schema';
+import { Setting, SettingSchema } from 'src/settings/schemas/setting.schema';
 
 @Module({
     imports: [
         MongooseModule.forFeature([
             { name: User.name, schema: UserSchema },
             { name: Account.name, schema: AccountSchema },
+            { name: Setting.name, schema: SettingSchema },
         ]),
         UsersModule,
         PassportModule,

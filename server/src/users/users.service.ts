@@ -4,12 +4,14 @@ import { User } from './entities/user.entity';
 import { Model } from 'mongoose';
 import { UserDocument } from './schemas/user.schema';
 import { Account, AccountDocument } from 'src/accounts/schemas/account.schema';
+import { Setting, SettingDocument } from 'src/settings/schemas/setting.schema';
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectModel(User.name) private userModel: Model<UserDocument>,
         @InjectModel(Account.name) private accountModel: Model<AccountDocument>,
+        @InjectModel(Setting.name) private settingModel: Model<SettingDocument>,
     ) {}
 
     create(createUserDto: any) {
@@ -27,7 +29,16 @@ export class UsersService {
         });
         user.account = account._id.toString();
 
+        const setting = new this.settingModel({
+            user: user._id.toString(),
+            darkMode: true,
+        });
+
+        // Updaet user setting fied
+        user.setting = setting._id.toString();
+
         user.save();
+        setting.save();
         return account.save();
     }
 

@@ -26,6 +26,9 @@ export class User extends Document {
 
     @Prop()
     account: string;
+
+    @Prop()
+    setting: string;
 }
 
 export type UserDocument = User & Document;

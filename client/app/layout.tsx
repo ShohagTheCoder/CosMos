@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import axios from "axios";
 import "./globals.css";
 import ReduxProvider from "./store/ReduxProvider";
+import { cookies } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,21 +13,25 @@ export default async function RootLayout({
 }: {
     children: React.ReactNode;
 }) {
-    let settings;
+    let darkMode = false;
     try {
-        // // Fetch settings directly
-        const { data }: any = await axios.get("http://localhost:3001/settings");
-        settings = data;
+        // Fetch settings directly
+        const cookieStore = cookies();
+        let userId = cookieStore.get("user-id")?.value;
+        if (userId) {
+            const { data }: any = await axios.get(
+                `http://localhost:3001/settings/byUserId/${userId}/darkMode`
+            );
+            darkMode = data;
+        }
     } catch (error) {
-        console.log("faild to fetch settings");
+        console.log("faild to fetch user settings dark mode field");
     }
 
     // If dark mode availabel add it
     let interCalss = inter.className;
-    if (settings) {
-        const darkMode = settings.darkMode ? "dark" : "light";
-        interCalss = `${darkMode} ${inter.className}`;
-    }
+    const darkModeCalss = darkMode ? "dark" : "light";
+    interCalss = `${darkModeCalss} ${inter.className}`;
 
     return (
         <html lang="en">
