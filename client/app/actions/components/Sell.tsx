@@ -19,7 +19,6 @@ import {
     resetSelectedProductIndex,
     selectNexProduct,
     selectPreviousProduct,
-    setSalePrice,
     setUser,
     setWholeCart,
     shiftMeasurementTo,
@@ -274,16 +273,6 @@ export default function Sell({
                 changeCartActiveProductTo(1);
                 break;
         }
-    };
-
-    const handleGroupPressed = () => {
-        groupPressed.current = true;
-        if (keyPressTimer) {
-            clearTimeout(keyPressTimer);
-            keyPressTimer = null;
-        }
-        changeCartActiveProductTo(1);
-        return;
     };
 
     function stopLongPress() {

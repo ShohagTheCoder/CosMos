@@ -9,11 +9,6 @@ function SellDetails() {
     const customerAccount = cart.customerAccount;
     const dispatch = useDispatch();
 
-    // Handle input change
-    const handleUpdatePaid = (e: any) => {
-        dispatch(updatePaid(parseInt(e.target.value)));
-    };
-
     return (
         <div className="p-3 mb-3 border-dashed border-2 border-gray-600">
             <div className="single-row flex justify-between items-center">
@@ -30,9 +25,13 @@ function SellDetails() {
                         <p className=" text-lg font-semibold py-1">
                             <input
                                 className="no-spin w-100 text-end bg-black outline-none text-white"
-                                type="text"
+                                type="number"
                                 value={cart.paid}
-                                onChange={handleUpdatePaid}
+                                onChange={(e) =>
+                                    dispatch(
+                                        updatePaid(parseInt(e.target.value))
+                                    )
+                                }
                             />
                             <span> ৳</span>
                         </p>

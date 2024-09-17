@@ -1,6 +1,5 @@
 import { updatePaid } from "@/app/store/slices/cartSlice";
 import { RootState } from "@/app/store/store";
-import { convertBnBDToStandard } from "@/app/utils/numberFormat";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -8,13 +7,6 @@ function SellDetails() {
     const cart = useSelector((state: RootState) => state.cart);
     const customerAccount = cart.customerAccount;
     const dispatch = useDispatch();
-
-    // Handle input change
-    const handleUpdatePaid = (e: any) => {
-        // Remove formatting to get the raw number
-        const number = convertBnBDToStandard(e.target.value);
-        dispatch(updatePaid(number));
-    };
 
     return (
         <div className="p-3 mb-3 border-dashed border-2 border-gray-600">
@@ -32,9 +24,13 @@ function SellDetails() {
                         <p className=" text-lg font-semibold py-1">
                             <input
                                 className="no-spin w-100 text-end bg-black outline-none text-white"
-                                type="text"
+                                type="number"
                                 value={cart.paid}
-                                onChange={handleUpdatePaid}
+                                onChange={(e) =>
+                                    dispatch(
+                                        updatePaid(parseInt(e.target.value))
+                                    )
+                                }
                             />
                             <span> ৳</span>
                         </p>
