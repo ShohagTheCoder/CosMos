@@ -46,6 +46,7 @@ import productsMap from "@/app/utils/productsMap";
 import { updateHelperField } from "@/app/store/slices/helperSlice";
 import { productArrayToObject } from "../functions/productArrayToObject";
 import useNotification from "@/app/hooks/useNotification";
+import FinalView from "../sell/components/FinalView";
 
 interface SellProps {
     productsArray: ProductWithID[];
@@ -205,7 +206,8 @@ export default function Sell({
     }
     async function handleAddCustomer() {
         if (filteredCustomers) {
-            const customer = Object.values(filteredCustomers)[0];
+            const customer =
+                Object.values(filteredCustomers)[cart.selectedProductIndex];
             const { data } = await apiClient.get(
                 `accounts/${customer.account}`
             );
@@ -377,11 +379,10 @@ export default function Sell({
         if (
             ["Numpad0", "Numpad1"].every((key) => pressedKeys.current.has(key))
         ) {
-            console.log(pressedKeys.current);
             e.preventDefault();
             setCommand("");
-            groupPressed.current = true;
             stopKeyUpHandler.current = true;
+            groupPressed.current = true;
 
             if (commandCounter.current.name === "completeSell") {
                 commandCounter.current.value += 1;
@@ -395,7 +396,6 @@ export default function Sell({
 
             return;
         }
-
         // Chage cart active product to previous
         if (pressedKeys.current.has("NumpadEnter") && e.code == "NumpadAdd") {
             e.preventDefault();
@@ -715,6 +715,13 @@ export default function Sell({
                 break;
         }
 
+        if (commandCounter.current.value > 0) {
+            commandCounter.current = {
+                name: "unknown",
+                value: 0,
+            };
+        }
+
         switch (e.key) {
             case "PageUp":
                 dispatch(updateSalePrice({ key: undefined, amount: -1 }));
@@ -915,7 +922,10 @@ export default function Sell({
                                 {/* <ProductsCard selected={} /> */}
                             </div>
 
-                            {isCustomers ? (
+                            {commandCounter.current.name == "completeSell" &&
+                            commandCounter.current.value >= 1 ? (
+                                <FinalView />
+                            ) : isCustomers ? (
                                 <div>
                                     {cart.action == "purchase" ? (
                                         <SupplierCard customers={customers} />

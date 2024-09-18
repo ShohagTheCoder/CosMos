@@ -295,6 +295,7 @@ const cartSlice = createSlice({
         addCustomer: (state, action) => {
             state.customer = action.payload;
             state.paid = state.totalPrice;
+            state.selectedProductIndex = 0;
         },
 
         changeActiveProduct: (state, action) => {
