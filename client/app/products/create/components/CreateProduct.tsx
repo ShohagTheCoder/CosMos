@@ -118,44 +118,45 @@ function CreateProduct() {
     }
 
     return (
-        <div>
+        <div className="w-[600px]">
             <Notification
                 type={notification.type}
                 message={notification.message}
             />
-            <NumberInput
-                className="mb-3"
-                value={product.stockLow}
-                onChange={(e) =>
-                    dispatch(
-                        updateProductField({
-                            field: "stockLow",
-                            value: parseInt(e.target.value),
-                        })
-                    )
-                }
-                options={{
-                    label: "Stock low",
-                    placeholder: "Minimum stock to inform Ex: 45",
-                }}
-            />
-            <NumberInput
-                className="mb-5"
-                value={product.stockAlert}
-                onChange={(e) =>
-                    dispatch(
-                        updateProductField({
-                            field: "stockAlert",
-                            value: parseInt(e.target.value),
-                        })
-                    )
-                }
-                options={{
-                    label: "Stock low",
-                    placeholder: "Minimum stock to alert Ex: 20",
-                }}
-            />
-
+            <div className="grid grid-cols-2 gap-6">
+                <NumberInput
+                    className="mb-3"
+                    value={product.stockLow}
+                    onChange={(e) =>
+                        dispatch(
+                            updateProductField({
+                                field: "stockLow",
+                                value: parseInt(e.target.value),
+                            })
+                        )
+                    }
+                    options={{
+                        label: "Stock low",
+                        placeholder: "Minimum stock to inform Ex: 45",
+                    }}
+                />
+                <NumberInput
+                    className="mb-5"
+                    value={product.stockAlert}
+                    onChange={(e) =>
+                        dispatch(
+                            updateProductField({
+                                field: "stockAlert",
+                                value: parseInt(e.target.value),
+                            })
+                        )
+                    }
+                    options={{
+                        label: "Stock low",
+                        placeholder: "Minimum stock to alert Ex: 20",
+                    }}
+                />
+            </div>
             {product._id ? (
                 <Button disabled={disable} onDoubleClick={handleUpdateProduct}>
                     Update Product

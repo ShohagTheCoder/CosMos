@@ -16,6 +16,7 @@ interface TabProps {
             tabContent?: string;
             buttonContainer?: string;
             button?: string;
+            hiddenContent?: string; // Additional class for hidden content
         };
         titleAlignment?: "start" | "center" | "end";
     };
@@ -64,8 +65,19 @@ const Tab: React.FC<TabProps> = ({ tabs, options }) => {
                     </button>
                 ))}
             </div>
-            <div className={`p-4 ${options?.classes?.tabContent}`}>
-                {tabs.find((tab) => tab.id === activeTab)?.content}
+            <div className="relative">
+                {tabs.map((tab) => (
+                    <div
+                        key={tab.id}
+                        className={`p-4 ${
+                            tab.id === activeTab
+                                ? ""
+                                : `hidden ${options?.classes?.hiddenContent}`
+                        } ${options?.classes?.tabContent}`}
+                    >
+                        {tab.content}
+                    </div>
+                ))}
             </div>
             {options?.navigator && (
                 <div

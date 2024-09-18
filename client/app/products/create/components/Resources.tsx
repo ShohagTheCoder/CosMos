@@ -53,7 +53,7 @@ function Resources() {
     }
 
     return (
-        <div>
+        <div className="w-[600px]">
             <div>
                 {popup == true ? (
                     <SelectProductPopup

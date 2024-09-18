@@ -34,20 +34,6 @@ export default function LoginPage() {
 
     return (
         <div className="container mx-auto py-6">
-            <div className="flex justify-center gap-4">
-                <a
-                    href="/"
-                    className="py-2 px-4 bg-gray-700 hover:bg-green-700 rounded-md"
-                >
-                    Home
-                </a>
-                <a
-                    href="/actions/sell"
-                    className="py-2 px-4 bg-gray-700 hover:bg-green-700 rounded-md"
-                >
-                    Sell
-                </a>
-            </div>
             <div className="flex justify-center items-center h-screen">
                 <form onSubmit={handleSubmit} className="w-full max-w-sm">
                     <div className="mb-4">
@@ -85,13 +71,22 @@ export default function LoginPage() {
                     {error && (
                         <p className="text-red-500 text-xs italic">{error}</p>
                     )}
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between gap-4">
                         <button
                             type="submit"
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         >
                             Sign In
                         </button>
+                        <p>OR</p>
+                        <div>
+                            <a href="/" className="text-blue-700 me-3">
+                                Home
+                            </a>
+                            <a href="/actions/sell" className="text-blue-700">
+                                Sell
+                            </a>
+                        </div>
                     </div>
                 </form>
             </div>

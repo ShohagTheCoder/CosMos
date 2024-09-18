@@ -64,9 +64,11 @@ function CreateProductPage() {
     };
 
     return (
-        <div className="container max-w-3xl my-5 mx-auto rounded-md bg-gray-800 text-white">
-            <div className="">
-                <Tab tabs={tabs} options={options} />
+        <div className="container max-auto flex justify-center bg-gray-800">
+            <div className="container w-auto inline-block transition-all my-5 mx-auto rounded-md bg-gray-800 text-white">
+                <div className="">
+                    <Tab tabs={tabs} options={options} />
+                </div>
             </div>
         </div>
     );

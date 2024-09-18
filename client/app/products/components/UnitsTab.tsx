@@ -19,7 +19,7 @@ export default function UnitsTab() {
     const units = getUnits(product.units);
 
     return (
-        <div className="tab bg-gray-800 rounded-lg shadow-lg">
+        <div className="tab bg-gray-800 rounded-lg shadow-lg w-[700px]">
             {!product.saleUnitsBase ? (
                 <div>
                     <p className="text-lg font-semibold text-gray-200 mb-4">

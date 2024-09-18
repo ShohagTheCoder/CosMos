@@ -29,7 +29,7 @@ const nestProcess = startProcess("npm", ["run", "dev"], "Nest.js", "server");
 // Open browser after a small delay
 setTimeout(() => {
     open("http://localhost:3000");
-}, 10000);
+}, 5000);
 
 // Handle process exit and cleanup
 process.on("exit", () => {

@@ -33,7 +33,6 @@ const initialState: Product = {
     stockLow: 50,
     hasResources: false,
     resources: {},
-    brand: undefined,
     resourcesCost: 0,
 };
 
@@ -46,9 +45,7 @@ const productSlice = createSlice({
             action: PayloadAction<{ field: keyof Product; value: any }>
         ) => {
             const { field, value } = action.payload;
-            if (field in state) {
-                (state as any)[field] = value;
-            }
+            (state as any)[field] = value;
         },
         setProductProduct: (state, action) => {
             state._id = action.payload._id;
