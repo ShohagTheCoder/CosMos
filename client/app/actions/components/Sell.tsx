@@ -3,34 +3,18 @@ import Sidebar from "@/app/components/Sidebar";
 import { CustomerWithId } from "@/app/interfaces/customer.inerface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import {
-    addCustomer,
-    addCustomerAccount,
-    addDiscount,
-    addExtraDiscount,
     addToCart,
     addToCartWith,
     CartState,
     changeActiveProduct,
-    decrementQuantity,
-    incrementQuantity,
     initialCartState,
-    removeFromCart,
-    resetSalePrice,
     resetSelectedProductIndex,
-    selectNexProduct,
-    selectPreviousProduct,
     setUser,
     setWholeCart,
-    shiftMeasurementTo,
-    updateDiscountAmount,
-    updateExtraDiscountAmount,
-    updatePaid,
-    updateQuantity,
-    updateSalePrice,
 } from "@/app/store/slices/cartSlice";
 import { RootState } from "@/app/store/store";
 import apiClient from "@/app/utils/apiClient";
-import { KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CustomerCard from "./components/CustomerCard";
 import CartProduct from "./components/CartProduct";
@@ -47,6 +31,7 @@ import { updateHelperField } from "@/app/store/slices/helperSlice";
 import { productArrayToObject } from "../functions/productArrayToObject";
 import useNotification from "@/app/hooks/useNotification";
 import FinalView from "../sell/components/FinalView";
+import { useHandleKeyUp } from "../sell/functions/keyboardHandler";
 
 interface SellProps {
     productsArray: ProductWithID[];
@@ -81,11 +66,6 @@ export default function Sell({
     const activeSellPage = useRef("F5");
 
     const { notification, success, error } = useNotification();
-
-    const commandCounter = useRef({
-        name: "unknown",
-        value: 0,
-    });
 
     // Single use effect
     useEffect(() => {
@@ -204,17 +184,17 @@ export default function Sell({
             error("Faild to create sell");
         }
     }
-    async function handleAddCustomer() {
-        if (filteredCustomers) {
-            const customer =
-                Object.values(filteredCustomers)[cart.selectedProductIndex];
-            const { data } = await apiClient.get(
-                `accounts/${customer.account}`
-            );
-            dispatch(addCustomer(customer));
-            dispatch(addCustomerAccount(data));
-        }
-    }
+    // async function handleAddCustomer() {
+    //     if (filteredCustomers) {
+    //         const customer =
+    //             Object.values(filteredCustomers)[cart.selectedProductIndex];
+    //         const { data } = await apiClient.get(
+    //             `accounts/${customer.account}`
+    //         );
+    //         dispatch(addCustomer(customer));
+    //         dispatch(addCustomerAccount(data));
+    //     }
+    // }
 
     function handleNoteKeyDown(e: any) {
         switch (e.key) {
@@ -239,570 +219,6 @@ export default function Sell({
         }
     }
 
-    // Use useRef to persist pressedKeys
-    let [isShift, setIsShift] = useState(false);
-    const pressedKeys = useRef(new Set<string>());
-    let keyPressTimer: any = undefined;
-    let longPressed = useRef(false);
-    let groupPressed = useRef(false);
-    let stopKeyUpHandler = useRef(false);
-    const longPressDuration = 600;
-
-    const handleLongKeyPress = (e: KeyboardEvent) => {
-        longPressed.current = true;
-        e.preventDefault();
-        switch (e.code) {
-            case "NumpadAdd":
-            case "ArrowUp":
-                changeCartActiveProductTo(-1);
-                break;
-            case "NumpadEnter":
-            case "ArrowDown":
-                changeCartActiveProductTo(1);
-                break;
-        }
-    };
-
-    function stopLongPress() {
-        if (keyPressTimer !== undefined) {
-            clearTimeout(keyPressTimer);
-            keyPressTimer = undefined;
-        }
-    }
-
-    function handleKeyDown(e: KeyboardEvent): void {
-        // console.log("---------------------------------");
-        // console.log(e.key);
-        // console.log(e.code);
-
-        if (e.code == "Minus") {
-            e.preventDefault();
-            setCommand("");
-            return;
-        }
-
-        const repeatableKeys = ["Backspace", "Space", "Numpad0"];
-        if (!repeatableKeys.includes(e.code)) {
-            if (pressedKeys.current.has(e.code)) {
-                e.preventDefault();
-                return;
-            }
-        }
-
-        if (
-            command.length == 1 &&
-            /^[a-zA-Z]$/.test(command) &&
-            command == e.key
-        ) {
-            let productKey = productsMap[command];
-            if (!productKey) return;
-            let product = products[productKey];
-            if (!product) return;
-            e.preventDefault();
-            setCommand("");
-            dispatch(addToCart(product));
-            return;
-        }
-
-        // Add to pressed keys
-        pressedKeys.current.add(e.code);
-        // Remove previous saved key so we can click again if keyup even occur in the keyup handler
-        groupPressed.current = false;
-
-        // Important: preventDefault special keys
-        const specialKeys = [
-            "Enter",
-            "NumpadAdd",
-            "NumpadSubtract",
-            "ArrowUp",
-            "ArrowDown",
-        ];
-        if (specialKeys.includes(e.code)) {
-            e.preventDefault();
-        }
-
-        // Handle sell page navigation
-        const sellPageNavigationKeys = ["F5", "F6", "F7", "F8"];
-        if (sellPageNavigationKeys.includes(e.key)) {
-            e.preventDefault();
-            stopKeyUpHandler.current = true;
-            handleSellPageChange(e.key);
-            return;
-        }
-
-        const longPressKeys = [
-            "NumpadAdd",
-            "NumpadEnter",
-            "F9",
-            "Delete",
-            "ArrowUp",
-            "ArrowDown",
-            "NumpadSubtract",
-        ];
-        if (longPressKeys.includes(e.code) && keyPressTimer == undefined) {
-            switch (e.code) {
-                case "NumpadAdd":
-                case "NumpadEnter":
-                case "ArrowUp":
-                case "ArrowDown":
-                    e.preventDefault();
-                    keyPressTimer = setTimeout(
-                        () => handleLongKeyPress(e),
-                        longPressDuration
-                    );
-                    break;
-                case "NumpadSubtract":
-                    e.preventDefault();
-                    keyPressTimer = setTimeout(() => {
-                        longPressed.current = true;
-                        setCommand("");
-                    }, longPressDuration);
-                    break;
-                case "Delete":
-                    e.preventDefault();
-                    keyPressTimer = setTimeout(() => {
-                        longPressed.current = true;
-                        dispatch(removeFromCart(undefined));
-                    }, longPressDuration);
-                    break;
-            }
-        }
-
-        if (e.key == "/") {
-            setCommand("");
-        }
-        if (e.key == "*") {
-            setCommand("");
-        }
-
-        // Complete sell
-        if (
-            ["Numpad0", "Numpad1"].every((key) => pressedKeys.current.has(key))
-        ) {
-            e.preventDefault();
-            setCommand("");
-            stopKeyUpHandler.current = true;
-            groupPressed.current = true;
-
-            if (commandCounter.current.name === "completeSell") {
-                commandCounter.current.value += 1;
-                if (commandCounter.current.value >= 3) {
-                    commandCounter.current = { name: "unknown", value: 0 };
-                    console.log("Complete sell");
-                }
-            } else {
-                commandCounter.current = { name: "completeSell", value: 1 };
-            }
-
-            return;
-        }
-        // Chage cart active product to previous
-        if (pressedKeys.current.has("NumpadEnter") && e.code == "NumpadAdd") {
-            e.preventDefault();
-            groupPressed.current = true;
-            if (keyPressTimer) {
-                clearTimeout(keyPressTimer);
-                keyPressTimer = null;
-            }
-            changeCartActiveProductTo(-1);
-            groupPressed.current = true;
-            stopKeyUpHandler.current = true;
-            return;
-        }
-
-        // Chage cart active product to next
-        if (pressedKeys.current.has("NumpadAdd") && e.code == "NumpadEnter") {
-            e.preventDefault();
-            groupPressed.current = true;
-            if (keyPressTimer) {
-                clearTimeout(keyPressTimer);
-                keyPressTimer = null;
-            }
-            changeCartActiveProductTo(1);
-            groupPressed.current = true;
-            stopKeyUpHandler.current = true;
-            return;
-        }
-
-        // Increase discount
-        if (
-            ["Numpad2", "Numpad5"].every((key) => pressedKeys.current.has(key))
-        ) {
-            e.preventDefault();
-            dispatch(updateDiscountAmount({ key: undefined, amount: 1 }));
-            setCommand("");
-            groupPressed.current = true;
-            stopKeyUpHandler.current = true;
-            return;
-        }
-
-        // Decrease discount
-        if (
-            ["Numpad8", "Numpad5"].every((key) => pressedKeys.current.has(key))
-        ) {
-            e.preventDefault();
-            dispatch(updateDiscountAmount({ key: undefined, amount: -1 }));
-            setCommand("");
-            groupPressed.current = true;
-            stopKeyUpHandler.current = true;
-            return;
-        }
-
-        // Increase extra discount
-        if (
-            ["Numpad1", "Numpad4"].every((key) => pressedKeys.current.has(key))
-        ) {
-            e.preventDefault();
-            dispatch(updateExtraDiscountAmount({ key: undefined, amount: 1 }));
-            setCommand("");
-            groupPressed.current = true;
-            stopKeyUpHandler.current = true;
-            return;
-        }
-
-        // Decrease extra discount
-        if (
-            ["Numpad4", "Numpad7"].every((key) => pressedKeys.current.has(key))
-        ) {
-            e.preventDefault();
-            dispatch(updateExtraDiscountAmount({ key: undefined, amount: -1 }));
-            setCommand("");
-            groupPressed.current = true;
-            stopKeyUpHandler.current = true;
-            return;
-        }
-
-        // Rrset product price
-        if (
-            ["PageUp", "PageDown"].every((key) => pressedKeys.current.has(key))
-        ) {
-            e.preventDefault();
-            groupPressed.current = true;
-            stopKeyUpHandler.current = true;
-            dispatch(resetSalePrice(undefined));
-            return;
-        }
-
-        // Dont go down. Work has done
-        const notToHandleKeys = ["PageUp", "PageDown"];
-        if (notToHandleKeys.includes(e.key)) {
-            e.preventDefault();
-            return;
-        }
-
-        if (e.code == "NumpadDecimal") {
-            if (command == "..") {
-                stopKeyUpHandler.current = true;
-                e.preventDefault();
-                setCommand("");
-                return;
-            }
-        }
-
-        if (e.code == "Numpad0") {
-            switch (command) {
-                case ".":
-                    e.preventDefault();
-                    setCommand("");
-                    dispatch(updatePaid(0));
-                    return;
-            }
-        }
-
-        if (e.key == "Enter" || e.code == "NumpadAdd") {
-            if (/^[1-9]$/.test(command)) {
-                stopLongPress();
-                stopKeyUpHandler.current = true;
-                e.preventDefault();
-                setCommand("");
-                dispatch(
-                    updateQuantity({
-                        key: undefined,
-                        quantity: parseInt(command),
-                    })
-                );
-                return;
-            }
-
-            if (/^[a-zA-Z]$/.test(command)) {
-                let productKey = productsMap[command];
-                if (!productKey) return;
-                let product = products[productKey];
-                if (!product) return;
-                stopKeyUpHandler.current = true;
-                stopLongPress();
-                e.preventDefault();
-                setCommand("");
-                dispatch(addToCart(product));
-                return;
-            }
-
-            if (/^\.[1-9]*[0-9]*$/.test(command)) {
-                stopLongPress();
-                stopKeyUpHandler.current = true;
-                e.preventDefault();
-                setCommand("");
-
-                if (command == ".") {
-                    dispatch(updatePaid(cart.totalPrice));
-                    return;
-                }
-
-                if (command.length > 1) {
-                    let amount = parseInt(command.slice(1));
-                    if (amount) {
-                        dispatch(updatePaid(amount));
-                    }
-                    return;
-                }
-            }
-
-            if (command.length <= 4) {
-                if (/^0[1-9][0-9]*$/.test(command)) {
-                    stopLongPress();
-                    stopKeyUpHandler.current = true;
-                    e.preventDefault();
-                    const quantity = parseInt(command.slice(1));
-                    setCommand("");
-                    dispatch(updateQuantity({ key: undefined, quantity }));
-                    return;
-                }
-            }
-
-            if (command.length >= 4) {
-                if (/^[1-9]{2}0[1-9][0-9]+$/.test(command)) {
-                    stopLongPress();
-                    stopKeyUpHandler.current = true;
-                    e.preventDefault();
-                    setCommand("");
-                    const key = command.slice(0, 2);
-                    const quantity = parseInt(command.slice(2));
-                    const productId = productsMap[key];
-                    if (productId) {
-                        dispatch(
-                            addToCartWith({
-                                product: products[productId],
-                                quantity,
-                            })
-                        );
-                    }
-                    return;
-                }
-            }
-
-            // To add extra discount amount dynamically with one . at the start
-            if (/^\/[1-9][0-9]*$/.test(command)) {
-                stopLongPress();
-                stopKeyUpHandler.current = true;
-                e.preventDefault();
-                let amount = parseInt(command.slice(1));
-                setCommand("");
-                dispatch(addExtraDiscount({ key: undefined, amount }));
-                return;
-            }
-
-            // To add discount amount dynamically with two .. at the start
-            if (/^\*[1-9][0-9]*$/.test(command)) {
-                stopLongPress();
-                stopKeyUpHandler.current = true;
-                e.preventDefault();
-                let amount = parseInt(command.slice(1));
-                setCommand("");
-                dispatch(addDiscount({ key: undefined, amount }));
-                return;
-            }
-        }
-
-        let max = 0;
-        switch (e.key) {
-            case "Shift":
-                setIsShift(true);
-                break;
-
-            case "Tab":
-                e.preventDefault();
-                noteRef.current?.focus();
-                break;
-
-            case "ArrowLeft":
-                e.preventDefault();
-                if (filteredCustomers && filteredProducts) {
-                    max = isCustomers
-                        ? Object.keys(filteredCustomers).length - 1
-                        : Object.keys(filteredProducts).length - 1;
-                    if (command.length > 0) {
-                        dispatch(selectPreviousProduct(max));
-                    } else {
-                        dispatch(shiftMeasurementTo(-1));
-                    }
-                }
-                break;
-            case "ArrowRight":
-                e.preventDefault();
-                if (filteredCustomers && filteredProducts) {
-                    max = isCustomers
-                        ? Object.keys(filteredCustomers).length - 1
-                        : Object.keys(filteredProducts).length - 1;
-                    if (command.length > 0) {
-                        dispatch(selectNexProduct(max));
-                    } else {
-                        dispatch(shiftMeasurementTo(1));
-                    }
-                }
-                break;
-            case "F10":
-                e.preventDefault();
-                window.location.href = "./return";
-                break;
-            case "Enter":
-                if (
-                    !isCustomers &&
-                    command.length > 0 &&
-                    filteredCustomers &&
-                    filteredProducts
-                ) {
-                    if (
-                        Object.keys(filteredProducts).length > 0 &&
-                        /^[a-zA-Z]+/.test(command)
-                    ) {
-                        const product = {
-                            ...Object.values(filteredProducts)[
-                                cart.selectedProductIndex
-                            ],
-                            quantity: 1,
-                        };
-                        dispatch(addToCart(product));
-                        setCommand("");
-                    }
-                } else if (command.length > 1 && filteredCustomers) {
-                    if (Object.keys(filteredCustomers).length > 0) {
-                        handleAddCustomer();
-                        setCommand("");
-                    }
-                }
-                break;
-        }
-    }
-
-    function handleKeyUp(e: any): void {
-        if (keyPressTimer !== undefined) {
-            clearTimeout(keyPressTimer);
-            keyPressTimer = undefined;
-        }
-        pressedKeys.current.clear();
-
-        // If long pressed then return
-        if (longPressed.current) {
-            longPressed.current = false;
-            return;
-        }
-
-        // If group pressed then return
-        if (groupPressed.current) {
-            groupPressed.current = false;
-            return;
-        }
-
-        // If stop key up handler then return
-        if (stopKeyUpHandler.current) {
-            stopKeyUpHandler.current = false;
-            return;
-        }
-
-        switch (e.key) {
-            case "Shift":
-                setIsShift(false);
-                break;
-        }
-
-        if (commandCounter.current.value > 0) {
-            commandCounter.current = {
-                name: "unknown",
-                value: 0,
-            };
-        }
-
-        switch (e.key) {
-            case "PageUp":
-                dispatch(updateSalePrice({ key: undefined, amount: -1 }));
-                return;
-            case "PageDown":
-                dispatch(updateSalePrice({ key: undefined, amount: 1 }));
-                return;
-        }
-
-        if (e.code == "NumpadSubtract") {
-            console.log("NUmp");
-            e.preventDefault();
-            setCommand(command.slice(0, -1));
-            return;
-        }
-
-        if (command.length == 0) {
-            switch (e.code) {
-                case "NumpadAdd":
-                case "ArrowUp":
-                    e.preventDefault();
-                    dispatch(incrementQuantity(undefined));
-                    return;
-
-                case "NumpadEnter":
-                case "ArrowDown":
-                    e.preventDefault();
-                    dispatch(decrementQuantity(undefined));
-                    return;
-            }
-        }
-
-        // Handle extra discount amount up and down with NumpadEnter and NumpadAdd
-        if (/^\*\d*$/.test(command)) {
-            switch (e.code) {
-                case "ArrowUp":
-                case "NumpadAdd":
-                    console.log("Up");
-                    e.preventDefault();
-                    dispatch(
-                        updateDiscountAmount({ key: undefined, amount: 1 })
-                    );
-                    return;
-                case "ArrowDown":
-                case "NumpadEnter":
-                    e.preventDefault();
-                    dispatch(
-                        updateDiscountAmount({ key: undefined, amount: -1 })
-                    );
-                    return;
-            }
-        }
-
-        if (/^\/\d*$/.test(command)) {
-            switch (e.code) {
-                case "ArrowUp":
-                case "NumpadAdd":
-                    console.log("Up");
-                    e.preventDefault();
-                    dispatch(
-                        updateExtraDiscountAmount({ key: undefined, amount: 1 })
-                    );
-                    return;
-                case "ArrowDown":
-                case "NumpadEnter":
-                    e.preventDefault();
-                    dispatch(
-                        updateExtraDiscountAmount({
-                            key: undefined,
-                            amount: -1,
-                        })
-                    );
-                    return;
-            }
-        }
-    }
-
-    function handleAddToCart(product: ProductWithID) {
-        dispatch(addToCart(product));
-    }
-
     function handleSellPageChange(sellPageKey: string) {
         if (sellPageKey == activeSellPage.current) return;
         let cartStates: Record<string, CartState> = { ...helper.cartStates };
@@ -812,11 +228,18 @@ export default function Sell({
         activeSellPage.current = sellPageKey;
     }
 
-    // function handleSellPageBack() {
-    //     let cart = helper.cartStates[0];
-    //     console.log(cart);
-    //     dispatch(setWholeCart(cart));
-    // }
+    const { onKeyUp, onkeydown, commandCounter } = useHandleKeyUp(
+        command,
+        setCommand,
+        cart,
+        products,
+        filteredProducts,
+        filteredCustomers,
+        isCustomers,
+        handleSellPageChange,
+        changeCartActiveProductTo
+        // commandCounter
+    );
 
     return (
         <div className="text-black dark:text-white">
@@ -911,8 +334,8 @@ export default function Sell({
                                     id="command"
                                     value={command}
                                     onChange={(e) => setCommand(e.target.value)}
-                                    onKeyDown={handleKeyDown}
-                                    onKeyUp={handleKeyUp}
+                                    onKeyDown={onkeydown}
+                                    onKeyUp={onKeyUp}
                                     type="text"
                                     className="border-2 w-full md:w-1/2 xl:w-1/3 border-dashed border-slate-500 bg-transparent outline-none focus:border-green-500 px-4 py-2 text-lg"
                                     autoFocus
@@ -939,7 +362,9 @@ export default function Sell({
                                 // <ProductCard products={filteredProducts} />
                                 <ProductsCard
                                     selected={cart.selectedProductIndex}
-                                    callback={handleAddToCart}
+                                    callback={(product) =>
+                                        dispatch(addToCart(product))
+                                    }
                                     products={filteredProducts}
                                 />
                             )}

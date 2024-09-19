@@ -38,7 +38,8 @@ export default function FinalView() {
                                                 product.unit}
                                         </td>
                                         <td className="text-end py-2 px-3">
-                                            {product.subTotal} ৳
+                                            {product.subTotal.toLocaleString()}{" "}
+                                            ৳
                                         </td>
                                     </tr>
                                 );
@@ -48,7 +49,7 @@ export default function FinalView() {
                 </table>
                 <div className="flex justify-between py-2 px-3 mt-3 bg-green-900">
                     <p>Total price</p>
-                    <p>{cart.totalPrice} ৳</p>
+                    <p>{cart.totalPrice.toLocaleString()} ৳</p>
                 </div>
             </div>
         </div>

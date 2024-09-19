@@ -1,7 +1,6 @@
-import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 import getStockLine from "@/app/functions/getStockLine";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
-import React, { useMemo, useState } from "react";
+import { useState } from "react";
 
 interface ProductsCardProps {
     selected: number;
@@ -34,7 +33,7 @@ function ProductsCard({ selected, callback, products }: ProductsCardProps) {
                         <div
                             key={product._id}
                             onClick={() => handleCallback(product._id)}
-                            className={`max-w-sm rounded overflow-hidden shadow-xl bg-gray-300 dark:bg-gray-800 shadow ${
+                            className={`max-w-sm rounded overflow-hidden bg-gray-300 dark:bg-gray-800 shadow ${
                                 selected == key
                                     ? "bg-green-200 dark:bg-green-900"
                                     : ""

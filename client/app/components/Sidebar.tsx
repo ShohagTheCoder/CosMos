@@ -28,6 +28,11 @@ function Sidebar({ active = "home" }: { active: string }) {
                             <Icon type={"products"} />
                         </a>
                     </button>
+                    <button className={getBtnStyleClass("sell")}>
+                        <a href={"/sells"}>
+                            <Icon type={"sell"} />
+                        </a>
+                    </button>
                     <button className={getBtnStyleClass("purchase")}>
                         <a href={"/products"}>
                             <Icon type={"products"} />

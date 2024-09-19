@@ -1,13 +1,17 @@
+import { Customer } from "@/app/interfaces/customer.inerface";
+import { addCustomer } from "@/app/store/slices/cartSlice";
 import { RootState } from "@/app/store/store";
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 function CustomerCard({ customers }: { customers: any }) {
+    const dispatch = useDispatch();
     const selectedProductIndex = useSelector(
         (state: RootState) => state.cart.selectedProductIndex
     );
 
-    function handleAddCustomer() {
+    function handleAddCustomer(customer: Customer) {
+        dispatch(addCustomer(customer));
         document.getElementById("command")?.focus();
     }
 
@@ -16,7 +20,7 @@ function CustomerCard({ customers }: { customers: any }) {
             {Object.values(customers).map((customer: any, key: number) => (
                 <div
                     key={customer._id}
-                    onClick={() => handleAddCustomer()}
+                    onClick={() => handleAddCustomer(customer)}
                     className={`max-w-sm rounded overflow-hidden shadow-xl bg-gray-800 text-white ${
                         selectedProductIndex == key
                             ? "bg-green-900"
