@@ -21,7 +21,7 @@ import {
 } from "@/app/store/slices/cartSlice";
 import apiClient from "@/app/utils/apiClient";
 import productsMap from "@/app/utils/productsMap";
-import { KeyboardEvent, useCallback, useRef } from "react";
+import { KeyboardEvent, useCallback, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 
 export function useHandleKeyUp(
@@ -46,7 +46,7 @@ export function useHandleKeyUp(
 ) {
     const dispatch = useDispatch();
     const longPressDuration = 600;
-    const commandCounter = useRef({
+    const [commandCounter, setCommandCounter] = useState({
         name: "unknown",
         value: 0,
     });
@@ -207,16 +207,15 @@ export function useHandleKeyUp(
             stopKeyUpHandlerRef.current = true;
             groupPressedRef.current = true;
 
-            if (commandCounter.current.name === "completeSell") {
-                commandCounter.current.value += 1;
-                if (commandCounter.current.value >= 3) {
-                    commandCounter.current = { name: "unknown", value: 0 };
+            if (commandCounter.name === "completeSell") {
+                commandCounter.value += 1;
+                if (commandCounter.value >= 3) {
+                    setCommandCounter({ name: "unknown", value: 0 });
                     console.log("Complete sell");
                 }
             } else {
-                commandCounter.current = { name: "completeSell", value: 1 };
+                setCommandCounter({ name: "completeSell", value: 1 });
             }
-
             return;
         }
 
@@ -531,9 +530,11 @@ export function useHandleKeyUp(
                 return;
             }
 
-            // Handle shift key state (this part is up to your logic)
-            if (e.key === "Shift") {
-                // Do something when shift is released, if necessary
+            if (commandCounter.value > 0) {
+                setCommandCounter({
+                    name: "unknown",
+                    value: 0,
+                });
             }
 
             // Handle sale price update

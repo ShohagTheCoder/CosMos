@@ -137,7 +137,7 @@ export default function Sell({
             }, {});
 
             setFilteredCustomers(filteredCustomersObject);
-        } else if (/^(?![0-9\s.])[a-zA-Z]{2,15}/.test(command) && products) {
+        } else if (/^(?![0-9\s.])[a-zA-Z]{2,10}/.test(command) && products) {
             if (isCustomers) {
                 setIsCustomers(false);
             }
@@ -184,17 +184,6 @@ export default function Sell({
             error("Faild to create sell");
         }
     }
-    // async function handleAddCustomer() {
-    //     if (filteredCustomers) {
-    //         const customer =
-    //             Object.values(filteredCustomers)[cart.selectedProductIndex];
-    //         const { data } = await apiClient.get(
-    //             `accounts/${customer.account}`
-    //         );
-    //         dispatch(addCustomer(customer));
-    //         dispatch(addCustomerAccount(data));
-    //     }
-    // }
 
     function handleNoteKeyDown(e: any) {
         switch (e.key) {
@@ -345,8 +334,8 @@ export default function Sell({
                                 {/* <ProductsCard selected={} /> */}
                             </div>
 
-                            {commandCounter.current.name == "completeSell" &&
-                            commandCounter.current.value >= 1 ? (
+                            {commandCounter.name == "completeSell" &&
+                            commandCounter.value >= 1 ? (
                                 <FinalView />
                             ) : isCustomers ? (
                                 <div>
