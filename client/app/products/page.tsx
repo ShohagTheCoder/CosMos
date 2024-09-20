@@ -7,8 +7,8 @@ import { ERROR, NONE, SUCCESS } from "../utils/constants/message";
 import Notification, {
     NotificationProps,
 } from "../elements/notification/Notification";
-import PulseLoading from "../elements/loding/PulseLoading";
 import PulseFadeLoading from "../elements/loding/PulseFadeLoading";
+import AddIcon from "../icons/AddIcon";
 
 export default function Products() {
     const [products, setProducts] = useState<Product[]>([]);
@@ -54,73 +54,75 @@ export default function Products() {
     }
 
     return (
-        <div className="container mx-auto px-4 pt-8 pb-4 dark:bg-gray-800">
-            <Notification
-                type={notification.type}
-                message={notification.message}
-            />
-            <div className="flex items-center justify-start gap-6 mb-4">
-                <h2 className="text-2xl font-bold">Products</h2>
-                <Link
-                    href="/products/create"
-                    target="_blank"
-                    className="bg-gray-700 py-2 px-3 hover:bg-green-700 rounded-md"
-                >
-                    Create
-                </Link>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {products.length == 0 ? (
-                    <div className="col-span-6 min-h-[400px] flex justify-center items-center">
-                        <PulseFadeLoading />
-                    </div>
-                ) : (
-                    <>
-                        {products.map((product: Product, index: number) => (
-                            <div
-                                key={index}
-                                className="bg-white dark:bg-gray-700 shadow-md rounded-lg p-3 flex flex-col justify-between"
-                            >
-                                <img
-                                    src={`images/products/${product.image}`}
-                                    alt={product.name}
-                                    className="w-full h-48 object-cover rounded-t-md"
-                                />
-                                <div className="pt-3">
-                                    <h3 className="text-lg font-bold mb-2">
-                                        {product.name}
-                                    </h3>
-                                    <p className="text-gray-600 dark:text-gray-300 mb-2">
-                                        {product.description}
-                                    </p>
-                                    <p className="text-xl font-semibold mb-4">
-                                        ${product.price}
-                                    </p>
-                                    <div className="flex justify-between">
-                                        <Link
-                                            target="_black"
-                                            href={`/products/update/${product._id}`}
-                                            className="bg-gray-800 hover:bg-green-700 py-1 px-3 rounded-md"
-                                        >
-                                            Update
-                                        </Link>
-                                        <button
-                                            onDoubleClick={() =>
-                                                handleDeleteProduct(
-                                                    product._id,
-                                                    index
-                                                )
-                                            }
-                                            className="bg-gray-800 hover:bg-red-700 py-1 px-3 rounded-md"
-                                        >
-                                            Delete
-                                        </button>
+        <div className="min-h-screen bg-white dark:bg-gray-800">
+            <div className="container max-w-[1200px] mx-auto px-4 pt-8 pb-4">
+                <Notification
+                    type={notification.type}
+                    message={notification.message}
+                />
+                <div className="flex items-center justify-between gap-6 mb-4">
+                    <h2 className="text-2xl font-bold">Products</h2>
+                    <Link
+                        href="/products/create"
+                        target="_blank"
+                        className="bg-gray-700 py-2 px-3 hover:bg-green-700 rounded-md"
+                    >
+                        <AddIcon />
+                    </Link>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                    {products.length == 0 ? (
+                        <div className="col-span-6 min-h-[400px] flex justify-center items-center">
+                            <PulseFadeLoading />
+                        </div>
+                    ) : (
+                        <>
+                            {products.map((product: Product, index: number) => (
+                                <div
+                                    key={index}
+                                    className="bg-white dark:bg-gray-700 shadow-md rounded-lg p-3 flex flex-col justify-between"
+                                >
+                                    <img
+                                        src={`images/products/${product.image}`}
+                                        alt={product.name}
+                                        className="w-full h-48 object-cover rounded-t-md"
+                                    />
+                                    <div className="pt-3">
+                                        <h3 className="text-lg font-bold mb-2">
+                                            {product.name}
+                                        </h3>
+                                        <p className="text-gray-600 dark:text-gray-300 mb-2">
+                                            {product.description}
+                                        </p>
+                                        <p className="text-xl font-semibold mb-4">
+                                            ${product.price}
+                                        </p>
+                                        <div className="flex justify-between">
+                                            <Link
+                                                target="_black"
+                                                href={`/products/update/${product._id}`}
+                                                className="bg-gray-800 hover:bg-green-700 py-1 px-3 rounded-md"
+                                            >
+                                                Update
+                                            </Link>
+                                            <button
+                                                onDoubleClick={() =>
+                                                    handleDeleteProduct(
+                                                        product._id,
+                                                        index
+                                                    )
+                                                }
+                                                className="bg-gray-800 hover:bg-red-700 py-1 px-3 rounded-md"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                    </>
-                )}
+                            ))}
+                        </>
+                    )}
+                </div>
             </div>
         </div>
     );

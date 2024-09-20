@@ -14,9 +14,10 @@ import {
     Resource,
     Unit,
 } from "../../interfaces/product.interface";
-import { count } from "console";
 import Switch from "@/app/elements/switch/Switch";
 import Button from "@/app/elements/buttons/Button";
+import NumberInputControl from "@/app/elements/inputs/NumberInputControl";
+import AddIcon from "@/app/icons/AddIcon";
 
 function Resources() {
     const dispatch = useDispatch();
@@ -68,13 +69,10 @@ function Resources() {
                     checked={product.hasResources}
                     onChange={handleHasResource}
                     label="Product Has resources"
-                    className="justify-between bg-slate-900"
+                    className="justify-between bg-slate-900 py-4"
                 />
                 {product.hasResources && product.saleUnitsBase ? (
-                    <div className="">
-                        <Button variant="tertiary" onClick={handleAddResource}>
-                            Add Resources +
-                        </Button>
+                    <div className="mt-3">
                         <div>
                             <p className="py-2 px-4 bg-green-700 text-white my-3">
                                 Resouce mesurement{" "}
@@ -97,7 +95,7 @@ function Resources() {
                                     if (pro) {
                                         return (
                                             <div key={key}>
-                                                <div className="p-3 mb-3 bg-slate-800 flex flex-wrap">
+                                                <div className="p-4 mb-3 bg-slate-900 flex flex-wrap">
                                                     <div className="mr-3">
                                                         <img
                                                             className="w-[80px]"
@@ -111,75 +109,80 @@ function Resources() {
                                                                 {pro.name}
                                                             </p>
                                                         </div>
-                                                        <div>
-                                                            Unit:
-                                                            <select
-                                                                value={
-                                                                    resource.unit
-                                                                }
-                                                                onChange={(e) =>
-                                                                    dispatch(
-                                                                        updateProductResourceUnit(
-                                                                            {
-                                                                                key: resource._id,
-                                                                                unit: e
-                                                                                    .target
-                                                                                    .value,
-                                                                                product:
-                                                                                    pro,
-                                                                            }
+                                                        <div className="flex gap-3">
+                                                            <div className="flex gap-3 items-center">
+                                                                <p> Unit:</p>
+                                                                <select
+                                                                    value={
+                                                                        resource.unit
+                                                                    }
+                                                                    onChange={(
+                                                                        e
+                                                                    ) =>
+                                                                        dispatch(
+                                                                            updateProductResourceUnit(
+                                                                                {
+                                                                                    key: resource._id,
+                                                                                    unit: e
+                                                                                        .target
+                                                                                        .value,
+                                                                                    product:
+                                                                                        pro,
+                                                                                }
+                                                                            )
                                                                         )
-                                                                    )
-                                                                }
-                                                                className="bg-slate-900 py-2 px-3 mx-2"
-                                                            >
-                                                                {Object.values(
-                                                                    pro.units
-                                                                ).map(
-                                                                    (
-                                                                        unit: Unit,
-                                                                        key: number
-                                                                    ) => (
-                                                                        <option
-                                                                            key={
-                                                                                key
-                                                                            }
-                                                                            value={
-                                                                                unit.unit
-                                                                            }
-                                                                        >
-                                                                            {
-                                                                                unit.label
-                                                                            }
-                                                                        </option>
-                                                                    )
-                                                                )}
-                                                            </select>
-                                                            Quantity :
-                                                            <input
-                                                                type="number"
-                                                                value={
-                                                                    resource.quantity
-                                                                }
-                                                                onChange={(e) =>
-                                                                    dispatch(
-                                                                        updateProductResourceQuantity(
-                                                                            {
-                                                                                key: resource._id,
-                                                                                quantity:
-                                                                                    parseFloat(
-                                                                                        e
-                                                                                            .target
-                                                                                            .value
-                                                                                    ),
-                                                                                product:
-                                                                                    pro,
-                                                                            }
+                                                                    }
+                                                                    className="bg-slate-800 py-2 px-3 mx-2"
+                                                                >
+                                                                    {Object.values(
+                                                                        pro.units
+                                                                    ).map(
+                                                                        (
+                                                                            unit: Unit,
+                                                                            key: number
+                                                                        ) => (
+                                                                            <option
+                                                                                key={
+                                                                                    key
+                                                                                }
+                                                                                value={
+                                                                                    unit.unit
+                                                                                }
+                                                                            >
+                                                                                {
+                                                                                    unit.label
+                                                                                }
+                                                                            </option>
                                                                         )
-                                                                    )
-                                                                }
-                                                                className="bg-slate-900 py-1 px-3 mx-2 w-[120px]"
-                                                            />
+                                                                    )}
+                                                                </select>
+                                                            </div>
+                                                            <div className="flex gap-3 items-center">
+                                                                <p>
+                                                                    {" "}
+                                                                    Quantity :
+                                                                </p>
+                                                                <NumberInputControl
+                                                                    inputClassName="w-16"
+                                                                    value={
+                                                                        resource.quantity
+                                                                    }
+                                                                    onChange={(
+                                                                        quantity
+                                                                    ) =>
+                                                                        dispatch(
+                                                                            updateProductResourceQuantity(
+                                                                                {
+                                                                                    key: resource._id,
+                                                                                    quantity,
+                                                                                    product:
+                                                                                        pro,
+                                                                                }
+                                                                            )
+                                                                        )
+                                                                    }
+                                                                />
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -190,6 +193,14 @@ function Resources() {
                                     }
                                 }
                             )}
+                        </div>
+                        <div className="flex justify-center">
+                            <Button
+                                variant="tertiary"
+                                onClick={handleAddResource}
+                            >
+                                <AddIcon />
+                            </Button>
                         </div>
                     </div>
                 ) : (

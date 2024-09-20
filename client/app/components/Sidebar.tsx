@@ -1,14 +1,13 @@
-import React from "react";
 import "./style.css";
-import Icon from "./Icon";
 import HomeIcon from "../icons/HomeIcon";
 import ProductsIcon from "../icons/ProductsIcon";
-import SellIcon from "../icons/SellIcon";
-import PurchaseIcon from "../icons/PurchaseIcon";
 import SellsIcon from "../icons/SellsIcon";
 import UserIcon from "../icons/UserIcon";
 import SettingIcon from "../icons/SettingIcon";
 import CustomersIcon from "../icons/CustomersIcon";
+import CartIcon from "../icons/CartIcon";
+import BagIcon from "../icons/BagIcon";
+import AddIcon from "../icons/AddIcon";
 
 function Sidebar({ active = "home" }: { active: string }) {
     function getBtnStyleClass(value: string) {
@@ -18,8 +17,8 @@ function Sidebar({ active = "home" }: { active: string }) {
     }
 
     return (
-        <div className="bg-gray-300 dark:bg-gray-900 fixed start-0 top-0 w-[80px] h-full border-r-2 border-dashed border-slate-600">
-            <div className="h-full flex justify-center items-center">
+        <div className="bg-gray-300 dark:bg-gray-900 fixed start-0 top-0 w-[80px] h-screen border-r-2 border-dashed border-slate-600">
+            <div className="h-full flex flex-col justify-between items-center py-6">
                 <div className="flex flex-col justify-center items-center gap-5">
                     <button className={getBtnStyleClass("home")}>
                         <a
@@ -34,7 +33,7 @@ function Sidebar({ active = "home" }: { active: string }) {
                             href={"/actions/sell"}
                             className="text-center flex justify-center items-center"
                         >
-                            <SellIcon />
+                            <BagIcon />
                         </a>
                     </button>
                     <button className={getBtnStyleClass("purchase")}>
@@ -42,7 +41,7 @@ function Sidebar({ active = "home" }: { active: string }) {
                             href={"/actions/purchase"}
                             className="text-center flex justify-center items-center"
                         >
-                            <PurchaseIcon />
+                            <CartIcon />
                         </a>
                     </button>
                     <button className={getBtnStyleClass("sells")}>
@@ -71,7 +70,17 @@ function Sidebar({ active = "home" }: { active: string }) {
                     </button>
                     <button className={getBtnStyleClass("users")}>
                         <a
-                            href={`/users}`}
+                            href="/products/create"
+                            className="text-center flex justify-center items-center"
+                        >
+                            <AddIcon />
+                        </a>
+                    </button>
+                </div>
+                <div className="flex flex-col justify-center items-center gap-5 border-t-2 border-dashed pt-5 border-gray-500">
+                    <button className={getBtnStyleClass("users")}>
+                        <a
+                            href={`/users`}
                             className="text-center flex justify-center items-center"
                         >
                             <UserIcon />

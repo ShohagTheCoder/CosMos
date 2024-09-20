@@ -56,15 +56,16 @@ function CreateProductPage() {
     } = {
         navigator: true,
         classes: {
-            tabHeader: "p-3",
-            tabContent: "p-5",
+            container: "rounded-none",
+            tabHeader: "p-3 border-dashed border-b-2 border-gray-500",
+            tabContent: "px-1 py-5",
             buttonContainer: "p-3",
         },
         titleAlignment: "center", // Ensure this value matches the allowed types
     };
 
     return (
-        <div className="container max-auto flex justify-center bg-gray-800">
+        <div className="min-h-screen max-auto flex justify-center bg-gray-800">
             <div className="container w-auto inline-block transition-all my-5 mx-auto rounded-md bg-gray-800 text-white">
                 <div className="">
                     <Tab tabs={tabs} options={options} />

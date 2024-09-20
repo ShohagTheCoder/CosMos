@@ -16,6 +16,7 @@ import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { RootState } from "@/app/store/store";
 import getUnits from "@/app/functions/getUnits";
 import NumberInputControl from "@/app/elements/inputs/NumberInputControl";
+import TrashIcon from "@/app/icons/TrashIcon";
 
 function CartProduct() {
     const dispatch = useDispatch();
@@ -99,7 +100,7 @@ function CartProduct() {
                     className="py-2 px-3 rounded-lg select-none hover:bg-red-800"
                     onDoubleClick={() => dispatch(removeFromCart(undefined))}
                 >
-                    De
+                    <TrashIcon height="20" width="20" />
                 </button>
             </div>
             {Object.values(cart.products).map((p: ProductWithID) => {
