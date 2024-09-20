@@ -124,6 +124,17 @@ export function useHandleKeyUp(
         }
     }
 
+    // Add to cart with product sortcut
+    function addToCartByProductSortcut(e: KeyboardEvent, sortcut: string) {
+        let productKey = productsMap[sortcut];
+        if (!productKey) return;
+        let product = products[productKey];
+        if (!product) return;
+        e.preventDefault();
+        setCommand("");
+        dispatch(addToCart(product));
+    }
+
     const handleKeyDown = (e: KeyboardEvent) => {
         // console.log("---------------------------------");
         // console.log(e.key);
@@ -148,13 +159,7 @@ export function useHandleKeyUp(
             /^[a-zA-Z]$/.test(command) &&
             command == e.key
         ) {
-            let productKey = productsMap[command];
-            if (!productKey) return;
-            let product = products[productKey];
-            if (!product) return;
-            e.preventDefault();
-            setCommand("");
-            dispatch(addToCart(product));
+            addToCartByProductSortcut(e, command + e.key);
             return;
         }
 
@@ -406,6 +411,7 @@ export function useHandleKeyUp(
 
         if (e.code == "NumpadAdd") {
             if (/^[1-9][0-9]*$/.test(command)) {
+                stopLongPress();
                 stopKeyUpHandlerRef.current = true;
                 setCommand("");
                 dispatch(
@@ -418,17 +424,14 @@ export function useHandleKeyUp(
             }
         }
 
-        if (e.code == "NumpadEnter") {
+        if (e.key == "Enter") {
             if (/^[0-9]*00[0-9]*$/.test(command)) {
+                stopLongPress();
                 let splited = command.split("00", 2);
                 let commandKey = splited[0];
                 let amount = parseInt(splited[1]);
                 if (commandKey.length > 0) {
-                    let productKey = productsMap[commandKey];
-                    if (!productKey) return;
-                    let product = products[productKey];
-                    if (!product) return;
-                    dispatch(addToCart(product));
+                    addToCartByProductSortcut(e, commandKey);
                 }
                 setCommand("");
                 dispatch(setPriceToWithDiscount({ key: undefined, amount }));
@@ -436,13 +439,9 @@ export function useHandleKeyUp(
             }
 
             if (/^[1-9]+$/.test(command)) {
-                let productKey = productsMap[command];
-                if (!productKey) return;
-                let product = products[productKey];
-                if (!product) return;
+                stopLongPress();
                 stopKeyUpHandlerRef.current = true;
-                setCommand("");
-                dispatch(addToCart(product));
+                addToCartByProductSortcut(e, command);
                 dispatch(
                     updateQuantity({
                         key: undefined,
@@ -452,50 +451,26 @@ export function useHandleKeyUp(
                 return;
             }
 
-            if (/^[0-9]+$/.test(command)) {
-                let splited = command.split("0");
+            if (/^[1-9][0-9]*$/.test(command)) {
+                let splited = command.split("0", 2);
                 let commandKey = splited[0];
                 let quantity = parseInt(splited[1]);
-                let productKey = productsMap[commandKey];
-                if (!productKey) return;
-                let product = products[productKey];
-                if (!product) return;
+                stopLongPress();
+                addToCartByProductSortcut(e, commandKey);
                 stopKeyUpHandlerRef.current = true;
-                setCommand("");
-                dispatch(addToCart(product));
                 dispatch(updateQuantity({ key: undefined, quantity }));
+                return;
+            }
+
+            if (/^[a-zA-Z]$/.test(command)) {
+                stopLongPress();
+                stopKeyUpHandlerRef.current = true;
+                addToCartByProductSortcut(e, command);
                 return;
             }
         }
 
         if (e.key == "Enter" || e.code == "NumpadAdd") {
-            if (/^[1-9]$/.test(command)) {
-                stopLongPress();
-                stopKeyUpHandlerRef.current = true;
-                e.preventDefault();
-                setCommand("");
-                dispatch(
-                    updateQuantity({
-                        key: undefined,
-                        quantity: parseInt(command),
-                    })
-                );
-                return;
-            }
-
-            if (/^[a-zA-Z]$/.test(command)) {
-                let productKey = productsMap[command];
-                if (!productKey) return;
-                let product = products[productKey];
-                if (!product) return;
-                stopKeyUpHandlerRef.current = true;
-                stopLongPress();
-                e.preventDefault();
-                setCommand("");
-                dispatch(addToCart(product));
-                return;
-            }
-
             if (/^\.[1-9]*[0-9]*$/.test(command)) {
                 stopLongPress();
                 stopKeyUpHandlerRef.current = true;
@@ -511,39 +486,6 @@ export function useHandleKeyUp(
                     let amount = parseInt(command.slice(1));
                     if (amount) {
                         dispatch(updatePaid(amount));
-                    }
-                    return;
-                }
-            }
-
-            if (command.length <= 4) {
-                if (/^0[1-9][0-9]*$/.test(command)) {
-                    stopLongPress();
-                    stopKeyUpHandlerRef.current = true;
-                    e.preventDefault();
-                    const quantity = parseInt(command.slice(1));
-                    setCommand("");
-                    dispatch(updateQuantity({ key: undefined, quantity }));
-                    return;
-                }
-            }
-
-            if (command.length >= 4) {
-                if (/^[1-9]{2}0[1-9][0-9]+$/.test(command)) {
-                    stopLongPress();
-                    stopKeyUpHandlerRef.current = true;
-                    e.preventDefault();
-                    setCommand("");
-                    const key = command.slice(0, 2);
-                    const quantity = parseInt(command.slice(2));
-                    const productId = productsMap[key];
-                    if (productId) {
-                        dispatch(
-                            addToCartWith({
-                                product: products[productId],
-                                quantity,
-                            })
-                        );
                     }
                     return;
                 }
