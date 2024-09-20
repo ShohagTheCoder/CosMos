@@ -18,6 +18,7 @@ import {
     updateQuantity,
     addCustomer,
     addCustomerAccount,
+    setPriceToWithDiscount,
 } from "@/app/store/slices/cartSlice";
 import apiClient from "@/app/utils/apiClient";
 import productsMap from "@/app/utils/productsMap";
@@ -35,17 +36,9 @@ export function useHandleKeyUp(
     isCustomers: any,
     handleSellPageChange: any,
     changeCartActiveProductTo: any
-    // commandCounter: any
-    // pressedKeysRef: React.MutableRefObject<Set<string>>,
-    // longPressedRef: React.MutableRefObject<boolean>,
-    // groupPressedRef: React.MutableRefObject<boolean>,
-    // stopKeyUpHandlerRef: React.MutableRefObject<boolean>,
-    // keyPressTimerRef: React.MutableRefObject<
-    //     ReturnType<typeof setTimeout> | undefined
-    // >
 ) {
     const dispatch = useDispatch();
-    const longPressDuration = 600;
+    const longPressDuration = 400;
     const [commandCounter, setCommandCounter] = useState({
         name: "unknown",
         value: 0,
@@ -78,6 +71,59 @@ export function useHandleKeyUp(
         }
     }
 
+    function handleNumpadNumberKeysLongPress(e: KeyboardEvent) {
+        if (command.length == 0) {
+            setCommand("");
+            dispatch(
+                updateQuantity({ key: undefined, quantity: parseInt(e.key) })
+            );
+            return;
+        }
+
+        if (/^[0-9]*00[0-9]*$/.test(command)) {
+            let splited = command.split("00", 2);
+            let commandKey = splited[0];
+            let amount = parseInt(splited[1] + e.key);
+            if (commandKey.length > 0) {
+                let productKey = productsMap[commandKey];
+                if (!productKey) return;
+                let product = products[productKey];
+                if (!product) return;
+                dispatch(addToCart(product));
+            }
+            setCommand("");
+            dispatch(setPriceToWithDiscount({ key: undefined, amount }));
+            return;
+        }
+
+        if (/^[1-9]+$/.test(command)) {
+            let productKey = productsMap[command];
+            if (!productKey) return;
+            let product = products[productKey];
+            if (!product) return;
+            setCommand("");
+            dispatch(addToCart(product));
+            dispatch(
+                updateQuantity({ key: undefined, quantity: parseInt(e.key) })
+            );
+            return;
+        }
+
+        if (/^[0-9]+$/.test(command)) {
+            let splited = command.split("0", 2);
+            let commandKey = splited[0];
+            let quantity = parseInt(splited[1] + e.key);
+            let productKey = productsMap[commandKey];
+            if (!productKey) return;
+            let product = products[productKey];
+            if (!product) return;
+            setCommand("");
+            dispatch(addToCart(product));
+            dispatch(updateQuantity({ key: undefined, quantity }));
+            return;
+        }
+    }
+
     const handleKeyDown = (e: KeyboardEvent) => {
         // console.log("---------------------------------");
         // console.log(e.key);
@@ -89,7 +135,7 @@ export function useHandleKeyUp(
             return;
         }
 
-        const repeatableKeys = ["Backspace", "Space", "Numpad0"];
+        const repeatableKeys = ["Backspace", "Space"];
         if (!repeatableKeys.includes(e.code)) {
             if (pressedKeysRef.current.has(e.code)) {
                 e.preventDefault();
@@ -147,6 +193,16 @@ export function useHandleKeyUp(
             "ArrowUp",
             "ArrowDown",
             "NumpadSubtract",
+            "Numpad0",
+            "Numpad1",
+            "Numpad2",
+            "Numpad3",
+            "Numpad4",
+            "Numpad5",
+            "Numpad6",
+            "Numpad7",
+            "Numpad8",
+            "Numpad9",
         ];
         if (
             longPressKeys.includes(e.code) &&
@@ -185,6 +241,22 @@ export function useHandleKeyUp(
                     keyPressTimerRef.current = setTimeout(() => {
                         longPressedRef.current = true;
                         dispatch(removeFromCart(undefined));
+                    }, longPressDuration);
+                    break;
+                case "Numpad0":
+                case "Numpad1":
+                case "Numpad2":
+                case "Numpad3":
+                case "Numpad4":
+                case "Numpad5":
+                case "Numpad6":
+                case "Numpad7":
+                case "Numpad8":
+                case "Numpad9":
+                    // e.preventDefault();
+                    keyPressTimerRef.current = setTimeout(() => {
+                        longPressedRef.current = true;
+                        handleNumpadNumberKeysLongPress(e);
                     }, longPressDuration);
                     break;
             }
@@ -329,6 +401,70 @@ export function useHandleKeyUp(
                     setCommand("");
                     dispatch(updatePaid(0));
                     return;
+            }
+        }
+
+        if (e.code == "NumpadAdd") {
+            if (/^[1-9][0-9]*$/.test(command)) {
+                stopKeyUpHandlerRef.current = true;
+                setCommand("");
+                dispatch(
+                    updateQuantity({
+                        key: undefined,
+                        quantity: parseInt(command),
+                    })
+                );
+                return;
+            }
+        }
+
+        if (e.code == "NumpadEnter") {
+            if (/^[0-9]*00[0-9]*$/.test(command)) {
+                let splited = command.split("00", 2);
+                let commandKey = splited[0];
+                let amount = parseInt(splited[1]);
+                if (commandKey.length > 0) {
+                    let productKey = productsMap[commandKey];
+                    if (!productKey) return;
+                    let product = products[productKey];
+                    if (!product) return;
+                    dispatch(addToCart(product));
+                }
+                setCommand("");
+                dispatch(setPriceToWithDiscount({ key: undefined, amount }));
+                return;
+            }
+
+            if (/^[1-9]+$/.test(command)) {
+                let productKey = productsMap[command];
+                if (!productKey) return;
+                let product = products[productKey];
+                if (!product) return;
+                stopKeyUpHandlerRef.current = true;
+                setCommand("");
+                dispatch(addToCart(product));
+                dispatch(
+                    updateQuantity({
+                        key: undefined,
+                        quantity: parseInt(e.key),
+                    })
+                );
+                return;
+            }
+
+            if (/^[0-9]+$/.test(command)) {
+                let splited = command.split("0");
+                let commandKey = splited[0];
+                let quantity = parseInt(splited[1]);
+                let productKey = productsMap[commandKey];
+                if (!productKey) return;
+                let product = products[productKey];
+                if (!product) return;
+                stopKeyUpHandlerRef.current = true;
+                setCommand("");
+                dispatch(addToCart(product));
+                dispatch(updateQuantity({ key: undefined, quantity }));
+                return;
             }
         }
 

@@ -191,7 +191,7 @@ const cartSlice = createSlice({
             action: PayloadAction<{ key: string | undefined; quantity: number }>
         ) => {
             let { key = state.activeProduct, quantity } = action.payload;
-            if (key && quantity >= 0) {
+            if (key && quantity >= 0 && quantity < 10000) {
                 const product = state.products[key];
                 if (product) {
                     state.products[key] = getUpdatedProduct(
@@ -244,7 +244,7 @@ const cartSlice = createSlice({
         updateUnit: (
             state: CartState,
             action: PayloadAction<{
-                key: string | undefined | undefined;
+                key: string | undefined;
                 unit: string;
             }>
         ) => {
@@ -257,6 +257,36 @@ const cartSlice = createSlice({
                         undefined,
                         unit
                     );
+                    return updateCart(state);
+                }
+            }
+        },
+        setPriceToWithDiscount: (
+            state: CartState,
+            action: PayloadAction<{
+                key: string | undefined;
+                amount: number;
+            }>
+        ) => {
+            let { key = state.activeProduct, amount } = action.payload;
+            if (key) {
+                const product = state.products[key];
+                if (product && amount < product.price) {
+                    if (amount < product.price / 2) {
+                        product.discount = amount;
+                        state.products[key] = getUpdatedProduct(
+                            product,
+                            undefined,
+                            undefined
+                        );
+                    } else {
+                        product.discount = product.price - amount;
+                        state.products[key] = getUpdatedProduct(
+                            product,
+                            undefined,
+                            undefined
+                        );
+                    }
                     return updateCart(state);
                 }
             }
@@ -392,7 +422,6 @@ const cartSlice = createSlice({
             let { key = state.activeProduct, amount } = action.payload;
             if (key) {
                 let product = state.products[key];
-                console.log(product.extraDiscount, amount);
                 if (
                     product &&
                     product.extraDiscount + amount <
@@ -448,6 +477,7 @@ export const {
     resetSalePrice,
     setWholeCart,
     resetCart,
+    setPriceToWithDiscount,
     setSalePrice,
 } = cartSlice.actions;
 export default cartSlice.reducer;

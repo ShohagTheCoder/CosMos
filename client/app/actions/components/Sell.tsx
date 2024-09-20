@@ -103,23 +103,6 @@ export default function Sell({
     }, []);
 
     useEffect(() => {
-        if (/^[1-9]{3}$/.test(command)) {
-            const productKey = command.slice(0, -1);
-            const quantity = parseInt(command.slice(2));
-            const productId = productsMap[productKey];
-
-            if (productId) {
-                setCommand("");
-                dispatch(
-                    addToCartWith({
-                        product: products[productId],
-                        quantity,
-                    })
-                );
-                return;
-            }
-        }
-
         if (/^\s+/.test(command) && customers) {
             setIsCustomers(true);
             // Convert filtered array back to object
