@@ -1,8 +1,9 @@
+import getMeasurementTo from "@/app/functions/getMeasurementTo";
+import getProductNextUnit from "@/app/functions/getProductNextUnit";
 import getUpdatedProduct from "@/app/functions/getUpdatedProduct";
 import { CustomerWithId } from "@/app/interfaces/customer.inerface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import getMeasurementTo from "@/app/functions/getMeasurementTo";
 import updateCart from "../functions/updateCart";
 
 export interface CartState {
@@ -261,6 +262,28 @@ const cartSlice = createSlice({
                 }
             }
         },
+        shiftUnitTo: (
+            state: CartState,
+            action: PayloadAction<{
+                key: string | undefined;
+                value: number;
+            }>
+        ) => {
+            let { key = state.activeProduct, value } = action.payload;
+            if (key) {
+                const product = state.products[key];
+                if (product) {
+                    let unit = getProductNextUnit(value, product);
+
+                    state.products[key] = getUpdatedProduct(
+                        product,
+                        undefined,
+                        unit
+                    );
+                    return updateCart(state);
+                }
+            }
+        },
         setPriceToWithDiscount: (
             state: CartState,
             action: PayloadAction<{
@@ -479,5 +502,6 @@ export const {
     resetCart,
     setPriceToWithDiscount,
     setSalePrice,
+    shiftUnitTo,
 } = cartSlice.actions;
 export default cartSlice.reducer;

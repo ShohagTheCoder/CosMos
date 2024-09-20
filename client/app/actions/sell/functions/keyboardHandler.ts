@@ -8,17 +8,14 @@ import {
     addDiscount,
     addExtraDiscount,
     addToCart,
-    addToCartWith,
     removeFromCart,
     resetSalePrice,
-    selectNexProduct,
-    selectPreviousProduct,
-    shiftMeasurementTo,
     updatePaid,
     updateQuantity,
     addCustomer,
     addCustomerAccount,
     setPriceToWithDiscount,
+    shiftUnitTo,
 } from "@/app/store/slices/cartSlice";
 import apiClient from "@/app/utils/apiClient";
 import productsMap from "@/app/utils/productsMap";
@@ -198,6 +195,8 @@ export function useHandleKeyUp(
             "ArrowUp",
             "ArrowDown",
             "NumpadSubtract",
+            "ArrowLeft",
+            "ArrowRight",
             "Numpad0",
             "Numpad1",
             "Numpad2",
@@ -262,6 +261,18 @@ export function useHandleKeyUp(
                     keyPressTimerRef.current = setTimeout(() => {
                         longPressedRef.current = true;
                         handleNumpadNumberKeysLongPress(e);
+                    }, longPressDuration);
+                    break;
+                case "ArrowLeft":
+                    keyPressTimerRef.current = setTimeout(() => {
+                        longPressedRef.current = true;
+                        dispatch(shiftUnitTo({ key: undefined, value: -1 }));
+                    }, longPressDuration);
+                    break;
+                case "ArrowRight":
+                    keyPressTimerRef.current = setTimeout(() => {
+                        longPressedRef.current = true;
+                        dispatch(shiftUnitTo({ key: undefined, value: 1 }));
                     }, longPressDuration);
                     break;
             }
@@ -514,38 +525,37 @@ export function useHandleKeyUp(
             }
         }
 
-        let max = 0;
         switch (e.key) {
             case "Shift":
                 // setIsShift(true);
                 break;
 
-            case "ArrowLeft":
-                e.preventDefault();
-                if (filteredCustomers && filteredProducts) {
-                    max = isCustomers
-                        ? Object.keys(filteredCustomers).length - 1
-                        : Object.keys(filteredProducts).length - 1;
-                    if (command.length > 0) {
-                        dispatch(selectPreviousProduct(max));
-                    } else {
-                        dispatch(shiftMeasurementTo(-1));
-                    }
-                }
-                break;
-            case "ArrowRight":
-                e.preventDefault();
-                if (filteredCustomers && filteredProducts) {
-                    max = isCustomers
-                        ? Object.keys(filteredCustomers).length - 1
-                        : Object.keys(filteredProducts).length - 1;
-                    if (command.length > 0) {
-                        dispatch(selectNexProduct(max));
-                    } else {
-                        dispatch(shiftMeasurementTo(1));
-                    }
-                }
-                break;
+            // case "ArrowLeft":
+            //     e.preventDefault();
+            //     if (filteredCustomers && filteredProducts) {
+            //         max = isCustomers
+            //             ? Object.keys(filteredCustomers).length - 1
+            //             : Object.keys(filteredProducts).length - 1;
+            //         if (command.length > 0) {
+            //             dispatch(selectPreviousProduct(max));
+            //         } else {
+            //             dispatch(shiftMeasurementTo(-1));
+            //         }
+            //     }
+            //     break;
+            // case "ArrowRight":
+            //     e.preventDefault();
+            //     if (filteredCustomers && filteredProducts) {
+            //         max = isCustomers
+            //             ? Object.keys(filteredCustomers).length - 1
+            //             : Object.keys(filteredProducts).length - 1;
+            //         if (command.length > 0) {
+            //             dispatch(selectNexProduct(max));
+            //         } else {
+            //             dispatch(shiftMeasurementTo(1));
+            //         }
+            //     }
+            //     break;
             case "F10":
                 e.preventDefault();
                 window.location.href = "./return";
@@ -693,16 +703,7 @@ export function useHandleKeyUp(
                 }
             }
         },
-        [
-            command,
-            dispatch,
-            setCommand,
-            pressedKeysRef,
-            keyPressTimerRef,
-            longPressedRef,
-            groupPressedRef,
-            stopKeyUpHandlerRef,
-        ]
+        [commandCounter.value, command, dispatch, setCommand]
     );
 
     return {
