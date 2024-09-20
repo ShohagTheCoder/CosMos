@@ -60,6 +60,14 @@ function Sidebar({ active = "home" }: { active: string }) {
                             <ProductsIcon />
                         </a>
                     </button>
+                    <button className={getBtnStyleClass("createProduct")}>
+                        <a
+                            href="/products/create"
+                            className="text-center flex justify-center items-center"
+                        >
+                            <AddIcon />
+                        </a>
+                    </button>
                     <button className={getBtnStyleClass("users")}>
                         <a
                             href="/customers"
@@ -68,9 +76,9 @@ function Sidebar({ active = "home" }: { active: string }) {
                             <CustomersIcon />
                         </a>
                     </button>
-                    <button className={getBtnStyleClass("users")}>
+                    <button className={getBtnStyleClass("createCustomer")}>
                         <a
-                            href="/products/create"
+                            href="/customers/create"
                             className="text-center flex justify-center items-center"
                         >
                             <AddIcon />

@@ -3,18 +3,17 @@ import { ProductWithID } from "../products/interfaces/product.interface";
 export default function getProductNextUnit(
     value: number,
     product: ProductWithID
-) {
-    let units = Object.keys(product.units);
-    let currentIndex = units.indexOf(product.unit);
-    let length = units.length - 1;
+): string {
+    // Filter enabled units
+    const enabledUnits = Object.values(product.units)
+        .filter((unit) => unit.enable)
+        .map((unit) => unit.unit);
 
-    if (currentIndex + value == length) {
-        return units[0];
-    }
+    const currentIndex = enabledUnits.indexOf(product.unit);
+    const totalUnits = enabledUnits.length;
 
-    if (currentIndex + value < 0) {
-        return units[length - 1];
-    }
+    // Calculate next index using modulo to wrap around the array
+    const nextIndex = (currentIndex + value + totalUnits) % totalUnits;
 
-    return units[currentIndex + value];
+    return enabledUnits[nextIndex];
 }
