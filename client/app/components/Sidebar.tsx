@@ -1,10 +1,18 @@
 import React from "react";
 import "./style.css";
 import Icon from "./Icon";
+import HomeIcon from "../icons/HomeIcon";
+import ProductsIcon from "../icons/ProductsIcon";
+import SellIcon from "../icons/SellIcon";
+import PurchaseIcon from "../icons/PurchaseIcon";
+import SellsIcon from "../icons/SellsIcon";
+import UserIcon from "../icons/UserIcon";
+import SettingIcon from "../icons/SettingIcon";
+import CustomersIcon from "../icons/CustomersIcon";
 
 function Sidebar({ active = "home" }: { active: string }) {
     function getBtnStyleClass(value: string) {
-        return `h-[40px] w-[40px] rounded-full bg-gray-800 hover:scale-125 hover:bg-blue-800 transition-transform ${
+        return `h-[40px] w-[40px] hover:scale-125 transition-transform rounded-full ${
             active == value ? "sidebar-item-active" : ""
         }`;
     }
@@ -14,43 +22,67 @@ function Sidebar({ active = "home" }: { active: string }) {
             <div className="h-full flex justify-center items-center">
                 <div className="flex flex-col justify-center items-center gap-5">
                     <button className={getBtnStyleClass("home")}>
-                        <a href={"/"}>
-                            <Icon type={"home"} />
+                        <a
+                            href={"/"}
+                            className="text-center flex justify-center items-center"
+                        >
+                            <HomeIcon />
                         </a>
                     </button>
                     <button className={getBtnStyleClass("sell")}>
-                        <a href={"/actions/sell"}>
-                            <Icon type={"sell"} />
+                        <a
+                            href={"/actions/sell"}
+                            className="text-center flex justify-center items-center"
+                        >
+                            <SellIcon />
                         </a>
                     </button>
                     <button className={getBtnStyleClass("purchase")}>
-                        <a href={"/actions/purchase"}>
-                            <Icon type={"products"} />
+                        <a
+                            href={"/actions/purchase"}
+                            className="text-center flex justify-center items-center"
+                        >
+                            <PurchaseIcon />
                         </a>
                     </button>
-                    <button className={getBtnStyleClass("sell")}>
-                        <a href={"/sells"}>
-                            <Icon type={"sell"} />
+                    <button className={getBtnStyleClass("sells")}>
+                        <a
+                            href={"/sells"}
+                            className="text-center flex justify-center items-center"
+                        >
+                            <SellsIcon />
                         </a>
                     </button>
                     <button className={getBtnStyleClass("purchase")}>
-                        <a href={"/products"}>
-                            <Icon type={"products"} />
+                        <a
+                            href={"/products"}
+                            className="text-center flex justify-center items-center"
+                        >
+                            <ProductsIcon />
                         </a>
                     </button>
                     <button className={getBtnStyleClass("users")}>
-                        <a href="/customers">
-                            <Icon type={"user"} />
+                        <a
+                            href="/customers"
+                            className="text-center flex justify-center items-center"
+                        >
+                            <CustomersIcon />
                         </a>
                     </button>
                     <button className={getBtnStyleClass("users")}>
-                        <a href="/users">
-                            <Icon type={"user"} />
+                        <a
+                            href={`/users}`}
+                            className="text-center flex justify-center items-center"
+                        >
+                            <UserIcon />
                         </a>
                     </button>
                     <button className={getBtnStyleClass("settings")}>
-                        <a href={"/settings"}>
-                            <Icon type={"settings"} />
+                        <a
+                            className="text-center flex justify-center items-center"
+                            href={"/settings"}
+                        >
+                            <SettingIcon />
                         </a>
                     </button>
                 </div>
