@@ -1,7 +1,5 @@
 import saveBase64Image from "@/app/api/functions/saveBase64Image";
-import { writeFile } from "fs/promises";
 import { NextResponse } from "next/server";
-import path from "path";
 
 export async function POST(req: any) {
     const outputDir = "public/images/products/"; // Output file path

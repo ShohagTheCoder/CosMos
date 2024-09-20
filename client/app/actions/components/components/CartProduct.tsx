@@ -48,8 +48,9 @@ function CartProduct() {
 
     return (
         <div className="cart">
-            <div className="flex justify-between items-center py-3 px-4 bg-gray-800 mb-3">
+            <div className="flex justify-between items-center py-2 px-2 bg-gray-800 mb-3">
                 <button
+                    className="py-2 px-3 rounded-lg select-none hover:bg-green-800"
                     onClick={() =>
                         dispatch(
                             updateExtraDiscountAmount({
@@ -59,9 +60,10 @@ function CartProduct() {
                         )
                     }
                 >
-                    EDU
+                    ED+
                 </button>
                 <button
+                    className="py-2 px-3 rounded-lg select-none hover:bg-green-800"
                     onClick={() =>
                         dispatch(
                             updateExtraDiscountAmount({
@@ -71,27 +73,30 @@ function CartProduct() {
                         )
                     }
                 >
-                    EDD
+                    ED-
                 </button>
                 <button
+                    className="py-2 px-3 rounded-lg select-none hover:bg-green-800"
                     onClick={() =>
                         dispatch(
                             updateDiscountAmount({ key: undefined, amount: 1 })
                         )
                     }
                 >
-                    DU
+                    D+
                 </button>
                 <button
+                    className="py-2 px-3 rounded-lg select-none hover:bg-green-800"
                     onClick={() =>
                         dispatch(
                             updateDiscountAmount({ key: undefined, amount: -1 })
                         )
                     }
                 >
-                    DD
+                    D-
                 </button>
                 <button
+                    className="py-2 px-3 rounded-lg select-none hover:bg-red-800"
                     onDoubleClick={() => dispatch(removeFromCart(undefined))}
                 >
                     De
