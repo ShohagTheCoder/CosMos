@@ -3,6 +3,7 @@ import { ProductWithID } from "@/app/products/interfaces/product.interface";
 
 export function productArrayToObject(
     items: ProductWithID[] = [], // Default to empty array
+    // eslint-disable-next-line no-unused-vars
     exclude: ((item: ProductWithID) => boolean) | undefined = undefined
 ): Record<string, ProductWithID> {
     if (exclude) {

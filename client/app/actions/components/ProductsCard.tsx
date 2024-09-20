@@ -41,7 +41,7 @@ function ProductsCard({ selected, callback, products }: ProductsCardProps) {
                         >
                             {showProductImage ? (
                                 <img
-                                    className="w-full h-[240px] object-cover"
+                                    className="w-full md:h-[180px] xl:h-[220px] object-cover"
                                     src={`/images/products/${product.image}`}
                                     alt={product.name}
                                 />

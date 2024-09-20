@@ -8,7 +8,6 @@ import {
     addDiscount,
     addExtraDiscount,
     addToCart,
-    addToCartWith,
     removeFromCart,
     resetSalePrice,
     selectNexProduct,
@@ -708,7 +707,17 @@ export function useHandleKeyUp(
                     break;
             }
         },
-        [commandCounter.value, command, dispatch, setCommand]
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [
+            commandCounter.value,
+            command,
+            dispatch,
+            setCommand,
+            filteredCustomers,
+            filteredProducts,
+            isCustomers,
+            cart.selectedProductIndex,
+        ]
     );
 
     return {

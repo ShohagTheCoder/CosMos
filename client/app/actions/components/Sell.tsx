@@ -4,7 +4,6 @@ import { CustomerWithId } from "@/app/interfaces/customer.inerface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import {
     addToCart,
-    addToCartWith,
     CartState,
     changeActiveProduct,
     initialCartState,
@@ -26,7 +25,6 @@ import SupplierCard from "./components/SupplierCard";
 import { logout } from "../functions/authHandlers";
 import ProductsCard from "./ProductsCard";
 import { arrayToObjectById } from "../functions/arrayToObjectById";
-import productsMap from "@/app/utils/productsMap";
 import { updateHelperField } from "@/app/store/slices/helperSlice";
 import { productArrayToObject } from "../functions/productArrayToObject";
 import useNotification from "@/app/hooks/useNotification";
@@ -224,7 +222,7 @@ export default function Sell({
                     className="justify-center"
                 />
                 <div className="ps-[94px] 2xl:ps-[150px] pe-3 bg-white dark:bg-gray-950">
-                    <div className="relative grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 gap-6 py-4 h-screen overflow-hidden">
+                    <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 gap-6 py-4 h-auto lg:h-screen overflow-hidden">
                         <div className="col-span-8 lg:col-span-5 h-full overflow-hidden">
                             <div className="bg-gray-300 dark:bg-gray-950 p-3 border-2 border-dashed border-slate-500 mb-3 flex justify-between items-center">
                                 <div className="flex gap-3 justify-start">
@@ -341,7 +339,7 @@ export default function Sell({
                                 />
                             )}
                         </div>
-                        <div className="pe-3 col-span-8 lg:col-span-3 h-full overflow-x-hidden overflow-y-auto cosmos-scrollbar">
+                        <div className="lg:pe-3 col-span-8 lg:col-span-3 h-full overflow-x-hidden overflow-y-auto cosmos-scrollbar">
                             <div className="min-h-full">
                                 <CartProduct />
                                 <CustomerDetails />

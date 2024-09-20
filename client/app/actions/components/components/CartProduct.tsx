@@ -11,12 +11,13 @@ import {
     updateDiscountAmount,
     removeFromCart,
     updateExtraDiscountAmount,
+    updateSalePrice,
 } from "@/app/store/slices/cartSlice"; // Assuming your cart slice location
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { RootState } from "@/app/store/store";
 import getUnits from "@/app/functions/getUnits";
-import NumberInputControl from "@/app/elements/inputs/NumberInputControl";
 import TrashIcon from "@/app/icons/TrashIcon";
+import formatNumber from "@/app/functions/formatNumber";
 
 function CartProduct() {
     const dispatch = useDispatch();
@@ -95,6 +96,24 @@ function CartProduct() {
                     }
                 >
                     D-
+                </button>
+                <button
+                    className="py-2 px-3 rounded-lg select-none hover:bg-green-800"
+                    onClick={() =>
+                        dispatch(
+                            updateSalePrice({ key: undefined, amount: -1 })
+                        )
+                    }
+                >
+                    P+
+                </button>
+                <button
+                    className="py-2 px-3 rounded-lg select-none hover:bg-green-800"
+                    onClick={() =>
+                        dispatch(updateSalePrice({ key: undefined, amount: 1 }))
+                    }
+                >
+                    P-
                 </button>
                 <button
                     className="py-2 px-3 rounded-lg select-none hover:bg-red-800"
@@ -342,8 +361,11 @@ function CartProduct() {
                                                 <p>{product.quantity}</p>
                                                 <p>=</p>
                                                 <p>
-                                                    {product.unit.value *
-                                                        product.quantity}
+                                                    {formatNumber(
+                                                        product.unit.value *
+                                                            product.quantity,
+                                                        3
+                                                    )}
                                                 </p>
                                                 <p>
                                                     {
