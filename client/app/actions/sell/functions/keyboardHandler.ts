@@ -8,8 +8,12 @@ import {
     addDiscount,
     addExtraDiscount,
     addToCart,
+    addToCartWith,
     removeFromCart,
     resetSalePrice,
+    selectNexProduct,
+    selectPreviousProduct,
+    shiftMeasurementTo,
     updatePaid,
     updateQuantity,
     addCustomer,
@@ -524,70 +528,6 @@ export function useHandleKeyUp(
                 return;
             }
         }
-
-        switch (e.key) {
-            case "Shift":
-                // setIsShift(true);
-                break;
-
-            // case "ArrowLeft":
-            //     e.preventDefault();
-            //     if (filteredCustomers && filteredProducts) {
-            //         max = isCustomers
-            //             ? Object.keys(filteredCustomers).length - 1
-            //             : Object.keys(filteredProducts).length - 1;
-            //         if (command.length > 0) {
-            //             dispatch(selectPreviousProduct(max));
-            //         } else {
-            //             dispatch(shiftMeasurementTo(-1));
-            //         }
-            //     }
-            //     break;
-            // case "ArrowRight":
-            //     e.preventDefault();
-            //     if (filteredCustomers && filteredProducts) {
-            //         max = isCustomers
-            //             ? Object.keys(filteredCustomers).length - 1
-            //             : Object.keys(filteredProducts).length - 1;
-            //         if (command.length > 0) {
-            //             dispatch(selectNexProduct(max));
-            //         } else {
-            //             dispatch(shiftMeasurementTo(1));
-            //         }
-            //     }
-            //     break;
-            case "F10":
-                e.preventDefault();
-                window.location.href = "./return";
-                break;
-            case "Enter":
-                if (
-                    !isCustomers &&
-                    command.length > 0 &&
-                    filteredCustomers &&
-                    filteredProducts
-                ) {
-                    if (
-                        Object.keys(filteredProducts).length > 0 &&
-                        /^[a-zA-Z]+/.test(command)
-                    ) {
-                        const product = {
-                            ...Object.values(filteredProducts)[
-                                cart.selectedProductIndex
-                            ],
-                            quantity: 1,
-                        };
-                        dispatch(addToCart(product));
-                        setCommand("");
-                    }
-                } else if (command.length > 1 && filteredCustomers) {
-                    if (Object.keys(filteredCustomers).length > 0) {
-                        handleAddCustomer();
-                        setCommand("");
-                    }
-                }
-                break;
-        }
     };
 
     const handleKeyUp = useCallback(
@@ -701,6 +641,71 @@ export function useHandleKeyUp(
                         );
                         return;
                 }
+            }
+
+            let max = 0;
+            switch (e.key) {
+                case "Shift":
+                    // setIsShift(true);
+                    break;
+
+                case "ArrowLeft":
+                    e.preventDefault();
+                    if (filteredCustomers && filteredProducts) {
+                        max = isCustomers
+                            ? Object.keys(filteredCustomers).length - 1
+                            : Object.keys(filteredProducts).length - 1;
+                        if (command.length > 0) {
+                            dispatch(selectPreviousProduct(max));
+                        } else {
+                            dispatch(shiftMeasurementTo(-1));
+                        }
+                    }
+                    break;
+                case "ArrowRight":
+                    e.preventDefault();
+                    if (filteredCustomers && filteredProducts) {
+                        max = isCustomers
+                            ? Object.keys(filteredCustomers).length - 1
+                            : Object.keys(filteredProducts).length - 1;
+                        if (command.length > 0) {
+                            dispatch(selectNexProduct(max));
+                        } else {
+                            dispatch(shiftMeasurementTo(1));
+                        }
+                    }
+                    break;
+                case "F10":
+                    e.preventDefault();
+                    window.location.href = "./return";
+                    break;
+                case "Enter":
+                    if (
+                        !isCustomers &&
+                        command.length > 0 &&
+                        filteredCustomers &&
+                        filteredProducts
+                    ) {
+                        if (
+                            Object.keys(filteredProducts).length > 0 &&
+                            /^[a-zA-Z]+/.test(command)
+                        ) {
+                            const product = {
+                                ...Object.values(filteredProducts)[
+                                    cart.selectedProductIndex
+                                ],
+                                quantity: 1,
+                            };
+                            dispatch(addToCart(product));
+                            setCommand("");
+                        }
+                    } else if (command.length > 1 && filteredCustomers) {
+                        if (Object.keys(filteredCustomers).length > 0) {
+                            handleAddCustomer();
+                            setCommand("");
+                        }
+                    }
+                    break;
             }
         },
         [commandCounter.value, command, dispatch, setCommand]

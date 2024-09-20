@@ -146,7 +146,10 @@ function CartProduct() {
                                                         }
                                                     </td>
                                                     <td className="pe-3">
-                                                        {product.mainPrice} ৳
+                                                        {product.mainPrice.toFixed(
+                                                            0
+                                                        )}{" "}
+                                                        ৳
                                                     </td>
                                                     <td className="pe-3">%</td>
                                                     <td className="pe-3 text-center">
@@ -170,9 +173,10 @@ function CartProduct() {
                                                         1 {product.unit.label}
                                                     </td>
                                                     <td className="pe-3">
-                                                        {product.mainPrice *
-                                                            product.unit
-                                                                .value}{" "}
+                                                        {(
+                                                            product.mainPrice *
+                                                            product.unit.value
+                                                        ).toFixed(0)}{" "}
                                                         ৳
                                                     </td>
                                                     <td className="pe-3">%</td>
@@ -204,9 +208,10 @@ function CartProduct() {
                                                         />
                                                     </td>
                                                     <td className="pe-3 text-end">
-                                                        {product.price *
-                                                            product.unit
-                                                                .value}{" "}
+                                                        {(
+                                                            product.price *
+                                                            product.unit.value
+                                                        ).toFixed(0)}{" "}
                                                         ৳
                                                     </td>
                                                 </tr>
@@ -217,8 +222,10 @@ function CartProduct() {
                                                             product.unit.label}
                                                     </td>
                                                     <td className="pe-3">
-                                                        {product.price *
-                                                            product.count}{" "}
+                                                        {(
+                                                            product.price *
+                                                            product.count
+                                                        ).toFixed(0)}{" "}
                                                         ৳
                                                     </td>
                                                     <td className="pe-3">%</td>
@@ -246,7 +253,10 @@ function CartProduct() {
                                                         />
                                                     </td>
                                                     <td className="pe-3 text-lg text-end">
-                                                        {product.subTotal} ৳
+                                                        {product.subTotal.toFixed(
+                                                            0
+                                                        )}{" "}
+                                                        ৳
                                                     </td>
                                                 </tr>
                                             </tbody>
