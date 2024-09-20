@@ -17,6 +17,7 @@ import { PurchasesModule } from './purchases/purchases.module';
 import { SettingsModule } from './settings/settings.module';
 import { CommandsModule } from './commands/commands.module';
 import { CategoriesModule } from './categories/categories.module';
+import { RegisterModule } from './register/register.module';
 
 @Module({
     imports: [
@@ -36,6 +37,7 @@ import { CategoriesModule } from './categories/categories.module';
         SettingsModule,
         CommandsModule,
         CategoriesModule,
+        RegisterModule,
     ],
     controllers: [AppController],
     providers: [AppService],

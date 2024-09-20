@@ -22,7 +22,7 @@ export default async function RootLayout({
             const { data }: any = await axios.get(
                 `http://localhost:3001/settings/byUserId/${userId}/darkMode`
             );
-            darkMode = data;
+            darkMode = data || true;
         }
     } catch (error) {
         console.log("faild to fetch user settings dark mode field");

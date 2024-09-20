@@ -28,6 +28,11 @@ export class UsersController {
         return this.usersService.findAll();
     }
 
+    @Get('shop')
+    async findShop() {
+        return await this.usersService.findShop();
+    }
+
     @Get(':id')
     async findOne(@Param('id') id: string) {
         return await this.usersService.findOne(id);

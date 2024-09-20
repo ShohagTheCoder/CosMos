@@ -6,6 +6,7 @@ import { Sell, SellDocument } from './schemas/sell.schema';
 import { CreateSellDto } from './dto/create-sell.dto';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { StocksService } from 'src/stocks/stocks.service';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class SellsService {
@@ -13,6 +14,7 @@ export class SellsService {
         @InjectModel(Sell.name) private sellModel: Model<SellDocument>,
         private accountsService: AccountsService,
         private stocksService: StocksService,
+        private usersService: UsersService,
     ) {}
 
     findAll() {
@@ -31,6 +33,13 @@ export class SellsService {
 
     async create(createSellDto: CreateSellDto) {
         try {
+            const shop = await this.usersService.findShop();
+
+            if (!shop) {
+                throw new Error('Shop not found to exicute sell');
+                return;
+            }
+
             // Update stock for each product in cart
             for (const product of Object.values(createSellDto.products)) {
                 if (product.purchaseEnable) {
@@ -47,7 +56,7 @@ export class SellsService {
             // Create transaction from user to cart for sell's paid
             const userToCart = await this.accountsService.sendMoney({
                 senderId: createSellDto.user.account,
-                receiverId: '66c6d8a0b0f83bdb4ed36c97',
+                receiverId: shop.account,
                 amount: createSellDto.paid,
                 action: 'sells',
                 note: createSellDto.note,
@@ -59,7 +68,7 @@ export class SellsService {
             if (createSellDto.due > 0 && createSellDto.customer) {
                 const customerToCart = await this.accountsService.sendMoney({
                     senderId: createSellDto.customer.account,
-                    receiverId: '66c6d8a0b0f83bdb4ed36c97',
+                    receiverId: shop.account,
                     amount: createSellDto.due,
                     action: 'sells due',
                     note: createSellDto.note,

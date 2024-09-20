@@ -124,6 +124,7 @@ export function useHandleKeyUp(
             "NumpadSubtract",
             "ArrowUp",
             "ArrowDown",
+            "Tab",
         ];
         if (specialKeys.includes(e.code)) {
             e.preventDefault();

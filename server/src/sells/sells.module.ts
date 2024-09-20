@@ -12,6 +12,10 @@ import {
 } from 'src/transactions/schemas/transaction.schema';
 import { Product, ProductSchema } from 'src/products/schemas/product.schema';
 import { StocksService } from 'src/stocks/stocks.service';
+import { User } from 'src/users/entities/user.entity';
+import { Setting, SettingSchema } from 'src/settings/schemas/setting.schema';
+import { UserSchema } from 'src/users/schemas/user.schema';
+import { UsersService } from 'src/users/users.service';
 
 @Module({
     imports: [
@@ -21,9 +25,11 @@ import { StocksService } from 'src/stocks/stocks.service';
             { name: Account.name, schema: AccountSchema },
             { name: Transaction.name, schema: TransactionSchema },
             { name: Product.name, schema: ProductSchema },
+            { name: User.name, schema: UserSchema },
+            { name: Setting.name, schema: SettingSchema },
         ]),
     ],
     controllers: [SellsController],
-    providers: [SellsService, AccountsService, StocksService],
+    providers: [SellsService, AccountsService, StocksService, UsersService],
 })
 export class SellsModule {}

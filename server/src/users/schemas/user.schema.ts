@@ -3,22 +3,19 @@ import mongoose, { Document } from 'mongoose';
 
 @Schema()
 export class User extends Document {
-    @Prop()
-    username: string;
-
-    @Prop()
+    @Prop({ required: true })
     name: string;
 
-    @Prop()
-    email: string;
-
-    @Prop()
+    @Prop({ required: true })
     password: string;
+
+    @Prop({ required: true })
+    phoneNumber: string;
 
     @Prop({ type: mongoose.Schema.Types.Mixed })
     actions: Record<string, object>;
 
-    @Prop()
+    @Prop({ default: 'user' })
     role: string;
 
     @Prop()

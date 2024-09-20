@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+    Injectable,
+    NotFoundException,
+    UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './entities/user.entity';
 import { Model } from 'mongoose';
@@ -14,7 +18,7 @@ export class UsersService {
         @InjectModel(Setting.name) private settingModel: Model<SettingDocument>,
     ) {}
 
-    create(createUserDto: any) {
+    async create(createUserDto: any) {
         const user = new this.userModel(createUserDto);
         const account = new this.accountModel({
             owner: user._id.toString(),
@@ -37,13 +41,17 @@ export class UsersService {
         // Updaet user setting fied
         user.setting = setting._id.toString();
 
-        user.save();
-        setting.save();
-        return account.save();
+        await user.save();
+        await setting.save();
+        return await account.save();
     }
 
     findAll() {
         return this.userModel.find();
+    }
+
+    async findShop() {
+        return await this.userModel.findOne({ role: 'shop' });
     }
 
     async findOne(id: string) {

@@ -26,6 +26,7 @@ export async function POST(req: Request) {
             response.cookies.set("user-id", String(user.sub), {
                 path: "/",
                 httpOnly: false,
+                maxAge: 60 * 60 * 24, // 1 day
             });
 
             return response;
