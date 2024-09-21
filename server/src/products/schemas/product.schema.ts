@@ -84,19 +84,19 @@ export class Product extends Document {
     @Prop({ type: mongoose.Schema.Types.Mixed, required: true })
     units: Record<string, Unit>;
 
-    @Prop({ type: [Price], required: true })
+    @Prop({ required: true })
     prices: Price[];
 
-    @Prop({ type: [Measurement], required: true })
+    @Prop({ required: true })
     measurements: Measurement[];
 
     @Prop()
     saleUnitsBase: string;
 
-    @Prop({ type: [Price], required: true })
+    @Prop({ required: true })
     purchasePrices: Price[];
 
-    @Prop({ type: [Measurement], required: true })
+    @Prop({ required: true })
     purchaseMeasurements: Measurement[];
 
     @Prop({ required: true })

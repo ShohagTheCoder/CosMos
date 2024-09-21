@@ -1,7 +1,7 @@
 import getStockLine from "@/app/functions/getStockLine";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 
-interface ProductsCardProps {
+interface ProductsRowProps {
     selected: number;
     // eslint-disable-next-line no-unused-vars
     callback: (product: ProductWithID) => void;
@@ -9,14 +9,12 @@ interface ProductsCardProps {
     showProductImage: boolean;
 }
 
-function ProductsCard({
+function ProductsRow({
     selected,
     callback,
     products,
     showProductImage = true,
-}: ProductsCardProps) {
-    // console.log("Products card");
-
+}: ProductsRowProps) {
     function handleCallback(id: string) {
         if (products) {
             callback(products[id]);
@@ -24,13 +22,13 @@ function ProductsCard({
     }
 
     return (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="flex flex-col gap-3">
             {Object.values(products).map(
                 (product: ProductWithID, key: number) => (
                     <div
                         key={product._id}
                         onClick={() => handleCallback(product._id)}
-                        className={`max-w-sm rounded overflow-hidden bg-gray-300 dark:bg-gray-800 shadow ${
+                        className={`flex py-1 rounded overflow-hidden bg-gray-300 dark:bg-gray-800 shadow ${
                             selected == key
                                 ? "bg-green-200 dark:bg-green-900"
                                 : ""
@@ -38,34 +36,36 @@ function ProductsCard({
                     >
                         {showProductImage ? (
                             <img
-                                className="w-full md:h-[180px] xl:h-[220px] object-cover"
+                                className="w-[60px] object-cover"
                                 src={`/images/products/${product.image}`}
                                 alt={product.name}
                             />
                         ) : (
                             ""
                         )}
-                        <div>
-                            <div className="p-3">
-                                <h2 className="font-semibold text-xl mb-1">
-                                    {product.name}
-                                </h2>
-                                <p className="text-base mb-1">
-                                    {product.description}
-                                </p>
+                        <div className="w-full flex justify-between items-center">
+                            <div className="flex items-center gap-3">
+                                <div className="min-w-[200px] ps-3">
+                                    <h2 className="font-semibold text-xl mb-1">
+                                        {product.name}
+                                    </h2>
+                                    <p className="text-base mb-1">
+                                        {product.description}
+                                    </p>
+                                </div>
                                 <p>
                                     #{" "}
                                     {getStockLine(product.stock, product.units)}
                                 </p>
                             </div>
-                            <div className="flex flex-wrap justify-between items-center bg-gray-400 dark:bg-slate-700 py-2 px-3">
-                                <span>
+                            <div className="flex gap-3 min-w-[200px] mr-3 justify-between items-center py-2 px-3">
+                                <p>
                                     1{" "}
                                     {
                                         product.units[product.displaySaleUnit]
                                             .label
                                     }
-                                </span>
+                                </p>
                                 <p className="font-semibold text-xl text-green-900 dark:text-green-300 inline-block">
                                     {product.price *
                                         product.units[product.displaySaleUnit]
@@ -81,4 +81,4 @@ function ProductsCard({
     );
 }
 
-export default ProductsCard;
+export default ProductsRow;

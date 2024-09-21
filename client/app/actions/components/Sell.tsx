@@ -30,6 +30,7 @@ import { productArrayToObject } from "../functions/productArrayToObject";
 import useNotification from "@/app/hooks/useNotification";
 import FinalView from "../sell/components/FinalView";
 import { useHandleKeyUp } from "../sell/functions/keyboardHandler";
+import ProductsRow from "./ProductsRow";
 
 interface SellProps {
     productsArray: ProductWithID[];
@@ -62,6 +63,12 @@ export default function Sell({
     let noteRef = useRef<HTMLTextAreaElement>(null);
     const helper = useSelector((state: RootState) => state.helper);
     const activeSellPage = useRef("F5");
+    const [isRow, setIsRow] = useState(
+        localStorage.getItem("productsRow") == "yes" ? true : false
+    );
+    const [showProductImage, setShowProductImage] = useState(
+        localStorage.getItem("showProductImage") == "no" ? false : true
+    );
 
     const { notification, success, error } = useNotification();
 
@@ -314,6 +321,33 @@ export default function Sell({
                             <div className="mt-3">
                                 {/* <ProductsCard selected={} /> */}
                             </div>
+                            <div></div>
+                            <div className="flex gap-4 py-2 px-3 mb-3 bg-gray-300  dark:bg-gray-800">
+                                <button
+                                    onClick={() => {
+                                        localStorage.setItem(
+                                            "showProductImage",
+                                            showProductImage ? "no" : "yes"
+                                        );
+                                        setShowProductImage(!showProductImage);
+                                    }}
+                                >
+                                    {showProductImage
+                                        ? "# hide image"
+                                        : "# show image"}
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        localStorage.setItem(
+                                            "productsRow",
+                                            isRow ? "no" : "yes"
+                                        );
+                                        setIsRow(!isRow);
+                                    }}
+                                >
+                                    {isRow ? "# Col" : "# Row"}
+                                </button>
+                            </div>
 
                             {commandCounter.name == "completeSell" &&
                             commandCounter.value >= 1 ? (
@@ -329,14 +363,27 @@ export default function Sell({
                                     )}
                                 </div>
                             ) : (
-                                // <ProductCard products={filteredProducts} />
-                                <ProductsCard
-                                    selected={cart.selectedProductIndex}
-                                    callback={(product) =>
-                                        dispatch(addToCart(product))
-                                    }
-                                    products={filteredProducts}
-                                />
+                                <div>
+                                    {isRow ? (
+                                        <ProductsRow
+                                            selected={cart.selectedProductIndex}
+                                            callback={(product) =>
+                                                dispatch(addToCart(product))
+                                            }
+                                            products={filteredProducts}
+                                            showProductImage={showProductImage}
+                                        />
+                                    ) : (
+                                        <ProductsCard
+                                            selected={cart.selectedProductIndex}
+                                            callback={(product) =>
+                                                dispatch(addToCart(product))
+                                            }
+                                            products={filteredProducts}
+                                            showProductImage={showProductImage}
+                                        />
+                                    )}
+                                </div>
                             )}
                         </div>
                         <div className="lg:pe-3 col-span-8 lg:col-span-3 h-full overflow-x-hidden overflow-y-auto cosmos-scrollbar">
