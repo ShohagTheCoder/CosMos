@@ -19,8 +19,10 @@ export class ProductsService {
         try {
             return await this.productModel
                 .find()
-                .select('-purchasePrices -purchaseMeasurements')
-                .populate('stock')
+                .select('-purchasePrices -purchaseMeasurements') // Exclude purchasePrices and purchaseMeasurements
+                .populate('stock') // Populate stock field
+                .populate('brand') // Populate brand field
+                .populate('category') // Populate category field
                 .exec();
         } catch (error) {
             console.error('Error finding products:', error);

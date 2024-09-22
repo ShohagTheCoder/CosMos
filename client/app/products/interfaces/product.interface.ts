@@ -24,10 +24,9 @@ export interface Resource {
     count: number;
     quantity: number;
 }
-
 export default interface Product {
     [x: string]: any;
-    _id?: string;
+    _id?: string; // This remains optional in the base Product interface
     SKU: string;
     name: string;
     image?: string;
@@ -57,18 +56,21 @@ export default interface Product {
     purchaseEnable: boolean;
     displaySaleUnit?: string;
     displayPurchaseUnit?: string;
-    brand?: string;
-    category?: string;
+    brand?: string | { name: string }; // Allow either a string or an object
+    category?: string | { name: string }; // Same here
     updatePrice: number;
+    keywords: string[];
 }
 
 export interface ProductWithID extends Product {
-    _id: string; // Since Product has _id as optional, you can enforce it here
+    _id: string; // Enforce _id as required
     stock: {
         stock: number;
     };
     subTotal: number;
     displaySaleUnit: string;
     displayPurchaseUnit: string;
-    product: Product; // If this is a reference back to Product
+    brand: { name: string }; // Enforce the populated form
+    category: { name: string }; // Enforce the populated form
+    product?: Product; // Allow this to be optional if this is a reference back to the Product
 }

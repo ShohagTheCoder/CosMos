@@ -27,6 +27,7 @@ const initialState: Product = {
     priority: 1,
     quantity: 1,
     count: 1,
+    keywords: [],
     discount: 0,
     extraDiscount: 0,
     stockAlert: 10,

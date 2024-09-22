@@ -21,6 +21,11 @@ export class SellsController {
         return this.sellsService.create(createSellDto);
     }
 
+    @Get('findByUser/:id')
+    async findByUser(@Param('id') id: string) {
+        return this.sellsService.findByUser(id);
+    }
+
     @Get('findByCustomer/:id')
     async findByCustomer(@Param('id') id: string) {
         return this.sellsService.findByCustomer(id);

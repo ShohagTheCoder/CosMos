@@ -35,7 +35,8 @@ export function useHandleKeyUp(
     filteredCustomers: any,
     isCustomers: any,
     handleSellPageChange: any,
-    changeCartActiveProductTo: any
+    changeCartActiveProductTo: any,
+    handleCompleteSell: () => void
 ) {
     const dispatch = useDispatch();
     const longPressDuration = 400;
@@ -303,7 +304,7 @@ export function useHandleKeyUp(
                 commandCounter.value += 1;
                 if (commandCounter.value >= 3) {
                     setCommandCounter({ name: "unknown", value: 0 });
-                    console.log("Complete sell");
+                    handleCompleteSell();
                 }
             } else {
                 setCommandCounter({ name: "completeSell", value: 1 });

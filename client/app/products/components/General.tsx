@@ -1,6 +1,7 @@
 "use client";
 import ImageInput from "@/app/elements/inputs/ImageInput";
 import NumberInput from "@/app/elements/inputs/NumberInput";
+import TagsInput from "@/app/elements/inputs/TagsInput";
 import TextInput from "@/app/elements/inputs/TextInput";
 import PulseLoading from "@/app/elements/loding/PulseLoading";
 import SearchableSelectInput from "@/app/elements/select/SearchableSelectInput";
@@ -175,6 +176,26 @@ function General() {
                     dispatch(
                         updateProductField({ field: "image", value: imageName })
                     );
+                }}
+            />
+            <TagsInput
+                value={product.keywords}
+                onChange={(keywords) =>
+                    dispatch(
+                        updateProductField({
+                            field: "keywords",
+                            value: keywords,
+                        })
+                    )
+                }
+                options={{
+                    validate: (keywords) => keywords.length >= 3,
+                    label: "Keywords",
+                    placeholder: "Enter keywords...",
+                    validMessage: "Valid keyword!",
+                    invalidMessage:
+                        "Keyword must be at least 3 characters long.",
+                    inputClassName: "text-lg",
                 }}
             />
             <Textarea

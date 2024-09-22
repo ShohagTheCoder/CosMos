@@ -28,7 +28,7 @@ function ProductsRow({
                     <div
                         key={product._id}
                         onClick={() => handleCallback(product._id)}
-                        className={`flex py-1 rounded overflow-hidden bg-gray-300 dark:bg-gray-800 shadow ${
+                        className={`flex rounded overflow-hidden bg-gray-300 dark:bg-gray-800 shadow ${
                             selected == key
                                 ? "bg-green-200 dark:bg-green-900"
                                 : ""
@@ -43,7 +43,7 @@ function ProductsRow({
                         ) : (
                             ""
                         )}
-                        <div className="w-full flex justify-between items-center">
+                        <div className="w-full flex justify-between items-center py-1">
                             <div className="flex items-center gap-3">
                                 <div className="min-w-[200px] ps-3">
                                     <h2 className="font-semibold text-xl mb-1">

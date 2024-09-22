@@ -64,12 +64,11 @@ export default function Sell({
     const helper = useSelector((state: RootState) => state.helper);
     const activeSellPage = useRef("F5");
     const [isRow, setIsRow] = useState(
-        localStorage.getItem("productsRow") == "yes" ? true : false
+        localStorage.getItem("productsRow") == "yes" ? true : false || false
     );
     const [showProductImage, setShowProductImage] = useState(
-        localStorage.getItem("showProductImage") == "no" ? false : true
+        localStorage.getItem("showProductImage") == "no" ? false : true || true
     );
-
     const { notification, success, error } = useNotification();
 
     // Single use effect
@@ -107,6 +106,8 @@ export default function Sell({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // console.log(products);
+
     useEffect(() => {
         if (/^\s+/.test(command) && customers) {
             setIsCustomers(true);
@@ -134,6 +135,18 @@ export default function Sell({
                 Record<string, ProductWithID>
             >((acc, [key, value]) => {
                 if (value.name.toLowerCase().includes(command.toLowerCase())) {
+                    acc[key] = value;
+                } else if (
+                    value.keywords.some((keyword) =>
+                        keyword.toLowerCase().includes(command.toLowerCase())
+                    )
+                ) {
+                    acc[key] = value;
+                } else if (
+                    value.brand?.name
+                        .toLowerCase()
+                        .includes(command.toLowerCase())
+                ) {
                     acc[key] = value;
                 }
                 return acc;
@@ -214,7 +227,8 @@ export default function Sell({
         filteredCustomers,
         isCustomers,
         handleSellPageChange,
-        changeCartActiveProductTo
+        changeCartActiveProductTo,
+        handleCompleteSell
         // commandCounter
     );
 
@@ -239,7 +253,7 @@ export default function Sell({
                                                 ? "bg-green-700"
                                                 : ""
                                         }`}
-                                        onDoubleClick={() =>
+                                        onClick={() =>
                                             handleSellPageChange("F5")
                                         }
                                     >
@@ -254,7 +268,7 @@ export default function Sell({
                                                 ? "bg-green-700"
                                                 : ""
                                         }`}
-                                        onDoubleClick={() =>
+                                        onClick={() =>
                                             handleSellPageChange("F6")
                                         }
                                     >
@@ -269,7 +283,7 @@ export default function Sell({
                                                 ? "bg-green-700"
                                                 : ""
                                         }`}
-                                        onDoubleClick={() =>
+                                        onClick={() =>
                                             handleSellPageChange("F7")
                                         }
                                     >
@@ -284,7 +298,7 @@ export default function Sell({
                                                 ? "bg-green-700"
                                                 : ""
                                         }`}
-                                        onDoubleClick={() =>
+                                        onClick={() =>
                                             handleSellPageChange("F8")
                                         }
                                     >

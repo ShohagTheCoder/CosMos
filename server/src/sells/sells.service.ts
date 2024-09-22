@@ -21,6 +21,12 @@ export class SellsService {
         return this.sellModel.find();
     }
 
+    findByUser(id: string) {
+        return this.sellModel.find({
+            'user._id': id,
+        });
+    }
+
     findByCustomer(id: string) {
         return this.sellModel.find({
             'customer._id': id,

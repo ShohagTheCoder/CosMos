@@ -90,6 +90,9 @@ export class Product extends Document {
     @Prop({ required: true })
     measurements: Measurement[];
 
+    @Prop({ required: true })
+    keywords: string[];
+
     @Prop()
     saleUnitsBase: string;
 

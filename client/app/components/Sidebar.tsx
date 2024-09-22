@@ -8,8 +8,11 @@ import CustomersIcon from "../icons/CustomersIcon";
 import CartIcon from "../icons/CartIcon";
 import BagIcon from "../icons/BagIcon";
 import AddIcon from "../icons/AddIcon";
+import Cookies from "js-cookie";
 
 function Sidebar({ active = "home" }: { active: string }) {
+    const userId = Cookies.get("user-id");
+
     function getBtnStyleClass(value: string) {
         return `h-[40px] w-[40px] hover:scale-125 transition-transform rounded-full ${
             active == value ? "sidebar-item-active" : ""
@@ -88,7 +91,7 @@ function Sidebar({ active = "home" }: { active: string }) {
                 <div className="flex flex-col justify-center items-center gap-5 border-t-2 border-dashed pt-5 border-gray-500">
                     <button className={getBtnStyleClass("users")}>
                         <a
-                            href={`/users`}
+                            href={`/users/${userId}`}
                             className="text-center flex justify-center items-center"
                         >
                             <UserIcon />

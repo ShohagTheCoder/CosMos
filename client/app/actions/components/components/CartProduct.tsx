@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
     incrementQuantity,
@@ -22,6 +22,9 @@ import formatNumber from "@/app/functions/formatNumber";
 function CartProduct() {
     const dispatch = useDispatch();
     let cart = useSelector((state: RootState) => state.cart);
+    const [showCartImage, setShowCartImage] = useState(
+        localStorage.getItem("showCartImage") == "no" ? false : true
+    );
 
     // console.log("Cart product page");
 
@@ -121,6 +124,18 @@ function CartProduct() {
                 >
                     <TrashIcon height="20" width="20" />
                 </button>
+                <button
+                    className="py-2 px-3 rounded-lg select-none hover:bg-green-800"
+                    onClick={() => {
+                        localStorage.setItem(
+                            "showCartImage",
+                            showCartImage ? "no" : "yes"
+                        );
+                        setShowCartImage(!showCartImage);
+                    }}
+                >
+                    IMG
+                </button>
             </div>
             {Object.values(cart.products).map((p: ProductWithID) => {
                 let product = getProductForCart(p);
@@ -138,20 +153,24 @@ function CartProduct() {
                                 }`}
                             >
                                 <div className="overflow-hidden flex">
-                                    <div className="w-[160px] h-auto">
-                                        <img
-                                            src={`/images/products/${product.image}`}
-                                            alt={product.name}
-                                            className="h-full object-cover"
-                                            onClick={() =>
-                                                dispatch(
-                                                    changeActiveProduct(
-                                                        product._id
+                                    {showCartImage ? (
+                                        <div className="w-[160px] h-auto">
+                                            <img
+                                                src={`/images/products/${product.image}`}
+                                                alt={product.name}
+                                                className="h-full object-cover"
+                                                onClick={() =>
+                                                    dispatch(
+                                                        changeActiveProduct(
+                                                            product._id
+                                                        )
                                                     )
-                                                )
-                                            }
-                                        />
-                                    </div>
+                                                }
+                                            />
+                                        </div>
+                                    ) : (
+                                        ""
+                                    )}
                                     <div className="flex flex-wrap w-full">
                                         <table className="text-left text-sm w-full">
                                             <tbody>
@@ -386,18 +405,22 @@ function CartProduct() {
                             key={p._id}
                             className="flex gap-3 border-2 border-dashed border-gray-600 p-2 mb-2"
                         >
-                            <div className="">
-                                <img
-                                    onClick={() =>
-                                        dispatch(
-                                            changeActiveProduct(product._id)
-                                        )
-                                    }
-                                    src={`/images/products/${product.image}`}
-                                    className="h-[50px] w-[50px] object-cover"
-                                    alt={product.image}
-                                />
-                            </div>
+                            {showCartImage ? (
+                                <div className="">
+                                    <img
+                                        onClick={() =>
+                                            dispatch(
+                                                changeActiveProduct(product._id)
+                                            )
+                                        }
+                                        src={`/images/products/${product.image}`}
+                                        className="h-[50px] w-[50px] object-cover"
+                                        alt={product.image}
+                                    />
+                                </div>
+                            ) : (
+                                ""
+                            )}
                             <div className="w-full">
                                 <p>{product.name}</p>
                                 <div className="flex justify-between">
