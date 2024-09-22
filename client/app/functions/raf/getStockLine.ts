@@ -1,0 +1,26 @@
+// export default function getStockLine(stock: any, units: Record<string, Unit>) {
+//     let output = "";
+//     let quantity = stock.stock;
+//     let unitsClone = getUnits(units);
+
+//     while (quantity > 0) {
+//         const unit = getBiggestUnitFor(quantity, unitsClone);
+//         if (unit) {
+//             let value = Math.floor(quantity / unit.value); // Get the number of units
+//             quantity -= value * unit.value; // Reduce quantity by the total value of those units
+
+//             if (value > 0) {
+//                 output += value + " " + unit.unit + ", ";
+//             }
+//         } else {
+//             break; // Break if no valid unit is found
+//         }
+//     }
+
+//     // Remove the last comma and space if present
+//     if (output.endsWith(", ")) {
+//         output = output.slice(0, -2);
+//     }
+
+//     return output;
+// }

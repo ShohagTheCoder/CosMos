@@ -152,7 +152,7 @@ function General() {
                     className="mb-3"
                 />
                 <SearchableSelectInput
-                    value={product.brand || ""}
+                    value={product.brand || "No brand"}
                     onChange={(e) =>
                         dispatch(
                             updateProductField({

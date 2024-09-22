@@ -55,10 +55,7 @@ function ProductsCard({
                                 <p className="text-base mb-1">
                                     {product.description}
                                 </p>
-                                <p>
-                                    #{" "}
-                                    {getStockLine(product.stock, product.units)}
-                                </p>
+                                <p># {getStockLine(product)}</p>
                             </div>
                             <div className="flex flex-wrap justify-between items-center bg-gray-400 dark:bg-slate-700 py-2 px-3">
                                 <span>

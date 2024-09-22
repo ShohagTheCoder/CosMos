@@ -1,29 +1,25 @@
-import { Unit } from "../products/interfaces/product.interface";
-import getBiggestUnitFor from "./getBiggestUnitFor";
-import getUnits from "./getUnits";
+import { ProductWithID } from "../products/interfaces/product.interface";
 
-export default function getStockLine(stock: any, units: Record<string, Unit>) {
+export default function getStockLine(product: ProductWithID) {
     let output = "";
-    let quantity = stock.stock;
-    let unitsClone = getUnits(units);
+    let stock = product.stock.stock;
+    let unit = product.units[product.displaySaleUnit];
+    let quantity = 0;
 
-    while (quantity > 0) {
-        const unit = getBiggestUnitFor(quantity, unitsClone);
-        if (unit) {
-            let value = Math.floor(quantity / unit.value); // Get the number of units
-            quantity -= value * unit.value; // Reduce quantity by the total value of those units
-
-            if (value > 0) {
-                output += value + " " + unit.unit + ", ";
-            }
-        } else {
-            break; // Break if no valid unit is found
+    // Check if unit value is valid to avoid an infinite loop
+    if (unit && unit.value > 0) {
+        // Decrease stock by the value of the unit
+        while (stock >= unit.value) {
+            quantity++;
+            stock -= unit.value;
         }
     }
 
-    // Remove the last comma and space if present
-    if (output.endsWith(", ")) {
-        output = output.slice(0, -2);
+    // Use unit.name or product.displaySaleUnit to create meaningful output
+    output += quantity + " " + product.displaySaleUnit;
+
+    if (stock > 0) {
+        output += " " + stock + " " + (product.unit || product.displaySaleUnit); // Fallback to displaySaleUnit
     }
 
     return output;

@@ -180,8 +180,7 @@ export default function Sell({
 
     // Add to cart with product shortcut
     function addToCartByProductShortcut(e: KeyboardEvent, shortcut: string) {
-        // console.log(shortcut);
-        let command = commands.find((_) => _.command == shortcut);
+        let command = commands.find((_) => _.command.toLowerCase() == shortcut);
         if (command && command.value != null) {
             let product = products[command.value];
             if (!product) return;

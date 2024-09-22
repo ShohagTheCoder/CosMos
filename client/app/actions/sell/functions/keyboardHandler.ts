@@ -136,7 +136,7 @@ export function useHandleKeyUp(
             /^[a-zA-Z]$/.test(command) &&
             command == e.key
         ) {
-            addToCartByProductShortcut(e, command + e.key);
+            addToCartByProductShortcut(e, command);
             return;
         }
 
