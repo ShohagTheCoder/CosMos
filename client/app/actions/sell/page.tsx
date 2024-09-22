@@ -8,20 +8,23 @@ import {
     getUserInServer,
 } from "./../functions/apiHandlers";
 import { cookies } from "next/headers";
+import apiClient from "@/app/utils/apiClient";
 
 async function page() {
     const products: ProductWithID[] = await getProductsInServer();
     const customers: CustomerWithId[] = await getCustomersInServer();
+    const { data: commands } = await apiClient.get("commands");
 
     const cookiesList = cookies();
     const userId = cookiesList.get("user-id")?.value;
-    const user: any = await getUserInServer(userId!);
+    const user: any[] = await getUserInServer(userId!);
     return (
         <div>
             <Sell
                 productsArray={products}
                 customersArray={customers}
                 user={user}
+                commands={commands}
             />
         </div>
     );

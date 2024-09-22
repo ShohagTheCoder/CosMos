@@ -36,6 +36,7 @@ export function useHandleKeyUp(
     isCustomers: any,
     handleSellPageChange: any,
     changeCartActiveProductTo: any,
+    addToCartByProductShortcut: any,
     handleCompleteSell: () => void
 ) {
     const dispatch = useDispatch();
@@ -86,11 +87,7 @@ export function useHandleKeyUp(
             let commandKey = splited[0];
             let amount = parseInt(splited[1] + e.key);
             if (commandKey.length > 0) {
-                let productKey = productsMap[commandKey];
-                if (!productKey) return;
-                let product = products[productKey];
-                if (!product) return;
-                dispatch(addToCart(product));
+                addToCartByProductShortcut(e, commandKey);
             }
             setCommand("");
             dispatch(setPriceToWithDiscount({ key: undefined, amount }));
@@ -98,12 +95,7 @@ export function useHandleKeyUp(
         }
 
         if (/^[1-9]+$/.test(command)) {
-            let productKey = productsMap[command];
-            if (!productKey) return;
-            let product = products[productKey];
-            if (!product) return;
-            setCommand("");
-            dispatch(addToCart(product));
+            addToCartByProductShortcut(e, command);
             dispatch(
                 updateQuantity({ key: undefined, quantity: parseInt(e.key) })
             );
@@ -114,26 +106,10 @@ export function useHandleKeyUp(
             let splited = command.split("0", 2);
             let commandKey = splited[0];
             let quantity = parseInt(splited[1] + e.key);
-            let productKey = productsMap[commandKey];
-            if (!productKey) return;
-            let product = products[productKey];
-            if (!product) return;
-            setCommand("");
-            dispatch(addToCart(product));
+            addToCartByProductShortcut(e, commandKey);
             dispatch(updateQuantity({ key: undefined, quantity }));
             return;
         }
-    }
-
-    // Add to cart with product shortcut
-    function addToCartByProductShortcut(e: KeyboardEvent, shortcut: string) {
-        let productKey = productsMap[shortcut];
-        if (!productKey) return;
-        let product = products[productKey];
-        if (!product) return;
-        e.preventDefault();
-        setCommand("");
-        dispatch(addToCart(product));
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {

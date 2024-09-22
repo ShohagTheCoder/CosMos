@@ -40,12 +40,14 @@ interface SellProps {
     productsArray: ProductWithID[];
     customersArray: CustomerWithId[];
     user: any;
+    commands: any[];
 }
 
 export default function Sell({
     productsArray,
     customersArray,
     user,
+    commands,
 }: SellProps) {
     const products = useMemo(
         () => productArrayToObject(productsArray, (item) => !item.sellEnable),
@@ -176,6 +178,20 @@ export default function Sell({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [command]);
 
+    // Add to cart with product shortcut
+    function addToCartByProductShortcut(e: KeyboardEvent, shortcut: string) {
+        // console.log(shortcut);
+        let command = commands.find((_) => _.command == shortcut);
+        if (command && command.value != null) {
+            let product = products[command.value];
+            if (!product) return;
+            e.preventDefault();
+            setCommand("");
+            dispatch(addToCart(product));
+        }
+        return;
+    }
+
     async function handleCompleteSell() {
         try {
             let sell = { ...cart };
@@ -232,6 +248,7 @@ export default function Sell({
         isCustomers,
         handleSellPageChange,
         changeCartActiveProductTo,
+        addToCartByProductShortcut,
         handleCompleteSell
         // commandCounter
     );

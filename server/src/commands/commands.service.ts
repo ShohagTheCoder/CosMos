@@ -8,6 +8,23 @@ export class CommandsService {
     constructor(
         @InjectModel(Command.name) private commandModel: Model<CommandDocument>,
     ) {}
+    async createOne(command: Command): Promise<Command> {
+        try {
+            return await this.commandModel.create(command);
+        } catch (error) {
+            console.error('Error creating a single command:', error);
+            throw new Error('Failed to create a single command');
+        }
+    }
+
+    async createMany(commands: Command[]): Promise<Command[]> {
+        try {
+            return await this.commandModel.insertMany(commands);
+        } catch (error) {
+            console.error('Error creating multiple commands:', error);
+            throw new Error('Failed to create multiple commands');
+        }
+    }
 
     async findAll() {
         return await this.commandModel.find();
