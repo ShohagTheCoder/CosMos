@@ -1,4 +1,5 @@
 import getStockLine from "@/app/functions/getStockLine";
+import StarIcon from "@/app/icons/StarIcon";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 
 interface ProductsCardProps {
@@ -47,9 +48,10 @@ function ProductsCard({
                         )}
                         <div>
                             <div className="p-3">
-                                <h2 className="font-semibold text-xl mb-1">
+                                <h2 className="font-semibold text-xl">
                                     {product.name}
                                 </h2>
+
                                 <p className="text-base mb-1">
                                     {product.description}
                                 </p>

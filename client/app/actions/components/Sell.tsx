@@ -31,6 +31,11 @@ import useNotification from "@/app/hooks/useNotification";
 import FinalView from "../sell/components/FinalView";
 import { useHandleKeyUp } from "../sell/functions/keyboardHandler";
 import ProductsRow from "./ProductsRow";
+import ColsIcon from "@/app/icons/ColsIcon";
+import RowIcon from "@/app/icons/RowIcon";
+import NotImageIcon from "@/app/icons/NotImageIcon";
+import ImageIcon from "@/app/icons/ImageIcon";
+import NotIcon from "@/app/icons/NotIcon";
 
 interface SellProps {
     productsArray: ProductWithID[];
@@ -346,9 +351,11 @@ export default function Sell({
                                         setShowProductImage(!showProductImage);
                                     }}
                                 >
-                                    {showProductImage
-                                        ? "# hide image"
-                                        : "# show image"}
+                                    {showProductImage ? (
+                                        <NotImageIcon />
+                                    ) : (
+                                        <ImageIcon height="20" />
+                                    )}
                                 </button>
                                 <button
                                     onClick={() => {
@@ -359,7 +366,11 @@ export default function Sell({
                                         setIsRow(!isRow);
                                     }}
                                 >
-                                    {isRow ? "# Col" : "# Row"}
+                                    {isRow ? (
+                                        <ColsIcon height="20" />
+                                    ) : (
+                                        <RowIcon height="18" />
+                                    )}
                                 </button>
                             </div>
 

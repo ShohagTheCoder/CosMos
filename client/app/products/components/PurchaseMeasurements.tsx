@@ -11,6 +11,7 @@ import sortDraggedItems from "@/app/functions/sortDraggedItems";
 import { useRef } from "react";
 import NumberInputControl from "@/app/elements/inputs/NumberInputControl";
 import getUnits from "@/app/functions/getUnits";
+import TrashIcon from "@/app/icons/TrashIcon";
 
 function PurchaseMeasurements() {
     const dispatch = useDispatch();
@@ -93,9 +94,9 @@ function PurchaseMeasurements() {
                                     onDoubleClick={() =>
                                         dispatch(removePurchaseMeasurement(key))
                                     }
-                                    className="h-[30px] w-[30px] bg-gray-700 text-white flex items-center justify-center mr-3 rounded ms-auto"
+                                    className="h-[30px] w-[30px] text-white hover:text-red-500 flex items-center justify-center mr-3 rounded ms-auto"
                                 >
-                                    <span className="text-l">&#x1F534;</span>
+                                    <TrashIcon />
                                 </button>
                             </div>
                         </div>

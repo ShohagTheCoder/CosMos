@@ -125,9 +125,9 @@ export function useHandleKeyUp(
         }
     }
 
-    // Add to cart with product sortcut
-    function addToCartByProductSortcut(e: KeyboardEvent, sortcut: string) {
-        let productKey = productsMap[sortcut];
+    // Add to cart with product shortcut
+    function addToCartByProductShortcut(e: KeyboardEvent, shortcut: string) {
+        let productKey = productsMap[shortcut];
         if (!productKey) return;
         let product = products[productKey];
         if (!product) return;
@@ -160,7 +160,7 @@ export function useHandleKeyUp(
             /^[a-zA-Z]$/.test(command) &&
             command == e.key
         ) {
-            addToCartByProductSortcut(e, command + e.key);
+            addToCartByProductShortcut(e, command + e.key);
             return;
         }
 
@@ -446,7 +446,7 @@ export function useHandleKeyUp(
                 let commandKey = splited[0];
                 let amount = parseInt(splited[1]);
                 if (commandKey.length > 0) {
-                    addToCartByProductSortcut(e, commandKey);
+                    addToCartByProductShortcut(e, commandKey);
                 }
                 setCommand("");
                 dispatch(setPriceToWithDiscount({ key: undefined, amount }));
@@ -456,7 +456,7 @@ export function useHandleKeyUp(
             if (/^[1-9]+$/.test(command)) {
                 stopLongPress();
                 stopKeyUpHandlerRef.current = true;
-                addToCartByProductSortcut(e, command);
+                addToCartByProductShortcut(e, command);
                 dispatch(
                     updateQuantity({
                         key: undefined,
@@ -471,7 +471,7 @@ export function useHandleKeyUp(
                 let commandKey = splited[0];
                 let quantity = parseInt(splited[1]);
                 stopLongPress();
-                addToCartByProductSortcut(e, commandKey);
+                addToCartByProductShortcut(e, commandKey);
                 stopKeyUpHandlerRef.current = true;
                 dispatch(updateQuantity({ key: undefined, quantity }));
                 return;
@@ -480,7 +480,7 @@ export function useHandleKeyUp(
             if (/^[a-zA-Z]$/.test(command)) {
                 stopLongPress();
                 stopKeyUpHandlerRef.current = true;
-                addToCartByProductSortcut(e, command);
+                addToCartByProductShortcut(e, command);
                 return;
             }
         }

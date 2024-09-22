@@ -18,6 +18,11 @@ import { RootState } from "@/app/store/store";
 import getUnits from "@/app/functions/getUnits";
 import TrashIcon from "@/app/icons/TrashIcon";
 import formatNumber from "@/app/functions/formatNumber";
+import NotImageIcon from "@/app/icons/NotImageIcon";
+import ImageIcon from "@/app/icons/ImageIcon";
+import PriceTagIcon from "@/app/icons/PriceTagIcon";
+import DiscountIcon from "@/app/icons/DiscountIcon";
+import ExtraDiscountIcon from "@/app/icons/ExtraDiscountIcon";
 
 function CartProduct() {
     const dispatch = useDispatch();
@@ -55,7 +60,7 @@ function CartProduct() {
         <div className="cart">
             <div className="flex justify-between items-center py-2 px-2 bg-gray-800 mb-3">
                 <button
-                    className="py-2 px-3 rounded-lg select-none hover:bg-green-800"
+                    className="flex items-center p-1 py-2 px-3 rounded-lg select-none hover:bg-green-800"
                     onClick={() =>
                         dispatch(
                             updateExtraDiscountAmount({
@@ -65,10 +70,10 @@ function CartProduct() {
                         )
                     }
                 >
-                    ED+
+                    <ExtraDiscountIcon />+
                 </button>
                 <button
-                    className="py-2 px-3 rounded-lg select-none hover:bg-green-800"
+                    className="flex items-center p-1 py-2 px-3 rounded-lg select-none hover:bg-red-800"
                     onClick={() =>
                         dispatch(
                             updateExtraDiscountAmount({
@@ -78,45 +83,45 @@ function CartProduct() {
                         )
                     }
                 >
-                    ED-
+                    <ExtraDiscountIcon /> -
                 </button>
                 <button
-                    className="py-2 px-3 rounded-lg select-none hover:bg-green-800"
+                    className="flex items-center gap-1 py-2 px-3 rounded-lg select-none hover:bg-green-800"
                     onClick={() =>
                         dispatch(
                             updateDiscountAmount({ key: undefined, amount: 1 })
                         )
                     }
                 >
-                    D+
+                    <DiscountIcon height="16" /> +
                 </button>
                 <button
-                    className="py-2 px-3 rounded-lg select-none hover:bg-green-800"
+                    className="flex gap-1 items-center py-2 px-3 rounded-lg select-none hover:bg-red-800"
                     onClick={() =>
                         dispatch(
                             updateDiscountAmount({ key: undefined, amount: -1 })
                         )
                     }
                 >
-                    D-
+                    <DiscountIcon height="16" /> -
                 </button>
                 <button
-                    className="py-2 px-3 rounded-lg select-none hover:bg-green-800"
+                    className="flex items-center gap-1 py-2 px-3 rounded-lg select-none hover:bg-green-800"
                     onClick={() =>
                         dispatch(
                             updateSalePrice({ key: undefined, amount: -1 })
                         )
                     }
                 >
-                    P+
+                    <PriceTagIcon /> +
                 </button>
                 <button
-                    className="py-2 px-3 rounded-lg select-none hover:bg-green-800"
+                    className="flex items-center gap-1 py-2 px-3 rounded-lg select-none hover:bg-red-800"
                     onClick={() =>
                         dispatch(updateSalePrice({ key: undefined, amount: 1 }))
                     }
                 >
-                    P-
+                    <PriceTagIcon /> -
                 </button>
                 <button
                     className="py-2 px-3 rounded-lg select-none hover:bg-red-800"
@@ -134,7 +139,11 @@ function CartProduct() {
                         setShowCartImage(!showCartImage);
                     }}
                 >
-                    IMG
+                    {showCartImage ? (
+                        <NotImageIcon />
+                    ) : (
+                        <ImageIcon height="20" />
+                    )}
                 </button>
             </div>
             {Object.values(cart.products).map((p: ProductWithID) => {

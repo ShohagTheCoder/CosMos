@@ -9,6 +9,9 @@ import CartIcon from "../icons/CartIcon";
 import BagIcon from "../icons/BagIcon";
 import AddIcon from "../icons/AddIcon";
 import Cookies from "js-cookie";
+import CommandIcon from "../icons/CommandIcon";
+import PurchaseIcon from "../icons/PurchaseIcon";
+import SellIcon from "../icons/SellIcon";
 
 function Sidebar({ active = "home" }: { active: string }) {
     const userId = Cookies.get("user-id");
@@ -36,7 +39,7 @@ function Sidebar({ active = "home" }: { active: string }) {
                             href={"/actions/sell"}
                             className="text-center flex justify-center items-center"
                         >
-                            <BagIcon />
+                            <SellIcon />
                         </a>
                     </button>
                     <button className={getBtnStyleClass("purchase")}>
@@ -44,7 +47,7 @@ function Sidebar({ active = "home" }: { active: string }) {
                             href={"/actions/purchase"}
                             className="text-center flex justify-center items-center"
                         >
-                            <CartIcon />
+                            <PurchaseIcon />
                         </a>
                     </button>
                     <button className={getBtnStyleClass("sells")}>
@@ -55,7 +58,7 @@ function Sidebar({ active = "home" }: { active: string }) {
                             <SellsIcon />
                         </a>
                     </button>
-                    <button className={getBtnStyleClass("purchase")}>
+                    <button className={getBtnStyleClass("products")}>
                         <a
                             href={"/products"}
                             className="text-center flex justify-center items-center"
@@ -85,6 +88,14 @@ function Sidebar({ active = "home" }: { active: string }) {
                             className="text-center flex justify-center items-center"
                         >
                             <AddIcon />
+                        </a>
+                    </button>
+                    <button className={getBtnStyleClass("commands")}>
+                        <a
+                            href="/commands"
+                            className="text-center flex justify-center items-center"
+                        >
+                            <CommandIcon />
                         </a>
                     </button>
                 </div>
