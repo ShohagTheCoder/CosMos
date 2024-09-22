@@ -5,6 +5,7 @@ import apiClient from "@/app/utils/apiClient";
 import { useState, FormEvent, useEffect } from "react";
 
 interface CreateUserForm {
+    shopName: string;
     name: string;
     phoneNumber: string;
     password: string;
@@ -12,6 +13,7 @@ interface CreateUserForm {
 
 export default function Register() {
     const [form, setForm] = useState<CreateUserForm>({
+        shopName: "",
         name: "",
         phoneNumber: "",
         password: "",
@@ -53,13 +55,22 @@ export default function Register() {
                 <h1 className="text-2xl font-bold mb-6">Register Shop</h1>
                 <div className="space-y-4">
                     <TextInput
+                        value={form.shopName}
+                        onChange={(e) => handleInputChange("shopName", e)}
+                        options={{
+                            label: "Shop name",
+                            placeholder: "Ex: Shohag Store",
+                        }}
+                    />
+                    <TextInput
                         value={form.name}
                         onChange={(e) => handleInputChange("name", e)}
                         options={{
-                            label: "Full name",
+                            label: "Owner name",
                             placeholder: "Ex: Shohag Ahmed",
                         }}
                     />
+
                     <TextInput
                         value={form.phoneNumber}
                         onChange={(e) => handleInputChange("phoneNumber", e)}

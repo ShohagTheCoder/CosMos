@@ -7,7 +7,7 @@ export default async function RegisterPage() {
     if (shop) {
         return (
             <div className="bg-gray-900 h-svh flex justify-center items-center">
-                <p>Shop already exist</p>
+                <p>Shop already registered</p>
             </div>
         );
     }

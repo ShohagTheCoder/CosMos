@@ -35,7 +35,6 @@ import ColsIcon from "@/app/icons/ColsIcon";
 import RowIcon from "@/app/icons/RowIcon";
 import NotImageIcon from "@/app/icons/NotImageIcon";
 import ImageIcon from "@/app/icons/ImageIcon";
-import NotIcon from "@/app/icons/NotIcon";
 
 interface SellProps {
     productsArray: ProductWithID[];
