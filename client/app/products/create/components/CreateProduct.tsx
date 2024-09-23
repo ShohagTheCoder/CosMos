@@ -4,7 +4,6 @@ import NumberInput from "@/app/elements/inputs/NumberInput";
 import Notification, {
     NotificationType,
 } from "@/app/elements/notification/Notification";
-import formatDate from "@/app/functions/formatDate";
 import handleImageUpload from "@/app/functions/handleImageUpload";
 import {
     setProductProduct,
@@ -12,13 +11,13 @@ import {
 } from "@/app/store/slices/productSlice";
 import { RootState } from "@/app/store/store";
 import apiClient from "@/app/utils/apiClient";
-import { ERROR } from "@/app/utils/constants/message";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-function CreateProduct() {
+function CreateProduct({ image }: any) {
     const dispatch = useDispatch();
-    const product = useSelector((state: RootState) => state.product);
+    let product = useSelector((state: RootState) => state.product);
+    const [initialImage, setInitialImage] = useState<File | undefined>(image);
     const [disable, setDisable] = useState(false);
     const [notification, setNotification] = useState<{
         type: NotificationType;
@@ -28,30 +27,19 @@ function CreateProduct() {
         message: "This is a message",
     });
 
-    const [image, setImage] = useState<string | null>(null);
-
     useEffect(() => {
-        // Retrieve base64 string from localStorage
-        const storedFile = localStorage.getItem("selectedProductImage");
-        if (storedFile) {
-            setImage(storedFile);
-        }
-    }, []);
+        setInitialImage(image); // Store the initial image when the component mounts or image changes
+    }, [image]);
 
     async function handleCreateProduct() {
         setDisable(true);
-        // console.log(product);
-        // return;
         if (product.SKU.length < 4) {
-            return console.log("Plesase enter SKU");
+            return console.log("Please enter SKU");
         }
 
         try {
-            if (product.image && product.image != "product.png") {
-                await handleImageUpload(image, product.image!);
-
-                // Clear the selected image
-                localStorage.setItem("selectedProductImage", "");
+            if (image) {
+                await handleImageUpload(image, () => product.image);
             }
 
             const result = await apiClient.post("products", product);
@@ -75,37 +63,31 @@ function CreateProduct() {
 
     async function handleUpdateProduct() {
         setDisable(true);
-        // console.log(product);
-        // return;
         const update = Object.entries(product).reduce(
             (acc: any, [key, value]) => {
-                if (value != product.product[key] && key != "product") {
+                if (value !== product.product[key] && key !== "product") {
                     acc[key] = value;
                 }
-
                 return acc;
             },
             {}
         );
 
         try {
-            if (update.image) {
-                await handleImageUpload(image, update.image);
+            // Check if the image has changed
+            if (image && image !== initialImage) {
+                await handleImageUpload(image, () => product.image);
             }
-            if (await handleImageUpload(image, update.image)) {
-                // Clear the selected image
-                localStorage.setItem("selectedProductImage", "");
 
-                const result = await apiClient.patch(
-                    `products/${product._id}`,
-                    update
-                );
-                setNotification({
-                    type: "success",
-                    message: "Product updated successfully!",
-                });
-                console.log(result.data);
-            }
+            const result = await apiClient.patch(
+                `products/${product._id}`,
+                update
+            );
+            setNotification({
+                type: "success",
+                message: "Product updated successfully!",
+            });
+            console.log(result.data);
         } catch (error) {
             setNotification({
                 type: "error",
@@ -152,7 +134,7 @@ function CreateProduct() {
                         )
                     }
                     options={{
-                        label: "Stock low",
+                        label: "Stock alert",
                         placeholder: "Minimum stock to alert Ex: 20",
                     }}
                 />

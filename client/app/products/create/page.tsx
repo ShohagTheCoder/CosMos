@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./style.css";
 import Tab from "@/app/elements/tab/Tab";
 import Resources from "./components/Resources";
@@ -19,11 +19,13 @@ function CreateProductPage() {
         };
     }, []);
 
+    const [image, setImage] = useState(null);
+
     const tabs = [
         {
             id: "general",
             title: "General",
-            content: <General />,
+            content: <General image={image} setImage={setImage} />,
         },
         {
             id: "units",
@@ -38,7 +40,7 @@ function CreateProductPage() {
         {
             id: "create",
             title: "Create",
-            content: <CreateProduct />,
+            content: <CreateProduct image={image} />,
         },
     ];
 

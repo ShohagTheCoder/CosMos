@@ -1,79 +1,74 @@
-import React, { ChangeEvent, useState, useEffect } from "react";
+import React, { ChangeEvent, useState } from "react";
 
 interface ImageInputProps {
-    localTempName: string;
-    src: string | undefined;
+    image: File | undefined;
     callback: (image: File) => void;
+    className?: string;
+    options?: {
+        label?: string;
+        inputClassName?: string;
+        previewClassName?: string;
+        labelClassName?: string;
+        containerClassName?: string;
+        renameCallback?: (file: File) => string; // Optional rename callback
+    };
 }
 
 const ImageInput: React.FC<ImageInputProps> = ({
-    localTempName = "cosmos-image",
-    src = undefined,
+    image,
     callback,
+    className = "",
+    options = {},
 }) => {
-    const [preview, setPreview] = useState<string | undefined>(undefined);
+    const [preview, setPreview] = useState<File | undefined>(image);
 
-    useEffect(() => {
-        if (src == "updated") {
-            const storedImage = localStorage.getItem(localTempName);
-            if (storedImage) {
-                setPreview(storedImage);
-            }
-        } else {
-            setPreview(src);
-        }
-    }, [localTempName, src]);
-
-    let previewUrl: string | null = null;
+    const {
+        label = "Product image",
+        inputClassName = "absolute inset-0 w-full h-full opacity-0 cursor-pointer",
+        previewClassName = "w-full h-full object-cover rounded-lg",
+        labelClassName = "block mb-2 text-gray-400",
+        containerClassName = "relative w-[160px] h-[160px] border-2 border-dashed border-gray-500 flex justify-center items-center rounded-lg cursor-pointer",
+        renameCallback, // Get the rename callback from options
+    } = options;
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = () => {
-                if (reader.result) {
-                    localStorage.setItem(
-                        localTempName,
-                        reader.result as string
-                    );
-                }
-            };
-            reader.readAsDataURL(file);
+            let newFile = file;
 
-            // Revoke the previous object URL if it exists
-            if (previewUrl) {
-                URL.revokeObjectURL(previewUrl);
+            // Check if there's a rename callback provided
+            if (renameCallback) {
+                const newName = renameCallback(file);
+                if (newName) {
+                    // Create a new File with the updated name
+                    newFile = new File([file], newName, { type: file.type });
+                }
             }
 
-            // Create a new preview URL and store it
-            previewUrl = URL.createObjectURL(file);
-            setPreview(previewUrl); // Create a preview URL
-
-            callback(file);
+            setPreview(newFile);
+            callback(newFile);
         }
     };
 
     return (
-        <div className="product-image mb-2">
-            <label htmlFor="product-image" className="block mb-2 text-gray-400">
-                Product image
+        <div className={`product-image mb-2 ${className}`}>
+            <label htmlFor="product-image" className={labelClassName}>
+                {label}
             </label>
-            <div className="relative w-[160px] h-[160px] border-2 border-dashed border-gray-500 flex justify-center items-center rounded-lg cursor-pointer">
-                {/* Hidden File Input */}
+            <div className={containerClassName}>
                 <input
                     type="file"
                     accept="image/*"
                     id="product-image"
                     onChange={handleFileChange}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    className={inputClassName}
                 />
 
-                {/* Image Preview */}
                 {preview ? (
                     <img
-                        src={preview}
+                        src={URL.createObjectURL(preview)}
                         alt="Image Preview"
-                        className="w-full h-full object-cover rounded-lg"
+                        className={previewClassName}
                     />
                 ) : (
                     <span className="text-gray-400 text-4xl font-bold">+</span>

@@ -12,26 +12,14 @@ import apiClient from "@/app/utils/apiClient";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-function General() {
+function General({ image, setImage }: any) {
     const dispatch = useDispatch();
     const product = useSelector((state: RootState) => state.product);
     const [brands, setBrands] = useState<any[]>([]);
     const [categories, setCategories] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
 
-    let src: string | undefined = undefined;
-    if (
-        product.product &&
-        product.image &&
-        product.image === product.product.image
-    ) {
-        src = "/images/products/" + product.image;
-    } else if (product.image) {
-        src = "updated";
-    }
-
     useEffect(() => {
-        console.log(brands);
         const fetchData = async () => {
             try {
                 const [brandsResponse, categoriesResponse] = await Promise.all([
@@ -59,8 +47,6 @@ function General() {
             }
         };
 
-        console.log("H");
-
         fetchData();
     }, []);
 
@@ -78,14 +64,22 @@ function General() {
                 <TextInput
                     className="mb-3"
                     value={product.SKU}
-                    onChange={(e) =>
+                    onChange={(e) => {
                         dispatch(
                             updateProductField({
                                 field: "SKU",
                                 value: e.target.value,
                             })
-                        )
-                    }
+                        );
+                        if (image) {
+                            dispatch(
+                                updateProductField({
+                                    field: "image",
+                                    value: e.target.value + "-" + image.name,
+                                })
+                            );
+                        }
+                    }}
                     options={{
                         label: "SKU",
                         validate: (value) => value.length >= 6,
@@ -136,7 +130,11 @@ function General() {
             />
             <div className="grid grid-cols-2 gap-5">
                 <SearchableSelectInput
-                    value={product.category || ""}
+                    value={
+                        typeof product.category == "string"
+                            ? product.category
+                            : ""
+                    }
                     onChange={(e) =>
                         dispatch(
                             updateProductField({
@@ -152,7 +150,9 @@ function General() {
                     className="mb-3"
                 />
                 <SearchableSelectInput
-                    value={product.brand || "No brand"}
+                    value={
+                        typeof product.brand == "string" ? product.brand : ""
+                    }
                     onChange={(e) =>
                         dispatch(
                             updateProductField({
@@ -168,16 +168,27 @@ function General() {
                     className="mb-3"
                 />
             </div>
-            <ImageInput
-                src={src}
-                localTempName="selectedProductImage"
-                callback={(image: File) => {
-                    const imageName = product.SKU + "-" + image.name;
-                    dispatch(
-                        updateProductField({ field: "image", value: imageName })
-                    );
-                }}
-            />
+
+            {product.SKU.length > 4 ? (
+                <ImageInput
+                    image={image}
+                    callback={(file: File) => {
+                        setImage(file);
+                        dispatch(
+                            updateProductField({
+                                field: "image",
+                                value: product.SKU + "-" + file.name,
+                            })
+                        );
+                    }}
+                    options={{
+                        label: "Product image",
+                    }}
+                />
+            ) : (
+                ""
+            )}
+
             <TagsInput
                 value={product.keywords}
                 onChange={(keywords) =>

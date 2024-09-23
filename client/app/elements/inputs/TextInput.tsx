@@ -2,9 +2,11 @@ import React, { useState } from "react";
 
 interface TextInputProps {
     value: string;
+    // eslint-disable-next-line no-unused-vars
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     className?: string;
     options?: {
+        // eslint-disable-next-line no-unused-vars
         validate?: (value: string) => boolean;
         label?: string;
         placeholder?: string;

@@ -3,13 +3,27 @@ interface UploadResponse {
     message?: string; // Optional message in case of failure
 }
 
+// eslint-disable-next-line no-unused-vars
+type ImageCallback = (file: File) => string | undefined; // The callback returns a new name or undefined if not changing
+
 export default async function handleImageUpload(
-    image: any,
-    name: string
+    image: File,
+    updateFileNameCallback?: ImageCallback
 ): Promise<boolean> {
     const formData = new FormData();
-    formData.append("image", image);
-    formData.append("imageName", name);
+
+    // If a callback is provided and returns a new name, change the file name
+    let fileName = image.name;
+    if (updateFileNameCallback) {
+        const updatedName = updateFileNameCallback(image);
+        if (updatedName) {
+            fileName = updatedName;
+        }
+    }
+
+    // Use the updated or original file name
+    const renamedImage = new File([image], fileName, { type: image.type });
+    formData.append("image", renamedImage);
 
     try {
         const response = await fetch("/api/uploads/images/products", {
@@ -19,13 +33,9 @@ export default async function handleImageUpload(
 
         const result: UploadResponse = await response.json();
 
-        if (result.success) {
-            return true;
-        } else {
-            return false;
-        }
+        return result.success;
     } catch (error) {
-        // You might want to handle the error appropriately, e.g., sending it to an error tracking service
+        console.error("Error uploading image:", error);
         return false;
     }
 }

@@ -24,9 +24,13 @@ export interface Resource {
     count: number;
     quantity: number;
 }
+
+type BrandType = string | { name: string };
+type CategoryType = string | { name: string };
+
 export default interface Product {
     [x: string]: any;
-    _id?: string; // This remains optional in the base Product interface
+    _id?: string;
     SKU: string;
     name: string;
     image?: string;
@@ -56,14 +60,14 @@ export default interface Product {
     purchaseEnable: boolean;
     displaySaleUnit?: string;
     displayPurchaseUnit?: string;
-    brand?: string | { name: string }; // Allow either a string or an object
-    category?: string | { name: string }; // Same here
+    brand?: BrandType; // Updated to allow string or object
+    category?: CategoryType; // Same here
     updatePrice: number;
     keywords: string[];
 }
 
 export interface ProductWithID extends Product {
-    _id: string; // Enforce _id as required
+    _id: string;
     stock: {
         stock: number;
     };
@@ -72,5 +76,5 @@ export interface ProductWithID extends Product {
     displayPurchaseUnit: string;
     brand: { name: string }; // Enforce the populated form
     category: { name: string }; // Enforce the populated form
-    product?: Product; // Allow this to be optional if this is a reference back to the Product
+    product?: Product;
 }
