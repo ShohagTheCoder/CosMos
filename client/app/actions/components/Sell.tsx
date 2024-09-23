@@ -265,7 +265,7 @@ export default function Sell({
                 <div className="ps-[94px] 2xl:ps-[150px] bg-white dark:bg-gray-950">
                     <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 gap-6 h-screen overflow-hidden">
                         <div className="h-screen grid grid-rows-[auto_auto_auto_1fr] overflow-hidden col-span-8 lg:col-span-5 py-4">
-                            <div className="bg-gray-300 dark:bg-gray-950 p-3 border-2 border-dashed border-slate-500 mb-3 flex justify-between items-center">
+                            <div className="bg-gray-300 dark:bg-gray-950 p-3 border-2 border-dashed border-slate-500 mb-3 md:flex justify-between items-center">
                                 <div className="flex gap-3 justify-start">
                                     <button
                                         className={`py-1 px-3 ${
@@ -328,7 +328,7 @@ export default function Sell({
                                             : "Four"}
                                     </button>
                                 </div>
-                                <div className="border-s-2 border-dashed border-gray-600 ps-4 flex flex-wrap justify-end gap-4 items-center">
+                                <div className="md:border-s-2 border-dashed border-gray-600 ps-4 flex flex-wrap justify-end gap-4 items-center">
                                     <p className="inline-block bg-green-800 py-1 px-3 rounded text-white">
                                         {user.name}
                                     </p>

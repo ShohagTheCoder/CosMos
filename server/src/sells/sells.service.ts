@@ -38,6 +38,8 @@ export class SellsService {
     }
 
     async create(createSellDto: CreateSellDto) {
+        console.log(createSellDto);
+        return;
         try {
             const shop = await this.usersService.findShop();
 

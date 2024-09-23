@@ -545,10 +545,10 @@ export function useHandleKeyUp(
             // Handle sale price update
             switch (e.key) {
                 case "PageUp":
-                    dispatch(updateSalePrice({ key: undefined, amount: -1 }));
+                    dispatch(updateSalePrice({ key: undefined, amount: 1 }));
                     return;
                 case "PageDown":
-                    dispatch(updateSalePrice({ key: undefined, amount: 1 }));
+                    dispatch(updateSalePrice({ key: undefined, amount: -1 }));
                     return;
             }
 

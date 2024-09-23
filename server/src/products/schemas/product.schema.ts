@@ -127,6 +127,13 @@ export class Product extends Document {
     @Prop({ default: 0 })
     updatePrice: number;
 
+    @Prop({
+        default: function (this: Product) {
+            return this.price;
+        },
+    })
+    newPrice: number;
+
     @Prop({ type: mongoose.Schema.Types.Mixed })
     resources: Record<string, Resource>;
 

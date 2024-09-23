@@ -48,11 +48,10 @@ function CartProduct() {
     function getProductForCart(p: ProductWithID) {
         let product: any = { ...p };
         let units = product.units;
-        product.mainPrice = product.price - product.updatePrice;
         product.saleUnitsBase = units[product.saleUnitsBase];
         product.unit = units[product.unit];
         product.price =
-            product.mainPrice - product.discount / product.unit.value;
+            product.newPrice - product.discount / product.unit.value;
         return product;
     }
 
@@ -193,7 +192,7 @@ function CartProduct() {
                                                         }
                                                     </td>
                                                     <td className="pe-3">
-                                                        {product.mainPrice.toFixed(
+                                                        {product.newPrice.toFixed(
                                                             0
                                                         )}{" "}
                                                         ৳
@@ -221,7 +220,7 @@ function CartProduct() {
                                                     </td>
                                                     <td className="pe-3">
                                                         {(
-                                                            product.mainPrice *
+                                                            product.price *
                                                             product.unit.value
                                                         ).toFixed(0)}{" "}
                                                         ৳

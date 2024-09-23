@@ -26,6 +26,7 @@ export default function getUpdatedProduct(
 
     // Update price, count and subTotal
     item.price = getProductUnitPrice(item);
+    item.newPrice = item.price + item.updatePrice;
     item.count = getProductCount(item);
     item.subTotal = getProductSubTotalPrice(item);
 
