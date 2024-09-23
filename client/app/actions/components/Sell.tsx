@@ -263,7 +263,7 @@ export default function Sell({
                     className="justify-center"
                 />
                 <div className="ps-[94px] 2xl:ps-[150px] bg-white dark:bg-gray-950">
-                    <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 gap-6 h-screen overflow-hidden">
                         <div className="h-screen grid grid-rows-[auto_auto_auto_1fr] overflow-hidden col-span-8 lg:col-span-5 py-4">
                             <div className="bg-gray-300 dark:bg-gray-950 p-3 border-2 border-dashed border-slate-500 mb-3 flex justify-between items-center">
                                 <div className="flex gap-3 justify-start">
@@ -433,42 +433,44 @@ export default function Sell({
                                 )}
                             </div>
                         </div>
-                        <div className="py-4 lg:pe-3 col-span-8 lg:col-span-3 h-full overflow-x-hidden overflow-y-auto cosmos-scrollbar">
-                            <div className="min-h-full">
-                                <CartProduct />
-                                <CustomerDetails />
-                                <div className="">
-                                    <textarea
-                                        ref={noteRef}
-                                        className="w-full resize-none p-3 outline-none border-dashed border-2 border-gray-600 placeholder-slate-300 mb-1 bg-transparent"
-                                        value={note}
-                                        onKeyDown={handleNoteKeyDown}
-                                        onChange={(e) =>
-                                            setNote(e.target.value)
-                                        }
-                                        rows={2}
-                                        cols={50}
-                                        placeholder="বিক্রি সম্পর্কে কিছু লিখুন"
-                                    ></textarea>
-                                </div>
-                                <SellDetails />
-                                <div className="flex gap-4">
-                                    <button
-                                        onDoubleClick={() =>
-                                            handleCompleteSell()
-                                        }
-                                        className="w-1/2 pt-3 pb-2 border-2 border-dashed border-green-600 bg-green-900 hover:bg-green-700 text-white"
-                                    >
-                                        বিক্রয় ও প্রিন্ট
-                                    </button>
-                                    <button
-                                        onDoubleClick={() =>
-                                            handleCompleteSell()
-                                        }
-                                        className="w-1/2 pt-3 pb-2 border-dashed border-2 border-blue-600 bg-blue-900 hover:bg-blue-700 text-white"
-                                    >
-                                        বিক্রয়
-                                    </button>
+                        <div className="py-4 mb-4 lg:pe-3 col-span-8 lg:col-span-3 min-h-screen overflow-hidden grid grid-rows-1">
+                            <div className="pe-3 h-auto overflow-y-auto overflow-x-hidden cosmos-scrollbar">
+                                <div>
+                                    <CartProduct />
+                                    <CustomerDetails />
+                                    <div className="">
+                                        <textarea
+                                            ref={noteRef}
+                                            className="w-full resize-none p-3 outline-none border-dashed border-2 border-gray-600 placeholder-slate-300 mb-1 bg-transparent"
+                                            value={note}
+                                            onKeyDown={handleNoteKeyDown}
+                                            onChange={(e) =>
+                                                setNote(e.target.value)
+                                            }
+                                            rows={2}
+                                            cols={50}
+                                            placeholder="বিক্রি সম্পর্কে কিছু লিখুন"
+                                        ></textarea>
+                                    </div>
+                                    <SellDetails />
+                                    <div className="flex gap-4">
+                                        <button
+                                            onDoubleClick={() =>
+                                                handleCompleteSell()
+                                            }
+                                            className="w-1/2 pt-3 pb-2 border-2 border-dashed border-green-600 bg-green-900 hover:bg-green-700 text-white"
+                                        >
+                                            বিক্রয় ও প্রিন্ট
+                                        </button>
+                                        <button
+                                            onDoubleClick={() =>
+                                                handleCompleteSell()
+                                            }
+                                            className="w-1/2 pt-3 pb-2 border-dashed border-2 border-blue-600 bg-blue-900 hover:bg-blue-700 text-white"
+                                        >
+                                            বিক্রয়
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
