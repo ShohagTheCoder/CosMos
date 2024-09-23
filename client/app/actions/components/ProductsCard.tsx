@@ -1,5 +1,4 @@
 import getStockLine from "@/app/functions/getStockLine";
-import StarIcon from "@/app/icons/StarIcon";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 
 interface ProductsCardProps {
@@ -25,7 +24,7 @@ function ProductsCard({
     }
 
     return (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="h-auto max-h-[2000px] grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4">
             {Object.values(products).map(
                 (product: ProductWithID, key: number) => (
                     <div

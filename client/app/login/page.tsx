@@ -2,7 +2,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import axios from "axios";
 
 export default function LoginPage() {
@@ -20,7 +19,7 @@ export default function LoginPage() {
                 password,
             });
 
-            if (data.success) {
+            if (data.status == "success") {
                 // Redirect to sell page on successful login
                 window.location.href = "/actions/sell";
             } else {

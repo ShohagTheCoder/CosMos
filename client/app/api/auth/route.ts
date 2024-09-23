@@ -2,17 +2,32 @@
 import { NextResponse } from "next/server";
 import apiClient from "@/app/utils/apiClient";
 import { decodeJwt } from "./decodeJwt";
+import { ApiResponse } from "@/app/common/apiCall";
 
 export async function POST(req: Request) {
     try {
         const { username, password } = await req.json();
-        const { data } = await apiClient.post("auth/login", {
+
+        console.log(username, password);
+
+        // Call the login API
+        const { data } = await apiClient.post<
+            ApiResponse<{ access_token: string }>
+        >("auth/login", {
             username,
             password,
         });
-        const access_token = data.access_token;
-        if (access_token) {
-            const response = NextResponse.json({ success: true });
+
+        const { status, code, message, data: responseData } = data;
+
+        if (status === "success" && responseData?.access_token) {
+            const access_token = responseData.access_token;
+            const response = NextResponse.json({
+                status: "success",
+                code: code || 200,
+                message: "Login successful",
+                data: { access_token },
+            });
 
             // Set a cookie with the token or session identifier
             response.cookies.set("access_token", access_token, {
@@ -22,6 +37,7 @@ export async function POST(req: Request) {
             });
 
             const user = decodeJwt(access_token);
+
             // Set user data in cookies
             response.cookies.set("user-id", String(user.sub), {
                 path: "/",
@@ -32,14 +48,21 @@ export async function POST(req: Request) {
             return response;
         } else {
             return NextResponse.json({
-                success: false,
-                message: "Invalid credentials",
+                status: "error",
+                code: 401,
+                message: message || "Invalid credentials",
+                data: null,
             });
         }
     } catch (error) {
         return NextResponse.json({
-            success: false,
-            message: "Invalid credentials",
+            status: "error",
+            code: 500,
+            message:
+                error instanceof Error
+                    ? error.message
+                    : "Internal server error",
+            data: null,
         });
     }
 }

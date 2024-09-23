@@ -1,7 +1,9 @@
 // src/common/interfaces/api-response.interface.ts
 export interface ApiResponse<T = any> {
-    status: 'success' | 'error';
-    code: number; // HTTP status code
-    message: string; // Descriptive message
-    data: T | null; // Data payload for success or null for error
+    status: 'success' | 'error'; // Whether the response is successful or contains an error
+    code: number; // HTTP status code (e.g., 200, 400, 500)
+    message: string; // Descriptive message explaining the result or error
+    data: T | null; // Payload data (null in case of error)
+    timestamp?: string; // Optional timestamp for error or success events
+    path?: string; // Optional path to the endpoint (useful for errors)
 }

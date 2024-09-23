@@ -75,7 +75,7 @@ export default function Sell({
     const [showProductImage, setShowProductImage] = useState(
         localStorage.getItem("showProductImage") == "no" ? false : true || true
     );
-    const { notification, success, error } = useNotification();
+    const { notification, notifySuccess, notifyError } = useNotification();
 
     // Single use effect
     useEffect(() => {
@@ -199,9 +199,9 @@ export default function Sell({
                 sell.due = 0;
             }
             await apiClient.post("/sells", sell);
-            success("Sell created successfully");
+            notifySuccess("Sell created successfully");
         } catch (e) {
-            error("Faild to create sell");
+            notifyError("Faild to create sell");
         }
     }
 
@@ -262,9 +262,9 @@ export default function Sell({
                     message={notification.message}
                     className="justify-center"
                 />
-                <div className="ps-[94px] 2xl:ps-[150px] pe-3 bg-white dark:bg-gray-950">
-                    <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 gap-6 py-4 h-auto lg:h-screen overflow-hidden">
-                        <div className="col-span-8 lg:col-span-5 h-full overflow-hidden">
+                <div className="ps-[94px] 2xl:ps-[150px] bg-white dark:bg-gray-950">
+                    <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 gap-6">
+                        <div className="h-screen grid grid-rows-[auto_auto_auto_1fr] overflow-hidden col-span-8 lg:col-span-5 py-4">
                             <div className="bg-gray-300 dark:bg-gray-950 p-3 border-2 border-dashed border-slate-500 mb-3 flex justify-between items-center">
                                 <div className="flex gap-3 justify-start">
                                     <button
@@ -340,7 +340,7 @@ export default function Sell({
                                     </button>
                                 </div>
                             </div>
-                            <div className="">
+                            <div>
                                 <input
                                     id="command"
                                     value={command}
@@ -352,11 +352,7 @@ export default function Sell({
                                     autoFocus
                                 />
                             </div>
-                            <div className="mt-3">
-                                {/* <ProductsCard selected={} /> */}
-                            </div>
-                            <div></div>
-                            <div className="flex gap-4 py-2 px-3 mb-3 bg-gray-300  dark:bg-gray-800">
+                            <div className="flex gap-4 py-2 px-3 my-3 bg-gray-300  dark:bg-gray-800">
                                 <button
                                     onClick={() => {
                                         localStorage.setItem(
@@ -388,45 +384,56 @@ export default function Sell({
                                     )}
                                 </button>
                             </div>
-
-                            {commandCounter.name == "completeSell" &&
-                            commandCounter.value >= 1 ? (
-                                <FinalView />
-                            ) : isCustomers ? (
-                                <div>
-                                    {cart.action == "purchase" ? (
-                                        <SupplierCard customers={customers} />
-                                    ) : (
-                                        <CustomerCard
-                                            customers={filteredCustomers}
-                                        />
-                                    )}
-                                </div>
-                            ) : (
-                                <div>
-                                    {isRow ? (
-                                        <ProductsRow
-                                            selected={cart.selectedProductIndex}
-                                            callback={(product) =>
-                                                dispatch(addToCart(product))
-                                            }
-                                            products={filteredProducts}
-                                            showProductImage={showProductImage}
-                                        />
-                                    ) : (
-                                        <ProductsCard
-                                            selected={cart.selectedProductIndex}
-                                            callback={(product) =>
-                                                dispatch(addToCart(product))
-                                            }
-                                            products={filteredProducts}
-                                            showProductImage={showProductImage}
-                                        />
-                                    )}
-                                </div>
-                            )}
+                            <div className="overflow-x-hidden overflow-y-auto pe-3 cosmos-scrollbar">
+                                {commandCounter.name == "completeSell" &&
+                                commandCounter.value >= 1 ? (
+                                    <FinalView />
+                                ) : isCustomers ? (
+                                    <div>
+                                        {cart.action == "purchase" ? (
+                                            <SupplierCard
+                                                customers={customers}
+                                            />
+                                        ) : (
+                                            <CustomerCard
+                                                customers={filteredCustomers}
+                                            />
+                                        )}
+                                    </div>
+                                ) : (
+                                    <>
+                                        {isRow ? (
+                                            <ProductsRow
+                                                selected={
+                                                    cart.selectedProductIndex
+                                                }
+                                                callback={(product) =>
+                                                    dispatch(addToCart(product))
+                                                }
+                                                products={filteredProducts}
+                                                showProductImage={
+                                                    showProductImage
+                                                }
+                                            />
+                                        ) : (
+                                            <ProductsCard
+                                                selected={
+                                                    cart.selectedProductIndex
+                                                }
+                                                callback={(product) =>
+                                                    dispatch(addToCart(product))
+                                                }
+                                                products={filteredProducts}
+                                                showProductImage={
+                                                    showProductImage
+                                                }
+                                            />
+                                        )}
+                                    </>
+                                )}
+                            </div>
                         </div>
-                        <div className="lg:pe-3 col-span-8 lg:col-span-3 h-full overflow-x-hidden overflow-y-auto cosmos-scrollbar">
+                        <div className="py-4 lg:pe-3 col-span-8 lg:col-span-3 h-full overflow-x-hidden overflow-y-auto cosmos-scrollbar">
                             <div className="min-h-full">
                                 <CartProduct />
                                 <CustomerDetails />

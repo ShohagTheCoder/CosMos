@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { verify } from 'crypto';
+import { ApiResponse } from 'src/common/interfaces/api-response.interface';
 import { User } from 'src/users/schemas/user.schema';
 import { UsersService } from 'src/users/users.service';
 
@@ -15,6 +15,7 @@ export class AuthService {
         const user = await this.usersService.findByUsername(username);
 
         if (user && user.password === password) {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
             const { password, ...result } = user;
             return result;
         }
@@ -22,10 +23,20 @@ export class AuthService {
         throw new UnauthorizedException('Invalid username or password');
     }
 
-    async login(user: User) {
+    async login(user: User): Promise<ApiResponse<{ access_token: string }>> {
         const payload = {
-            sub: user._id,
+            sub: user._id, // Payload containing the user's unique ID
         };
-        return { access_token: this.jwtService.sign(payload) };
+
+        return {
+            status: 'success', // Indicating a successful login
+            code: 200, // HTTP status code
+            message: 'Login successful', // Descriptive message
+            data: {
+                access_token: this.jwtService.sign(payload), // Access token as data
+            },
+            timestamp: new Date().toISOString(), // Optional timestamp for the event
+            path: '/auth/login', // Optional path (useful for tracking)
+        };
     }
 }
