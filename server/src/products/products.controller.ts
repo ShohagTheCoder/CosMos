@@ -19,6 +19,7 @@ export class ProductsController {
     async findAll() {
         return await this.productsService.findAll();
     }
+
     // @UseGuards(SellerGuard)
     @Get('for-purchase')
     async findAllForPurchase() {

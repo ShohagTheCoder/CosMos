@@ -13,12 +13,15 @@ const useNotification = () => {
     });
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    const success = useCallback((message: string, timeout: number = 3000) => {
-        setNotification({ type: SUCCESS, message });
-        clearAfterTimeout(timeout);
-    }, []);
+    const notifySuccess = useCallback(
+        (message: string, timeout: number = 3000) => {
+            setNotification({ type: SUCCESS, message });
+            clearAfterTimeout(timeout);
+        },
+        []
+    );
 
-    const error = useCallback(
+    const notifyError = useCallback(
         (
             errorMessage: any,
             defaultMessage: string = "An unexpected error occurred",
@@ -38,7 +41,7 @@ const useNotification = () => {
         []
     );
 
-    const clear = useCallback(() => {
+    const clearNotifications = useCallback(() => {
         setNotification({ type: NONE, message: "" });
     }, []);
 
@@ -50,13 +53,13 @@ const useNotification = () => {
             }
 
             timeoutRef.current = setTimeout(() => {
-                clear();
+                clearNotifications();
             }, timeout);
         },
-        [clear]
+        [clearNotifications]
     );
 
-    return { notification, success, error, clear };
+    return { notification, notifySuccess, notifyError, clearNotifications };
 };
 
 export default useNotification;

@@ -9,7 +9,7 @@ import React, { useState } from "react";
 export default function CreateBrand() {
     const [brandName, setBrandName] = useState("");
     const [brandDescription, setBrandDescription] = useState("");
-    const { notification, success, error } = useNotification();
+    const { notification, notifySuccess, notifyError } = useNotification();
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
@@ -20,12 +20,12 @@ export default function CreateBrand() {
                 description: brandDescription,
             });
 
-            success("Brand created successfully");
-            console.log("Brand created successfully:", response.data);
+            notifySuccess("Brand created successfully");
+            console.log("Brand created successfully : ", response.data);
             // Optionally, handle successful response (e.g., redirect or show a success message)
-        } catch (err) {
-            error(err, "Faild to create brand");
-            console.error("Error creating brand:", e);
+        } catch (error) {
+            notifyError(error, "Faild to create brand");
+            console.error("Error creating brand : ", e);
             // Optionally, handle error (e.g., show an error message to the user)
         }
     };
