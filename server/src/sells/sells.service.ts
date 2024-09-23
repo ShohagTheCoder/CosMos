@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Stock } from 'src/stocks/schemas/stocks.schema';
@@ -7,11 +7,17 @@ import { CreateSellDto } from './dto/create-sell.dto';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { StocksService } from 'src/stocks/stocks.service';
 import { UsersService } from 'src/users/users.service';
+import {
+    Price,
+    Product,
+    ProductDocument,
+} from 'src/products/schemas/product.schema';
 
 @Injectable()
 export class SellsService {
     constructor(
         @InjectModel(Sell.name) private sellModel: Model<SellDocument>,
+        @InjectModel(Product.name) private productModel: Model<ProductDocument>,
         private accountsService: AccountsService,
         private stocksService: StocksService,
         private usersService: UsersService,
@@ -38,8 +44,8 @@ export class SellsService {
     }
 
     async create(createSellDto: CreateSellDto) {
-        console.log(createSellDto);
-        return;
+        // console.log(createSellDto);
+        // return;
         try {
             const shop = await this.usersService.findShop();
 
@@ -50,6 +56,10 @@ export class SellsService {
 
             // Update stock for each product in cart
             for (const product of Object.values(createSellDto.products)) {
+                if (product.price != product.newPrice) {
+                    this.updatePrice(product);
+                }
+
                 if (product.purchaseEnable) {
                     await this.stocksService.updateStockQuantity(
                         product._id.toString(),
@@ -90,6 +100,22 @@ export class SellsService {
             // Handle errors appropriately
             console.error('Error creating sell:', error);
             throw error; // Re-throw the error or handle it as needed
+        }
+    }
+
+    async updatePrice(product: Product) {
+        const prices = product.prices.map((item: Price) => ({
+            ...item,
+            price: item.price + product.updatePrice,
+        }));
+
+        try {
+            await this.productModel.findByIdAndUpdate(product._id, { prices });
+        } catch (error) {
+            throw new HttpException(
+                'Faild to update product price',
+                HttpStatus.INTERNAL_SERVER_ERROR,
+            );
         }
     }
 

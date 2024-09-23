@@ -37,7 +37,7 @@ export class Price {
     @Prop()
     max: number;
 
-    @Prop()
+    @Prop({ type: Number })
     price: number;
 }
 
