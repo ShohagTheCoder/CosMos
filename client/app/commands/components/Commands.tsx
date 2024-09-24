@@ -87,43 +87,29 @@ export default function Commands({
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search command..."
-                    className="p-2 border border-gray-500 rounded bg-gray-800 text-white w-1/3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="p-2 border border-gray-500 rounded bg-gray-800 w-full md:w-1/2 text-white xl:w-1/4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
             </div>
-
-            {/* Title Row (Table Headers) */}
-            <div className="flex justify-between bg-gray-800 p-3 rounded-t-lg text-white font-bold">
-                <div className="flex-1">
-                    <p>Command</p>
-                </div>
-                <div className="flex-1">
-                    <p>Type</p>
-                </div>
-                <div className="flex-1">
-                    <p>Product / Action</p>
-                </div>
-            </div>
-
             {/* Command Rows */}
-            <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                 {filteredCommands.length > 0 ? (
-                    filteredCommands.map((command, index) => (
+                    filteredCommands.map((command) => (
                         <div
                             key={command._id}
-                            className="h-[100px] mb-4 flex justify-between bg-gray-700 py-3 px-6 rounded-lg"
+                            className="h-[100px] grid grid-cols-[auto_1fr_1fr] bg-gray-700 py-3 px-6 rounded-lg"
                         >
-                            <div className="flex-1 flex items-center">
+                            <div className="flex items-center min-w-[40px]">
                                 <p className="text-lg font-bold">
                                     {command.command}
                                 </p>
                             </div>
 
-                            <div className="flex-1 flex items-center">
+                            <div className="flex items-center">
                                 <p>{command.type}</p>
                             </div>
 
                             {/* Product + Action Column */}
-                            <div className="flex-1 flex items-center justify-center relative group">
+                            <div className="flex items-center justify-center relative group">
                                 {/* Product Info */}
                                 <div className="group-hover:hidden flex items-center gap-3">
                                     {command.value &&

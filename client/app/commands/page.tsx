@@ -32,7 +32,7 @@ export default async function CommandsPage() {
         ];
 
         return (
-            <div className="w-[800px] mx-auto py-5">
+            <div className="w-full ps-[94px] pe-3 py-4 ">
                 <Sidebar active="commands" userId={userId} />
                 <Tab
                     options={{

@@ -29,7 +29,7 @@ function Sidebar({
     }
 
     return (
-        <div className="bg-gray-300 dark:bg-gray-900 fixed text-black dark:text-white start-0 top-0 w-[80px] h-screen border-r-2 border-dashed border-slate-600">
+        <div className="bg-gray-300 dark:bg-gray-900 fixed text-black dark:text-white start-0 top-0 w-[80px] h-screen border-r-2 border-dashed border-slate-600 z-[1000]">
             <div className="h-full flex flex-col justify-between items-center py-6">
                 <div className="flex flex-col justify-center items-center gap-5">
                     <button className={getBtnStyleClass("home")}>
