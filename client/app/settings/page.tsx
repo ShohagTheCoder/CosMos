@@ -19,7 +19,8 @@ function Settings() {
     useEffect(() => {
         apiClient
             .get(`settings/findByUserId/${userId}`)
-            .then((res) => setSettings(res.data));
+            .then((res) => setSettings(res.data))
+            .catch((error) => console.log(error));
     }, []);
 
     if (!userId || Object.values(settings).length === 0) {

@@ -1,4 +1,5 @@
 import React from "react";
+import NoResponse from "@/app/common/components/NoResponse";
 import Sell from "../components/Sell";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { CustomerWithId } from "@/app/interfaces/customer.inerface";
@@ -9,7 +10,6 @@ import {
 } from "./../functions/apiHandlers";
 import { cookies } from "next/headers";
 import apiClient from "@/app/utils/apiClient";
-import ReloadButton from "./components/ReloadButton";
 
 async function page() {
     try {
@@ -35,14 +35,7 @@ async function page() {
             </div>
         );
     } catch (error: any) {
-        return (
-            <div className="flex flex-col gap-3 justify-center items-center h-screen">
-                <p className="text-center">
-                    Server is not running <br /> or somthing went wrong!
-                </p>
-                <ReloadButton text="Retry" />
-            </div>
-        );
+        return <NoResponse />;
     }
 }
 
