@@ -11,7 +11,6 @@ import {
     updateDiscountAmount,
     removeFromCart,
     updateExtraDiscountAmount,
-    updateSalePrice,
 } from "@/app/store/slices/cartSlice"; // Assuming your cart slice location
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { RootState } from "@/app/store/store";
@@ -29,10 +28,13 @@ import apiCall from "@/app/common/apiCall";
 function CartProduct({
     setProductUpdateShortcut,
     setting,
+    handleUpdateProductPrice,
 }: {
     // eslint-disable-next-line no-unused-vars
     setProductUpdateShortcut: (productId: string) => void;
     setting: any;
+    // eslint-disable-next-line no-unused-vars
+    handleUpdateProductPrice: (amount: number) => void;
 }) {
     const dispatch = useDispatch();
     let cart = useSelector((state: RootState) => state.cart);
@@ -121,19 +123,13 @@ function CartProduct({
                 </button>
                 <button
                     className="flex items-center gap-1 py-2 px-3 rounded-lg select-none hover:bg-green-800"
-                    onClick={() =>
-                        dispatch(
-                            updateSalePrice({ key: undefined, amount: -1 })
-                        )
-                    }
+                    onClick={() => handleUpdateProductPrice(1)}
                 >
                     <PriceTagIcon /> +
                 </button>
                 <button
                     className="flex items-center gap-1 py-2 px-3 rounded-lg select-none hover:bg-red-800"
-                    onClick={() =>
-                        dispatch(updateSalePrice({ key: undefined, amount: 1 }))
-                    }
+                    onClick={() => handleUpdateProductPrice(-1)}
                 >
                     <PriceTagIcon /> -
                 </button>

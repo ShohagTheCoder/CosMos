@@ -528,6 +528,9 @@ export default function Sell({
                                             handleProductUpdateShortcut
                                         }
                                         setting={setting}
+                                        handleUpdateProductPrice={
+                                            handleUpdateProductPrice
+                                        }
                                     />
                                     <CustomerDetails />
                                     <div className="">

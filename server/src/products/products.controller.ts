@@ -41,7 +41,6 @@ export class ProductsController {
         @Param('id') id: string,
         @Body() updatePrice: { amount: number },
     ) {
-        console.log(updatePrice);
         return this.productsService.updatePrice(id, updatePrice);
     }
 

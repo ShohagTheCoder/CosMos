@@ -4,19 +4,11 @@ import apiClient from "@/app/utils/apiClient";
 import { AxiosResponse } from "axios";
 import { SupplierWithId } from "@/app/interfaces/supplier.interface";
 
-// Utility function to handle errors
-const handleError = (error: any, message: string) => {
-    console.error("An error occurred:", error);
-    // You can add more error handling logic here, like showing notifications or retrying
-    throw new Error(message);
-};
-
 export async function getProductsInServer(): Promise<ProductWithID[]> {
     try {
         const res = await apiClient.get("products");
         return res.data;
     } catch (error) {
-        handleError(error, "Failed to fetch products");
         return []; // Return an empty object if there's an error
     }
 }
@@ -27,7 +19,6 @@ export async function getProductsInServerForPurchase(): Promise<
         const res = await apiClient.get("products/for-purchase");
         return res.data;
     } catch (error) {
-        handleError(error, "Failed to fetch products");
         return []; // Return an empty object if there's an error
     }
 }
@@ -39,7 +30,6 @@ export async function getCustomersInServer() {
         );
         return res.data;
     } catch (error) {
-        handleError(error, "Faild to fetch customers");
         return []; // Return an empty object if there's an error
     }
 }
@@ -50,7 +40,6 @@ export async function getSuppliersInServer() {
         );
         return res.data;
     } catch (error) {
-        handleError(error, "Faild to fetch suppliers");
         return [];
     }
 }
@@ -60,6 +49,6 @@ export async function getUserInServer(id: string) {
         const response = await apiClient.get(`users/${id}`);
         return response.data;
     } catch (error) {
-        handleError(error, "Faild to fetch user");
+        return {};
     }
 }
