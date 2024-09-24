@@ -21,7 +21,7 @@ export default function LoginPage() {
 
             if (data.status == "success") {
                 // Redirect to sell page on successful login
-                window.location.href = "/actions/sell";
+                window.history.back();
             } else {
                 setError(data.message);
             }

@@ -5,37 +5,15 @@ import LineChart from "./components/LineChart";
 import PieChart from "./components/PieChar";
 import Sidebar from "./components/Sidebar";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default function Dashboard() {
     const cookieStore = cookies();
     const userId = cookieStore.get("user-id")?.value;
-    // // Assuming you have functions to fetch data from your API
-    // const fetchSalesData = () => {
-    //     // ... your fetch logic
-    //     return [
-    //         { amount: 100 },
-    //         { amount: 200 },
-    //         // ... more sales data
-    //     ];
-    // };
 
-    // const fetchProductData = () => {
-    //     // ... your fetch logic
-    //     return [
-    //         { price: 29.99 },
-    //         { price: 15.99 },
-    //         // ... more product data
-    //     ];
-    // };
-
-    // Fetch data and calculate metrics
-    // const salesData = fetchSalesData();
-    // const productData = fetchProductData();
-
-    // const totalSales = salesData.reduce((acc, sale) => acc + sale.amount, 0);
-    // const averageProductPrice =
-    //     productData.reduce((acc, product) => acc + product.price, 0) /
-    //     productData.length;
+    if (!userId) {
+        return redirect("/login"); // Use redirect from next/navigation
+    }
 
     const data = [
         { label: "January", value: 40 },
@@ -141,26 +119,6 @@ export default function Dashboard() {
 
                     {/* Main Content */}
                     <section className="lg:col-span-9 bg-gray-800 p-6 rounded-lg shadow-lg space-y-8">
-                        {/* Cards Row */}
-                        {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                            <div className="bg-gray-700 p-6 rounded-lg shadow-md transform hover:scale-105 transition-transform duration-300">
-                                <h2 className="text-xl font-bold">
-                                    Sales Overview
-                                </h2>
-                                <p className="mt-2 text-gray-300">
-                                    Total Sales: ${totalSales.toFixed(2)}
-                                </p>
-                            </div>
-                            <div className="bg-gray-700 p-6 rounded-lg shadow-md transform hover:scale-105 transition-transform duration-300">
-                                <h2 className="text-xl font-bold">
-                                    Product Insights
-                                </h2>
-                                <p className="mt-2 text-gray-300">
-                                    Average Product Price: $
-                                    {averageProductPrice.toFixed(2)}
-                                </p>
-                            </div>
-                        </div> */}
                         <div className="flex flex-wrap">
                             <div className="w-1/3 px-4">
                                 <h1 className="text-2xl font-bold mb-6">

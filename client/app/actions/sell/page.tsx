@@ -10,14 +10,20 @@ import {
 } from "./../functions/apiHandlers";
 import { cookies } from "next/headers";
 import apiClient from "@/app/utils/apiClient";
+import { redirect } from "next/navigation"; // Import redirect
 
 async function page() {
+    const cookiesList = cookies();
+    const userId = cookiesList.get("user-id")?.value;
+
+    if (!userId) {
+        return redirect("/login"); // Use redirect from next/navigation
+    }
+
     try {
         const products: ProductWithID[] = await getProductsInServer();
         const customers: CustomerWithId[] = await getCustomersInServer();
         const { data: commands } = await apiClient.get("commands");
-        const cookiesList = cookies();
-        const userId = cookiesList.get("user-id")?.value;
         const user: any[] = await getUserInServer(userId!);
         const { data: setting } = await apiClient.get(
             `settings/findByUserId/${userId}`

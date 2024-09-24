@@ -442,7 +442,7 @@ export default function Sell({
                                     )}
                                 </button>
                             </div>
-                            <div className="overflow-x-hidden overflow-y-auto pe-3 cosmos-scrollbar">
+                            <div className="overflow-x-hidden overflow-y-auto pb-4 pe-3 cosmos-scrollbar">
                                 {productUpdateShortcut ? (
                                     <ProductUpdateShortcut
                                         handleClose={() =>

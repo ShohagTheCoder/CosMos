@@ -1,6 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ApiResponse } from 'src/common/interfaces/api-response.interface';
 import { Response } from 'src/common/utils/apiResponse';
 import { User } from 'src/users/schemas/user.schema';
 import { UsersService } from 'src/users/users.service';
@@ -29,8 +28,10 @@ export class AuthService {
             sub: user._id, // Payload containing the user's unique ID
         };
 
-        return new Response('Login successful').data({
-            access_token: this.jwtService.sign(payload),
-        });
+        return new Response('Login successful')
+            .data({
+                access_token: this.jwtService.sign(payload),
+            })
+            .done();
     }
 }
