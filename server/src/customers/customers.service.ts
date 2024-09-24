@@ -15,22 +15,16 @@ export class CustomersService {
     ) {}
 
     async create(createCustomerDto: any) {
-        const { name, phoneNumber, email, address } = createCustomerDto;
+        const { name, phoneNumber } = createCustomerDto;
         const account = {
             name: name,
             type: 'customer',
             username: phoneNumber,
             password: 'password',
             balance: 0,
-            minimumBalance: 1000,
-            maximumBalance: 1000,
-            limit: 1000,
-            // lastTransaction: null,
-            // lastTransactionAccountName: null,
-            // lastTransactionAction: null,
-            // lastTransactionAmount: 0,
-            // lastTransactionDate: null,
-            // lastTransactionNote: null,
+            minimumBalance: 10000,
+            maximumBalance: 10000,
+            limit: 10000,
         };
 
         const createdAccount = new this.accountModel(account);

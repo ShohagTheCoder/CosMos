@@ -53,10 +53,7 @@ function ProductsRow({
                                         {product.description}
                                     </p>
                                 </div>
-                                <p>
-                                    #{" "}
-                                    {getStockLine(product.stock, product.units)}
-                                </p>
+                                <p># {getStockLine(product)}</p>
                             </div>
                             <div className="flex gap-3 min-w-[200px] mr-3 justify-between items-center py-2 px-3">
                                 <p>

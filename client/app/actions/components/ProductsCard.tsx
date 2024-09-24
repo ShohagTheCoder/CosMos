@@ -8,6 +8,7 @@ interface ProductsCardProps {
     callback: (product: ProductWithID) => void;
     products: Record<string, ProductWithID>;
     showProductImage: boolean;
+    // eslint-disable-next-line no-unused-vars
     setProductUpdateShortcut: (productId: string) => void;
 }
 

@@ -29,11 +29,8 @@ export default function ProductUpdateShortcut({
         );
 
         try {
-            let { data } = await apiClient.patch(
-                `products/${product._id}`,
-                update
-            );
-            callback(data);
+            await apiClient.patch(`products/${product._id}`, update);
+            callback({ ...product, ...update });
         } catch (error) {
             handleClose();
         }

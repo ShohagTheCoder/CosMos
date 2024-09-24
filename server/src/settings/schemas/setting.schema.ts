@@ -13,6 +13,12 @@ export class Setting extends Document {
 
     @Prop({ default: true })
     darkMode: boolean;
+
+    @Prop({ default: true })
+    productImage: boolean;
+
+    @Prop({ default: true })
+    cartImage: boolean;
 }
 
 export type SettingDocument = Setting & Document;

@@ -232,6 +232,34 @@ export default function Sell({
         }
     }
 
+    function handleProductUpdateShortcut(productId: string | undefined) {
+        let product: ProductWithID | undefined = undefined;
+        if (productId) {
+            product = products[productId];
+        } else {
+            if (command.length >= 2) {
+                product =
+                    Object.values(filteredProducts)[cart.selectedProductIndex];
+            } else if (cart.activeProduct) {
+                product = products[cart.activeProduct];
+            }
+        }
+
+        if (product) {
+            product = { ...product, product };
+            dispatch(setProduct(product));
+            setProductUpdateShortcut(true);
+        }
+    }
+
+    function handleProductUpdate(product: any) {
+        setProductUpdateShortcut(false);
+        products[product._id] = product;
+        if (cart.products[product._id]) {
+            dispatch(updateCartProduct(product));
+        }
+    }
+
     function handleSellPageChange(sellPageKey: string) {
         if (sellPageKey == activeSellPage.current) return;
         let cartStates: Record<string, CartState> = { ...helper.cartStates };
@@ -252,23 +280,10 @@ export default function Sell({
         handleSellPageChange,
         changeCartActiveProductTo,
         addToCartByProductShortcut,
-        handleCompleteSell
+        handleCompleteSell,
+        handleProductUpdateShortcut
         // commandCounter
     );
-
-    function handleProductUpdateShortcut(productId: string) {
-        let product = { ...products[productId], product: products[productId] };
-        dispatch(setProduct(product));
-        setProductUpdateShortcut(true);
-    }
-
-    function handleProductUpdate(product: ProductWithID) {
-        setProductUpdateShortcut(false);
-        products[product._id] = product;
-        if (cart.products[product._id]) {
-            dispatch(updateCartProduct(product));
-        }
-    }
 
     return (
         <div className="text-black dark:text-white">
@@ -281,7 +296,7 @@ export default function Sell({
                     className="justify-center"
                 />
                 <div className="ps-[94px] 2xl:ps-[150px] bg-white dark:bg-gray-950">
-                    <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 gap-6 h-screen overflow-hidden">
+                    <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 gap-6 h-screen overflow-x-hidden overflow-y-auto lg:overflow-y-hidden cosmos-scrollbar">
                         <div className="h-screen grid grid-rows-[auto_auto_auto_1fr] overflow-hidden col-span-8 lg:col-span-5 py-4">
                             <div className="bg-gray-300 dark:bg-gray-950 p-3 border-2 border-dashed border-slate-500 mb-3 md:flex justify-between items-center">
                                 <div className="flex gap-3 justify-start">
@@ -402,7 +417,7 @@ export default function Sell({
                                     )}
                                 </button>
                             </div>
-                            <div className="overflow-x-hidden overflow-y-auto pe-3 cosmos-scrollbar">
+                            <div className="overflow-x-hidden overflow-hidden lg:overflow-y-auto pe-3 cosmos-scrollbar">
                                 {productUpdateShortcut ? (
                                     <ProductUpdateShortcut
                                         handleClose={() =>

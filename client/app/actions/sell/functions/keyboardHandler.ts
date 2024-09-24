@@ -37,7 +37,8 @@ export function useHandleKeyUp(
     handleSellPageChange: any,
     changeCartActiveProductTo: any,
     addToCartByProductShortcut: any,
-    handleCompleteSell: () => void
+    handleCompleteSell: () => void,
+    setProductUpdateShortcut: (productId: string | undefined) => void
 ) {
     const dispatch = useDispatch();
     const longPressDuration = 400;
@@ -619,6 +620,12 @@ export function useHandleKeyUp(
                 }
             }
 
+            if (e.key == "ContextMenu") {
+                e.preventDefault();
+                setProductUpdateShortcut(undefined);
+                return;
+            }
+
             let max = 0;
             switch (e.key) {
                 case "Shift":
@@ -694,6 +701,7 @@ export function useHandleKeyUp(
             filteredProducts,
             isCustomers,
             cart.selectedProductIndex,
+            cart.activeProduct,
         ]
     );
 

@@ -27,15 +27,17 @@ export class UsersService {
             username: createUserDto.email,
             password: createUserDto.password,
             balance: 0,
-            minimumBalance: 1000,
-            maximumBalance: 10000,
-            limit: 10000,
+            minimumBalance: 100000,
+            maximumBalance: 100000,
+            limit: 100000,
         });
         user.account = account._id.toString();
 
         const setting = new this.settingModel({
             user: user._id.toString(),
             darkMode: true,
+            productImage: true,
+            cartImage: true,
         });
 
         // Updaet user setting fied

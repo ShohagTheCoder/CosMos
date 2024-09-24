@@ -19,7 +19,8 @@ export default function getStockLine(product: ProductWithID) {
     output += quantity + " " + product.displaySaleUnit;
 
     if (stock > 0) {
-        output += " " + stock + " " + (product.unit || product.displaySaleUnit); // Fallback to displaySaleUnit
+        output +=
+            ", " + stock + " " + (product.unit || product.displaySaleUnit); // Fallback to displaySaleUnit
     }
 
     return output;

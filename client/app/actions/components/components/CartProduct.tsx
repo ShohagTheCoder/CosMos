@@ -28,6 +28,7 @@ import InfoIcon from "@/app/icons/InfoIcon";
 function CartProduct({
     setProductUpdateShortcut,
 }: {
+    // eslint-disable-next-line no-unused-vars
     setProductUpdateShortcut: (productId: string) => void;
 }) {
     const dispatch = useDispatch();
