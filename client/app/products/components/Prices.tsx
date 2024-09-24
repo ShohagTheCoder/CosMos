@@ -127,6 +127,7 @@ function Prices() {
                                             })
                                         )
                                     }
+                                    inputClassName="w-[70px]"
                                 />
                                 <p>৳</p>
                                 {price.unit == product.saleUnitsBase ? (

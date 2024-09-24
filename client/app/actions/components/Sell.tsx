@@ -10,6 +10,7 @@ import {
     resetSelectedProductIndex,
     setUser,
     setWholeCart,
+    updateCartProduct,
 } from "@/app/store/slices/cartSlice";
 import { RootState } from "@/app/store/store";
 import apiClient from "@/app/utils/apiClient";
@@ -35,6 +36,8 @@ import ColsIcon from "@/app/icons/ColsIcon";
 import RowIcon from "@/app/icons/RowIcon";
 import NotImageIcon from "@/app/icons/NotImageIcon";
 import ImageIcon from "@/app/icons/ImageIcon";
+import ProductUpdateShortcut from "../sell/components/ProductUpdateShortcut";
+import { setProduct } from "@/app/store/slices/productSlice";
 
 interface SellProps {
     productsArray: ProductWithID[];
@@ -69,6 +72,7 @@ export default function Sell({
     let noteRef = useRef<HTMLTextAreaElement>(null);
     const helper = useSelector((state: RootState) => state.helper);
     const activeSellPage = useRef("F5");
+    const [productUpdateShortcut, setProductUpdateShortcut] = useState(false);
     const [isRow, setIsRow] = useState(
         localStorage.getItem("productsRow") == "yes" ? true : false || false
     );
@@ -252,6 +256,20 @@ export default function Sell({
         // commandCounter
     );
 
+    function handleProductUpdateShortcut(productId: string) {
+        let product = { ...products[productId], product: products[productId] };
+        dispatch(setProduct(product));
+        setProductUpdateShortcut(true);
+    }
+
+    function handleProductUpdate(product: ProductWithID) {
+        setProductUpdateShortcut(false);
+        products[product._id] = product;
+        if (cart.products[product._id]) {
+            dispatch(updateCartProduct(product));
+        }
+    }
+
     return (
         <div className="text-black dark:text-white">
             <SellReceipt />
@@ -385,49 +403,78 @@ export default function Sell({
                                 </button>
                             </div>
                             <div className="overflow-x-hidden overflow-y-auto pe-3 cosmos-scrollbar">
-                                {commandCounter.name == "completeSell" &&
-                                commandCounter.value >= 1 ? (
-                                    <FinalView />
-                                ) : isCustomers ? (
-                                    <div>
-                                        {cart.action == "purchase" ? (
-                                            <SupplierCard
-                                                customers={customers}
-                                            />
-                                        ) : (
-                                            <CustomerCard
-                                                customers={filteredCustomers}
-                                            />
-                                        )}
-                                    </div>
+                                {productUpdateShortcut ? (
+                                    <ProductUpdateShortcut
+                                        handleClose={() =>
+                                            setProductUpdateShortcut(false)
+                                        }
+                                        callback={handleProductUpdate}
+                                    />
                                 ) : (
                                     <>
-                                        {isRow ? (
-                                            <ProductsRow
-                                                selected={
-                                                    cart.selectedProductIndex
-                                                }
-                                                callback={(product) =>
-                                                    dispatch(addToCart(product))
-                                                }
-                                                products={filteredProducts}
-                                                showProductImage={
-                                                    showProductImage
-                                                }
-                                            />
+                                        {commandCounter.name ==
+                                            "completeSell" &&
+                                        commandCounter.value >= 1 ? (
+                                            <FinalView />
+                                        ) : isCustomers ? (
+                                            <div>
+                                                {cart.action == "purchase" ? (
+                                                    <SupplierCard
+                                                        customers={customers}
+                                                    />
+                                                ) : (
+                                                    <CustomerCard
+                                                        customers={
+                                                            filteredCustomers
+                                                        }
+                                                    />
+                                                )}
+                                            </div>
                                         ) : (
-                                            <ProductsCard
-                                                selected={
-                                                    cart.selectedProductIndex
-                                                }
-                                                callback={(product) =>
-                                                    dispatch(addToCart(product))
-                                                }
-                                                products={filteredProducts}
-                                                showProductImage={
-                                                    showProductImage
-                                                }
-                                            />
+                                            <>
+                                                {isRow ? (
+                                                    <ProductsRow
+                                                        selected={
+                                                            cart.selectedProductIndex
+                                                        }
+                                                        callback={(product) =>
+                                                            dispatch(
+                                                                addToCart(
+                                                                    product
+                                                                )
+                                                            )
+                                                        }
+                                                        products={
+                                                            filteredProducts
+                                                        }
+                                                        showProductImage={
+                                                            showProductImage
+                                                        }
+                                                    />
+                                                ) : (
+                                                    <ProductsCard
+                                                        setProductUpdateShortcut={
+                                                            handleProductUpdateShortcut
+                                                        }
+                                                        selected={
+                                                            cart.selectedProductIndex
+                                                        }
+                                                        callback={(product) =>
+                                                            dispatch(
+                                                                addToCart(
+                                                                    product
+                                                                )
+                                                            )
+                                                        }
+                                                        products={
+                                                            filteredProducts
+                                                        }
+                                                        showProductImage={
+                                                            showProductImage
+                                                        }
+                                                    />
+                                                )}
+                                            </>
                                         )}
                                     </>
                                 )}
@@ -436,7 +483,11 @@ export default function Sell({
                         <div className="py-4 mb-4 lg:pe-3 col-span-8 lg:col-span-3 min-h-screen overflow-hidden grid grid-rows-1">
                             <div className="pe-3 h-auto overflow-y-auto overflow-x-hidden cosmos-scrollbar">
                                 <div>
-                                    <CartProduct />
+                                    <CartProduct
+                                        setProductUpdateShortcut={
+                                            handleProductUpdateShortcut
+                                        }
+                                    />
                                     <CustomerDetails />
                                     <div className="">
                                         <textarea

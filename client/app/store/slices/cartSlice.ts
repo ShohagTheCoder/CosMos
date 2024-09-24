@@ -124,6 +124,22 @@ const cartSlice = createSlice({
                 state.selectedProductIndex -= 1;
             }
         },
+        updateCartProduct: (
+            state: CartState,
+            action: PayloadAction<ProductWithID>
+        ) => {
+            let product = action.payload;
+            let existingProduct = state.products[product._id];
+
+            if (existingProduct) {
+                state.products[product._id] = getUpdatedProduct(
+                    product,
+                    existingProduct.quantity,
+                    existingProduct.unit
+                );
+                return updateCart(state);
+            }
+        },
 
         resetSelectedProductIndex: (state: CartState) => {
             state.selectedProductIndex = 0;
@@ -479,6 +495,7 @@ export const {
     addToCartWith,
     removeFromCart,
     updatePaid,
+    updateCartProduct,
     updateQuantity,
     updateDiscountAmount,
     updateExtraDiscountAmount,

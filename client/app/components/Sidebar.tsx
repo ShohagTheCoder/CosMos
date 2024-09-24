@@ -12,6 +12,7 @@ import Cookies from "js-cookie";
 import CommandIcon from "../icons/CommandIcon";
 import PurchaseIcon from "../icons/PurchaseIcon";
 import SellIcon from "../icons/SellIcon";
+import InfoIcon from "../icons/InfoIcon";
 
 function Sidebar({ active = "home" }: { active: string }) {
     const userId = Cookies.get("user-id");

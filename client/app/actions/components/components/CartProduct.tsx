@@ -23,15 +23,18 @@ import ImageIcon from "@/app/icons/ImageIcon";
 import PriceTagIcon from "@/app/icons/PriceTagIcon";
 import DiscountIcon from "@/app/icons/DiscountIcon";
 import ExtraDiscountIcon from "@/app/icons/ExtraDiscountIcon";
+import InfoIcon from "@/app/icons/InfoIcon";
 
-function CartProduct() {
+function CartProduct({
+    setProductUpdateShortcut,
+}: {
+    setProductUpdateShortcut: (productId: string) => void;
+}) {
     const dispatch = useDispatch();
     let cart = useSelector((state: RootState) => state.cart);
     const [showCartImage, setShowCartImage] = useState(
         localStorage.getItem("showCartImage") == "no" ? false : true
     );
-
-    // console.log("Cart product page");
 
     const handleDecrement = (_id: string) => {
         let product = cart.products[_id];
@@ -162,7 +165,18 @@ function CartProduct() {
                             >
                                 <div className="overflow-hidden flex">
                                     {showCartImage ? (
-                                        <div className="w-[160px] h-auto">
+                                        <div className="w-[160px] h-auto relative">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setProductUpdateShortcut(
+                                                        product._id
+                                                    );
+                                                }}
+                                                className="absolute right-0 p-1 text-white bg-green-600"
+                                            >
+                                                <InfoIcon />
+                                            </button>
                                             <img
                                                 src={`/images/products/${product.image}`}
                                                 alt={product.name}

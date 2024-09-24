@@ -1,4 +1,5 @@
 import getStockLine from "@/app/functions/getStockLine";
+import InfoIcon from "@/app/icons/InfoIcon";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 
 interface ProductsCardProps {
@@ -7,6 +8,7 @@ interface ProductsCardProps {
     callback: (product: ProductWithID) => void;
     products: Record<string, ProductWithID>;
     showProductImage: boolean;
+    setProductUpdateShortcut: (productId: string) => void;
 }
 
 function ProductsCard({
@@ -14,6 +16,7 @@ function ProductsCard({
     callback,
     products,
     showProductImage = true,
+    setProductUpdateShortcut,
 }: ProductsCardProps) {
     // console.log("Products card");
 
@@ -29,7 +32,6 @@ function ProductsCard({
                 (product: ProductWithID, key: number) => (
                     <div
                         key={product._id}
-                        onClick={() => handleCallback(product._id)}
                         className={`max-w-sm rounded overflow-hidden bg-gray-300 dark:bg-gray-800 shadow ${
                             selected == key
                                 ? "bg-green-200 dark:bg-green-900"
@@ -37,11 +39,23 @@ function ProductsCard({
                         }`}
                     >
                         {showProductImage ? (
-                            <img
-                                className="w-full md:h-[180px] xl:h-[220px] object-cover"
-                                src={`/images/products/${product.image}`}
-                                alt={product.name}
-                            />
+                            <div className="w-full md:h-[180px] xl:h-[220px] relative">
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        setProductUpdateShortcut(product._id);
+                                    }}
+                                    className="absolute right-0 p-1 text-white bg-green-600 rounded"
+                                >
+                                    <InfoIcon />
+                                </button>
+                                <img
+                                    onClick={() => handleCallback(product._id)}
+                                    className="w-full h-full object-cover"
+                                    src={`/images/products/${product.image}`}
+                                    alt={product.name}
+                                />
+                            </div>
                         ) : (
                             ""
                         )}

@@ -45,6 +45,10 @@ body {
     -moz-appearance: textfield; /* Hides the spin buttons in Firefox */
 }
 
+.cosmos-scrollbar {
+    scrollbar-gutter: stable both-edge;
+}
+
 /* For Webkit-based browsers (Chrome, Safari) */
 .cosmos-scrollbar::-webkit-scrollbar {
     width: 12px; /* Width of the scrollbar */
