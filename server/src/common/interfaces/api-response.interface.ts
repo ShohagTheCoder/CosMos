@@ -4,6 +4,4 @@ export interface ApiResponse<T = any> {
     code: number; // HTTP status code (e.g., 200, 400, 500)
     message: string; // Descriptive message explaining the result or error
     data: T | null; // Payload data (null in case of error)
-    timestamp?: string; // Optional timestamp for error or success events
-    path?: string; // Optional path to the endpoint (useful for errors)
 }

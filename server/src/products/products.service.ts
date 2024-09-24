@@ -6,9 +6,10 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Product, ProductDocument } from './schemas/product.schema';
+import { Price, Product, ProductDocument } from './schemas/product.schema';
 import { Stock, StockDocument } from 'src/stocks/schemas/stocks.schema';
 import { TrashService } from 'src/trash/trash.service';
+import { Response } from 'src/common/utils/apiResponse';
 
 @Injectable()
 export class ProductsService {
@@ -91,6 +92,29 @@ export class ProductsService {
         if (product) {
             Object.assign(product, updateProductDto);
             return product.save();
+        }
+
+        throw new Error('Product not found for id ' + id);
+    }
+
+    async updatePrice(id: string, updatePrice: { amount: number }) {
+        const product = await this.productModel.findById(id);
+
+        if (product) {
+            // Update prices by mapping over each price item
+            product.prices = product.prices.map((item: Price) => ({
+                ...item,
+                price: item.price + updatePrice.amount,
+            }));
+
+            // Save and return the updated product
+            await product.save();
+
+            return new Response('Product price updated successfully')
+                .data({
+                    prices: { ...product.prices },
+                })
+                .done();
         }
 
         throw new Error('Product not found for id ' + id);

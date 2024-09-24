@@ -64,7 +64,6 @@ export default interface Product {
     category?: CategoryType; // Same here
     updatePrice: number;
     keywords: string[];
-    newPrice?: number;
 }
 
 export interface ProductWithID extends Product {
@@ -72,7 +71,6 @@ export interface ProductWithID extends Product {
     stock: {
         stock: number;
     };
-    newPrice: number;
     subTotal: number;
     displaySaleUnit: string;
     displayPurchaseUnit: string;

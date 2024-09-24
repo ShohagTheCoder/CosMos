@@ -13,9 +13,7 @@ const handleError = (error: any, message: string) => {
 
 export async function getProductsInServer(): Promise<ProductWithID[]> {
     try {
-        const res: AxiosResponse<ProductWithID[]> = await apiClient.get(
-            "products"
-        );
+        const res = await apiClient.get("products");
         return res.data;
     } catch (error) {
         handleError(error, "Failed to fetch products");
@@ -26,9 +24,7 @@ export async function getProductsInServerForPurchase(): Promise<
     ProductWithID[]
 > {
     try {
-        const res: AxiosResponse<ProductWithID[]> = await apiClient.get(
-            "products/for-purchase"
-        );
+        const res = await apiClient.get("products/for-purchase");
         return res.data;
     } catch (error) {
         handleError(error, "Failed to fetch products");

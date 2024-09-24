@@ -169,24 +169,6 @@ const cartSlice = createSlice({
                 }
             }
         },
-        updateSalePrice: (
-            state: CartState,
-            action: PayloadAction<{ key: any; amount: number }>
-        ) => {
-            let { key = state.activeProduct, amount } = action.payload;
-            if (key) {
-                const product = state.products[key];
-                if (product) {
-                    product.updatePrice += amount;
-                    state.products[key] = getUpdatedProduct(
-                        product,
-                        undefined,
-                        undefined
-                    );
-                    return updateCart(state);
-                }
-            }
-        },
         resetSalePrice: (
             state: CartState,
             action: PayloadAction<string | undefined>
@@ -381,7 +363,7 @@ const cartSlice = createSlice({
         ) => {
             let { key = state.activeProduct, amount } = action.payload;
             if (key) {
-                let product = state.products[key];
+                let product: ProductWithID = state.products[key];
 
                 if (
                     product &&
@@ -410,6 +392,7 @@ const cartSlice = createSlice({
             let { key = state.activeProduct, amount } = action.payload;
             if (key) {
                 let product = state.products[key];
+                amount = amount * product.units[product.unit].value;
 
                 if (
                     product &&
@@ -514,7 +497,6 @@ export const {
     addDiscount,
     addExtraDiscount,
     setUser,
-    updateSalePrice,
     resetSalePrice,
     setWholeCart,
     resetCart,

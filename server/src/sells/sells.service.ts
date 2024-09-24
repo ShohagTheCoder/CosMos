@@ -56,10 +56,6 @@ export class SellsService {
 
             // Update stock for each product in cart
             for (const product of Object.values(createSellDto.products)) {
-                if (product.price != product.newPrice) {
-                    this.updatePrice(product);
-                }
-
                 if (product.purchaseEnable) {
                     await this.stocksService.updateStockQuantity(
                         product._id.toString(),
@@ -100,22 +96,6 @@ export class SellsService {
             // Handle errors appropriately
             console.error('Error creating sell:', error);
             throw error; // Re-throw the error or handle it as needed
-        }
-    }
-
-    async updatePrice(product: Product) {
-        const prices = product.prices.map((item: Price) => ({
-            ...item,
-            price: item.price + product.updatePrice,
-        }));
-
-        try {
-            await this.productModel.findByIdAndUpdate(product._id, { prices });
-        } catch (error) {
-            throw new HttpException(
-                'Faild to update product price',
-                HttpStatus.INTERNAL_SERVER_ERROR,
-            );
         }
     }
 

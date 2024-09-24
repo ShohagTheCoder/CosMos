@@ -55,8 +55,8 @@ function CartProduct({
         let units = product.units;
         product.saleUnitsBase = units[product.saleUnitsBase];
         product.unit = units[product.unit];
-        product.price =
-            product.newPrice - product.discount / product.unit.value;
+        product.baseDiscount = product.discount / product.unit.value;
+        product.discountPrice = product.price - product.baseDiscount;
         return product;
     }
 
@@ -214,7 +214,7 @@ function CartProduct({
                                                         }
                                                     </td>
                                                     <td className="pe-3">
-                                                        {product.newPrice.toFixed(
+                                                        {product.price.toFixed(
                                                             0
                                                         )}{" "}
                                                         ৳
@@ -222,16 +222,14 @@ function CartProduct({
                                                     <td className="pe-3">%</td>
                                                     <td className="pe-3 text-center">
                                                         <p className="no-spin py-1 w-[46px] bg-gray-900 text-center outline-none">
-                                                            {(
-                                                                product.discount /
-                                                                product.unit
-                                                                    .value
-                                                            ).toFixed(0)}
+                                                            {product.baseDiscount.toFixed(
+                                                                0
+                                                            )}
                                                         </p>
                                                     </td>
                                                     <td className="pe-3 text-end">
                                                         {Math.ceil(
-                                                            product.price
+                                                            product.discountPrice
                                                         )}{" "}
                                                         ৳
                                                     </td>
@@ -278,7 +276,9 @@ function CartProduct({
                                                     <td className="pe-3 text-end">
                                                         {(
                                                             product.price *
-                                                            product.unit.value
+                                                                product.unit
+                                                                    .value -
+                                                            product.discount
                                                         ).toFixed(0)}{" "}
                                                         ৳
                                                     </td>

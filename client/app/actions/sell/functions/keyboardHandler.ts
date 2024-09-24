@@ -1,6 +1,5 @@
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import {
-    updateSalePrice,
     incrementQuantity,
     decrementQuantity,
     updateDiscountAmount,
@@ -9,7 +8,6 @@ import {
     addExtraDiscount,
     addToCart,
     removeFromCart,
-    resetSalePrice,
     selectNexProduct,
     selectPreviousProduct,
     shiftMeasurementTo,
@@ -19,9 +17,9 @@ import {
     addCustomerAccount,
     setPriceToWithDiscount,
     shiftUnitTo,
+    CartState,
 } from "@/app/store/slices/cartSlice";
 import apiClient from "@/app/utils/apiClient";
-import productsMap from "@/app/utils/productsMap";
 import { KeyboardEvent, useCallback, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -29,7 +27,7 @@ export function useHandleKeyUp(
     command: string,
     // eslint-disable-next-line no-unused-vars
     setCommand: (command: string) => void,
-    cart: any,
+    cart: CartState,
     products: Record<string, ProductWithID>,
     filteredProducts: Record<string, ProductWithID>,
     filteredCustomers: any,
@@ -38,7 +36,10 @@ export function useHandleKeyUp(
     changeCartActiveProductTo: any,
     addToCartByProductShortcut: any,
     handleCompleteSell: () => void,
-    setProductUpdateShortcut: (productId: string | undefined) => void
+    // eslint-disable-next-line no-unused-vars
+    setProductUpdateShortcut: (productId: string | undefined) => void,
+    // eslint-disable-next-line no-unused-vars
+    handleUpdateProductPrice: (amount: number) => void
 ) {
     const dispatch = useDispatch();
     const longPressDuration = 400;
@@ -113,399 +114,440 @@ export function useHandleKeyUp(
         }
     }
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-        // console.log("---------------------------------");
-        // console.log(e.key);
-        // console.log(e.code);
+    const handleKeyDown = useCallback(
+        (e: KeyboardEvent) => {
+            // console.log("---------------------------------");
+            // console.log(e.key);
+            // console.log(e.code);
 
-        if (e.code == "Minus") {
-            e.preventDefault();
-            setCommand("");
-            return;
-        }
-
-        const repeatableKeys = ["Backspace", "Space"];
-        if (!repeatableKeys.includes(e.code)) {
-            if (pressedKeysRef.current.has(e.code)) {
-                e.preventDefault();
-                return;
-            }
-        }
-
-        if (
-            command.length == 1 &&
-            /^[a-zA-Z]$/.test(command) &&
-            command == e.key
-        ) {
-            addToCartByProductShortcut(e, command);
-            return;
-        }
-
-        // Add to pressed keys
-        pressedKeysRef.current.add(e.code);
-        // Remove previous saved key so we can click again if keyup even occur in the keyup handler
-        groupPressedRef.current = false;
-
-        // Important: preventDefault special keys
-        const specialKeys = [
-            "Enter",
-            "NumpadAdd",
-            "NumpadSubtract",
-            "ArrowUp",
-            "ArrowDown",
-            "Tab",
-        ];
-        if (specialKeys.includes(e.code)) {
-            e.preventDefault();
-        }
-
-        // Handle sell page navigation
-        const sellPageNavigationKeys = ["F5", "F6", "F7", "F8"];
-        if (sellPageNavigationKeys.includes(e.key)) {
-            e.preventDefault();
-            stopKeyUpHandlerRef.current = true;
-            handleSellPageChange(e.key);
-            return;
-        }
-
-        const longPressKeys = [
-            "NumpadAdd",
-            "NumpadEnter",
-            "F9",
-            "Delete",
-            "ArrowUp",
-            "ArrowDown",
-            "NumpadSubtract",
-            "ArrowLeft",
-            "ArrowRight",
-            "Numpad0",
-            "Numpad1",
-            "Numpad2",
-            "Numpad3",
-            "Numpad4",
-            "Numpad5",
-            "Numpad6",
-            "Numpad7",
-            "Numpad8",
-            "Numpad9",
-        ];
-        if (
-            longPressKeys.includes(e.code) &&
-            keyPressTimerRef.current == undefined
-        ) {
-            switch (e.code) {
-                case "NumpadAdd":
-                case "NumpadEnter":
-                case "ArrowUp":
-                case "ArrowDown":
-                    e.preventDefault();
-                    keyPressTimerRef.current = setTimeout(() => {
-                        longPressedRef.current = true;
-                        e.preventDefault();
-                        switch (e.code) {
-                            case "NumpadAdd":
-                            case "ArrowUp":
-                                changeCartActiveProductTo(-1);
-                                break;
-                            case "NumpadEnter":
-                            case "ArrowDown":
-                                changeCartActiveProductTo(1);
-                                break;
-                        }
-                    }, longPressDuration);
-                    break;
-                case "NumpadSubtract":
-                    e.preventDefault();
-                    keyPressTimerRef.current = setTimeout(() => {
-                        longPressedRef.current = true;
-                        setCommand("");
-                    }, longPressDuration);
-                    break;
-                case "Delete":
-                    e.preventDefault();
-                    keyPressTimerRef.current = setTimeout(() => {
-                        longPressedRef.current = true;
-                        dispatch(removeFromCart(undefined));
-                    }, longPressDuration);
-                    break;
-                case "Numpad0":
-                case "Numpad1":
-                case "Numpad2":
-                case "Numpad3":
-                case "Numpad4":
-                case "Numpad5":
-                case "Numpad6":
-                case "Numpad7":
-                case "Numpad8":
-                case "Numpad9":
-                    // e.preventDefault();
-                    keyPressTimerRef.current = setTimeout(() => {
-                        longPressedRef.current = true;
-                        handleNumpadNumberKeysLongPress(e);
-                    }, longPressDuration);
-                    break;
-                case "ArrowLeft":
-                    keyPressTimerRef.current = setTimeout(() => {
-                        longPressedRef.current = true;
-                        dispatch(shiftUnitTo({ key: undefined, value: -1 }));
-                    }, longPressDuration);
-                    break;
-                case "ArrowRight":
-                    keyPressTimerRef.current = setTimeout(() => {
-                        longPressedRef.current = true;
-                        dispatch(shiftUnitTo({ key: undefined, value: 1 }));
-                    }, longPressDuration);
-                    break;
-            }
-        }
-
-        if (e.key == "/") {
-            setCommand("");
-        }
-        if (e.key == "*") {
-            setCommand("");
-        }
-
-        // Complete sell
-        if (
-            ["Numpad0", "Numpad1"].every((key) =>
-                pressedKeysRef.current.has(key)
-            )
-        ) {
-            e.preventDefault();
-            setCommand("");
-            stopKeyUpHandlerRef.current = true;
-            groupPressedRef.current = true;
-
-            if (commandCounter.name === "completeSell") {
-                commandCounter.value += 1;
-                if (commandCounter.value >= 3) {
-                    setCommandCounter({ name: "unknown", value: 0 });
-                    handleCompleteSell();
-                }
-            } else {
-                setCommandCounter({ name: "completeSell", value: 1 });
-            }
-            return;
-        }
-
-        // Chage cart active product to next
-        if (
-            ["NumpadAdd", "NumpadEnter"].every((key) =>
-                pressedKeysRef.current.has(key)
-            )
-        ) {
-            e.preventDefault();
-            groupPressedRef.current = true;
-            stopKeyUpHandlerRef.current = true;
-            if (keyPressTimerRef.current) {
-                clearTimeout(keyPressTimerRef.current);
-                keyPressTimerRef.current = undefined;
-            }
-            changeCartActiveProductTo(1);
-            return;
-        }
-
-        // Increase discount
-        if (
-            ["Numpad2", "Numpad5"].every((key) =>
-                pressedKeysRef.current.has(key)
-            )
-        ) {
-            e.preventDefault();
-            dispatch(updateDiscountAmount({ key: undefined, amount: 1 }));
-            setCommand("");
-            groupPressedRef.current = true;
-            stopKeyUpHandlerRef.current = true;
-            return;
-        }
-
-        // Decrease discount
-        if (
-            ["Numpad8", "Numpad5"].every((key) =>
-                pressedKeysRef.current.has(key)
-            )
-        ) {
-            e.preventDefault();
-            dispatch(updateDiscountAmount({ key: undefined, amount: -1 }));
-            setCommand("");
-            groupPressedRef.current = true;
-            stopKeyUpHandlerRef.current = true;
-            return;
-        }
-
-        // Increase extra discount
-        if (
-            ["Numpad1", "Numpad4"].every((key) =>
-                pressedKeysRef.current.has(key)
-            )
-        ) {
-            e.preventDefault();
-            dispatch(updateExtraDiscountAmount({ key: undefined, amount: 1 }));
-            setCommand("");
-            groupPressedRef.current = true;
-            stopKeyUpHandlerRef.current = true;
-            return;
-        }
-
-        // Decrease extra discount
-        if (
-            ["Numpad4", "Numpad7"].every((key) =>
-                pressedKeysRef.current.has(key)
-            )
-        ) {
-            e.preventDefault();
-            dispatch(updateExtraDiscountAmount({ key: undefined, amount: -1 }));
-            setCommand("");
-            groupPressedRef.current = true;
-            stopKeyUpHandlerRef.current = true;
-            return;
-        }
-
-        // Rrset product price
-        if (
-            ["PageUp", "PageDown"].every((key) =>
-                pressedKeysRef.current.has(key)
-            )
-        ) {
-            e.preventDefault();
-            groupPressedRef.current = true;
-            stopKeyUpHandlerRef.current = true;
-            dispatch(resetSalePrice(undefined));
-            return;
-        }
-
-        // Dont go down. Work has done
-        const notToHandleKeys = ["PageUp", "PageDown"];
-        if (notToHandleKeys.includes(e.key)) {
-            e.preventDefault();
-            return;
-        }
-
-        if (e.code == "NumpadDecimal") {
-            if (command == "..") {
-                stopKeyUpHandlerRef.current = true;
+            if (e.code == "Minus") {
                 e.preventDefault();
                 setCommand("");
                 return;
             }
-        }
 
-        if (e.code == "Numpad0") {
-            switch (command) {
-                case ".":
+            const repeatableKeys = ["Backspace", "Space"];
+            if (!repeatableKeys.includes(e.code)) {
+                if (pressedKeysRef.current.has(e.code)) {
+                    e.preventDefault();
+                    return;
+                }
+            }
+
+            if (
+                command.length == 1 &&
+                /^[a-zA-Z]$/.test(command) &&
+                command == e.key
+            ) {
+                addToCartByProductShortcut(e, command);
+                return;
+            }
+
+            // Add to pressed keys
+            pressedKeysRef.current.add(e.code);
+            // Remove previous saved key so we can click again if keyup even occur in the keyup handler
+            groupPressedRef.current = false;
+
+            // Important: preventDefault special keys
+            const specialKeys = [
+                "Enter",
+                "NumpadAdd",
+                "NumpadSubtract",
+                "ArrowUp",
+                "ArrowDown",
+                "Tab",
+            ];
+            if (specialKeys.includes(e.code)) {
+                e.preventDefault();
+            }
+
+            // Handle sell page navigation
+            const sellPageNavigationKeys = ["F5", "F6", "F7", "F8"];
+            if (sellPageNavigationKeys.includes(e.key)) {
+                e.preventDefault();
+                stopKeyUpHandlerRef.current = true;
+                handleSellPageChange(e.key);
+                return;
+            }
+
+            const longPressKeys = [
+                "NumpadAdd",
+                "NumpadEnter",
+                "F9",
+                "Delete",
+                "ArrowUp",
+                "ArrowDown",
+                "NumpadSubtract",
+                "ArrowLeft",
+                "ArrowRight",
+                "PageUp",
+                "PageDown",
+                "Numpad0",
+                "Numpad1",
+                "Numpad2",
+                "Numpad3",
+                "Numpad4",
+                "Numpad5",
+                "Numpad6",
+                "Numpad7",
+                "Numpad8",
+                "Numpad9",
+            ];
+            if (
+                longPressKeys.includes(e.code) &&
+                keyPressTimerRef.current == undefined
+            ) {
+                switch (e.code) {
+                    case "NumpadAdd":
+                    case "NumpadEnter":
+                    case "ArrowUp":
+                    case "ArrowDown":
+                        e.preventDefault();
+                        keyPressTimerRef.current = setTimeout(() => {
+                            longPressedRef.current = true;
+                            e.preventDefault();
+                            switch (e.code) {
+                                case "NumpadAdd":
+                                case "ArrowUp":
+                                    changeCartActiveProductTo(-1);
+                                    break;
+                                case "NumpadEnter":
+                                case "ArrowDown":
+                                    changeCartActiveProductTo(1);
+                                    break;
+                            }
+                        }, longPressDuration);
+                        break;
+                    case "NumpadSubtract":
+                        e.preventDefault();
+                        keyPressTimerRef.current = setTimeout(() => {
+                            longPressedRef.current = true;
+                            setCommand("");
+                        }, longPressDuration);
+                        break;
+                    case "Delete":
+                        e.preventDefault();
+                        keyPressTimerRef.current = setTimeout(() => {
+                            longPressedRef.current = true;
+                            dispatch(removeFromCart(undefined));
+                        }, longPressDuration);
+                        break;
+                    case "Numpad0":
+                    case "Numpad1":
+                    case "Numpad2":
+                    case "Numpad3":
+                    case "Numpad4":
+                    case "Numpad5":
+                    case "Numpad6":
+                    case "Numpad7":
+                    case "Numpad8":
+                    case "Numpad9":
+                        // e.preventDefault();
+                        keyPressTimerRef.current = setTimeout(() => {
+                            longPressedRef.current = true;
+                            handleNumpadNumberKeysLongPress(e);
+                        }, longPressDuration);
+                        break;
+                    case "ArrowLeft":
+                        keyPressTimerRef.current = setTimeout(() => {
+                            longPressedRef.current = true;
+                            dispatch(
+                                shiftUnitTo({ key: undefined, value: -1 })
+                            );
+                        }, longPressDuration);
+                        break;
+                    case "ArrowRight":
+                        keyPressTimerRef.current = setTimeout(() => {
+                            longPressedRef.current = true;
+                            dispatch(shiftUnitTo({ key: undefined, value: 1 }));
+                        }, longPressDuration);
+                        break;
+                    case "PageUp":
+                        keyPressTimerRef.current = setTimeout(() => {
+                            longPressedRef.current = true;
+                            handleUpdateProductPrice(10);
+                        }, longPressDuration);
+                        break;
+                    case "PageDown":
+                        keyPressTimerRef.current = setTimeout(() => {
+                            longPressedRef.current = true;
+                            handleUpdateProductPrice(-10);
+                        }, longPressDuration);
+                        break;
+                }
+            }
+
+            if (e.key == "/") {
+                setCommand("");
+            }
+            if (e.key == "*") {
+                setCommand("");
+            }
+
+            // Complete sell
+            if (
+                ["Numpad0", "Numpad1"].every((key) =>
+                    pressedKeysRef.current.has(key)
+                )
+            ) {
+                e.preventDefault();
+                setCommand("");
+                stopKeyUpHandlerRef.current = true;
+                groupPressedRef.current = true;
+
+                if (commandCounter.name === "completeSell") {
+                    commandCounter.value += 1;
+                    if (commandCounter.value >= 3) {
+                        setCommandCounter({ name: "unknown", value: 0 });
+                        handleCompleteSell();
+                    }
+                } else {
+                    setCommandCounter({ name: "completeSell", value: 1 });
+                }
+                return;
+            }
+
+            // Chage cart active product to next
+            if (
+                ["NumpadAdd", "NumpadEnter"].every((key) =>
+                    pressedKeysRef.current.has(key)
+                )
+            ) {
+                e.preventDefault();
+                groupPressedRef.current = true;
+                stopKeyUpHandlerRef.current = true;
+                if (keyPressTimerRef.current) {
+                    clearTimeout(keyPressTimerRef.current);
+                    keyPressTimerRef.current = undefined;
+                }
+                changeCartActiveProductTo(1);
+                return;
+            }
+
+            // Increase discount
+            if (
+                ["Numpad2", "Numpad5"].every((key) =>
+                    pressedKeysRef.current.has(key)
+                )
+            ) {
+                e.preventDefault();
+                dispatch(updateDiscountAmount({ key: undefined, amount: 1 }));
+                setCommand("");
+                groupPressedRef.current = true;
+                stopKeyUpHandlerRef.current = true;
+                return;
+            }
+
+            // Decrease discount
+            if (
+                ["Numpad8", "Numpad5"].every((key) =>
+                    pressedKeysRef.current.has(key)
+                )
+            ) {
+                e.preventDefault();
+                dispatch(updateDiscountAmount({ key: undefined, amount: -1 }));
+                setCommand("");
+                groupPressedRef.current = true;
+                stopKeyUpHandlerRef.current = true;
+                return;
+            }
+
+            // Increase extra discount
+            if (
+                ["Numpad1", "Numpad4"].every((key) =>
+                    pressedKeysRef.current.has(key)
+                )
+            ) {
+                e.preventDefault();
+                dispatch(
+                    updateExtraDiscountAmount({ key: undefined, amount: 1 })
+                );
+                setCommand("");
+                groupPressedRef.current = true;
+                stopKeyUpHandlerRef.current = true;
+                return;
+            }
+
+            // Decrease extra discount
+            if (
+                ["Numpad4", "Numpad7"].every((key) =>
+                    pressedKeysRef.current.has(key)
+                )
+            ) {
+                e.preventDefault();
+                dispatch(
+                    updateExtraDiscountAmount({ key: undefined, amount: -1 })
+                );
+                setCommand("");
+                groupPressedRef.current = true;
+                stopKeyUpHandlerRef.current = true;
+                return;
+            }
+
+            // Reset product price
+            if (
+                ["PageUp", "PageDown"].every((key) =>
+                    pressedKeysRef.current.has(key)
+                )
+            ) {
+                e.preventDefault();
+                groupPressedRef.current = true;
+                stopKeyUpHandlerRef.current = true;
+                if (cart.activeProduct) {
+                    let updatePrice =
+                        cart.products[cart.activeProduct].updatePrice;
+                    if (updatePrice !== 0) {
+                        handleUpdateProductPrice(
+                            -cart.products[cart.activeProduct].updatePrice
+                        );
+                    }
+                }
+                return;
+            }
+
+            // // Dont go down. Work has done
+            // const notToHandleKeys = ["PageUp", "PageDown"];
+            // if (notToHandleKeys.includes(e.key)) {
+            //     e.preventDefault();
+            //     return;
+            // }
+
+            if (e.code == "NumpadDecimal") {
+                if (command == "..") {
+                    stopKeyUpHandlerRef.current = true;
                     e.preventDefault();
                     setCommand("");
-                    dispatch(updatePaid(0));
-                    return;
-            }
-        }
-
-        if (e.code == "NumpadAdd") {
-            if (/^[1-9][0-9]*$/.test(command)) {
-                stopLongPress();
-                stopKeyUpHandlerRef.current = true;
-                setCommand("");
-                dispatch(
-                    updateQuantity({
-                        key: undefined,
-                        quantity: parseInt(command),
-                    })
-                );
-                return;
-            }
-        }
-
-        if (e.key == "Enter") {
-            if (/^[0-9]*00[0-9]*$/.test(command)) {
-                stopLongPress();
-                let splited = command.split("00", 2);
-                let commandKey = splited[0];
-                let amount = parseInt(splited[1]);
-                if (commandKey.length > 0) {
-                    addToCartByProductShortcut(e, commandKey);
-                }
-                setCommand("");
-                dispatch(setPriceToWithDiscount({ key: undefined, amount }));
-                return;
-            }
-
-            if (/^[1-9]+$/.test(command)) {
-                stopLongPress();
-                stopKeyUpHandlerRef.current = true;
-                addToCartByProductShortcut(e, command);
-                dispatch(
-                    updateQuantity({
-                        key: undefined,
-                        quantity: parseInt(e.key),
-                    })
-                );
-                return;
-            }
-
-            if (/^[1-9][0-9]*$/.test(command)) {
-                let splited = command.split("0", 2);
-                let commandKey = splited[0];
-                let quantity = parseInt(splited[1]);
-                stopLongPress();
-                addToCartByProductShortcut(e, commandKey);
-                stopKeyUpHandlerRef.current = true;
-                dispatch(updateQuantity({ key: undefined, quantity }));
-                return;
-            }
-
-            if (/^[a-zA-Z]$/.test(command)) {
-                stopLongPress();
-                stopKeyUpHandlerRef.current = true;
-                addToCartByProductShortcut(e, command);
-                return;
-            }
-        }
-
-        if (e.key == "Enter" || e.code == "NumpadAdd") {
-            if (/^\.[1-9]*[0-9]*$/.test(command)) {
-                stopLongPress();
-                stopKeyUpHandlerRef.current = true;
-                e.preventDefault();
-                setCommand("");
-
-                if (command == ".") {
-                    dispatch(updatePaid(cart.totalPrice));
                     return;
                 }
+            }
 
-                if (command.length > 1) {
-                    let amount = parseInt(command.slice(1));
-                    if (amount) {
-                        dispatch(updatePaid(amount));
+            if (e.code == "Numpad0") {
+                switch (command) {
+                    case ".":
+                        e.preventDefault();
+                        setCommand("");
+                        dispatch(updatePaid(0));
+                        return;
+                }
+            }
+
+            if (e.code == "NumpadAdd") {
+                if (/^[1-9][0-9]*$/.test(command)) {
+                    stopLongPress();
+                    stopKeyUpHandlerRef.current = true;
+                    setCommand("");
+                    dispatch(
+                        updateQuantity({
+                            key: undefined,
+                            quantity: parseInt(command),
+                        })
+                    );
+                    return;
+                }
+            }
+
+            if (e.key == "Enter") {
+                if (/^[0-9]*00[0-9]*$/.test(command)) {
+                    stopLongPress();
+                    let splited = command.split("00", 2);
+                    let commandKey = splited[0];
+                    let amount = parseInt(splited[1]);
+                    if (commandKey.length > 0) {
+                        addToCartByProductShortcut(e, commandKey);
                     }
+                    setCommand("");
+                    dispatch(
+                        setPriceToWithDiscount({ key: undefined, amount })
+                    );
+                    return;
+                }
+
+                if (/^[1-9]+$/.test(command)) {
+                    stopLongPress();
+                    stopKeyUpHandlerRef.current = true;
+                    addToCartByProductShortcut(e, command);
+                    dispatch(
+                        updateQuantity({
+                            key: undefined,
+                            quantity: parseInt(e.key),
+                        })
+                    );
+                    return;
+                }
+
+                if (/^[1-9][0-9]*$/.test(command)) {
+                    let splited = command.split("0", 2);
+                    let commandKey = splited[0];
+                    let quantity = parseInt(splited[1]);
+                    stopLongPress();
+                    addToCartByProductShortcut(e, commandKey);
+                    stopKeyUpHandlerRef.current = true;
+                    dispatch(updateQuantity({ key: undefined, quantity }));
+                    return;
+                }
+
+                if (/^[a-zA-Z]$/.test(command)) {
+                    stopLongPress();
+                    stopKeyUpHandlerRef.current = true;
+                    addToCartByProductShortcut(e, command);
                     return;
                 }
             }
 
-            // To add extra discount amount dynamically with one . at the start
-            if (/^\/[1-9][0-9]*$/.test(command)) {
-                stopLongPress();
-                stopKeyUpHandlerRef.current = true;
-                e.preventDefault();
-                let amount = parseInt(command.slice(1));
-                setCommand("");
-                dispatch(addExtraDiscount({ key: undefined, amount }));
-                return;
-            }
+            if (e.key == "Enter" || e.code == "NumpadAdd") {
+                if (/^\.[1-9]*[0-9]*$/.test(command)) {
+                    stopLongPress();
+                    stopKeyUpHandlerRef.current = true;
+                    e.preventDefault();
+                    setCommand("");
 
-            // To add discount amount dynamically with two .. at the start
-            if (/^\*[1-9][0-9]*$/.test(command)) {
-                stopLongPress();
-                stopKeyUpHandlerRef.current = true;
-                e.preventDefault();
-                let amount = parseInt(command.slice(1));
-                setCommand("");
-                dispatch(addDiscount({ key: undefined, amount }));
-                return;
+                    if (command == ".") {
+                        dispatch(updatePaid(cart.totalPrice));
+                        return;
+                    }
+
+                    if (command.length > 1) {
+                        let amount = parseInt(command.slice(1));
+                        if (amount) {
+                            dispatch(updatePaid(amount));
+                        }
+                        return;
+                    }
+                }
+
+                // To add extra discount amount dynamically with one . at the start
+                if (/^\/[1-9][0-9]*$/.test(command)) {
+                    stopLongPress();
+                    stopKeyUpHandlerRef.current = true;
+                    e.preventDefault();
+                    let amount = parseInt(command.slice(1));
+                    setCommand("");
+                    dispatch(addExtraDiscount({ key: undefined, amount }));
+                    return;
+                }
+
+                // To add discount amount dynamically with two .. at the start
+                if (/^\*[1-9][0-9]*$/.test(command)) {
+                    stopLongPress();
+                    stopKeyUpHandlerRef.current = true;
+                    e.preventDefault();
+                    let amount = parseInt(command.slice(1));
+                    setCommand("");
+                    dispatch(addDiscount({ key: undefined, amount }));
+                    return;
+                }
             }
-        }
-    };
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [
+            addToCartByProductShortcut,
+            cart,
+            changeCartActiveProductTo,
+            command,
+            commandCounter,
+            handleSellPageChange,
+        ]
+    );
 
     const handleKeyUp = useCallback(
         (e: React.KeyboardEvent<HTMLInputElement>): void => {
@@ -546,10 +588,10 @@ export function useHandleKeyUp(
             // Handle sale price update
             switch (e.key) {
                 case "PageUp":
-                    dispatch(updateSalePrice({ key: undefined, amount: 1 }));
+                    handleUpdateProductPrice(1);
                     return;
                 case "PageDown":
-                    dispatch(updateSalePrice({ key: undefined, amount: -1 }));
+                    handleUpdateProductPrice(-1);
                     return;
             }
 
@@ -700,8 +742,7 @@ export function useHandleKeyUp(
             filteredCustomers,
             filteredProducts,
             isCustomers,
-            cart.selectedProductIndex,
-            cart.activeProduct,
+            cart,
         ]
     );
 

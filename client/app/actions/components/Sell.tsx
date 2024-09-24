@@ -259,6 +259,25 @@ export default function Sell({
         }
     }
 
+    function handleUpdateProductPrice(amount: number) {
+        if (cart.activeProduct) {
+            let product = { ...cart.products[cart.activeProduct] };
+            product.updatePrice += amount;
+            apiCall
+                .patch(`/products/updatePrice/${product._id}`, { amount })
+                .success((data) => {
+                    dispatch(
+                        updateCartProduct({
+                            ...product,
+                            ...data,
+                        })
+                    );
+                    products[product._id] = { ...product, ...data };
+                })
+                .error((error) => console.log(error));
+        }
+    }
+
     function handleProductUpdate(product: any) {
         setProductUpdateShortcut(false);
         products[product._id] = product;
@@ -288,7 +307,8 @@ export default function Sell({
         changeCartActiveProductTo,
         addToCartByProductShortcut,
         handleCompleteSell,
-        handleProductUpdateShortcut
+        handleProductUpdateShortcut,
+        handleUpdateProductPrice
         // commandCounter
     );
 
