@@ -20,7 +20,7 @@ export default async function RootLayout({
         let userId = cookieStore.get("user-id")?.value;
         if (userId) {
             const { data }: any = await axios.get(
-                `http://localhost:3001/settings/byUserId/${userId}/darkMode`
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}/settings/byUserId/${userId}/darkMode`
             );
             darkMode = data;
         }

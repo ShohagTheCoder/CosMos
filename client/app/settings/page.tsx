@@ -44,7 +44,7 @@ function Settings() {
 
     return (
         <div className="w-[600px] mx-auto">
-            <Sidebar active={"settings"} />
+            <Sidebar active={"settings"} userId={userId} />
             <div className="p-4 mt-10 bg-slate-800 rounded flex flex-col gap-3">
                 <p className="text-white text-xl">Settings</p>
                 <hr className="border-gray-600 my-2" />

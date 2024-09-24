@@ -14,10 +14,13 @@ async function page() {
     const products: ProductWithID[] = await getProductsInServer();
     const customers: CustomerWithId[] = await getCustomersInServer();
     const { data: commands } = await apiClient.get("commands");
-
     const cookiesList = cookies();
     const userId = cookiesList.get("user-id")?.value;
     const user: any[] = await getUserInServer(userId!);
+    const { data: setting } = await apiClient.get(
+        `settings/findByUserId/${userId}`
+    );
+
     return (
         <div>
             <Sell
@@ -25,6 +28,7 @@ async function page() {
                 customersArray={customers}
                 user={user}
                 commands={commands}
+                setting={setting}
             />
         </div>
     );

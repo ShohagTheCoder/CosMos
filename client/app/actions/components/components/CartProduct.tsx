@@ -24,18 +24,19 @@ import PriceTagIcon from "@/app/icons/PriceTagIcon";
 import DiscountIcon from "@/app/icons/DiscountIcon";
 import ExtraDiscountIcon from "@/app/icons/ExtraDiscountIcon";
 import InfoIcon from "@/app/icons/InfoIcon";
+import apiCall from "@/app/common/apiCall";
 
 function CartProduct({
     setProductUpdateShortcut,
+    setting,
 }: {
     // eslint-disable-next-line no-unused-vars
     setProductUpdateShortcut: (productId: string) => void;
+    setting: any;
 }) {
     const dispatch = useDispatch();
     let cart = useSelector((state: RootState) => state.cart);
-    const [showCartImage, setShowCartImage] = useState(
-        localStorage.getItem("showCartImage") == "no" ? false : true
-    );
+    const [settingState, setSettingState] = useState(setting);
 
     const handleDecrement = (_id: string) => {
         let product = cart.products[_id];
@@ -59,9 +60,19 @@ function CartProduct({
         return product;
     }
 
+    function updateSetting(payload: any) {
+        apiCall
+            .patch(`/settings/${setting._id}`, payload)
+            .success(() => {
+                console.log("Setting updated successfully");
+                setSettingState((state: any) => ({ ...state, ...payload }));
+            })
+            .error((error) => console.log(error));
+    }
+
     return (
         <div className="cart">
-            <div className="flex justify-between items-center py-2 px-2 bg-gray-800 mb-3">
+            <div className="flex flex-wrap justify-between items-center py-2 px-2 bg-gray-800 mb-3">
                 <button
                     className="flex items-center p-1 py-2 px-3 rounded-lg select-none hover:bg-green-800"
                     onClick={() =>
@@ -135,14 +146,10 @@ function CartProduct({
                 <button
                     className="py-2 px-3 rounded-lg select-none hover:bg-green-800"
                     onClick={() => {
-                        localStorage.setItem(
-                            "showCartImage",
-                            showCartImage ? "no" : "yes"
-                        );
-                        setShowCartImage(!showCartImage);
+                        updateSetting({ cartImage: !settingState.cartImage });
                     }}
                 >
-                    {showCartImage ? (
+                    {settingState.cartImage ? (
                         <NotImageIcon />
                     ) : (
                         <ImageIcon height="20" />
@@ -165,7 +172,7 @@ function CartProduct({
                                 }`}
                             >
                                 <div className="overflow-hidden flex">
-                                    {showCartImage ? (
+                                    {settingState.cartImage ? (
                                         <div className="w-[160px] h-auto relative">
                                             <button
                                                 onClick={(e) => {
@@ -428,7 +435,7 @@ function CartProduct({
                             key={p._id}
                             className="flex gap-3 border-2 border-dashed border-gray-600 p-2 mb-2"
                         >
-                            {showCartImage ? (
+                            {settingState.cartImage ? (
                                 <div className="">
                                     <img
                                         onClick={() =>

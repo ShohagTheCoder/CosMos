@@ -19,6 +19,9 @@ export class Setting extends Document {
 
     @Prop({ default: true })
     cartImage: boolean;
+
+    @Prop({ default: true })
+    productRow: boolean;
 }
 
 export type SettingDocument = Setting & Document;

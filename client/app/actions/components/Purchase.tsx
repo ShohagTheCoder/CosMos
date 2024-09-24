@@ -326,7 +326,7 @@ export default function Purchase({
         <main>
             <SellReceipt />
             <div className="print:hidden">
-                <Sidebar active="purchase" />
+                <Sidebar active="purchase" userId={undefined} />
                 <Notification
                     type={notification.type}
                     message={notification.message}

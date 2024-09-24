@@ -38,6 +38,7 @@ export class UsersService {
             darkMode: true,
             productImage: true,
             cartImage: true,
+            productRow: true,
         });
 
         // Updaet user setting fied

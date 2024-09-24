@@ -80,7 +80,7 @@ export default function Sell({
     const helper = useSelector((state: RootState) => state.helper);
     const activeSellPage = useRef("F5");
 
-    const { notification, success, error } = useNotification();
+    const { notification, notifySuccess, notifyError } = useNotification();
 
     const commandCounter = useRef({
         name: "unknown",
@@ -199,9 +199,9 @@ export default function Sell({
                 sell.due = 0;
             }
             await apiClient.post("/sells", sell);
-            success("Sell created successfully");
+            notifySuccess("Sell created successfully");
         } catch (e) {
-            error("Faild to create sell");
+            notifyError("Faild to create sell");
         }
     }
     async function handleAddCustomer() {
@@ -815,7 +815,7 @@ export default function Sell({
         <div className="text-black dark:text-white">
             <SellReceipt />
             <div className="print:hidden">
-                <Sidebar active="sell" />
+                <Sidebar active="sell" userId={user._id} />
                 <Notification
                     type={notification.type}
                     message={notification.message}

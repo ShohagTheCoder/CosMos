@@ -1,4 +1,5 @@
 "use client";
+import Sidebar from "@/app/components/Sidebar";
 import TansferMoney from "@/app/components/TansferMoney";
 import React, { useState } from "react";
 
@@ -14,7 +15,7 @@ export default function User({
     }
 
     return (
-        <main className="bg-gray-900 text-gray-100 min-h-screen py-6">
+        <div className="bg-gray-900 text-gray-100 min-h-screen py-6">
             {tansferMoneyPopup && (
                 <TansferMoney
                     account={account}
@@ -22,7 +23,7 @@ export default function User({
                     handleClose={() => setTansferMoneyPopup(false)}
                 />
             )}
-
+            <Sidebar active="user" userId={user._id} />
             <div className="container max-w-3xl mx-auto px-4">
                 {/* Profile and Account Info */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 py-6">
@@ -89,7 +90,10 @@ export default function User({
                                 className="bg-gray-800 p-6 rounded-lg shadow-lg"
                             >
                                 <p className="text-lg font-semibold text-gray-100 mb-2">
-                                    Seller: {sell.user.name}
+                                    Customer:{" "}
+                                    {sell.customer
+                                        ? sell.customer.name
+                                        : "Unknown"}
                                 </p>
                                 <div className="space-y-2">
                                     {Object.values(sell.products).map(
@@ -131,6 +135,6 @@ export default function User({
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
     );
 }

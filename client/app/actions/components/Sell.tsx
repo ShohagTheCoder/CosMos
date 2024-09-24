@@ -38,12 +38,14 @@ import NotImageIcon from "@/app/icons/NotImageIcon";
 import ImageIcon from "@/app/icons/ImageIcon";
 import ProductUpdateShortcut from "../sell/components/ProductUpdateShortcut";
 import { setProduct } from "@/app/store/slices/productSlice";
+import apiCall from "@/app/common/apiCall";
 
 interface SellProps {
     productsArray: ProductWithID[];
     customersArray: CustomerWithId[];
     user: any;
     commands: any[];
+    setting: any;
 }
 
 export default function Sell({
@@ -51,6 +53,7 @@ export default function Sell({
     customersArray,
     user,
     commands,
+    setting,
 }: SellProps) {
     const products = useMemo(
         () => productArrayToObject(productsArray, (item) => !item.sellEnable),
@@ -73,13 +76,8 @@ export default function Sell({
     const helper = useSelector((state: RootState) => state.helper);
     const activeSellPage = useRef("F5");
     const [productUpdateShortcut, setProductUpdateShortcut] = useState(false);
-    const [isRow, setIsRow] = useState(
-        localStorage.getItem("productsRow") == "yes" ? true : false || false
-    );
-    const [showProductImage, setShowProductImage] = useState(
-        localStorage.getItem("showProductImage") == "no" ? false : true || true
-    );
     const { notification, notifySuccess, notifyError } = useNotification();
+    const [settingState, setSettingState] = useState(setting);
 
     // Single use effect
     useEffect(() => {
@@ -232,6 +230,15 @@ export default function Sell({
         }
     }
 
+    function updateSetting(payload: any) {
+        apiCall
+            .patch(`/settings/${setting._id}`, payload)
+            .success(() => {
+                setSettingState((state: any) => ({ ...state, ...payload }));
+            })
+            .error((error) => console.log(error));
+    }
+
     function handleProductUpdateShortcut(productId: string | undefined) {
         let product: ProductWithID | undefined = undefined;
         if (productId) {
@@ -289,15 +296,15 @@ export default function Sell({
         <div className="text-black dark:text-white">
             <SellReceipt />
             <div className="print:hidden">
-                <Sidebar active="sell" />
+                <Sidebar active="sell" userId={user._id} />
                 <Notification
                     type={notification.type}
                     message={notification.message}
                     className="justify-center"
                 />
                 <div className="ps-[94px] 2xl:ps-[150px] bg-white dark:bg-gray-950">
-                    <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 gap-6 h-screen overflow-x-hidden overflow-y-auto lg:overflow-y-hidden cosmos-scrollbar">
-                        <div className="h-screen grid grid-rows-[auto_auto_auto_1fr] overflow-hidden col-span-8 lg:col-span-5 py-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 lg:h-screen gap-6 overflow-x-hidden overflow-y-auto lg:overflow-y-hidden cosmos-scrollbar">
+                        <div className="max-h=[1000px] h-full grid grid-rows-[auto_auto_auto_1fr] overflow-hidden col-span-8 lg:col-span-5 py-4 me-3 lg:me-0">
                             <div className="bg-gray-300 dark:bg-gray-950 p-3 border-2 border-dashed border-slate-500 mb-3 md:flex justify-between items-center">
                                 <div className="flex gap-3 justify-start">
                                     <button
@@ -388,14 +395,13 @@ export default function Sell({
                             <div className="flex gap-4 py-2 px-3 my-3 bg-gray-300  dark:bg-gray-800">
                                 <button
                                     onClick={() => {
-                                        localStorage.setItem(
-                                            "showProductImage",
-                                            showProductImage ? "no" : "yes"
-                                        );
-                                        setShowProductImage(!showProductImage);
+                                        updateSetting({
+                                            productImage:
+                                                !settingState.productImage,
+                                        });
                                     }}
                                 >
-                                    {showProductImage ? (
+                                    {settingState.productImage ? (
                                         <NotImageIcon />
                                     ) : (
                                         <ImageIcon height="20" />
@@ -403,21 +409,20 @@ export default function Sell({
                                 </button>
                                 <button
                                     onClick={() => {
-                                        localStorage.setItem(
-                                            "productsRow",
-                                            isRow ? "no" : "yes"
-                                        );
-                                        setIsRow(!isRow);
+                                        updateSetting({
+                                            productRow:
+                                                !settingState.productRow,
+                                        });
                                     }}
                                 >
-                                    {isRow ? (
+                                    {settingState.productRow ? (
                                         <ColsIcon height="20" />
                                     ) : (
                                         <RowIcon height="18" />
                                     )}
                                 </button>
                             </div>
-                            <div className="overflow-x-hidden overflow-hidden lg:overflow-y-auto pe-3 cosmos-scrollbar">
+                            <div className="overflow-x-hidden overflow-y-auto pe-3 cosmos-scrollbar">
                                 {productUpdateShortcut ? (
                                     <ProductUpdateShortcut
                                         handleClose={() =>
@@ -447,7 +452,7 @@ export default function Sell({
                                             </div>
                                         ) : (
                                             <>
-                                                {isRow ? (
+                                                {settingState.productRow ? (
                                                     <ProductsRow
                                                         selected={
                                                             cart.selectedProductIndex
@@ -463,7 +468,7 @@ export default function Sell({
                                                             filteredProducts
                                                         }
                                                         showProductImage={
-                                                            showProductImage
+                                                            settingState.productImage
                                                         }
                                                     />
                                                 ) : (
@@ -485,7 +490,7 @@ export default function Sell({
                                                             filteredProducts
                                                         }
                                                         showProductImage={
-                                                            showProductImage
+                                                            settingState.productImage
                                                         }
                                                     />
                                                 )}
@@ -502,6 +507,7 @@ export default function Sell({
                                         setProductUpdateShortcut={
                                             handleProductUpdateShortcut
                                         }
+                                        setting={setting}
                                     />
                                     <CustomerDetails />
                                     <div className="">
