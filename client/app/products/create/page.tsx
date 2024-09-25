@@ -40,7 +40,7 @@ function CreateProductPage() {
         {
             id: "create",
             title: "Create",
-            content: <CreateProduct image={image} />,
+            content: <CreateProduct image={image} setImage={setImage} />,
         },
     ];
 

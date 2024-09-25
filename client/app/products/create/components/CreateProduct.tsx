@@ -5,26 +5,21 @@ import Notification, {
     NotificationType,
 } from "@/app/elements/notification/Notification";
 import handleImageUpload from "@/app/functions/handleImageUpload";
+import useNotification from "@/app/hooks/useNotification";
 import {
     setProductProduct,
     updateProductField,
 } from "@/app/store/slices/productSlice";
 import { RootState } from "@/app/store/store";
 import apiClient from "@/app/utils/apiClient";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-function CreateProduct({ image }: any) {
+function CreateProduct({ image, setImage }: any) {
     const dispatch = useDispatch();
     let product = useSelector((state: RootState) => state.product);
     const [disable, setDisable] = useState(false);
-    const [notification, setNotification] = useState<{
-        type: NotificationType;
-        message: string;
-    }>({
-        type: "none",
-        message: "This is a message",
-    });
+    const { notification, notifySuccess, notifyError } = useNotification();
 
     async function handleCreateProduct() {
         setDisable(true);
@@ -46,17 +41,12 @@ function CreateProduct({ image }: any) {
 
             const result = await apiClient.post("products", finalProduct);
             dispatch(setProductProduct(result.data));
+            setImage(null);
 
-            setNotification({
-                type: "success",
-                message: "Product created successfully!",
-            });
+            notifySuccess("Product created successfully!");
             console.log(result.data);
         } catch (error) {
-            setNotification({
-                type: "error",
-                message: "Failed to create product.",
-            });
+            notifyError("Failed to update product.");
             console.error(error);
         } finally {
             setDisable(false);
@@ -91,16 +81,12 @@ function CreateProduct({ image }: any) {
                 `products/${product._id}`,
                 finalProduct
             );
-            setNotification({
-                type: "success",
-                message: "Product updated successfully!",
-            });
+            dispatch(setProductProduct({ ...product, ...result.data }));
+            setImage(null);
+            notifySuccess("Product updated successfully!");
             console.log(result.data);
         } catch (error) {
-            setNotification({
-                type: "error",
-                message: "Failed to update product.",
-            });
+            notifyError("Failed to update product.");
             console.error(error);
         } finally {
             setDisable(false);

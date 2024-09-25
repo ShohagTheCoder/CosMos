@@ -172,6 +172,11 @@ function General({ image, setImage }: any) {
             {product.SKU.length > 4 ? (
                 <ImageInput
                     image={image}
+                    previewImageUrl={
+                        product.image
+                            ? `/images/products/${product.image}`
+                            : null
+                    }
                     callback={(file: File) => {
                         setImage(file);
                         dispatch(

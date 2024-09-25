@@ -1,11 +1,14 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 
 interface ImageInputProps {
-    image: File | null;
-    callback: (image: File) => void;
+    image: File | null; // Current image file
+    previewImageUrl?: string | null; // Preview image URL to show if image is not set
+    // eslint-disable-next-line no-unused-vars
+    callback: (image: File) => void; // Callback function for file changes
     className?: string; // For outermost container
     options?: {
-        label?: string;
+        label?: string; // Label for the input
+        // eslint-disable-next-line no-unused-vars
         renameCallback?: (file: File) => string; // Optional rename callback
         inputClassName?: string; // Custom class for the input
         previewClassName?: string; // Custom class for the preview image
@@ -16,6 +19,7 @@ interface ImageInputProps {
 
 const ImageInput: React.FC<ImageInputProps> = ({
     image,
+    previewImageUrl = null, // Default to null if not provided
     callback,
     className = "",
     options = {},
@@ -32,13 +36,17 @@ const ImageInput: React.FC<ImageInputProps> = ({
     } = options;
 
     useEffect(() => {
-        // Set initial preview based on the image prop
+        // Set initial preview based on the image prop or the previewImageUrl
         if (image) {
             const objectUrl = URL.createObjectURL(image);
             setPreview(objectUrl);
             return () => URL.revokeObjectURL(objectUrl); // Cleanup on unmount
+        } else if (previewImageUrl) {
+            setPreview(previewImageUrl); // Set preview from prop if no image
+        } else {
+            setPreview(null); // Reset preview if no image and no URL
         }
-    }, [image]);
+    }, [image, previewImageUrl]);
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -77,7 +85,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
                 {label}
             </label>
             <div
-                className={`relative w-[160px] h-[160px] border-2 border-dashed border-gray-500 flex justify-center items-center rounded-lg cursor-pointer ${containerClassName}`}
+                className={`relative w-[160px] h-[160px] border-2 border-dashed border-gray-500 flex justify-center items-center rounded-lg ${containerClassName}`}
             >
                 <input
                     type="file"
@@ -88,14 +96,14 @@ const ImageInput: React.FC<ImageInputProps> = ({
                     aria-label="Upload product image"
                 />
 
-                {preview ? (
+                {preview === null ? ( // Show the plus icon when preview is null
+                    <span className="text-gray-400 text-4xl font-bold">+</span>
+                ) : (
                     <img
                         src={preview}
                         alt="Image Preview"
                         className={`w-full h-full object-cover rounded-lg ${previewClassName}`}
                     />
-                ) : (
-                    <span className="text-gray-400 text-4xl font-bold">+</span>
                 )}
             </div>
         </div>
