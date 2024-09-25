@@ -29,7 +29,9 @@ function CustomerCard({ customers }: { customers: any }) {
                 >
                     <img
                         className="h-[240px] w-full object-cover"
-                        src="/profile-picture.jpg"
+                        src={`/images/customers/${
+                            customer.image || "customer.jpg"
+                        }`}
                         alt={customer.name}
                     />
                     <div className="p-3">

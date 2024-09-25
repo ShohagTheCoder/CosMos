@@ -1,9 +1,7 @@
 "use client";
 import Button from "@/app/elements/buttons/Button";
 import NumberInput from "@/app/elements/inputs/NumberInput";
-import Notification, {
-    NotificationType,
-} from "@/app/elements/notification/Notification";
+import Notification from "@/app/elements/notification/Notification";
 import handleImageUpload from "@/app/functions/handleImageUpload";
 import useNotification from "@/app/hooks/useNotification";
 import {

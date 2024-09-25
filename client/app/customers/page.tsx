@@ -1,73 +1,22 @@
-"use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import apiClient from "../utils/apiClient";
-import { Customer } from "../interfaces/customer.inerface";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import NoResponse from "../common/components/NoResponse";
+import Customers from "./components/Customers";
 
-function Customers() {
-    const [customers, setCustomers] = useState<Customer[]>([]);
+export default async function CustomersPage() {
+    const cookiesList = cookies();
+    const userId = cookiesList.get("user-id")?.value;
 
-    useEffect(() => {
-        apiClient.get("customers").then((res) => setCustomers(res.data));
-    }, []);
+    if (!userId) {
+        return redirect("/login"); // Use redirect from next/navigation
+    }
 
-    return (
-        <main className="py-8 bg-gray-100 dark:bg-gray-900 min-h-screen transition-colors duration-300">
-            <div className="container mx-auto px-4">
-                {/* Title */}
-                <h1 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-gray-100">
-                    Customers
-                </h1>
-
-                {/* Customers Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                    {customers.map((customer: Customer, key) => (
-                        <div
-                            key={key}
-                            className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
-                        >
-                            <div className="mb-4">
-                                <img
-                                    src={`/images/customers/${
-                                        customer.image || "customer.jpg"
-                                    }`}
-                                    alt="Profile"
-                                    className="h-20 w-20 rounded-full object-cover mb-3"
-                                />
-                                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                                    {customer.name}
-                                </h2>
-                                <p className="text-gray-600 dark:text-gray-400">
-                                    {customer.address}
-                                </p>
-                                <p className="text-gray-600 dark:text-gray-400">
-                                    {customer.phoneNumber}
-                                </p>
-                            </div>
-
-                            {/* Action Buttons */}
-                            <div className="flex justify-between">
-                                {/* View Button */}
-                                <a
-                                    href={`customers/${customer._id}`}
-                                    className="py-2 px-4 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800 transition-colors"
-                                >
-                                    View
-                                </a>
-
-                                {/* Edit Button */}
-                                <a
-                                    href={`customers/update/${customer._id}`}
-                                    className="py-2 px-4 bg-green-600 dark:bg-green-700 text-white rounded-lg hover:bg-green-700 dark:hover:bg-green-800 transition-colors"
-                                >
-                                    Edit
-                                </a>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </main>
-    );
+    try {
+        const { data: customers } = await apiClient.get("customers");
+        return <Customers customers={customers} userId={userId} />;
+    } catch (error) {
+        return <NoResponse />;
+    }
 }
-
-export default Customers;

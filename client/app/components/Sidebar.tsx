@@ -80,7 +80,7 @@ function Sidebar({
                             <AddIcon />
                         </a>
                     </button>
-                    <button className={getBtnStyleClass("users")}>
+                    <button className={getBtnStyleClass("customers")}>
                         <a
                             href="/customers"
                             className="text-center flex justify-center items-center"
