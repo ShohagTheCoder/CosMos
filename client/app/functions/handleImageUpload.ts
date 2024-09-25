@@ -3,16 +3,22 @@ interface UploadResponse {
     message?: string; // Optional message in case of failure
 }
 
-// eslint-disable-next-line no-unused-vars
-type ImageCallback = (file: File) => string | undefined; // The callback returns a new name or undefined if not changing
+type ImageCallback = (file: File) => string | undefined;
+
+interface UploadOptions {
+    url: string; // The API endpoint for uploading the image
+    fieldName?: string; // The name of the form field for the image, default is 'image'
+    updateFileNameCallback?: ImageCallback; // Optional callback to rename the image file
+}
 
 export default async function handleImageUpload(
     image: File,
-    updateFileNameCallback?: ImageCallback
+    options: UploadOptions
 ): Promise<boolean> {
+    const { url, fieldName = "image", updateFileNameCallback } = options;
     const formData = new FormData();
 
-    // If a callback is provided and returns a new name, change the file name
+    // Determine the final file name (use the callback if provided)
     let fileName = image.name;
     if (updateFileNameCallback) {
         const updatedName = updateFileNameCallback(image);
@@ -21,12 +27,12 @@ export default async function handleImageUpload(
         }
     }
 
-    // Use the updated or original file name
+    // Create a new file with the updated or original name
     const renamedImage = new File([image], fileName, { type: image.type });
-    formData.append("image", renamedImage);
+    formData.append(fieldName, renamedImage);
 
     try {
-        const response = await fetch("/api/uploads/images/products", {
+        const response = await fetch(url, {
             method: "POST",
             body: formData,
         });

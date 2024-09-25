@@ -5,3 +5,7 @@
 /server/dist
 /node_modules
 /out
+
+# Client/public
+/client/public/images/*
+/client/public/uploads/*

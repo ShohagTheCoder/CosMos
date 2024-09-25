@@ -1,91 +1,127 @@
 "use client";
+import React, { useState, FormEvent } from "react";
 import apiClient from "@/app/utils/apiClient";
-import React, { useState } from "react";
+import TextInput from "@/app/elements/inputs/TextInput";
+import ImageInput from "@/app/elements/inputs/ImageInput"; // Assuming this is your custom image input component
+import handleImageUpload from "@/app/functions/handleImageUpload";
+interface CreateCustomerForm {
+    name: string;
+    address: string;
+    phoneNumber: string;
+    image: string;
+}
 
 function CreateCustomer() {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [address, setAddress] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
-
-    const [message, setMessage] = useState({
-        type: "",
-        message: "",
+    const [form, setForm] = useState<CreateCustomerForm>({
+        name: "Shohag Ahmed",
+        address: "Bangladesh",
+        phoneNumber: "01400901280",
+        image: "",
     });
 
-    async function handleAddCustomer() {
+    const [image, setImage] = useState<File | null>(null);
+    const [initialImage, setInitialImage] = useState<File | null>(null); // To track initial image for change detection
+
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
+
+    const handleInputChange = (
+        key: string,
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        setForm({ ...form, [key]: e.target.value });
+    };
+
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+        setLoading(true);
+        setError(null);
+        setSuccess(null);
+
         try {
-            const { data } = await apiClient.post("customers", {
-                name,
-                email,
-                address,
-                phoneNumber,
-            });
+            let customer = { ...form };
+            // Check if the image has changed
+            if (image && image !== initialImage) {
+                customer.image = form.phoneNumber + "-" + image?.name;
+                await handleImageUpload(image, {
+                    url: "/api/uploads/images/customers",
+                    fieldName: "image",
+                    updateFileNameCallback: () => customer.image,
+                });
+            }
+            const { data } = await apiClient.post("/customers", customer);
             console.log(data);
-            setMessage({
-                type: "success",
-                message: "Customer created successfully",
+
+            setSuccess("Customer created successfully!");
+            setForm({
+                name: "",
+                address: "",
+                phoneNumber: "",
+                image: "",
             });
+            setImage(null); // Reset image after submission
         } catch (error) {
-            console.log(error);
-            setMessage({
-                type: "error",
-                message: "Faild to create customer",
-            });
+            setError("Failed to create customer.");
+            console.error(error);
+        } finally {
+            setLoading(false);
         }
-    }
+    };
 
     return (
-        <div className="container mx-auto">
-            <div className="box max-w-[400px] mt-4 mx-auto p-4 bg-gray-900">
-                {message.type == "error" ? (
-                    <div className="error mb-3 px-4 py-3 rounded-lg bg-red-800">
-                        <p className="text-white">{message.message}</p>
-                    </div>
-                ) : (
-                    ""
-                )}
-                {message.type == "success" ? (
-                    <div className="success mb-3 rounded-lg px-4 py-3 bg-green-800">
-                        <p className="text-white">{message.message}</p>
-                    </div>
-                ) : (
-                    ""
-                )}
-                <input
-                    type="text"
-                    placeholder="Enter your name here"
-                    className="w-full mb-3 px-4 py-2 border bg-gray-700 border-gray-500 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out text-gray-300"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
-                <input
-                    type="email"
-                    placeholder="Enter your email here"
-                    className="w-full mb-3 px-4 py-2 border bg-gray-700 border-gray-500 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out text-gray-300"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <input
-                    type="text"
-                    placeholder="Enter address text here"
-                    className="w-full mb-3 px-4 py-2 border bg-gray-700 border-gray-500 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out text-gray-300"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                />
-                <input
-                    type="text"
-                    placeholder="Enter your phone number here"
-                    className="w-full mb-3 px-4 py-2 border bg-gray-700 border-gray-500 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition duration-300 ease-in-out text-gray-300"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                />
-                <div className="flex justify-center">
+        <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center p-6">
+            <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+                <h1 className="text-2xl font-bold mb-6">Create Customer</h1>
+                <div className="space-y-4">
+                    <TextInput
+                        value={form.name}
+                        onChange={(e) => handleInputChange("name", e)}
+                        options={{
+                            label: "Full name",
+                            placeholder: "Ex: Shohag Ahmed",
+                        }}
+                    />
+                    <TextInput
+                        value={form.address}
+                        onChange={(e) => handleInputChange("address", e)}
+                        options={{
+                            label: "Address",
+                            placeholder: "Ex: 123 Street Name",
+                        }}
+                    />
+                    <TextInput
+                        value={form.phoneNumber}
+                        onChange={(e) => handleInputChange("phoneNumber", e)}
+                        options={{
+                            label: "Phone Number",
+                            placeholder: "Ex: 01400901280",
+                        }}
+                    />
+
+                    {/* Image Input */}
+                    <ImageInput
+                        image={image}
+                        callback={(file: File) => {
+                            setImage(file);
+                        }}
+                        options={{
+                            label: "Customer image",
+                            containerClassName: "!h-[100px] !w-[100px]",
+                        }}
+                    />
+
+                    {error && <p className="text-red-500 text-sm">{error}</p>}
+                    {success && (
+                        <p className="text-green-500 text-sm">{success}</p>
+                    )}
+
                     <button
-                        onDoubleClick={handleAddCustomer}
-                        className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition duration-300 ease-in-out"
+                        onDoubleClick={handleSubmit}
+                        disabled={loading}
+                        className="w-full py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                     >
-                        Click Me
+                        {loading ? "Creating..." : "Create Customer"}
                     </button>
                 </div>
             </div>

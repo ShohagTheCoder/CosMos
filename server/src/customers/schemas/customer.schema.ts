@@ -11,6 +11,9 @@ export class Customer {
     @Prop()
     name: string;
 
+    @Prop({ default: 'customer.jpg' })
+    image: string;
+
     @Prop()
     address: string;
 

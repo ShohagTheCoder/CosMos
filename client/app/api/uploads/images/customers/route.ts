@@ -1,23 +1,19 @@
-import { writeFile } from "fs/promises";
+import { uploadImage } from "@/app/api/common/utils/uploadImage";
 import { NextResponse } from "next/server";
+import path from "path";
 
 export async function POST(req: any) {
-    const data = await req.formData();
-    const image = data.get("image");
-
-    if (!image) {
+    const outputDir = path.join(process.cwd(), "public/images/customers/"); // Output file path
+    const res = await uploadImage(req, "image", outputDir);
+    if (res) {
         return NextResponse.json({
-            message: "No image found",
-            success: false,
+            status: "success",
+            message: "Image upload successful",
+        });
+    } else {
+        return NextResponse.json({
+            status: "error",
+            message: "Image upload successful",
         });
     }
-
-    const byteData = await image.arrayBuffer();
-    const buffer = Buffer.from(byteData);
-    const path = `./public/images/products/${data.SKU + image.name}`;
-    await writeFile(path, buffer);
-    return NextResponse.json({
-        message: "Image uploaded successfully",
-        success: true,
-    });
 }

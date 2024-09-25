@@ -17,7 +17,6 @@ import { useDispatch, useSelector } from "react-redux";
 function CreateProduct({ image }: any) {
     const dispatch = useDispatch();
     let product = useSelector((state: RootState) => state.product);
-    const [initialImage, setInitialImage] = useState<File | undefined>(image);
     const [disable, setDisable] = useState(false);
     const [notification, setNotification] = useState<{
         type: NotificationType;
@@ -27,10 +26,6 @@ function CreateProduct({ image }: any) {
         message: "This is a message",
     });
 
-    useEffect(() => {
-        setInitialImage(image); // Store the initial image when the component mounts or image changes
-    }, [image]);
-
     async function handleCreateProduct() {
         setDisable(true);
         if (product.SKU.length < 4) {
@@ -38,11 +33,18 @@ function CreateProduct({ image }: any) {
         }
 
         try {
+            let finalProduct = { ...product };
+
             if (image) {
-                await handleImageUpload(image, () => product.image);
+                finalProduct.image = product.SKU + "-" + image.name;
+                await handleImageUpload(image, {
+                    url: "/api/uploads/images/products",
+                    fieldName: "image",
+                    updateFileNameCallback: () => finalProduct.image,
+                });
             }
 
-            const result = await apiClient.post("products", product);
+            const result = await apiClient.post("products", finalProduct);
             dispatch(setProductProduct(result.data));
 
             setNotification({
@@ -74,14 +76,20 @@ function CreateProduct({ image }: any) {
         );
 
         try {
-            // Check if the image has changed
-            if (image && image !== initialImage) {
-                await handleImageUpload(image, () => product.image);
+            let finalProduct = { ...update };
+
+            if (image) {
+                finalProduct.image = product.SKU + "-" + image.name;
+                await handleImageUpload(image, {
+                    url: "/api/uploads/images/products",
+                    fieldName: "image",
+                    updateFileNameCallback: () => finalProduct.image,
+                });
             }
 
             const result = await apiClient.patch(
                 `products/${product._id}`,
-                update
+                finalProduct
             );
             setNotification({
                 type: "success",

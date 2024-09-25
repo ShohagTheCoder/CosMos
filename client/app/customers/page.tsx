@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import apiClient from "../utils/apiClient";
 import { Customer } from "../interfaces/customer.inerface";
-import Link from "next/link";
 
 function Customers() {
     const [customers, setCustomers] = useState<Customer[]>([]);
@@ -20,13 +19,20 @@ function Customers() {
                 </h1>
 
                 {/* Customers Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                     {customers.map((customer: Customer, key) => (
                         <div
                             key={key}
                             className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
                         >
                             <div className="mb-4">
+                                <img
+                                    src={`/images/customers/${
+                                        customer.image || "customer.jpg"
+                                    }`}
+                                    alt="Profile"
+                                    className="h-20 w-20 rounded-full object-cover mb-3"
+                                />
                                 <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
                                     {customer.name}
                                 </h2>

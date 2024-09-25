@@ -20,7 +20,9 @@ async function CustomerProfile({ params }: any) {
                     <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
                         <div className="flex items-center space-x-6">
                             <img
-                                src="/profile-picture.jpg"
+                                src={`/images/customers/${
+                                    customer.image || "customer.jpg"
+                                }`}
                                 alt="Profile"
                                 className="w-20 h-20 rounded-full object-cover"
                             />
@@ -43,7 +45,7 @@ async function CustomerProfile({ params }: any) {
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <p className="text-gray-600 dark:text-gray-400">
-                                    {account.balance > 0 ? (
+                                    {account.balance >= 0 ? (
                                         <span>
                                             Balance :{" "}
                                             <span className="text-green-500 font-semibold">
@@ -62,7 +64,7 @@ async function CustomerProfile({ params }: any) {
                             </div>
                             <div>
                                 <p className="text-gray-600 dark:text-gray-400 text-end">
-                                    Total purchase : <span>3667 ৳</span>
+                                    Total purchase : <span>? ৳</span>
                                 </p>
                             </div>
                         </div>

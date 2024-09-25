@@ -31,7 +31,7 @@ export default function User({
                     <div className="md:col-span-2 bg-gray-800 shadow-lg rounded-lg p-6">
                         <div className="flex items-center space-x-6">
                             <img
-                                src="/profile-picture.jpg"
+                                src="/images/users/user.jpg"
                                 alt="Profile"
                                 className="h-20 w-20 rounded-full object-cover"
                             />

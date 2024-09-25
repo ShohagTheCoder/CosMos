@@ -41,7 +41,7 @@ export default function Users() {
                             <div className="relative">
                                 {/* Example image - replace with actual image URL */}
                                 <img
-                                    src="/images/products/product.jpg"
+                                    src="/images/product.jpg"
                                     alt={user.name}
                                     className="h-60 w-full object-cover"
                                 />
