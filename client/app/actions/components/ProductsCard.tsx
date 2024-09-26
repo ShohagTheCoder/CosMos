@@ -19,8 +19,6 @@ function ProductsCard({
     showProductImage = true,
     setProductUpdateShortcut,
 }: ProductsCardProps) {
-    // console.log("Products card");
-
     function handleCallback(id: string) {
         if (products) {
             callback(products[id]);
@@ -32,6 +30,7 @@ function ProductsCard({
             {Object.values(products).map(
                 (product: ProductWithID, key: number) => (
                     <div
+                        onClick={() => handleCallback(product._id)}
                         key={product._id}
                         className={`max-w-sm rounded overflow-hidden bg-gray-300 dark:bg-gray-800 shadow ${
                             selected == key
@@ -43,7 +42,7 @@ function ProductsCard({
                             <div className="w-full md:h-[180px] xl:h-[220px] relative">
                                 <button
                                     onClick={(e) => {
-                                        e.preventDefault();
+                                        e.stopPropagation();
                                         setProductUpdateShortcut(product._id);
                                     }}
                                     className="absolute right-0 p-1 text-white bg-green-600 rounded"
@@ -51,7 +50,6 @@ function ProductsCard({
                                     <InfoIcon />
                                 </button>
                                 <img
-                                    onClick={() => handleCallback(product._id)}
                                     className="w-full h-full object-cover"
                                     src={`/images/products/${product.image}`}
                                     alt={product.name}

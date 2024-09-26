@@ -11,6 +11,7 @@ import {
     setUser,
     setWholeCart,
     updateCartProduct,
+    updatePaid,
 } from "@/app/store/slices/cartSlice";
 import { RootState } from "@/app/store/store";
 import apiClient from "@/app/utils/apiClient";

@@ -21,7 +21,14 @@ export default function LoginPage() {
 
             if (data.status == "success") {
                 // Redirect to sell page on successful login
-                window.history.back();
+                if (document.referrer && !document.referrer.includes("login")) {
+                    window.history.back();
+                }
+
+                // Redirect to client home
+                window.location.href =
+                    process.env.NEXT_PUBLIC_CLIENT_BASE_URL ||
+                    "http://localhost:3000";
             } else {
                 setError(data.message);
             }

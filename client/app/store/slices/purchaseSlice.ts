@@ -5,12 +5,6 @@ import { Supplier } from "@/app/interfaces/supplier.interface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export enum PurchaseActionTypes {
-    sell = "sell",
-    purchase = "purchase",
-    return = "return",
-}
-
 export interface PurchaseState {
     receiver?: {
         name: string;
@@ -82,6 +76,7 @@ const purchaseSlice = createSlice({
             const removedProduct = state.products[productId];
 
             if (removedProduct) {
+                // eslint-disable-next-line no-unused-vars
                 const { [productId]: removed, ...rest } = state.products;
                 state.products = rest;
                 state.totalPrice -= removedProduct.subTotal;

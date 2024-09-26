@@ -444,6 +444,9 @@ const productSlice = createSlice({
                 state.resources[resource._id] = resource;
             }
         },
+        updateProductState(state, action) {
+            return { state, ...action.payload };
+        },
     },
 });
 
@@ -464,6 +467,7 @@ export const {
     updatePriceUnit,
     updatePricePrice,
     addPrice,
+    updateProductState,
     updateUnitsDynamicValue,
     updateMeasurementUnit,
     updateMeasurementValue,

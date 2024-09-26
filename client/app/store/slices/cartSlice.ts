@@ -7,7 +7,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import updateCart from "../functions/updateCart";
 
 export interface CartState {
-    [x: string]: any;
     products: Record<string, ProductWithID>;
     totalPrice: number;
     customer?: CustomerWithId;
@@ -15,6 +14,7 @@ export interface CartState {
     selectedProductIndex: number;
     due: number;
     paid: number;
+    user?: any;
     customerAccount: any;
 }
 
@@ -471,6 +471,10 @@ const cartSlice = createSlice({
         setWholeCart: (state: CartState, action: PayloadAction<CartState>) => {
             return action.payload;
         },
+
+        updateCartState: (state, action) => {
+            return { ...state, ...action.payload };
+        },
     },
 });
 
@@ -492,6 +496,7 @@ export const {
     selectNexProduct,
     resetSelectedProductIndex,
     updateUnit,
+    updateCartState,
     addCustomerAccount,
     shiftMeasurementTo,
     addDiscount,
