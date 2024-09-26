@@ -11,7 +11,6 @@ import {
     setUser,
     setWholeCart,
     updateCartProduct,
-    updatePaid,
 } from "@/app/store/slices/cartSlice";
 import { RootState } from "@/app/store/store";
 import apiClient from "@/app/utils/apiClient";
@@ -23,7 +22,6 @@ import CustomerDetails from "./components/CustomerDetails";
 import SellDetails from "./components/SellDetails";
 import SellReceipt from "@/app/components/bills/SellReceipt";
 import Notification from "@/app/elements/notification/Notification";
-import SupplierCard from "./components/SupplierCard";
 import { logout } from "../functions/authHandlers";
 import ProductsCard from "./ProductsCard";
 import { arrayToObjectById } from "../functions/arrayToObjectById";
@@ -40,6 +38,7 @@ import ImageIcon from "@/app/icons/ImageIcon";
 import ProductUpdateShortcut from "../sell/components/ProductUpdateShortcut";
 import { setProduct } from "@/app/store/slices/productSlice";
 import apiCall from "@/app/common/apiCall";
+import useCartManager from "@/app/store/providers/cartProvider";
 
 interface SellProps {
     productsArray: ProductWithID[];
@@ -80,6 +79,8 @@ export default function Sell({
     const { notification, notifySuccess, notifyError } = useNotification();
     const [settingState, setSettingState] = useState(setting);
 
+    const cartManager = useCartManager();
+
     // Single use effect
     useEffect(() => {
         if (user) {
@@ -114,8 +115,6 @@ export default function Sell({
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    // console.log(products);
 
     useEffect(() => {
         if (/^\s+/.test(command) && customers) {
@@ -459,17 +458,11 @@ export default function Sell({
                                             <FinalView />
                                         ) : isCustomers ? (
                                             <div>
-                                                {cart.action == "purchase" ? (
-                                                    <SupplierCard
-                                                        customers={customers}
-                                                    />
-                                                ) : (
-                                                    <CustomerCard
-                                                        customers={
-                                                            filteredCustomers
-                                                        }
-                                                    />
-                                                )}
+                                                <CustomerCard
+                                                    customers={
+                                                        filteredCustomers
+                                                    }
+                                                />
                                             </div>
                                         ) : (
                                             <>
@@ -500,13 +493,13 @@ export default function Sell({
                                                         selected={
                                                             cart.selectedProductIndex
                                                         }
-                                                        callback={(product) =>
-                                                            dispatch(
-                                                                addToCart(
+                                                        callback={(product) => {
+                                                            cartManager
+                                                                .addToCart(
                                                                     product
                                                                 )
-                                                            )
-                                                        }
+                                                                .save();
+                                                        }}
                                                         products={
                                                             filteredProducts
                                                         }

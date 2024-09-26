@@ -1,17 +1,10 @@
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
+import useCartManager from "@/app/store/providers/cartProvider";
 import {
-    incrementQuantity,
-    decrementQuantity,
     updateDiscountAmount,
     updateExtraDiscountAmount,
-    addDiscount,
-    addExtraDiscount,
-    addToCart,
     removeFromCart,
-    selectNexProduct,
-    selectPreviousProduct,
     shiftMeasurementTo,
-    updatePaid,
     updateQuantity,
     addCustomer,
     addCustomerAccount,
@@ -47,6 +40,8 @@ export function useHandleKeyUp(
         name: "unknown",
         value: 0,
     });
+
+    const cartManager = useCartManager();
 
     const pressedKeysRef = useRef(new Set<string>());
     let keyPressTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(
@@ -426,7 +421,7 @@ export function useHandleKeyUp(
                     case ".":
                         e.preventDefault();
                         setCommand("");
-                        dispatch(updatePaid(0));
+                        cartManager.set("paid", 0).save();
                         return;
                 }
             }
@@ -502,14 +497,16 @@ export function useHandleKeyUp(
                     setCommand("");
 
                     if (command == ".") {
-                        dispatch(updatePaid(cart.totalPrice));
+                        cartManager
+                            .set("paid", cartManager.get("totalPrice"))
+                            .save();
                         return;
                     }
 
                     if (command.length > 1) {
                         let amount = parseInt(command.slice(1));
                         if (amount) {
-                            dispatch(updatePaid(amount));
+                            cartManager.set("paid", amount).save();
                         }
                         return;
                     }
@@ -522,7 +519,10 @@ export function useHandleKeyUp(
                     e.preventDefault();
                     let amount = parseInt(command.slice(1));
                     setCommand("");
-                    dispatch(addExtraDiscount({ key: undefined, amount }));
+                    // dispatch(addExtraDiscount({ key: undefined, amount }));
+                    cartManager
+                        .set("products.{{activeProduct}}.extraDiscount", amount)
+                        .save();
                     return;
                 }
 
@@ -533,7 +533,10 @@ export function useHandleKeyUp(
                     e.preventDefault();
                     let amount = parseInt(command.slice(1));
                     setCommand("");
-                    dispatch(addDiscount({ key: undefined, amount }));
+                    // dispatch(addDiscount({ key: undefined, amount }));
+                    cartManager
+                        .set("products.{{activeProduct}}.discount", amount)
+                        .save();
                     return;
                 }
             }
@@ -607,12 +610,16 @@ export function useHandleKeyUp(
                     case "NumpadAdd":
                     case "ArrowUp":
                         e.preventDefault();
-                        dispatch(incrementQuantity(undefined));
+                        cartManager
+                            .increment("products.{{activeProduct}}.quantity")
+                            .save();
                         return;
                     case "NumpadEnter":
                     case "ArrowDown":
                         e.preventDefault();
-                        dispatch(decrementQuantity(undefined));
+                        cartManager
+                            .decrement(`products.{{activeProduct}}.quantity`)
+                            .save();
                         return;
                 }
             }
@@ -623,16 +630,16 @@ export function useHandleKeyUp(
                     case "ArrowUp":
                     case "NumpadAdd":
                         e.preventDefault();
-                        dispatch(
-                            updateDiscountAmount({ key: undefined, amount: 1 })
-                        );
+                        cartManager
+                            .increment("products.{{activeProduct}}.discount")
+                            .save();
                         return;
                     case "ArrowDown":
                     case "NumpadEnter":
                         e.preventDefault();
-                        dispatch(
-                            updateDiscountAmount({ key: undefined, amount: -1 })
-                        );
+                        cartManager
+                            .decrement("products.{{activeProduct}}.discount")
+                            .save();
                         return;
                 }
             }
@@ -642,22 +649,20 @@ export function useHandleKeyUp(
                     case "ArrowUp":
                     case "NumpadAdd":
                         e.preventDefault();
-                        dispatch(
-                            updateExtraDiscountAmount({
-                                key: undefined,
-                                amount: 1,
-                            })
-                        );
+                        cartManager
+                            .increment(
+                                "products.{{activeProduct}}.extraDiscount"
+                            )
+                            .save();
                         return;
                     case "ArrowDown":
                     case "NumpadEnter":
                         e.preventDefault();
-                        dispatch(
-                            updateExtraDiscountAmount({
-                                key: undefined,
-                                amount: -1,
-                            })
-                        );
+                        cartManager
+                            .decrement(
+                                "products.{{activeProduct}}.extraDiscount"
+                            )
+                            .save();
                         return;
                 }
             }
@@ -681,8 +686,20 @@ export function useHandleKeyUp(
                             ? Object.keys(filteredCustomers).length - 1
                             : Object.keys(filteredProducts).length - 1;
                         if (command.length > 0) {
-                            dispatch(selectPreviousProduct(max));
+                            let currentIndex = cartManager.get(
+                                "selectedProductIndex"
+                            );
+                            let newIndex = currentIndex;
+                            if (currentIndex == 0) {
+                                newIndex = max;
+                            } else {
+                                newIndex = currentIndex - 1;
+                            }
+                            cartManager
+                                .set("selectedProductIndex", newIndex)
+                                .save();
                         } else {
+                            cartManager.set("selectedProductIndex", max).save();
                             dispatch(shiftMeasurementTo(-1));
                         }
                     }
@@ -694,7 +711,18 @@ export function useHandleKeyUp(
                             ? Object.keys(filteredCustomers).length - 1
                             : Object.keys(filteredProducts).length - 1;
                         if (command.length > 0) {
-                            dispatch(selectNexProduct(max));
+                            let currentIndex = cartManager.get(
+                                "selectedProductIndex"
+                            );
+                            let newIndex = currentIndex;
+                            if (currentIndex == max) {
+                                newIndex = 0;
+                            } else {
+                                newIndex = currentIndex + 1;
+                            }
+                            cartManager
+                                .set("selectedProductIndex", newIndex)
+                                .save();
                         } else {
                             dispatch(shiftMeasurementTo(1));
                         }
@@ -721,7 +749,7 @@ export function useHandleKeyUp(
                                 ],
                                 quantity: 1,
                             };
-                            dispatch(addToCart(product));
+                            cartManager.addToCart(product).save();
                             setCommand("");
                         }
                     } else if (command.length > 1 && filteredCustomers) {

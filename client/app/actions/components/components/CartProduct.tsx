@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-    incrementQuantity,
     decrementQuantity,
     changeActiveProduct,
     updateQuantity,
@@ -24,6 +23,7 @@ import DiscountIcon from "@/app/icons/DiscountIcon";
 import ExtraDiscountIcon from "@/app/icons/ExtraDiscountIcon";
 import InfoIcon from "@/app/icons/InfoIcon";
 import apiCall from "@/app/common/apiCall";
+import useCartManager from "@/app/store/providers/cartProvider";
 
 function CartProduct({
     setProductUpdateShortcut,
@@ -47,10 +47,7 @@ function CartProduct({
         }
     };
 
-    const handleIncrement = (_id: string) => {
-        let product = cart.products[_id];
-        dispatch(incrementQuantity(product._id)); // Increment quantity
-    };
+    const cartManager = useCartManager();
 
     function getProductForCart(p: ProductWithID) {
         let product: any = { ...p };
@@ -356,7 +353,26 @@ function CartProduct({
                                         <button
                                             className="h-[40px] w-[40px] select-none hover:bg-green-500 hover:text-white text-2xl bg-gray-300 text-gray-700 border-0"
                                             onClick={() =>
-                                                handleIncrement(product._id)
+                                                // handleIncrement(product._id)
+                                                // cartManager
+                                                //     .update(
+                                                //         `products.${product._id}`,
+                                                //         (product) => {
+                                                //             product.quantity += 1;
+                                                //             return product;
+                                                //         }
+                                                //     )
+                                                //     .save()
+                                                cartManager
+                                                    .updateProduct(
+                                                        product._id,
+                                                        {
+                                                            quantity:
+                                                                product.quantity +
+                                                                1,
+                                                        }
+                                                    )
+                                                    .save()
                                             }
                                         >
                                             +

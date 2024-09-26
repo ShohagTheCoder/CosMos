@@ -1,4 +1,5 @@
 "use client";
+import useCartManager from "@/app/store/providers/cartProvider";
 import { updatePaid } from "@/app/store/slices/cartSlice";
 import { RootState } from "@/app/store/store";
 

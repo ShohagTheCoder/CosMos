@@ -1,6 +1,7 @@
 import getStockLine from "@/app/functions/getStockLine";
 import InfoIcon from "@/app/icons/InfoIcon";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
+import useCartManager from "@/app/store/providers/cartProvider";
 
 interface ProductsCardProps {
     selected: number;

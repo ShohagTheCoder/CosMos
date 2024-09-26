@@ -1,7 +1,8 @@
 import { Dispatch } from "@reduxjs/toolkit";
-import { clone, cloneDeep } from "lodash";
+import { clone, cloneDeep, isEqual } from "lodash";
 
 // Reducer function type
+// eslint-disable-next-line no-unused-vars
 type ReducerFunction = (state: any) => any;
 
 export default class StateManager<T extends Record<string, any>> {
@@ -9,7 +10,8 @@ export default class StateManager<T extends Record<string, any>> {
     private lastData: T;
     private dispatchFunction: Dispatch<any>;
     private reducerFunction: ReducerFunction;
-    private listeners: Record<string, () => void>;
+    // eslint-disable-next-line no-unused-vars
+    private listeners: Record<string, (id?: string) => void>;
 
     constructor(
         initialState: T,
@@ -26,11 +28,29 @@ export default class StateManager<T extends Record<string, any>> {
     // Universal method to get any state key or the whole state
     get(key: string): any {
         const keys = key.split(".");
-        let result: any = this.data;
+        let result: any = cloneDeep(this.data);
 
+        // Handle dynamic key replacements
         keys.forEach((k) => {
-            if (result && typeof result === "object") {
-                result = result[k];
+            // If there's a dynamic placeholder like `{any}` in the key path, replace it with the actual value
+            if (k.startsWith("{{") && k.endsWith("}}")) {
+                const dynamicKeyName = k.slice(2, -2); // Extracts key name between `{}`
+                // Ensure dynamicKey exists in this.data
+                const dynamicKey = this.data[dynamicKeyName];
+
+                // Replace the placeholder if it exists in the current `result`
+                if (
+                    result &&
+                    typeof result == "object" &&
+                    dynamicKey in result
+                ) {
+                    result = result[dynamicKey];
+                }
+            } else {
+                // Navigate through the state object using normal keys
+                if (result && typeof result == "object") {
+                    result = result[k];
+                }
             }
         });
 
@@ -38,35 +58,45 @@ export default class StateManager<T extends Record<string, any>> {
         return result;
     }
 
-    // Method to set a value at a specified key path
     set<K extends string>(key: K, value: any): this {
         const keys = key.split(".");
         let clone = cloneDeep(this.data);
         let obj: any = clone;
 
         // Traverse to the second-to-last key
-        keys.forEach((k, i) => {
-            if (i === keys.length - 1) return;
-            if (!obj[k] || typeof obj[k] !== "object") {
-                obj[k] = {};
+        for (let i = 0; i < keys.length - 1; i++) {
+            let k = keys[i];
+
+            if (k.startsWith("{{") && k.endsWith("}}")) {
+                const dynamicKeyName = k.slice(2, -2);
+                const dynamicKey = this.data[dynamicKeyName];
+
+                if (dynamicKey in obj) {
+                    obj = obj[dynamicKey];
+                } else {
+                    throw new Error(`Missing dynamic key: ${dynamicKeyName}`); // Consider throwing an error
+                }
+            } else {
+                obj = obj[k] || (typeof obj[k] === "object" ? obj[k] : {}); // Check type before creating
             }
-            obj = obj[k];
-        });
+        }
 
         // Set the value at the last key
-        obj[keys[keys.length - 1]] = value;
+        let finalKey = keys[keys.length - 1];
+        obj[finalKey] = value;
         this.data = clone;
         return this;
     }
 
     // Method to check if a property exists and call a callback if provided
+    // eslint-disable-next-line no-unused-vars
     update(key: string, callback: (value: any) => void): this {
         // Retrieve the value using the `get` method
         const value = this.get(key);
 
         // If the value exists and a callback is provided, call the callback with the value
         if (value && callback) {
-            const newValue = callback(value);
+            const newValue = callback(clone(value));
             if (newValue !== undefined) {
                 this.set(key, newValue);
             }
@@ -77,6 +107,7 @@ export default class StateManager<T extends Record<string, any>> {
     }
 
     // Method to check if a property exists and call a callback if provided
+    // eslint-disable-next-line no-unused-vars
     has(key: string, callback?: (value: any) => void): boolean {
         // Retrieve the value using the `get` method
         const value = this.get(key);
@@ -96,18 +127,19 @@ export default class StateManager<T extends Record<string, any>> {
         return exists;
     }
 
-    increment<K extends keyof T>(key: K, amount: number = 1): this {
-        if (typeof this.data[key] === "number") {
-            this.data[key] = ((this.data[key] as unknown as number) +
-                amount) as T[K];
+    increment<K extends string>(key: K, amount: number = 1): this {
+        let value = this.get(key);
+
+        if (value != undefined) {
+            this.set(key, value + amount);
         }
         return this;
     }
 
-    decrement<K extends keyof T>(key: K, amount: number = 1): this {
-        if (typeof this.data[key] === "number") {
-            this.data[key] = ((this.data[key] as unknown as number) -
-                amount) as T[K];
+    decrement<K extends string>(key: K, amount: number = 1): this {
+        let value = this.get(key);
+        if (value != undefined) {
+            this.set(key, value - amount);
         }
         return this;
     }
@@ -208,7 +240,8 @@ export default class StateManager<T extends Record<string, any>> {
         return this;
     }
 
-    listen<K extends keyof T>(field: K, callback: () => void): this {
+    // eslint-disable-next-line no-unused-vars
+    listen<K extends string>(field: K, callback: (id?: any) => void): this {
         this.listeners[field as string] = callback;
         return this;
     }
@@ -222,17 +255,47 @@ export default class StateManager<T extends Record<string, any>> {
         const updatedFields: Partial<T> = {};
 
         for (const key in this.data) {
-            if (
-                this.data.hasOwnProperty(key) &&
-                this.data[key] !== this.lastData[key]
-            ) {
-                updatedFields[key as keyof T] = this.data[key];
-                if (this.listeners[key]) {
-                    this.listeners[key]();
+            if (this.data.hasOwnProperty(key)) {
+                // Compare current data with last data
+                const currentValue = this.data[key];
+                const lastValue = this.lastData[key];
+
+                // If the value has changed
+                if (currentValue !== lastValue) {
+                    // If it's an object, check deep equality
+                    if (
+                        typeof currentValue === "object" &&
+                        isEqual(currentValue, lastValue)
+                    ) {
+                        continue; // Skip this key if they are deeply equal
+                    }
+
+                    updatedFields[key as keyof T] = currentValue;
+
+                    // Check for wildcard listeners like `products.(id)`
+                    const wildcardPath = `${key}.[?]`;
+                    if (this.listeners[wildcardPath]) {
+                        if (typeof currentValue === "object") {
+                            for (const subKey in currentValue) {
+                                // Check if the subKey has changed
+                                if (
+                                    currentValue[subKey] !== lastValue?.[subKey]
+                                ) {
+                                    this.listeners[wildcardPath](subKey);
+                                }
+                            }
+                        }
+                    }
+
+                    // Check if a general listener exists
+                    if (this.listeners[key]) {
+                        this.listeners[key]();
+                    }
                 }
             }
         }
 
+        // Dispatch updated fields if any changes were made
         if (Object.keys(updatedFields).length > 0) {
             this.lastData = cloneDeep(this.data);
             this.dispatchFunction(this.reducerFunction({ ...updatedFields }));

@@ -2,7 +2,6 @@ import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import StateManager from "./common/stateManager";
 import { Dispatch } from "@reduxjs/toolkit";
 import { CartState } from "../../slices/cartSlice";
-import { cloneDeep } from "lodash";
 
 type ReducerFunction = any;
 
@@ -13,6 +12,19 @@ export class CartManager<T extends CartState> extends StateManager<T> {
         reducerFunction: ReducerFunction
     ) {
         super(initialState, dispatchFunction, reducerFunction);
+
+        this.listen("products.[?]", (id) => {
+            this.update(`products.${id}`, (product) => {
+                if (product) {
+                    product.price = product.price - product.discount;
+                    product.count =
+                        product.quantity * product.units[product.unit].value;
+                    product.subTotal =
+                        product.price * product.count - product.extraDiscount;
+                    return product;
+                }
+            });
+        });
 
         // Update total price of cart if products change
         this.listen("products", () => {
@@ -29,22 +41,50 @@ export class CartManager<T extends CartState> extends StateManager<T> {
         this.listen("totalPrice", () => {
             this.set("due", this.get("totalPrice") - this.get("paid"));
         });
+
+        // Update due price of cart if totalPrice change
+        this.listen("paid", () => {
+            this.set("due", this.get("totalPrice") - this.get("paid"));
+        });
     }
 
-    addToCart(payload: any) {
+    addToCart(payload: ProductWithID) {
         let exist = this.has(
             `products.${payload._id}`,
             (product: ProductWithID) => {
                 product.quantity += 1;
                 product.subTotal += product.price;
+                this.set("activeProduct", product._id);
                 return product;
             }
         );
 
         if (!exist) {
-            this.set(`products.${payload._id}`, payload);
+            payload.unit = payload.measurements[0].unit;
+            payload.quantity = payload.measurements[0].value;
+            this.set(`products.${payload._id}`, payload).set(
+                "activeProduct",
+                payload._id
+            );
         }
 
+        return this;
+    }
+
+    updateProduct(
+        id: string | undefined = undefined,
+        value: Record<string, any>
+    ) {
+        if (!id) id = this.get("activeProduct");
+        this.has(`products.${id}`, (product: ProductWithID) => {
+            product = { ...product, ...value };
+            product.price = product.price - product.discount;
+            product.count =
+                product.quantity * product.units[product.unit].value;
+            product.subTotal =
+                product.price * product.count - product.extraDiscount;
+            return product;
+        });
         return this;
     }
 }

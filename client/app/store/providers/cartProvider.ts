@@ -7,17 +7,18 @@ import {
     updateCartState,
 } from "../slices/cartSlice";
 
+let cartManagerInstance: CartManager<CartState> | null = null;
+
 export default function useCartManager() {
     const dispatch = useDispatch();
-    const cartManagerInstance = useRef<CartManager<CartState> | null>(null);
 
-    if (!cartManagerInstance.current) {
-        cartManagerInstance.current = new CartManager(
+    if (cartManagerInstance == null) {
+        cartManagerInstance = new CartManager(
             initialCartState,
             dispatch,
             updateCartState
         );
     }
 
-    return cartManagerInstance.current;
+    return cartManagerInstance;
 }
