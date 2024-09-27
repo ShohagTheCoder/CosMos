@@ -60,61 +60,7 @@ const cartSlice = createSlice({
             state.activeProduct = product._id;
             return updateCart(state);
         },
-        removeFromCart: (
-            state: CartState,
-            action: PayloadAction<string | undefined>
-        ) => {
-            let key = action.payload || state.activeProduct;
-            if (key) {
-                const removed = state.products[key];
-                if (removed) {
-                    // eslint-disable-next-line no-unused-vars
-                    const { [key]: kick, ...rest } = state.products;
-                    state.products = rest;
-                    state.activeProduct = Object.keys(state.products)[
-                        Object.keys(state.products).length - 1
-                    ];
-                    return updateCart(state);
-                }
-            }
-        },
 
-        selectNexProduct: (state: CartState, action: PayloadAction<number>) => {
-            if (state.selectedProductIndex == action.payload) {
-                state.selectedProductIndex = 0;
-            } else {
-                state.selectedProductIndex += 1;
-            }
-        },
-
-        selectPreviousProduct: (
-            state: CartState,
-            action: PayloadAction<number>
-        ) => {
-            if (state.selectedProductIndex == 0) {
-                state.selectedProductIndex = action.payload;
-            } else {
-                state.selectedProductIndex -= 1;
-            }
-        },
-
-        setSalePrice: (
-            state: CartState,
-            action: PayloadAction<{ key: any; amount: number }>
-        ) => {
-            let { key = state.activeProduct, amount } = action.payload;
-            if (key) {
-                let product = state.products[key];
-                if (product) {
-                    state.products[key] = getUpdatedProduct(
-                        { ...product, updatePrice: amount },
-                        undefined,
-                        undefined
-                    );
-                    return updateCart(state);
-                }
-            }
-        },
         resetSalePrice: (
             state: CartState,
             action: PayloadAction<string | undefined>
@@ -128,24 +74,6 @@ const cartSlice = createSlice({
                         undefined,
                         undefined
                     );
-                }
-            }
-        },
-
-        incrementQuantity: (
-            state: CartState,
-            action: PayloadAction<string | undefined>
-        ) => {
-            let key = action.payload || state.activeProduct;
-            if (key) {
-                const product = state.products[key];
-                if (product) {
-                    state.products[key] = getUpdatedProduct(
-                        product,
-                        product.quantity + 1,
-                        undefined
-                    );
-                    return updateCart(state);
                 }
             }
         },
@@ -172,6 +100,7 @@ const cartSlice = createSlice({
                 }
             }
         },
+
         setPriceToWithDiscount: (
             state: CartState,
             action: PayloadAction<{
@@ -235,15 +164,10 @@ const cartSlice = createSlice({
 
 export const {
     addToCartWith,
-    removeFromCart,
-    incrementQuantity,
-    selectPreviousProduct,
-    selectNexProduct,
     updateCartState,
     shiftMeasurementTo,
     resetSalePrice,
     setPriceToWithDiscount,
-    setSalePrice,
     shiftUnitTo,
 } = cartSlice.actions;
 export default cartSlice.reducer;

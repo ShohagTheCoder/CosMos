@@ -244,12 +244,13 @@ export default function Sell({
 
     // Add to cart with product shortcut
     function getProductByCommand(e: KeyboardEvent, shortcut: string) {
+        console.log("Shortcut", shortcut);
         let command = commands.find(
             (_: any) => _.command.toLowerCase() == shortcut
         );
+        console.log(command);
         if (command && command.value != null) {
             let product = products[command.value];
-            if (!product) return;
             e.preventDefault();
             setCommand("");
             // dispatch(addToCart(product));
@@ -270,12 +271,14 @@ export default function Sell({
                 .patch(`/products/updatePrice/${product._id}`, { amount })
                 .success((data) => {
                     cartManager
-                        .set(`products.${product._id}`, {
-                            ...product,
-                            ...data,
-                        })
+                        .set(`products.${product._id}.prices`, data.prices)
                         .save();
-                    products[product._id] = { ...product, ...data };
+
+                    products[product._id].prices = {
+                        ...product,
+                        price: product.price + amount,
+                        ...data,
+                    };
                 })
                 .error((error) => console.log(error));
         }

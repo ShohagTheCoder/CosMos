@@ -98,9 +98,9 @@ export default class StateManager<T extends Record<string, any>> {
         const value = this.get(key);
 
         // If the value exists and a callback is provided, call the callback with the value
-        if (value && callback) {
+        if (value !== undefined && callback) {
             const newValue = callback(clone(value));
-            if (newValue !== undefined) {
+            if (newValue != undefined) {
                 this.set(key, newValue);
             }
         }
@@ -181,7 +181,6 @@ export default class StateManager<T extends Record<string, any>> {
         return this;
     }
 
-    // Combined method to remove an item from an array or delete a key from an object
     remove<K extends keyof T>(
         key: K,
         objectKeyOrIndex?: string | number
@@ -194,10 +193,12 @@ export default class StateManager<T extends Record<string, any>> {
             }
         } else if (
             typeof objectKeyOrIndex === "string" &&
-            typeof target === "object" &&
-            target !== null
+            target !== null &&
+            typeof target === "object"
         ) {
-            delete target[objectKeyOrIndex];
+            // eslint-disable-next-line no-unused-vars
+            const { [objectKeyOrIndex]: _, ...rest } = target;
+            this.data[key] = rest as T[K]; // Update the key with the new object
         } else if (
             typeof objectKeyOrIndex === "number" &&
             Array.isArray(target)
@@ -254,42 +255,36 @@ export default class StateManager<T extends Record<string, any>> {
     }
 
     save(): void {
-        const updatedFields: Partial<T> = {};
-
+        // First iteration: Identify changes and trigger listeners
         for (const key in this.data) {
             if (this.data.hasOwnProperty(key)) {
-                // Compare current data with last data
                 const currentValue = this.data[key];
                 const lastValue = this.lastData[key];
 
-                // If the value has changed
+                // Check if the value has changed
                 if (currentValue !== lastValue) {
                     // If it's an object, check deep equality
                     if (
                         typeof currentValue === "object" &&
                         isEqual(currentValue, lastValue)
                     ) {
-                        continue; // Skip this key if they are deeply equal
+                        continue; // Skip if they are deeply equal
                     }
 
-                    updatedFields[key as keyof T] = currentValue;
-
-                    // Check for wildcard listeners like `products.(id)`
+                    // Run wildcard listeners like `products.[?]` if defined
                     const wildcardPath = `${key}.[?]`;
-                    if (this.listeners[wildcardPath]) {
-                        if (typeof currentValue === "object") {
-                            for (const subKey in currentValue) {
-                                // Check if the subKey has changed
-                                if (
-                                    currentValue[subKey] !== lastValue?.[subKey]
-                                ) {
-                                    this.listeners[wildcardPath](subKey);
-                                }
+                    if (
+                        this.listeners[wildcardPath] &&
+                        typeof currentValue === "object"
+                    ) {
+                        for (const subKey in currentValue) {
+                            if (currentValue[subKey] !== lastValue?.[subKey]) {
+                                this.listeners[wildcardPath](subKey);
                             }
                         }
                     }
 
-                    // Check if a general listener exists
+                    // Trigger general listener for this key, if defined
                     if (this.listeners[key]) {
                         this.listeners[key]();
                     }
@@ -297,9 +292,24 @@ export default class StateManager<T extends Record<string, any>> {
             }
         }
 
-        // Dispatch updated fields if any changes were made
+        // Second iteration: Determine final updated fields and dispatch changes
+        const updatedFields: Partial<T> = {};
+
+        for (const key in this.data) {
+            if (this.data.hasOwnProperty(key)) {
+                const currentValue = this.data[key];
+                const lastValue = this.lastData[key];
+
+                // Check if the value has changed again after listeners have run
+                if (currentValue !== lastValue) {
+                    updatedFields[key as keyof T] = currentValue;
+                }
+            }
+        }
+
+        // Dispatch updated fields if any changes were detected
         if (Object.keys(updatedFields).length > 0) {
-            this.lastData = cloneDeep(this.data);
+            this.lastData = cloneDeep(this.data); // Sync `lastData` with the current state
             this.dispatchFunction(this.reducerFunction({ ...updatedFields }));
         }
     }

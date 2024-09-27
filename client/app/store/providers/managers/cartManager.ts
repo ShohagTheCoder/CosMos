@@ -2,6 +2,7 @@ import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import StateManager from "./common/stateManager";
 import { Dispatch } from "@reduxjs/toolkit";
 import { CartState } from "../../slices/cartSlice";
+import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 
 type ReducerFunction = any;
 
@@ -14,15 +15,15 @@ export class CartManager<T extends CartState> extends StateManager<T> {
         super(initialState, dispatchFunction, reducerFunction);
 
         this.listen("products.[?]", (id) => {
-            this.update(`products.${id}`, (product) => {
-                if (product) {
-                    product.price = product.price - product.discount;
-                    product.count =
-                        product.quantity * product.units[product.unit].value;
-                    product.subTotal =
-                        product.price * product.count - product.extraDiscount;
-                    return product;
-                }
+            this.update(`products.${id}`, (product: ProductWithID) => {
+                let unit = product.units[product.unit];
+                product.price = getProductUnitPrice(product);
+                product.count = product.quantity * unit.value;
+                product.subTotal =
+                    (product.price - product.discount / unit.value) *
+                        product.count -
+                    product.extraDiscount;
+                return product;
             });
         });
 
@@ -71,20 +72,32 @@ export class CartManager<T extends CartState> extends StateManager<T> {
         return this;
     }
 
-    updateProduct(
-        id: string | undefined = undefined,
-        value: Record<string, any>
-    ) {
-        if (!id) id = this.get("activeProduct");
-        this.has(`products.${id}`, (product: ProductWithID) => {
-            product = { ...product, ...value };
-            product.price = product.price - product.discount;
-            product.count =
-                product.quantity * product.units[product.unit].value;
-            product.subTotal =
-                product.price * product.count - product.extraDiscount;
-            return product;
-        });
+    // Remove to cart
+    removeToCart(id: string | undefined = undefined): this {
+        id = id ?? this.get("activeProduct"); // Use nullish coalescing for default assignment
+
+        if (!id) {
+            console.log("No active product found");
+            return this;
+        }
+
+        const products = this.get("products");
+        const productKeys = Object.keys(products);
+        const currentIndex = productKeys.indexOf(id);
+
+        if (currentIndex === -1) {
+            console.log("Product ID not found in the cart");
+            return this;
+        }
+
+        // Determine the next active product index
+        const nextIndex = currentIndex === 0 ? 1 : currentIndex - 1;
+
+        // Remove the product and set the new active product
+        this.remove("products", id).set(
+            "activeProduct",
+            productKeys[nextIndex] ?? null
+        );
         return this;
     }
 }

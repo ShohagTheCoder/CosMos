@@ -1,7 +1,6 @@
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import useCartManager from "@/app/store/providers/cartProvider";
 import {
-    removeFromCart,
     shiftMeasurementTo,
     setPriceToWithDiscount,
     shiftUnitTo,
@@ -81,36 +80,25 @@ export function useHandleKeyUp(
             let commandKey = splited[0];
             let amount = parseInt(splited[1] + e.key);
             if (commandKey.length > 0) {
-                let product = getProductByCommand(commandKey);
+                console.log(commandKey);
+                let product = getProductByCommand(e, commandKey);
+                console.log(product);
                 if (product) {
-                    console.log(product);
                     cartManager
                         .addToCart(product)
-                        .update(`products.${product._id}.discount`, () => {
+                        .update(`products.{{activeProduct}}.discount`, () => {
                             if (amount < product.price / 2) {
+                                console.log("amount is price");
                                 return amount;
+                            } else {
+                                console.log("price - amount");
+                                return product.price - amount;
                             }
-                            return product.price - amount;
                         })
                         .save();
                 }
             }
             setCommand("");
-            // cartManager
-            //     .update(
-            //         "products.{{activeProduct}}",
-            //         (product: ProductWithID) => {
-            //             console.log("product from ", product);
-            //             if (amount < product.price / 2) {
-            //                 product.discount = amount;
-            //             } else {
-            //                 product.discount = product.price - amount;
-            //             }
-
-            //             return product;
-            //         }
-            //     )
-            //     .save();
             e.preventDefault();
             stopKeyUpHandlerRef.current = true;
             return;
@@ -262,7 +250,8 @@ export function useHandleKeyUp(
                         e.preventDefault();
                         keyPressTimerRef.current = setTimeout(() => {
                             longPressedRef.current = true;
-                            dispatch(removeFromCart(undefined));
+                            // dispatch(removeFromCart(undefined));
+                            cartManager.removeToCart(undefined).save();
                         }, longPressDuration);
                         break;
                     case "Numpad0":

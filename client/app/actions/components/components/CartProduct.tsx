@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { removeFromCart } from "@/app/store/slices/cartSlice"; // Assuming your cart slice location
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { RootState } from "@/app/store/store";
 import getUnits from "@/app/functions/getUnits";
@@ -113,7 +112,9 @@ function CartProduct({
                 </button>
                 <button
                     className="py-2 px-3 rounded-lg select-none hover:bg-red-800"
-                    onDoubleClick={() => dispatch(removeFromCart(undefined))}
+                    onDoubleClick={() => {
+                        cartManager.removeToCart(undefined).save();
+                    }}
                 >
                     <TrashIcon height="20" width="20" />
                 </button>
@@ -292,10 +293,7 @@ function CartProduct({
                                                         />
                                                     </td>
                                                     <td className="pe-3 text-lg text-end">
-                                                        {product.subTotal.toFixed(
-                                                            0
-                                                        )}{" "}
-                                                        ৳
+                                                        {product.subTotal}৳
                                                     </td>
                                                 </tr>
                                             </tbody>
