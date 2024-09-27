@@ -58,10 +58,10 @@ export class Resource {
     @Prop()
     unit: string;
 
-    @Prop()
+    @Prop({ default: 1 })
     count: number;
 
-    @Prop()
+    @Prop({ default: 1 })
     quantity: number;
 }
 

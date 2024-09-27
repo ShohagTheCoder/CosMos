@@ -1,16 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-    decrementQuantity,
-    changeActiveProduct,
-    updateQuantity,
-    addDiscount,
-    addExtraDiscount,
-    updateUnit,
-    updateDiscountAmount,
-    removeFromCart,
-    updateExtraDiscountAmount,
-} from "@/app/store/slices/cartSlice"; // Assuming your cart slice location
+import { removeFromCart } from "@/app/store/slices/cartSlice"; // Assuming your cart slice location
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { RootState } from "@/app/store/store";
 import getUnits from "@/app/functions/getUnits";
@@ -40,13 +30,6 @@ function CartProduct({
     let cart = useSelector((state: RootState) => state.cart);
     const [settingState, setSettingState] = useState(setting);
 
-    const handleDecrement = (_id: string) => {
-        let product = cart.products[_id];
-        if (product.quantity > 0) {
-            dispatch(decrementQuantity(product._id)); // Decrement quantity
-        }
-    };
-
     const cartManager = useCartManager();
 
     function getProductForCart(p: ProductWithID) {
@@ -74,47 +57,45 @@ function CartProduct({
             <div className="flex flex-wrap justify-between items-center py-2 px-2 bg-gray-800 mb-3">
                 <button
                     className="flex items-center p-1 py-2 px-3 rounded-lg select-none hover:bg-green-800"
-                    onClick={() =>
-                        dispatch(
-                            updateExtraDiscountAmount({
-                                key: undefined,
-                                amount: 1,
-                            })
-                        )
-                    }
+                    onClick={() => {
+                        cartManager
+                            .increment(
+                                "products.{{activeProduct}}.extraDiscount"
+                            )
+                            .save();
+                    }}
                 >
                     <ExtraDiscountIcon />+
                 </button>
                 <button
                     className="flex items-center p-1 py-2 px-3 rounded-lg select-none hover:bg-red-800"
-                    onClick={() =>
-                        dispatch(
-                            updateExtraDiscountAmount({
-                                key: undefined,
-                                amount: -1,
-                            })
-                        )
-                    }
+                    onClick={() => {
+                        cartManager
+                            .decrement(
+                                "products.{{activeProduct}}.extraDiscount"
+                            )
+                            .save();
+                    }}
                 >
                     <ExtraDiscountIcon /> -
                 </button>
                 <button
                     className="flex items-center gap-1 py-2 px-3 rounded-lg select-none hover:bg-green-800"
-                    onClick={() =>
-                        dispatch(
-                            updateDiscountAmount({ key: undefined, amount: 1 })
-                        )
-                    }
+                    onClick={() => {
+                        cartManager
+                            .increment("products.{{activeProduct}}.discount")
+                            .save();
+                    }}
                 >
                     <DiscountIcon height="16" /> +
                 </button>
                 <button
                     className="flex gap-1 items-center py-2 px-3 rounded-lg select-none hover:bg-red-800"
-                    onClick={() =>
-                        dispatch(
-                            updateDiscountAmount({ key: undefined, amount: -1 })
-                        )
-                    }
+                    onClick={() => {
+                        cartManager
+                            .decrement("products.{{activeProduct}}.discount")
+                            .save();
+                    }}
                 >
                     <DiscountIcon height="16" /> -
                 </button>
@@ -182,13 +163,14 @@ function CartProduct({
                                                 src={`/images/products/${product.image}`}
                                                 alt={product.name}
                                                 className="h-full object-cover"
-                                                onClick={() =>
-                                                    dispatch(
-                                                        changeActiveProduct(
+                                                onClick={() => {
+                                                    cartManager
+                                                        .set(
+                                                            "activeProduct",
                                                             product._id
                                                         )
-                                                    )
-                                                }
+                                                        .save();
+                                                }}
                                             />
                                         </div>
                                     ) : (
@@ -249,20 +231,18 @@ function CartProduct({
                                                                 product.unit
                                                                     .value
                                                             }
-                                                            onChange={(e) =>
-                                                                dispatch(
-                                                                    addDiscount(
-                                                                        {
-                                                                            key: product._id,
-                                                                            amount: parseInt(
-                                                                                e
-                                                                                    .target
-                                                                                    .value
-                                                                            ),
-                                                                        }
+                                                            onChange={(e) => {
+                                                                cartManager
+                                                                    .set(
+                                                                        `products.${product._id}.discount`,
+                                                                        parseInt(
+                                                                            e
+                                                                                .target
+                                                                                .value
+                                                                        )
                                                                     )
-                                                                )
-                                                            }
+                                                                    .save();
+                                                            }}
                                                             className="no-spin h-[30px] w-[46px] bg-gray-900 text-center outline-none"
                                                         />
                                                     </td>
@@ -296,20 +276,18 @@ function CartProduct({
                                                             value={
                                                                 product.extraDiscount
                                                             }
-                                                            onChange={(e) =>
-                                                                dispatch(
-                                                                    addExtraDiscount(
-                                                                        {
-                                                                            key: product._id,
-                                                                            amount: parseInt(
-                                                                                e
-                                                                                    .target
-                                                                                    .value
-                                                                            ),
-                                                                        }
+                                                            onChange={(e) => {
+                                                                cartManager
+                                                                    .set(
+                                                                        `products.${product._id}.extraDiscount`,
+                                                                        parseInt(
+                                                                            e
+                                                                                .target
+                                                                                .value
+                                                                        )
                                                                     )
-                                                                )
-                                                            }
+                                                                    .save();
+                                                            }}
                                                             className="no-spin h-[30px] w-[46px] bg-gray-900 text-center outline-none"
                                                         />
                                                     </td>
@@ -328,9 +306,13 @@ function CartProduct({
                                     <div className="flex flex-warp">
                                         <button
                                             className="h-[40px] w-[40px] select-none hover:bg-green-500 hover:text-white text-2xl bg-gray-300 text-gray-700 border-0"
-                                            onClick={() =>
-                                                handleDecrement(product._id)
-                                            }
+                                            onClick={() => {
+                                                cartManager
+                                                    .decrement(
+                                                        `products.${product._id}.quantity`
+                                                    )
+                                                    .save();
+                                            }}
                                         >
                                             -
                                         </button>
@@ -338,42 +320,25 @@ function CartProduct({
                                             type="number"
                                             className="no-spin h-[40px] w-[70px] bg-black  outline-none text-white text-center"
                                             value={product.quantity}
-                                            onChange={(e) =>
-                                                dispatch(
-                                                    updateQuantity({
-                                                        key: product._id,
-                                                        quantity: parseFloat(
-                                                            e.target.value
-                                                        ),
-                                                    })
-                                                )
-                                            }
+                                            onChange={(e) => {
+                                                cartManager
+                                                    .set(
+                                                        `products.${product._id}.quantity`,
+                                                        parseInt(e.target.value)
+                                                    )
+                                                    .save();
+                                            }}
                                         />
 
                                         <button
                                             className="h-[40px] w-[40px] select-none hover:bg-green-500 hover:text-white text-2xl bg-gray-300 text-gray-700 border-0"
-                                            onClick={() =>
-                                                // handleIncrement(product._id)
-                                                // cartManager
-                                                //     .update(
-                                                //         `products.${product._id}`,
-                                                //         (product) => {
-                                                //             product.quantity += 1;
-                                                //             return product;
-                                                //         }
-                                                //     )
-                                                //     .save()
+                                            onClick={() => {
                                                 cartManager
-                                                    .updateProduct(
-                                                        product._id,
-                                                        {
-                                                            quantity:
-                                                                product.quantity +
-                                                                1,
-                                                        }
+                                                    .increment(
+                                                        `products.${product._id}.quantity`
                                                     )
-                                                    .save()
-                                            }
+                                                    .save();
+                                            }}
                                         >
                                             +
                                         </button>
@@ -381,15 +346,14 @@ function CartProduct({
                                             <select
                                                 className="h-[40px] bg-black text-white px-2 outline-none"
                                                 value={product.unit.unit}
-                                                onChange={(e) =>
-                                                    dispatch(
-                                                        updateUnit({
-                                                            key: product._id,
-                                                            unit: e.target
-                                                                .value,
-                                                        })
-                                                    )
-                                                }
+                                                onChange={(e) => {
+                                                    cartManager
+                                                        .set(
+                                                            `products.${product._id}.unit`,
+                                                            e.target.value
+                                                        )
+                                                        .save();
+                                                }}
                                             >
                                                 {Object.values(
                                                     getUnits(product.units)
@@ -450,11 +414,14 @@ function CartProduct({
                             {settingState.cartImage ? (
                                 <div className="">
                                     <img
-                                        onClick={() =>
-                                            dispatch(
-                                                changeActiveProduct(product._id)
-                                            )
-                                        }
+                                        onClick={() => {
+                                            cartManager
+                                                .set(
+                                                    "activeProduct",
+                                                    product._id
+                                                )
+                                                .save();
+                                        }}
                                         src={`/images/products/${product.image}`}
                                         className="h-[50px] w-[50px] object-cover"
                                         alt={product.image}

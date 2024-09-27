@@ -1,16 +1,11 @@
 "use client";
 import Sidebar from "@/app/components/Sidebar";
-import { CustomerWithId } from "@/app/interfaces/customer.inerface";
+import { Customer, CustomerWithId } from "@/app/interfaces/customer.inerface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import {
-    addToCart,
     CartState,
-    changeActiveProduct,
     initialCartState,
-    resetSelectedProductIndex,
-    setUser,
-    setWholeCart,
-    updateCartProduct,
+    updateCartState,
 } from "@/app/store/slices/cartSlice";
 import { RootState } from "@/app/store/store";
 import apiClient from "@/app/utils/apiClient";
@@ -84,7 +79,8 @@ export default function Sell({
     // Single use effect
     useEffect(() => {
         if (user) {
-            dispatch(setUser(user));
+            cartManager.set("user", user).save();
+            // dispatch(setUser(user));
         }
 
         window.addEventListener("keydown", (e: any) => {
@@ -175,23 +171,10 @@ export default function Sell({
 
         // Reset selected product index
         if (cart.selectedProductIndex > 0) {
-            dispatch(resetSelectedProductIndex());
+            cartManager.set("selectedProductIndex", 0);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [command]);
-
-    // Add to cart with product shortcut
-    function addToCartByProductShortcut(e: KeyboardEvent, shortcut: string) {
-        let command = commands.find((_) => _.command.toLowerCase() == shortcut);
-        if (command && command.value != null) {
-            let product = products[command.value];
-            if (!product) return;
-            e.preventDefault();
-            setCommand("");
-            dispatch(addToCart(product));
-        }
-        return;
-    }
 
     async function handleCompleteSell() {
         try {
@@ -226,7 +209,7 @@ export default function Sell({
                 key = 0;
             }
 
-            dispatch(changeActiveProduct(cartProductsKey[key]));
+            cartManager.set("activeProduct", cartProductsKey[key]).save();
         }
     }
 
@@ -259,6 +242,26 @@ export default function Sell({
         }
     }
 
+    // Add to cart with product shortcut
+    function getProductByCommand(e: KeyboardEvent, shortcut: string) {
+        let command = commands.find(
+            (_: any) => _.command.toLowerCase() == shortcut
+        );
+        if (command && command.value != null) {
+            let product = products[command.value];
+            if (!product) return;
+            e.preventDefault();
+            setCommand("");
+            // dispatch(addToCart(product));
+            // cartManager
+            //     .addToCart(product)
+            //     .set("activeProduct", product._id)
+            //     .save();
+            return product;
+        }
+        return;
+    }
+
     function handleUpdateProductPrice(amount: number) {
         if (cart.activeProduct) {
             let product = { ...cart.products[cart.activeProduct] };
@@ -266,12 +269,12 @@ export default function Sell({
             apiCall
                 .patch(`/products/updatePrice/${product._id}`, { amount })
                 .success((data) => {
-                    dispatch(
-                        updateCartProduct({
+                    cartManager
+                        .set(`products.${product._id}`, {
                             ...product,
                             ...data,
                         })
-                    );
+                        .save();
                     products[product._id] = { ...product, ...data };
                 })
                 .error((error) => console.log(error));
@@ -282,7 +285,11 @@ export default function Sell({
         setProductUpdateShortcut(false);
         products[product._id] = product;
         if (cart.products[product._id]) {
-            dispatch(updateCartProduct(product));
+            cartManager
+                .set(`products.${product._id}`, {
+                    product,
+                })
+                .save();
         }
     }
 
@@ -291,7 +298,7 @@ export default function Sell({
         let cartStates: Record<string, CartState> = { ...helper.cartStates };
         cartStates[activeSellPage.current] = cart;
         dispatch(updateHelperField({ field: "cartStates", value: cartStates }));
-        dispatch(setWholeCart(cartStates[sellPageKey] || initialCartState));
+        dispatch(updateCartState(cartStates[sellPageKey] || initialCartState));
         activeSellPage.current = sellPageKey;
     }
 
@@ -305,7 +312,7 @@ export default function Sell({
         isCustomers,
         handleSellPageChange,
         changeCartActiveProductTo,
-        addToCartByProductShortcut,
+        getProductByCommand,
         handleCompleteSell,
         handleProductUpdateShortcut,
         handleUpdateProductPrice
@@ -462,6 +469,24 @@ export default function Sell({
                                                     customers={
                                                         filteredCustomers
                                                     }
+                                                    callback={(
+                                                        customer: Customer
+                                                    ) => {
+                                                        // dispatch(addCustomer(customer));
+                                                        cartManager
+                                                            .set(
+                                                                "customer",
+                                                                customer
+                                                            )
+                                                            .save();
+                                                        setCommand("");
+                                                        // if()
+                                                        document
+                                                            .getElementById(
+                                                                "command"
+                                                            )
+                                                            ?.focus();
+                                                    }}
                                                 />
                                             </div>
                                         ) : (
@@ -471,13 +496,19 @@ export default function Sell({
                                                         selected={
                                                             cart.selectedProductIndex
                                                         }
-                                                        callback={(product) =>
-                                                            dispatch(
-                                                                addToCart(
+                                                        callback={(product) => {
+                                                            cartManager
+                                                                .addToCart(
                                                                     product
                                                                 )
-                                                            )
-                                                        }
+                                                                .save();
+                                                            setCommand("");
+                                                            document
+                                                                .getElementById(
+                                                                    "command"
+                                                                )
+                                                                ?.focus();
+                                                        }}
                                                         products={
                                                             filteredProducts
                                                         }
@@ -499,6 +530,12 @@ export default function Sell({
                                                                     product
                                                                 )
                                                                 .save();
+                                                            setCommand("");
+                                                            document
+                                                                .getElementById(
+                                                                    "command"
+                                                                )
+                                                                ?.focus();
                                                         }}
                                                         products={
                                                             filteredProducts

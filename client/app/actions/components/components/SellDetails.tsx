@@ -1,15 +1,13 @@
 "use client";
 import useCartManager from "@/app/store/providers/cartProvider";
-import { updatePaid } from "@/app/store/slices/cartSlice";
 import { RootState } from "@/app/store/store";
-
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 function SellDetails() {
     const cart = useSelector((state: RootState) => state.cart);
     const customerAccount = cart.customerAccount;
-    const dispatch = useDispatch();
+    const cartManager = useCartManager();
 
     return (
         <div className="bg-transparent p-3 mb-3 border-dashed border-2 border-gray-600">
@@ -29,11 +27,11 @@ function SellDetails() {
                                 className="no-spin w-[60px] text-end bg-black outline-none text-white"
                                 type="number"
                                 value={cart.paid}
-                                onChange={(e) =>
-                                    dispatch(
-                                        updatePaid(parseInt(e.target.value))
-                                    )
-                                }
+                                onChange={(e) => {
+                                    cartManager
+                                        .set("paid", parseInt(e.target.value))
+                                        .save();
+                                }}
                             />
                             <span> ৳</span>
                         </p>

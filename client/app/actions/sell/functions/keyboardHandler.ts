@@ -1,13 +1,8 @@
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import useCartManager from "@/app/store/providers/cartProvider";
 import {
-    updateDiscountAmount,
-    updateExtraDiscountAmount,
     removeFromCart,
     shiftMeasurementTo,
-    updateQuantity,
-    addCustomer,
-    addCustomerAccount,
     setPriceToWithDiscount,
     shiftUnitTo,
     CartState,
@@ -27,7 +22,7 @@ export function useHandleKeyUp(
     isCustomers: any,
     handleSellPageChange: any,
     changeCartActiveProductTo: any,
-    addToCartByProductShortcut: any,
+    getProductByCommand: any,
     handleCompleteSell: () => void,
     // eslint-disable-next-line no-unused-vars
     setProductUpdateShortcut: (productId: string | undefined) => void,
@@ -65,17 +60,19 @@ export function useHandleKeyUp(
             const { data } = await apiClient.get(
                 `accounts/${customer.account}`
             );
-            dispatch(addCustomer(customer));
-            dispatch(addCustomerAccount(data));
+            cartManager
+                .set("customer", customer)
+                .set("customerAccount", data)
+                .save();
         }
     }
 
     function handleNumpadNumberKeysLongPress(e: KeyboardEvent) {
         if (command.length == 0) {
             setCommand("");
-            dispatch(
-                updateQuantity({ key: undefined, quantity: parseInt(e.key) })
-            );
+            cartManager
+                .set("products.{{activeProduct}}.quantity", parseInt(e.key))
+                .save();
             return;
         }
 
@@ -84,18 +81,50 @@ export function useHandleKeyUp(
             let commandKey = splited[0];
             let amount = parseInt(splited[1] + e.key);
             if (commandKey.length > 0) {
-                addToCartByProductShortcut(e, commandKey);
+                let product = getProductByCommand(commandKey);
+                if (product) {
+                    console.log(product);
+                    cartManager
+                        .addToCart(product)
+                        .update(`products.${product._id}.discount`, () => {
+                            if (amount < product.price / 2) {
+                                return amount;
+                            }
+                            return product.price - amount;
+                        })
+                        .save();
+                }
             }
             setCommand("");
-            dispatch(setPriceToWithDiscount({ key: undefined, amount }));
+            // cartManager
+            //     .update(
+            //         "products.{{activeProduct}}",
+            //         (product: ProductWithID) => {
+            //             console.log("product from ", product);
+            //             if (amount < product.price / 2) {
+            //                 product.discount = amount;
+            //             } else {
+            //                 product.discount = product.price - amount;
+            //             }
+
+            //             return product;
+            //         }
+            //     )
+            //     .save();
+            e.preventDefault();
+            stopKeyUpHandlerRef.current = true;
             return;
         }
 
         if (/^[1-9]+$/.test(command)) {
-            addToCartByProductShortcut(e, command);
-            dispatch(
-                updateQuantity({ key: undefined, quantity: parseInt(e.key) })
-            );
+            let product = getProductByCommand(e, command);
+            console.log(product);
+            if (product) {
+                cartManager
+                    .addToCart(product)
+                    .set(`products.${product._id}.quantity`, parseInt(e.key))
+                    .save();
+            }
             return;
         }
 
@@ -103,8 +132,14 @@ export function useHandleKeyUp(
             let splited = command.split("0", 2);
             let commandKey = splited[0];
             let quantity = parseInt(splited[1] + e.key);
-            addToCartByProductShortcut(e, commandKey);
-            dispatch(updateQuantity({ key: undefined, quantity }));
+            let product = getProductByCommand(e, commandKey);
+            console.log(product);
+            if (product) {
+                cartManager
+                    .addToCart(product)
+                    .set(`products.${product._id}.quantity`, quantity)
+                    .save();
+            }
             return;
         }
     }
@@ -134,7 +169,10 @@ export function useHandleKeyUp(
                 /^[a-zA-Z]$/.test(command) &&
                 command == e.key
             ) {
-                addToCartByProductShortcut(e, command);
+                let product = getProductByCommand(e, command);
+                if (product) {
+                    cartManager.addToCart(product).save();
+                }
                 return;
             }
 
@@ -237,7 +275,6 @@ export function useHandleKeyUp(
                     case "Numpad7":
                     case "Numpad8":
                     case "Numpad9":
-                        // e.preventDefault();
                         keyPressTimerRef.current = setTimeout(() => {
                             longPressedRef.current = true;
                             handleNumpadNumberKeysLongPress(e);
@@ -326,7 +363,9 @@ export function useHandleKeyUp(
                 )
             ) {
                 e.preventDefault();
-                dispatch(updateDiscountAmount({ key: undefined, amount: 1 }));
+                cartManager
+                    .increment("products.{{activeProduct}}.discount")
+                    .save();
                 setCommand("");
                 groupPressedRef.current = true;
                 stopKeyUpHandlerRef.current = true;
@@ -340,7 +379,9 @@ export function useHandleKeyUp(
                 )
             ) {
                 e.preventDefault();
-                dispatch(updateDiscountAmount({ key: undefined, amount: -1 }));
+                cartManager
+                    .decrement("products.{{activeProduct}}.discount")
+                    .save();
                 setCommand("");
                 groupPressedRef.current = true;
                 stopKeyUpHandlerRef.current = true;
@@ -354,9 +395,9 @@ export function useHandleKeyUp(
                 )
             ) {
                 e.preventDefault();
-                dispatch(
-                    updateExtraDiscountAmount({ key: undefined, amount: 1 })
-                );
+                cartManager
+                    .increment("products.{{activeProduct}}.extraDiscount")
+                    .save();
                 setCommand("");
                 groupPressedRef.current = true;
                 stopKeyUpHandlerRef.current = true;
@@ -370,9 +411,9 @@ export function useHandleKeyUp(
                 )
             ) {
                 e.preventDefault();
-                dispatch(
-                    updateExtraDiscountAmount({ key: undefined, amount: -1 })
-                );
+                cartManager
+                    .decrement("products.{{activeProduct}}.extraDiscount")
+                    .save();
                 setCommand("");
                 groupPressedRef.current = true;
                 stopKeyUpHandlerRef.current = true;
@@ -431,12 +472,12 @@ export function useHandleKeyUp(
                     stopLongPress();
                     stopKeyUpHandlerRef.current = true;
                     setCommand("");
-                    dispatch(
-                        updateQuantity({
-                            key: undefined,
-                            quantity: parseInt(command),
-                        })
-                    );
+                    cartManager
+                        .set(
+                            "products.{{activeProduct}}.quantity",
+                            parseInt(command)
+                        )
+                        .save();
                     return;
                 }
             }
@@ -448,7 +489,10 @@ export function useHandleKeyUp(
                     let commandKey = splited[0];
                     let amount = parseInt(splited[1]);
                     if (commandKey.length > 0) {
-                        addToCartByProductShortcut(e, commandKey);
+                        let product = getProductByCommand(e, commandKey);
+                        if (product) {
+                            cartManager.addToCart(product).save();
+                        }
                     }
                     setCommand("");
                     dispatch(
@@ -460,13 +504,16 @@ export function useHandleKeyUp(
                 if (/^[1-9]+$/.test(command)) {
                     stopLongPress();
                     stopKeyUpHandlerRef.current = true;
-                    addToCartByProductShortcut(e, command);
-                    dispatch(
-                        updateQuantity({
-                            key: undefined,
-                            quantity: parseInt(e.key),
-                        })
-                    );
+                    let product = getProductByCommand(e, command);
+                    if (product) {
+                        cartManager
+                            .addToCart(product)
+                            .set(
+                                `products.${product._id}.quantity`,
+                                parseInt(e.key)
+                            )
+                            .save();
+                    }
                     return;
                 }
 
@@ -475,16 +522,24 @@ export function useHandleKeyUp(
                     let commandKey = splited[0];
                     let quantity = parseInt(splited[1]);
                     stopLongPress();
-                    addToCartByProductShortcut(e, commandKey);
+                    let product = getProductByCommand(e, commandKey);
+                    if (product) {
+                        cartManager
+                            .addToCart(product)
+                            .set(`products.${product._id}.quantity`, quantity)
+                            .save();
+                    }
                     stopKeyUpHandlerRef.current = true;
-                    dispatch(updateQuantity({ key: undefined, quantity }));
                     return;
                 }
 
                 if (/^[a-zA-Z]$/.test(command)) {
                     stopLongPress();
                     stopKeyUpHandlerRef.current = true;
-                    addToCartByProductShortcut(e, command);
+                    let product = getProductByCommand(e, command);
+                    if (product) {
+                        cartManager.addToCart(product).save();
+                    }
                     return;
                 }
             }
@@ -543,7 +598,7 @@ export function useHandleKeyUp(
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [
-            addToCartByProductShortcut,
+            getProductByCommand,
             cart,
             changeCartActiveProductTo,
             command,

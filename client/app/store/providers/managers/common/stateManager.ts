@@ -74,7 +74,10 @@ export default class StateManager<T extends Record<string, any>> {
                 if (dynamicKey in obj) {
                     obj = obj[dynamicKey];
                 } else {
-                    throw new Error(`Missing dynamic key: ${dynamicKeyName}`); // Consider throwing an error
+                    console.log(
+                        `Dynamic key is missing for "${dynamicKeyName}"`
+                    );
+                    return this;
                 }
             } else {
                 obj = obj[k] || (typeof obj[k] === "object" ? obj[k] : {}); // Check type before creating
@@ -240,7 +243,6 @@ export default class StateManager<T extends Record<string, any>> {
         return this;
     }
 
-    // eslint-disable-next-line no-unused-vars
     listen<K extends string>(field: K, callback: (id?: any) => void): this {
         this.listeners[field as string] = callback;
         return this;
