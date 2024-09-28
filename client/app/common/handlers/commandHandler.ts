@@ -155,6 +155,8 @@ export default class CommandHandler extends KeyboardHandler {
         this.setPreventDefaultKeys([
             "NumpadAdd",
             "NumpadSubtract",
+            "PageUp",
+            "PageDown",
             "Minus",
             "Tab",
             "F5",
@@ -250,6 +252,17 @@ export default class CommandHandler extends KeyboardHandler {
                 .increment("products.{{activeProduct}}.extraDiscount")
                 .save();
         });
+        this.group(["PageUp", "PageDown"], () => {
+            // this.setCommand("");
+            // this.cartManager
+            //     .update("products.{{activeProduct}}", (product: ProductWithID) => {
+
+            //     })
+            //     .save();
+            this.handleUpdateProductPrice(
+                -this.cartManager.get("products.{{activeProduct}}.updatePrice")
+            );
+        });
 
         this.group(["Numpad4", "Numpad7"], () => {
             this.cartManager
@@ -280,11 +293,11 @@ export default class CommandHandler extends KeyboardHandler {
             }
         });
 
-        this.longPress("PageUp", () => {
+        this.listen("PageUp", () => {
             this.handleUpdateProductPrice(1);
         });
 
-        this.longPress("PageDown", () => {
+        this.listen("PageDown", () => {
             this.handleUpdateProductPrice(-1);
         });
 
@@ -519,8 +532,8 @@ export default class CommandHandler extends KeyboardHandler {
             }
         });
 
-        this.listen("ContextMenu", () => {
-            this.setProductUpdateShortcut();
+        this.listen("ControlRight", () => {
+            this.setProductUpdateShortcut(true);
         });
     }
 }

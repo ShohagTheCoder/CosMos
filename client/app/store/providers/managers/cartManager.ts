@@ -62,9 +62,10 @@ export class CartManager<T extends CartState> extends StateManager<T> {
         );
 
         if (!exist) {
-            payload.unit = payload.measurements[0].unit;
-            payload.quantity = payload.measurements[0].value;
-            this.set(`products.${payload._id}`, payload).set(
+            let _product = { ...payload };
+            _product.unit = payload.measurements[0].unit;
+            _product.quantity = payload.measurements[0].value;
+            this.set(`products.${_product._id}`, _product).set(
                 "activeProduct",
                 payload._id
             );

@@ -294,9 +294,12 @@ export default function Sell({
     }
 
     function handleUpdateProductPrice(amount: number) {
-        if (cart.activeProduct) {
-            let product = { ...cart.products[cart.activeProduct] };
-            product.updatePrice += amount;
+        if (cartManager.get("activeProduct")) {
+            let product = cartManager.get("products.{{activeProduct}}");
+            cartManager.update(
+                "products.{{activeProduct}}.updatePrice",
+                (updatePrice) => updatePrice + amount
+            );
             apiCall
                 .patch(`/products/updatePrice/${product._id}`, { amount })
                 .success((data) => {
@@ -635,7 +638,15 @@ export default function Sell({
                                             }
                                             className="w-1/2 pt-3 pb-2 border-2 border-dashed border-green-600 bg-green-900 hover:bg-green-700 text-white"
                                         >
-                                            বিক্রয় ও প্রিন্ট
+                                            Sell & Print
+                                        </button>
+                                        <button
+                                            onDoubleClick={() =>
+                                                handleCompleteSell()
+                                            }
+                                            className="w-1/2 pt-3 pb-2 border-dashed border-2 border-yellow-600 bg-yellow-900 hover:bg-blue-700 text-white"
+                                        >
+                                            Pending
                                         </button>
                                         <button
                                             onDoubleClick={() =>
@@ -643,7 +654,7 @@ export default function Sell({
                                             }
                                             className="w-1/2 pt-3 pb-2 border-dashed border-2 border-blue-600 bg-blue-900 hover:bg-blue-700 text-white"
                                         >
-                                            বিক্রয়
+                                            Sell
                                         </button>
                                     </div>
                                 </div>
