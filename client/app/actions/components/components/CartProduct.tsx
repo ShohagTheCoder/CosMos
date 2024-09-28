@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { RootState } from "@/app/store/store";
 import getUnits from "@/app/functions/getUnits";
@@ -25,7 +25,6 @@ function CartProduct({
     // eslint-disable-next-line no-unused-vars
     handleUpdateProductPrice: (amount: number) => void;
 }) {
-    const dispatch = useDispatch();
     let cart = useSelector((state: RootState) => state.cart);
     const [settingState, setSettingState] = useState(setting);
 

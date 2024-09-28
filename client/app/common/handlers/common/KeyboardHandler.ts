@@ -1,5 +1,6 @@
 import { KeyboardEvent } from "react";
 
+// eslint-disable-next-line no-unused-vars
 type KeyEventCallback = (e: KeyboardEvent) => void;
 
 export default class KeyboardHandler {
@@ -21,7 +22,21 @@ export default class KeyboardHandler {
 
     public value: string = ""; // Store the current input value
 
+    // New callbacks to handle common key up and key down events
+    private keyDownCommonCallback?: KeyEventCallback;
+    private keyUpCommonCallback?: KeyEventCallback;
+
     constructor() {}
+
+    // Set common key down callback
+    public setKeyDownCommonCallback(callback: KeyEventCallback) {
+        this.keyDownCommonCallback = callback;
+    }
+
+    // Set common key up callback
+    public setKeyUpCommonCallback(callback: KeyEventCallback) {
+        this.keyUpCommonCallback = callback;
+    }
 
     // Method to add a new continuable key from outside
     public addContinuableKey(code: string) {
@@ -77,7 +92,6 @@ export default class KeyboardHandler {
         const code = e.code;
         const inputElement = e.target as HTMLInputElement;
         this.value = inputElement.value;
-        console.log(e.code);
 
         // Prevent default behavior for non-continuable codes
         if (!this.continuableKeys.has(code) && this.activeKeys.has(code)) {
@@ -97,6 +111,11 @@ export default class KeyboardHandler {
 
         // After handling individual code press, check for group presses
         this.handleGroupPress(e);
+
+        // Call the common key down callback if provided
+        if (this.keyDownCommonCallback && !e.defaultPrevented) {
+            this.keyDownCommonCallback(e);
+        }
     }
 
     public isPrintableKey(e: KeyboardEvent): boolean {
@@ -129,6 +148,10 @@ export default class KeyboardHandler {
         }
 
         this.handleKeyPress(e, this.keyListeners);
+        // Call the common key up callback if provided and not prevented
+        if (this.keyUpCommonCallback && !e.defaultPrevented) {
+            this.keyUpCommonCallback(e);
+        }
     }
 
     // Start a timer for long press detection

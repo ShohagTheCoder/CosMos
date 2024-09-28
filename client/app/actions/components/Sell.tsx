@@ -2,11 +2,7 @@
 import Sidebar from "@/app/components/Sidebar";
 import { Customer, CustomerWithId } from "@/app/interfaces/customer.inerface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
-import {
-    CartState,
-    initialCartState,
-    updateCartState,
-} from "@/app/store/slices/cartSlice";
+import { CartState, initialCartState } from "@/app/store/slices/cartSlice";
 import { RootState } from "@/app/store/store";
 import apiClient from "@/app/utils/apiClient";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -24,7 +20,7 @@ import { updateHelperField } from "@/app/store/slices/helperSlice";
 import { productArrayToObject } from "../functions/productArrayToObject";
 import useNotification from "@/app/hooks/useNotification";
 import FinalView from "../sell/components/FinalView";
-import { useHandleKeyUp } from "../sell/functions/keyboardHandler";
+// import { useHandleKeyUp } from "../sell/functions/keyboardHandler";
 import ProductsRow from "./ProductsRow";
 import ColsIcon from "@/app/icons/ColsIcon";
 import RowIcon from "@/app/icons/RowIcon";
@@ -90,7 +86,8 @@ export default function Sell({
             handleUpdateProductPrice,
             handleCompleteSell,
             setCommandCounter,
-            setProductUpdateShortcut
+            setProductUpdateShortcut,
+            handleSellPageChange
         )
     ).current;
 
@@ -147,9 +144,17 @@ export default function Sell({
             commandCounter,
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filteredCustomers, filteredProducts, isCustomers]);
+    }, [filteredCustomers, filteredProducts, isCustomers, commandCounter]);
 
     useEffect(() => {
+        if (command.length == 2 && command[0] == command[1]) {
+            const product = getProductByCommand(command[0]);
+            if (product) {
+                cartManager.addToCart(product).save();
+                return;
+            }
+        }
+
         if (/^\s+/.test(command) && customers) {
             setIsCustomers(true);
             // Convert filtered array back to object
@@ -205,6 +210,14 @@ export default function Sell({
             }
             setFilteredCustomers(customers);
         }
+
+        // if (
+        //     this.value.length == 1 &&
+        //     /^[a-zA-Z]$/.test(this.value) &&
+        //     this.value == e.key
+        // ) {
+        //     this.addToCartByShortcutKey(e.key);
+        // }
 
         // Reset selected product index
         if (cart.selectedProductIndex > 0) {
@@ -318,7 +331,8 @@ export default function Sell({
         let cartStates: Record<string, CartState> = { ...helper.cartStates };
         cartStates[activeSellPage.current] = cart;
         dispatch(updateHelperField({ field: "cartStates", value: cartStates }));
-        dispatch(updateCartState(cartStates[sellPageKey] || initialCartState));
+        cartManager.reset(cartStates[sellPageKey] || initialCartState).save();
+        // dispatch(updateCartState());
         activeSellPage.current = sellPageKey;
     }
 
@@ -440,8 +454,7 @@ export default function Sell({
                             </div> */}
                             <div>
                                 <input
-                                    id="command
-                                    2"
+                                    id="command"
                                     value={command}
                                     onChange={(e) => setCommand(e.target.value)}
                                     onKeyDown={(e) =>

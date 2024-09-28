@@ -244,13 +244,14 @@ export default class StateManager<T extends Record<string, any>> {
         return this;
     }
 
+    // eslint-disable-next-line no-unused-vars
     listen<K extends string>(field: K, callback: (id?: any) => void): this {
         this.listeners[field as string] = callback;
         return this;
     }
 
-    reset(initialState?: T): this {
-        this.data = initialState ? { ...initialState } : { ...this.lastData };
+    reset(initialState: T): this {
+        this.data = initialState;
         return this;
     }
 
