@@ -3,6 +3,7 @@ import StateManager from "./common/stateManager";
 import { Dispatch } from "@reduxjs/toolkit";
 import { CartState } from "../../slices/cartSlice";
 import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
+import getMeasurementTo from "@/app/functions/getMeasurementTo";
 
 type ReducerFunction = any;
 
@@ -69,6 +70,10 @@ export class CartManager<T extends CartState> extends StateManager<T> {
             );
         }
 
+        if (this.get("selectedProductIndex") > 0) {
+            this.set("selectedProductIndex", 0);
+        }
+
         return this;
     }
 
@@ -98,6 +103,39 @@ export class CartManager<T extends CartState> extends StateManager<T> {
             "activeProduct",
             productKeys[nextIndex] ?? null
         );
+        return this;
+    }
+
+    // Change active product
+    changeActiveProduct(val: number) {
+        const cartProductsKey = Object.keys(this.get("products"));
+        const activeProduct = this.get("activeProduct");
+
+        if (!activeProduct || cartProductsKey.length <= 1) return this;
+
+        const currentIndex = cartProductsKey.indexOf(activeProduct);
+        const newIndex =
+            (currentIndex + val + cartProductsKey.length) %
+            cartProductsKey.length;
+
+        this.set("activeProduct", cartProductsKey[newIndex]);
+
+        return this;
+    }
+
+    changeMeasurement(to: number) {
+        const product = this.get(`products.{{activeProduct}}`);
+        if (product) {
+            const measurement = getMeasurementTo(product, to);
+            this.update(
+                `products.{{activeProduct}}`,
+                (product: ProductWithID) => {
+                    product.unit = measurement.unit;
+                    product.quantity = measurement.value;
+                    return product;
+                }
+            );
+        }
         return this;
     }
 }

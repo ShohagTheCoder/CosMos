@@ -34,6 +34,7 @@ import ProductUpdateShortcut from "../sell/components/ProductUpdateShortcut";
 import { setProduct } from "@/app/store/slices/productSlice";
 import apiCall from "@/app/common/apiCall";
 import useCartManager from "@/app/store/providers/cartProvider";
+import CommandHandler from "@/app/common/handlers/commandHandler";
 
 interface SellProps {
     productsArray: ProductWithID[];
@@ -76,6 +77,23 @@ export default function Sell({
 
     const cartManager = useCartManager();
 
+    const [commandCounter, setCommandCounter] = useState({
+        name: "unknown",
+        value: 0,
+    });
+
+    const commandHandler = useRef(
+        new CommandHandler(
+            cartManager,
+            setCommand,
+            getProductByCommand,
+            handleUpdateProductPrice,
+            handleCompleteSell,
+            setCommandCounter,
+            setProductUpdateShortcut
+        )
+    ).current;
+
     // Single use effect
     useEffect(() => {
         if (user) {
@@ -111,6 +129,25 @@ export default function Sell({
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    // useEffect(() => {
+    //     commandHandler.current = new CommandHandler(
+    //         cartManager,
+    //         command,
+    //         setCommand,
+    //         getProductByCommand
+    //     );
+    // }, [command]);
+
+    useEffect(() => {
+        commandHandler.params = {
+            filteredCustomers,
+            filteredProducts,
+            isCustomers,
+            commandCounter,
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filteredCustomers, filteredProducts, isCustomers]);
 
     useEffect(() => {
         if (/^\s+/.test(command) && customers) {
@@ -199,20 +236,6 @@ export default function Sell({
         }
     }
 
-    function changeCartActiveProductTo(val: number) {
-        const cartProductsKey = Object.keys(cart.products);
-        if (cart.activeProduct && cartProductsKey.length > 1) {
-            let key = cartProductsKey.indexOf(cart.activeProduct) + val;
-            if (key < 0) {
-                key = cartProductsKey.length - 1;
-            } else if (key >= cartProductsKey.length) {
-                key = 0;
-            }
-
-            cartManager.set("activeProduct", cartProductsKey[key]).save();
-        }
-    }
-
     function updateSetting(payload: any) {
         apiCall
             .patch(`/settings/${setting._id}`, payload)
@@ -243,7 +266,7 @@ export default function Sell({
     }
 
     // Add to cart with product shortcut
-    function getProductByCommand(e: KeyboardEvent, shortcut: string) {
+    function getProductByCommand(shortcut: string) {
         console.log("Shortcut", shortcut);
         let command = commands.find(
             (_: any) => _.command.toLowerCase() == shortcut
@@ -251,13 +274,7 @@ export default function Sell({
         console.log(command);
         if (command && command.value != null) {
             let product = products[command.value];
-            e.preventDefault();
             setCommand("");
-            // dispatch(addToCart(product));
-            // cartManager
-            //     .addToCart(product)
-            //     .set("activeProduct", product._id)
-            //     .save();
             return product;
         }
         return;
@@ -305,22 +322,21 @@ export default function Sell({
         activeSellPage.current = sellPageKey;
     }
 
-    const { onKeyUp, onkeydown, commandCounter } = useHandleKeyUp(
-        command,
-        setCommand,
-        cart,
-        products,
-        filteredProducts,
-        filteredCustomers,
-        isCustomers,
-        handleSellPageChange,
-        changeCartActiveProductTo,
-        getProductByCommand,
-        handleCompleteSell,
-        handleProductUpdateShortcut,
-        handleUpdateProductPrice
-        // commandCounter
-    );
+    // const { onKeyUp, onkeydown, commandCounter } = useHandleKeyUp(
+    //     command,
+    //     setCommand,
+    //     cart,
+    //     products,
+    //     filteredProducts,
+    //     filteredCustomers,
+    //     isCustomers,
+    //     handleSellPageChange,
+    //     getProductByCommand,
+    //     handleCompleteSell,
+    //     handleProductUpdateShortcut,
+    //     handleUpdateProductPrice
+    //     // commandCounter
+    // );
 
     return (
         <div className="text-black dark:text-white">
@@ -334,7 +350,7 @@ export default function Sell({
                 />
                 <div className="ps-[94px] 2xl:ps-[150px] bg-white dark:bg-gray-950">
                     <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 lg:h-screen gap-6 overflow-x-hidden overflow-y-auto lg:overflow-y-hidden cosmos-scrollbar">
-                        <div className="max-h=[1000px] h-full grid grid-rows-[auto_auto_auto_1fr] overflow-hidden col-span-8 lg:col-span-5 py-4 me-3 lg:me-0">
+                        <div className="max-h=[1000px] h-full flex flex-col overflow-hidden col-span-8 lg:col-span-5 py-4 me-3 lg:me-0">
                             <div className="bg-gray-300 dark:bg-gray-950 p-3 border-2 border-dashed border-slate-500 mb-3 md:flex justify-between items-center">
                                 <div className="flex gap-3 justify-start">
                                     <button
@@ -410,13 +426,30 @@ export default function Sell({
                                     </button>
                                 </div>
                             </div>
-                            <div>
+                            {/* <div>
                                 <input
                                     id="command"
                                     value={command}
                                     onChange={(e) => setCommand(e.target.value)}
                                     onKeyDown={onkeydown}
                                     onKeyUp={onKeyUp}
+                                    type="text"
+                                    className="border-2 w-full md:w-1/2 xl:w-1/3 border-dashed border-slate-500 bg-transparent outline-none focus:border-green-500 px-4 py-2 text-lg"
+                                    autoFocus
+                                />
+                            </div> */}
+                            <div>
+                                <input
+                                    id="command
+                                    2"
+                                    value={command}
+                                    onChange={(e) => setCommand(e.target.value)}
+                                    onKeyDown={(e) =>
+                                        commandHandler.handleKeyDown(e)
+                                    }
+                                    onKeyUp={(e) =>
+                                        commandHandler.handleKeyUp(e)
+                                    }
                                     type="text"
                                     className="border-2 w-full md:w-1/2 xl:w-1/3 border-dashed border-slate-500 bg-transparent outline-none focus:border-green-500 px-4 py-2 text-lg"
                                     autoFocus
