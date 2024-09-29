@@ -11,6 +11,7 @@ import CustomerCard from "./components/CustomerCard";
 import CartProduct from "./components/CartProduct";
 import CustomerDetails from "./components/CustomerDetails";
 import SellDetails from "./components/SellDetails";
+// eslint-disable-next-line no-unused-vars
 import SellReceipt from "@/app/components/bills/SellReceipt";
 import Notification from "@/app/elements/notification/Notification";
 import { logout } from "../functions/authHandlers";
@@ -31,6 +32,11 @@ import { setProduct } from "@/app/store/slices/productSlice";
 import apiCall from "@/app/common/apiCall";
 import useCartManager from "@/app/store/providers/cartProvider";
 import CommandHandler from "@/app/common/handlers/commandHandler";
+import Notifications from "@/app/elements/notification/Notifications";
+// eslint-disable-next-line no-unused-vars
+import { addNotification } from "@/app/store/slices/notificationsSlice";
+import SellPageSelector from "./components/SellPageSelector";
+import { cloneDeep } from "lodash";
 
 interface SellProps {
     productsArray: ProductWithID[];
@@ -70,6 +76,10 @@ export default function Sell({
     const [productUpdateShortcut, setProductUpdateShortcut] = useState(false);
     const { notification, notifySuccess, notifyError } = useNotification();
     const [settingState, setSettingState] = useState(setting);
+    // eslint-disable-next-line no-unused-vars
+    const notifications = useSelector(
+        (state: RootState) => state.notifications
+    );
 
     const cartManager = useCartManager();
 
@@ -112,6 +122,7 @@ export default function Sell({
                 "F9",
                 "PageUp",
                 "PageDown",
+                "Tab",
             ];
             if (usedKeys.includes(e.key)) {
                 e.preventDefault(); // Prevent tab default behavior
@@ -138,6 +149,19 @@ export default function Sell({
     }, [filteredCustomers, filteredProducts, isCustomers, commandCounter]);
 
     useEffect(() => {
+        // Match barcode or SKU to add product
+        if (/^[0-9]+$/.test(command)) {
+            let product = productsArray.find(
+                (product) => product.SKU.toString() == command
+            );
+
+            if (product) {
+                cartManager.addToCart(product).save();
+                setCommand("");
+                return;
+            }
+        }
+
         if (/^\s+/.test(command) && customers) {
             setIsCustomers(true);
             // Convert filtered array back to object
@@ -194,14 +218,6 @@ export default function Sell({
             setFilteredCustomers(customers);
         }
 
-        // if (
-        //     this.value.length == 1 &&
-        //     /^[a-zA-Z]$/.test(this.value) &&
-        //     this.value == e.key
-        // ) {
-        //     this.addToCartByShortcutKey(e.key);
-        // }
-
         // Reset selected product index
         if (cart.selectedProductIndex > 0) {
             cartManager.set("selectedProductIndex", 0);
@@ -220,15 +236,6 @@ export default function Sell({
             notifySuccess("Sell created successfully");
         } catch (e) {
             notifyError("Faild to create sell");
-        }
-    }
-
-    function handleNoteKeyDown(e: any) {
-        switch (e.key) {
-            case "Tab":
-                e.preventDefault();
-                document.getElementById("command")?.focus();
-                break;
         }
     }
 
@@ -313,136 +320,56 @@ export default function Sell({
     }
 
     function handleSellPageChange(sellPageKey: string) {
-        if (sellPageKey == activeSellPage.current) return;
-        let cartStates: Record<string, CartState> = { ...helper.cartStates };
+        if (sellPageKey === activeSellPage.current) return;
+        // Deep copy cart states if necessary
+        let cartStates: Record<string, CartState> = cloneDeep(
+            helper.cartStates
+        );
+        // Ensure cart is defined before assignment
         cartStates[activeSellPage.current] = cart;
-        dispatch(updateHelperField({ field: "cartStates", value: cartStates }));
-        cartManager.reset(cartStates[sellPageKey] || initialCartState).save();
-        // dispatch(updateCartState());
+        // Update the active sell page first
         activeSellPage.current = sellPageKey;
+        // Dispatch Redux state update
+        dispatch(updateHelperField({ field: "cartStates", value: cartStates }));
+        // Use the cart manager to reset and save the new state
+        const newCartState = cartStates[sellPageKey] || initialCartState;
+        // Use the cart manager to reset and save the new state
+        cartManager.reset(newCartState).save();
     }
-
-    // const { onKeyUp, onkeydown, commandCounter } = useHandleKeyUp(
-    //     command,
-    //     setCommand,
-    //     cart,
-    //     products,
-    //     filteredProducts,
-    //     filteredCustomers,
-    //     isCustomers,
-    //     handleSellPageChange,
-    //     getProductByCommand,
-    //     handleCompleteSell,
-    //     handleProductUpdateShortcut,
-    //     handleUpdateProductPrice
-    //     // commandCounter
-    // );
 
     return (
         <div className="text-black dark:text-white">
-            <SellReceipt />
+            {/* <SellReceipt /> */}
             <div className="print:hidden">
                 <Sidebar active="sell" userId={user._id} />
-                <Notification
-                    type={notification.type}
-                    message={notification.message}
-                    className="justify-center"
-                />
+
                 <div className="ps-[94px] 2xl:ps-[150px] bg-white dark:bg-gray-950">
+                    <div className="grid grid-cols-1 2xl:grid-cols-9">
+                        <div className="col-span-8 me-3 lg:pe-3">
+                            <Notifications />
+                            <Notification
+                                type={notification.type}
+                                message={notification.message}
+                                className="justify-center"
+                            />
+                        </div>
+                    </div>
                     <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 lg:h-screen gap-6 overflow-x-hidden overflow-y-auto lg:overflow-y-hidden cosmos-scrollbar">
                         <div className="max-h=[1000px] h-full flex flex-col overflow-hidden col-span-8 lg:col-span-5 py-4 me-3 lg:me-0">
-                            <div className="bg-gray-300 dark:bg-gray-950 p-3 border-2 border-dashed border-slate-500 mb-3 md:flex justify-between items-center">
-                                <div className="flex gap-3 justify-start">
-                                    <button
-                                        className={`py-1 px-3 ${
-                                            activeSellPage.current == "F5"
-                                                ? "bg-green-700"
-                                                : ""
-                                        }`}
-                                        onClick={() =>
-                                            handleSellPageChange("F5")
-                                        }
-                                    >
-                                        {helper.cartStates["F5"]?.customer?.name
-                                            ? helper.cartStates["F5"].customer
-                                                  .name
-                                            : "One"}
-                                    </button>
-                                    <button
-                                        className={`py-1 px-3 ${
-                                            activeSellPage.current == "F6"
-                                                ? "bg-green-700"
-                                                : ""
-                                        }`}
-                                        onClick={() =>
-                                            handleSellPageChange("F6")
-                                        }
-                                    >
-                                        {helper.cartStates["F6"]?.customer?.name
-                                            ? helper.cartStates["F6"].customer
-                                                  .name
-                                            : "Two"}
-                                    </button>
-                                    <button
-                                        className={`py-1 px-3 ${
-                                            activeSellPage.current == "F7"
-                                                ? "bg-green-700"
-                                                : ""
-                                        }`}
-                                        onClick={() =>
-                                            handleSellPageChange("F7")
-                                        }
-                                    >
-                                        {helper.cartStates["F7"]?.customer?.name
-                                            ? helper.cartStates["F7"].customer
-                                                  .name
-                                            : "Three"}
-                                    </button>
-                                    <button
-                                        className={`py-1 px-3 ${
-                                            activeSellPage.current == "F8"
-                                                ? "bg-green-700"
-                                                : ""
-                                        }`}
-                                        onClick={() =>
-                                            handleSellPageChange("F8")
-                                        }
-                                    >
-                                        {helper.cartStates["F8"]?.customer?.name
-                                            ? helper.cartStates["F8"].customer
-                                                  .name
-                                            : "Four"}
-                                    </button>
-                                </div>
-                                <div className="md:border-s-2 border-dashed border-gray-600 ps-4 flex flex-wrap justify-end gap-4 items-center">
-                                    <p className="inline-block bg-green-800 py-1 px-3 rounded text-white">
-                                        {user.name}
-                                    </p>
-                                    <button
-                                        onDoubleClick={logout}
-                                        className="bg-red-800 text-white py-1 px-3 rounded"
-                                    >
-                                        Logout
-                                    </button>
-                                </div>
-                            </div>
-                            {/* <div>
-                                <input
-                                    id="command"
-                                    value={command}
-                                    onChange={(e) => setCommand(e.target.value)}
-                                    onKeyDown={onkeydown}
-                                    onKeyUp={onKeyUp}
-                                    type="text"
-                                    className="border-2 w-full md:w-1/2 xl:w-1/3 border-dashed border-slate-500 bg-transparent outline-none focus:border-green-500 px-4 py-2 text-lg"
-                                    autoFocus
-                                />
-                            </div> */}
+                            <SellPageSelector
+                                activeSellPage={activeSellPage.current}
+                                cartStates={helper.cartStates}
+                                userName={user.name}
+                                handleSellPageChange={handleSellPageChange}
+                                logout={logout}
+                            />
                             <div>
                                 <input
                                     id="command"
                                     value={command}
-                                    onChange={(e) => setCommand(e.target.value)}
+                                    onChange={(e) => {
+                                        setCommand(e.target.value);
+                                    }}
                                     onKeyDown={(e) =>
                                         commandHandler.handleKeyDown(e)
                                     }
@@ -604,7 +531,6 @@ export default function Sell({
                                             ref={noteRef}
                                             className="w-full resize-none p-3 outline-none border-dashed border-2 border-gray-600 placeholder-slate-300 mb-1 bg-transparent"
                                             value={note}
-                                            onKeyDown={handleNoteKeyDown}
                                             onChange={(e) =>
                                                 setNote(e.target.value)
                                             }
@@ -627,17 +553,17 @@ export default function Sell({
                                             onDoubleClick={() =>
                                                 handleCompleteSell()
                                             }
-                                            className="w-1/2 pt-3 pb-2 border-dashed border-2 border-yellow-600 bg-yellow-900 hover:bg-blue-700 text-white"
+                                            className="w-1/3 pt-3 pb-2 border-dashed border-2 border-blue-600 bg-blue-900 hover:bg-blue-700 text-white"
                                         >
-                                            Pending
+                                            Sell
                                         </button>
                                         <button
                                             onDoubleClick={() =>
                                                 handleCompleteSell()
                                             }
-                                            className="w-1/2 pt-3 pb-2 border-dashed border-2 border-blue-600 bg-blue-900 hover:bg-blue-700 text-white"
+                                            className="w-1/2 pt-3 pb-2 border-dashed border-2 border-yellow-600 bg-yellow-900 hover:bg-blue-700 text-white"
                                         >
-                                            Sell
+                                            Pending
                                         </button>
                                     </div>
                                 </div>

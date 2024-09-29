@@ -17,6 +17,8 @@ export interface CartState {
 export const initialCartState: CartState = {
     selectedProductIndex: 0,
     products: {},
+    user: undefined,
+    customer: undefined,
     totalPrice: 0,
     paid: 0,
     due: 0,

@@ -1,36 +1,43 @@
-import { NotificationType } from "@/app/elements/notification/Notification";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { v4 as uuidv4 } from "uuid"; // To generate unique IDs
+import { v4 as uuidv4 } from "uuid";
+import { NotificationType } from "@/app/elements/notification/Notification";
 
+// Notification state interface
 export interface NotificationState {
-    id: string; // Unique identifier for each notification
-    title: string; // Notification title
-    message: string; // Notification message
-    type: NotificationType; // Notification type
-    timestamp: number; // Timestamp for when the notification was created
+    id?: string;
+    title: string;
+    message: string;
+    type: NotificationType;
+    timestamp?: string;
 }
 
 const initialState: NotificationState[] = [];
 
+// Create notifications slice
 const notificationsSlice = createSlice({
     name: "notifications",
     initialState,
     reducers: {
+        // Add notification to state
         addNotification: (
             state,
             action: PayloadAction<Omit<NotificationState, "id" | "timestamp">>
         ) => {
-            state.push({
+            const id = uuidv4();
+            const newNotification = {
                 ...action.payload,
-                id: uuidv4(), // Automatically generate a unique ID
-                timestamp: Date.now(), // Automatically add the current timestamp
-            });
+                id,
+                timestamp: new Date().toLocaleTimeString(),
+            };
+            state.push(newNotification);
         },
-        clearNotifications: () => {
-            return [];
-        },
+        // Remove notification from state
         removeNotification: (state, action: PayloadAction<string>) => {
             return state.filter((n) => n.id !== action.payload);
+        },
+        // Clear all notifications
+        clearNotifications: () => {
+            return [];
         },
     },
 });

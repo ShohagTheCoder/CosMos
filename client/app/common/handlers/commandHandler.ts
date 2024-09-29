@@ -492,7 +492,7 @@ export default class CommandHandler extends KeyboardHandler {
                 }
             } else if (this.value.length > 1 && this.params.filteredCustomers) {
                 if (Object.keys(this.params.filteredCustomers).length > 0) {
-                    this.params.handleAddCustomer();
+                    this.handleAddCustomer();
                     this.setCommand("");
                 }
                 return;
