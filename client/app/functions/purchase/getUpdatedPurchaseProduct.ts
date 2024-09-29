@@ -5,7 +5,7 @@ import getProductCount from "../getProductCount";
 import getProductSubTotalPrice from "../getProductSubTotalPrice";
 import getProductUnitPrice from "../getProductUnitPrice";
 import getPurchaseProductSubTotalPrice from "./getPurchaseProductSubTotalPrice";
-import getPurchaseProductUnitPrice from "./getProductUnitPrice";
+import getPurchaseProductUnitPrice from "./getProductUnitPurchasePrice";
 
 export default function getUpdatedPurchaseProduct(
     product: ProductWithID,

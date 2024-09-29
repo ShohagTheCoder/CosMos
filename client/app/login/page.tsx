@@ -21,11 +21,11 @@ export default function LoginPage() {
             if (data.status === "success") {
                 if (document.referrer && !document.referrer.includes("login")) {
                     window.history.back();
+                } else {
+                    window.location.href =
+                        process.env.NEXT_PUBLIC_CLIENT_BASE_URL ||
+                        "http://localhost:3000";
                 }
-
-                window.location.href =
-                    process.env.NEXT_PUBLIC_CLIENT_BASE_URL ||
-                    "http://localhost:3000";
             } else {
                 setError(data.message);
             }

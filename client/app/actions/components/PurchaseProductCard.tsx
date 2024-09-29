@@ -1,5 +1,5 @@
 import getStockLine from "@/app/functions/getStockLine";
-import getProductUnitpurchasePrice from "@/app/functions/purchase/getProductUnitPrice";
+import getProductUnitpurchasePrice from "@/app/functions/purchase/getProductUnitPurchasePrice";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { convertStandardToBnBD } from "@/app/utils/numberFormat";
 import React from "react";

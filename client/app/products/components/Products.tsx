@@ -12,35 +12,40 @@ import Link from "next/link";
 import { useState } from "react";
 import { ProductWithID } from "../interfaces/product.interface";
 import Notification from "@/app/elements/notification/Notification";
-
 export default function Products({
-    products,
+    products: initialProducts,
     userId,
 }: {
     products: ProductWithID[];
     userId: string;
 }) {
+    const [products, setProducts] = useState<ProductWithID[]>(initialProducts);
     const [notification, setNotification] = useState<NotificationProps>({
         message: "",
         type: NONE,
     });
 
-    async function handleDeleteProduct(_id: any, index: number) {
-        const sure = window.confirm("Are you sure to delete the product?");
+    async function handleDeleteProduct(_id: string, index: number) {
+        const sure = window.confirm(
+            "Are you sure you want to delete the product?"
+        );
         if (sure) {
             try {
                 const result = await apiClient.delete(`products/${_id}`);
-                const updatedProducts = [...products];
-                updatedProducts.splice(index, 1);
-                products = updatedProducts;
-                setNotification({
-                    message: "Product deleted successfully",
-                    type: SUCCESS,
-                });
+                if (result.status === 200) {
+                    // Check if the deletion was successful
+                    const updatedProducts = [...products];
+                    updatedProducts.splice(index, 1);
+                    setProducts(updatedProducts);
+                    setNotification({
+                        message: "Product deleted successfully",
+                        type: SUCCESS,
+                    });
+                }
             } catch (error) {
-                console.log("failed to delete product");
+                console.log("Failed to delete product:", error);
                 setNotification({
-                    message: "Faild to delete product",
+                    message: "Failed to delete product",
                     type: ERROR,
                 });
             }

@@ -127,15 +127,6 @@ export default function Sell({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // useEffect(() => {
-    //     commandHandler.current = new CommandHandler(
-    //         cartManager,
-    //         command,
-    //         setCommand,
-    //         getProductByCommand
-    //     );
-    // }, [command]);
-
     useEffect(() => {
         commandHandler.params = {
             filteredCustomers,
@@ -147,14 +138,6 @@ export default function Sell({
     }, [filteredCustomers, filteredProducts, isCustomers, commandCounter]);
 
     useEffect(() => {
-        if (command.length == 2 && command[0] == command[1]) {
-            const product = getProductByCommand(command[0]);
-            if (product) {
-                cartManager.addToCart(product).save();
-                return;
-            }
-        }
-
         if (/^\s+/.test(command) && customers) {
             setIsCustomers(true);
             // Convert filtered array back to object

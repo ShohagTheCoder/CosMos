@@ -1,15 +1,21 @@
 import Product, {
     ProductWithID,
-} from "../products/interfaces/product.interface";
+} from "@/app/products/interfaces/product.interface";
 
-export default function getProductUnitPrice(
+export default function getProductUnitPurchasePrice(
     product: Product | ProductWithID
 ): number {
-    const { units, unit, prices, quantity = 1, price: basePrice } = product;
+    const {
+        units,
+        unit,
+        purchasePrices,
+        quantity = 1,
+        price: basePrice,
+    } = product;
     const selectedUnitValue = units[unit].value;
     let finalPrice = basePrice;
 
-    for (const priceInfo of Object.values(prices)) {
+    for (const priceInfo of Object.values(purchasePrices)) {
         if (
             selectedUnitValue * quantity <
             priceInfo.start * units[priceInfo.unit].value

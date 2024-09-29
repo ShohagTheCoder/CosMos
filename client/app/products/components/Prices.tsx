@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
     addPrice,
     removePrice,
-    updatePriceMax,
+    updatePriceStart,
     updatePricePrice,
     updatePriceUnit,
     updateProductField,
@@ -20,6 +20,7 @@ function Prices() {
     const product = useSelector((state: RootState) => state.product);
     const units = getUnits(product.units);
     const prices = product.prices;
+    const pricesLength = prices.length - 1;
 
     function handleUpdateProductPriceByPricesUnitValue(
         key: number,
@@ -104,18 +105,25 @@ function Prices() {
                                         )
                                     )}
                                 </select>
-                                <p>Max :</p>
-                                <NumberInputControl
-                                    value={price.max}
-                                    onChange={(max) =>
-                                        dispatch(
-                                            updatePriceMax({
-                                                key,
-                                                max,
-                                            })
-                                        )
-                                    }
-                                />
+                                {key == 0 ? (
+                                    ""
+                                ) : (
+                                    <>
+                                        <p>Start :</p>
+                                        <NumberInputControl
+                                            value={price.start}
+                                            onChange={(start) =>
+                                                dispatch(
+                                                    updatePriceStart({
+                                                        key,
+                                                        start,
+                                                    })
+                                                )
+                                            }
+                                            inputClassName="w-14"
+                                        />
+                                    </>
+                                )}
                                 <p>Price : 1 {product.saleUnitsBase} =</p>
                                 <NumberInputControl
                                     value={price.price}

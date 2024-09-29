@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Main from "./Main";
 import UnitsTab from "../../components/UnitsTab";
-import CreateProduct from "./CreateProduct";
+import CreateProduct from "./StockManagement";
 import Resources from "./Resources";
 
 function CreateProductTabs() {

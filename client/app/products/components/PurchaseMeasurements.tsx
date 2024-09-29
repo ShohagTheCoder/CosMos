@@ -89,6 +89,7 @@ function PurchaseMeasurements() {
                                             })
                                         )
                                     }
+                                    inputClassName="w-14"
                                 />
                                 <button
                                     onDoubleClick={() =>

@@ -56,9 +56,7 @@ export default class CommandHandler extends KeyboardHandler {
             let commandKey = splited[0];
             let amount = parseInt(splited[1] + e.key);
             if (commandKey.length > 0) {
-                console.log(commandKey);
                 let product = this.getProductByCommand(commandKey);
-                console.log(product);
                 if (product) {
                     this.cartManager
                         .addToCart(product)
@@ -212,6 +210,18 @@ export default class CommandHandler extends KeyboardHandler {
 
         this.longPress("PageDown", () => {
             this.handleUpdateProductPrice(-10);
+        });
+
+        // Helper function to generate an array of KeyA-KeyZ
+        const alphabetKeyCodes = Array.from(
+            { length: 26 },
+            (_, i) => `Key${String.fromCharCode(65 + i)}`
+        );
+
+        // Long presses listeners for KeyA-KeyZ
+        this.longPress(alphabetKeyCodes, (e) => {
+            this.addToCartByShortcutKey(e.key);
+            // Replace with your desired action here
         });
 
         // Group press listeners
@@ -439,7 +449,6 @@ export default class CommandHandler extends KeyboardHandler {
             }
 
             if (/^[1-9]+$/.test(this.value)) {
-                console.log("2");
                 this.addToCartByShortcutKey(this.value, parseInt(e.key));
                 return;
             }
@@ -447,7 +456,6 @@ export default class CommandHandler extends KeyboardHandler {
             if (/^[1-9][0-9]*$/.test(this.value)) {
                 let splited = this.value.split("0", 2);
                 let commandKey = splited[0];
-                console.log("1");
                 let quantity = parseInt(splited[1]);
                 this.addToCartByShortcutKey(commandKey, quantity);
                 return;

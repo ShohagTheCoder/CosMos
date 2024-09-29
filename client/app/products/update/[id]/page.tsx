@@ -8,7 +8,7 @@ import { setProduct } from "@/app/store/slices/productSlice";
 import General from "../../components/General";
 import UnitsTab from "../../components/UnitsTab";
 import Resources from "../../create/components/Resources";
-import CreateProduct from "../../create/components/CreateProduct";
+import CreateProduct from "../../create/components/StockManagement";
 import { RootState } from "@/app/store/store";
 import Tab from "@/app/elements/tab/Tab";
 import PulseLoading from "@/app/elements/loding/PulseLoading";

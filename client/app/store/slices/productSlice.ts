@@ -8,6 +8,7 @@ import savedUnits from "@/app/products/create/units";
 import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 import { getUpdatedSaleUnitsBase } from "@/app/functions/getUpdatedSaleUnitsBase";
 import updatePricesForNewBase from "@/app/functions/updatePricesForNewBase";
+import getProductUnitPurchasePrice from "@/app/functions/purchase/getProductUnitPurchasePrice";
 
 const initialState: Product = {
     SKU: "",
@@ -64,16 +65,16 @@ const productSlice = createSlice({
 
             // Ensure arrays exist before accessing index 0
             if (!state.prices.length)
-                state.prices.push({ unit: base, max: 1, price: 1 });
-            else state.prices[0] = { unit: base, max: 1, price: 1 };
+                state.prices.push({ unit: base, start: 1, price: 1 });
+            else state.prices[0] = { unit: base, start: 1, price: 1 };
 
             if (!state.measurements.length)
                 state.measurements.push({ unit: base, value: 1 });
             else state.measurements[0] = { unit: base, value: 1 };
 
             if (!state.purchasePrices.length)
-                state.purchasePrices.push({ unit: base, max: 1, price: 1 });
-            else state.purchasePrices[0] = { unit: base, max: 1, price: 1 };
+                state.purchasePrices.push({ unit: base, start: 1, price: 1 });
+            else state.purchasePrices[0] = { unit: base, start: 1, price: 1 };
 
             if (!state.purchaseMeasurements.length)
                 state.purchaseMeasurements.push({ unit: base, value: 1 });
@@ -177,6 +178,14 @@ const productSlice = createSlice({
                             state.purchaseMeasurements[index].unit = state.unit;
                         }
                     }
+
+                    if (state.displaySaleUnit == key) {
+                        state.displaySaleUnit = state.unit;
+                    }
+
+                    if (state.displayPurchaseUnit == key) {
+                        state.displayPurchaseUnit = state.unit;
+                    }
                 }
             }
         },
@@ -254,13 +263,13 @@ const productSlice = createSlice({
                 resource.count = product.units[resource.unit].value * quantity;
             }
         },
-        updatePriceMax: (
+        updatePriceStart: (
             state: Product,
-            action: PayloadAction<{ key: number; max: any }>
+            action: PayloadAction<{ key: number; start: any }>
         ) => {
-            const { key, max } = action.payload;
+            const { key, start } = action.payload;
             state.prices = state.prices.map((item, index) =>
-                index === key ? { ...item, max } : item
+                index === key ? { ...item, start } : item
             );
             state.price = Math.ceil(getProductUnitPrice(state));
         },
@@ -270,7 +279,7 @@ const productSlice = createSlice({
         ) => {
             const { key, unit } = action.payload;
             state.prices = state.prices.map((item, index) =>
-                index === key ? { ...item, unit, max: 1 } : item
+                index === key ? { ...item, unit, start: 1 } : item
             );
             state.price = Math.ceil(getProductUnitPrice(state));
         },
@@ -288,7 +297,12 @@ const productSlice = createSlice({
             state.price = Math.ceil(getProductUnitPrice(state));
         },
         addPrice: (state: Product) => {
-            state.prices.push(state.prices[state.prices.length - 1]);
+            let price = state.prices[state.prices.length - 1];
+            state.prices.push({
+                ...price,
+                start: price.start + 1,
+                price: price.price - 1,
+            });
         },
         removePrice: (state: Product, action: PayloadAction<number>) => {
             const index = action.payload;
@@ -336,26 +350,25 @@ const productSlice = createSlice({
             }
         },
         /* Purchse section */
-        updatePurchasePriceMax: (
+        updatePurchasePriceStart: (
             state: Product,
-            action: PayloadAction<{ key: number; max: any }>
+            action: PayloadAction<{ key: number; start: any }>
         ) => {
-            const { key, max } = action.payload;
+            const { key, start } = action.payload;
             state.purchasePrices = state.purchasePrices.map((item, index) =>
-                index === key ? { ...item, max } : item
+                index === key ? { ...item, start } : item
             );
-            state.price = Math.ceil(getProductUnitPrice(state));
+            state.price = Math.ceil(getProductUnitPurchasePrice(state));
         },
         updatePurchasePriceUnit: (
             state: Product,
             action: PayloadAction<{ key: number; unit: string }>
         ) => {
             const { key, unit } = action.payload;
-            console.log(action.payload);
             state.purchasePrices = state.purchasePrices.map((item, index) =>
-                index === key ? { ...item, unit, max: 1 } : item
+                index === key ? { ...item, unit, start: 1 } : item
             );
-            state.price = Math.ceil(getProductUnitPrice(state));
+            state.price = Math.ceil(getProductUnitPurchasePrice(state));
         },
         updatePurchasePricePrice: (
             state: Product,
@@ -365,12 +378,15 @@ const productSlice = createSlice({
             state.purchasePrices = state.purchasePrices.map((item, index) =>
                 index === key ? { ...item, price } : item
             );
-            state.price = Math.ceil(getProductUnitPrice(state));
+            state.price = Math.ceil(getProductUnitPurchasePrice(state));
         },
         addPurchasePrice: (state: Product) => {
-            state.purchasePrices.push(
-                state.purchasePrices[state.purchasePrices.length - 1]
-            );
+            let price = state.purchasePrices[state.purchasePrices.length - 1];
+            state.purchasePrices.push({
+                ...price,
+                start: price.start + 1,
+                price: price.price - 1,
+            });
         },
         removePurchasePrice: (
             state: Product,
@@ -452,7 +468,7 @@ const productSlice = createSlice({
 
 export const {
     updateProductField,
-    updatePurchasePriceMax,
+    updatePurchasePriceStart,
     updatePurchasePriceUnit,
     updatePurchasePricePrice,
     addDynamicUnit,
@@ -463,7 +479,7 @@ export const {
     addPurchaseMeasurement,
     toggleUnitEnable,
     selectUnits,
-    updatePriceMax,
+    updatePriceStart,
     updatePriceUnit,
     updatePricePrice,
     addPrice,

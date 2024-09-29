@@ -9,6 +9,7 @@ import AddIcon from "../icons/AddIcon";
 import CommandIcon from "../icons/CommandIcon";
 import PurchaseIcon from "../icons/PurchaseIcon";
 import SellIcon from "../icons/SellIcon";
+import TrashIcon from "../icons/TrashIcon";
 
 function Sidebar({
     active = "home",
@@ -102,6 +103,14 @@ function Sidebar({
                             className="text-center flex justify-center items-center"
                         >
                             <CommandIcon />
+                        </a>
+                    </button>
+                    <button className={getBtnStyleClass("trashes")}>
+                        <a
+                            href="/trashes"
+                            className="text-center flex justify-center items-center"
+                        >
+                            <TrashIcon />
                         </a>
                     </button>
                 </div>

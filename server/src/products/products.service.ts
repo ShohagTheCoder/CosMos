@@ -129,7 +129,7 @@ export class ProductsService {
         }
 
         // Move the product to the trash before deleting
-        await this.trashService.trashGroup([
+        await this.trashService.trash([
             { source: Product.name, data: product },
             { source: Stock.name, data: stock },
         ]);

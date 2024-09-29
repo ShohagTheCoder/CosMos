@@ -34,8 +34,8 @@ export class Price {
     @Prop()
     unit: string;
 
-    @Prop()
-    max: number;
+    @Prop({ required: true })
+    start: number;
 
     @Prop({ type: Number })
     price: number;

@@ -8,10 +8,10 @@ import {
 } from "@/app/store/slices/productSlice";
 import { RootState } from "@/app/store/store";
 import SelectInput from "@/app/elements/select/SelectInput";
-import getProductUnitpurchasePrice from "@/app/functions/purchase/getProductUnitPrice";
 import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 import getUnits from "@/app/functions/getUnits";
 import savedUnits from "../create/units";
+import getProductUnitPurchasePrice from "@/app/functions/purchase/getProductUnitPurchasePrice";
 
 export default function UnitsTab() {
     const dispatch = useDispatch();
@@ -144,7 +144,7 @@ export default function UnitsTab() {
                                 <p className="mt-2 text-gray-400">
                                     Display purchase price:{" "}
                                     <span className="font-semibold text-white">
-                                        {getProductUnitpurchasePrice({
+                                        {getProductUnitPurchasePrice({
                                             ...product,
                                             unit: product.displayPurchaseUnit!,
                                         }) *

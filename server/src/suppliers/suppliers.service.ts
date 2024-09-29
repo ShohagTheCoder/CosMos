@@ -111,7 +111,7 @@ export class SuppliersService {
             const account = await this.accountModel.findById(supplier.account);
 
             // Move the product to the trash before deleting
-            await this.trashService.trashGroup([
+            await this.trashService.trash([
                 { source: Supplier.name, data: supplier },
                 { source: Account.name, data: account },
             ]);

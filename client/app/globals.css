@@ -16,6 +16,12 @@
     }
 }
 
+@font-face {
+    font-family: "Noto Sans Bangla";
+    src: url("/fonts/NotoSansBengali-VariableFont_wdth,wght.ttf")
+        format("truetype");
+}
+
 body {
     color: rgb(var(--foreground-rgb));
     background: linear-gradient(
@@ -24,7 +30,7 @@ body {
             rgb(var(--background-end-rgb))
         )
         rgb(var(--background-start-rgb));
-    font-family: "Arial Unicode MS", Arial, sans-serif;
+    font-family: "Noto Sans Bangla", "Arial Unicode MS", sans-serif;
 }
 
 @layer utilities {

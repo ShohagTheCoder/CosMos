@@ -1,15 +1,5 @@
-import {
-    Controller,
-    Get,
-    Post,
-    Body,
-    Patch,
-    Param,
-    Delete,
-} from '@nestjs/common';
+import { Controller, Get, Param, Delete } from '@nestjs/common';
 import { TrashService } from './trash.service';
-import { CreateTrashDto } from './dto/create-trash.dto';
-import { UpdateTrashDto } from './dto/update-trash.dto';
 
 @Controller('trash')
 export class TrashController {
@@ -21,8 +11,8 @@ export class TrashController {
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.trashService.findOne(+id);
+    async findOne(@Param('id') id: string) {
+        return await this.trashService.findOne(id);
     }
 
     @Get('restore/:id')
@@ -31,7 +21,7 @@ export class TrashController {
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.trashService.remove(+id);
+    async remove(@Param('id') id: string) {
+        return await this.trashService.remove(id);
     }
 }

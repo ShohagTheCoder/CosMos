@@ -4,7 +4,7 @@ import {
     addPurchasePrice,
     removePurchasePrice,
     updateProductField,
-    updatePurchasePriceMax,
+    updatePurchasePriceStart,
     updatePurchasePricePrice,
     updatePurchasePriceUnit,
 } from "@/app/store/slices/productSlice";
@@ -104,18 +104,25 @@ function PurchasePrices() {
                                         )
                                     )}
                                 </select>{" "}
-                                <p>Max : </p>
-                                <NumberInputControl
-                                    value={price.max}
-                                    onChange={(max) =>
-                                        dispatch(
-                                            updatePurchasePriceMax({
-                                                key,
-                                                max,
-                                            })
-                                        )
-                                    }
-                                />
+                                {key == 0 ? (
+                                    ""
+                                ) : (
+                                    <>
+                                        <p>Start : </p>
+                                        <NumberInputControl
+                                            value={price.start}
+                                            onChange={(start) =>
+                                                dispatch(
+                                                    updatePurchasePriceStart({
+                                                        key,
+                                                        start,
+                                                    })
+                                                )
+                                            }
+                                            inputClassName="w-14"
+                                        />
+                                    </>
+                                )}
                                 <p>Price : 1 {product.saleUnitsBase} =</p>
                                 <NumberInputControl
                                     value={price.price}
@@ -127,6 +134,7 @@ function PurchasePrices() {
                                             })
                                         )
                                     }
+                                    inputClassName="w-[70px]"
                                 />
                                 <p>৳</p>
                                 {price.unit == product.saleUnitsBase ? (

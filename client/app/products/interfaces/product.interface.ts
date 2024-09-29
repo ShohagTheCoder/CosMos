@@ -14,7 +14,7 @@ export interface Unit {
 
 export interface Price {
     unit: string;
-    max: number;
+    start: number;
     price: number;
 }
 

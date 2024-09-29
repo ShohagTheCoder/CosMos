@@ -62,7 +62,7 @@ export default function Commands({
         command.command.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    if (!commands.length || !Object.keys(products).length) {
+    if (commands.length == 0) {
         return (
             <div className="h-svh flex justify-center items-center">
                 <PulseLoading />
@@ -81,7 +81,7 @@ export default function Commands({
             )}
 
             {/* Search Input */}
-            <div className="mb-4">
+            <div className="mb-4 flex justify-between items-center">
                 <input
                     type="text"
                     value={searchTerm}
@@ -89,6 +89,12 @@ export default function Commands({
                     placeholder="Search command..."
                     className="p-2 border border-gray-500 rounded bg-gray-800 w-full md:w-1/2 text-white xl:w-1/4 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+                <a
+                    href="/commands/generate"
+                    className="py-3 px-4 bg-green-700 rounded-full"
+                >
+                    Generate +
+                </a>
             </div>
             {/* Command Rows */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">

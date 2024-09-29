@@ -18,7 +18,7 @@ export default function ProductUpdateShortcut({
     const product = useSelector((state: RootState) => state.product);
 
     async function handleSave() {
-        const update = Object.entries(product).reduce(
+        let update = Object.entries(product).reduce(
             (acc: any, [key, value]) => {
                 if (value !== product.product[key] && key !== "product") {
                     acc[key] = value;
