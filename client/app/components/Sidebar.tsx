@@ -24,7 +24,7 @@ function Sidebar({
     // }, []);
 
     function getBtnStyleClass(value: string) {
-        return `h-[40px] w-[40px] hover:scale-125 transition-transform rounded-full ${
+        return `h-[30px] w-[30px] hover:scale-125 transition-transform rounded-full ${
             active == value ? "sidebar-item-active" : ""
         }`;
     }
@@ -32,7 +32,7 @@ function Sidebar({
     return (
         <div className="bg-gray-300 dark:bg-gray-900 fixed text-black dark:text-white start-0 top-0 w-[80px] h-screen border-r-2 border-dashed border-slate-600 z-[1000]">
             <div className="h-full flex flex-col justify-between items-center py-6">
-                <div className="flex flex-col justify-center items-center gap-5">
+                <div className="flex flex-col justify-center items-center gap-6">
                     <button className={getBtnStyleClass("home")}>
                         <a
                             href={"/"}
@@ -79,6 +79,22 @@ function Sidebar({
                             className="text-center flex justify-center items-center"
                         >
                             <AddIcon />
+                        </a>
+                    </button>
+                    <button className={getBtnStyleClass("categories")}>
+                        <a
+                            href={"/categories"}
+                            className="text-center flex justify-center items-center"
+                        >
+                            <ProductsIcon />
+                        </a>
+                    </button>
+                    <button className={getBtnStyleClass("brands")}>
+                        <a
+                            href={"/brands"}
+                            className="text-center flex justify-center items-center"
+                        >
+                            <ProductsIcon />
                         </a>
                     </button>
                     <button className={getBtnStyleClass("customers")}>

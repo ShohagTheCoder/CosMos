@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import Units from "./Units";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectUnits, updateUnit } from "@/app/store/slices/productSlice";
+import { updateUnit } from "@/app/store/slices/productSlice";
 import { RootState } from "@/app/store/store";
-import { units } from "../../create/units";
 import { Unit } from "../../interfaces/product.interface";
+import defaultUnits from "../../common/defaultUnits";
+import Units from "./Units";
 
-function UnitsTab() {
+export default function UnitsTab() {
     const dispatch = useDispatch();
     let base;
     const product = useSelector((state: RootState) => state.product);
@@ -29,19 +29,19 @@ function UnitsTab() {
                         base == "weight" ? "active" : ""
                     }`}
                 >
-                    <Units data={units.weight} />
+                    <Units data={defaultUnits.weight} />
                 </div>
                 <div
                     className={`tab-content ${base == "pices" ? "active" : ""}`}
                 >
-                    <Units data={units.pices} />
+                    <Units data={defaultUnits.pices} />
                 </div>
                 <div
                     className={`tab-content ${
                         base == "volume" ? "active" : ""
                     }`}
                 >
-                    <Units data={units.volume} />
+                    <Units data={defaultUnits.volume} />
                 </div>
             </div>
             {base != "" ? (
@@ -53,7 +53,7 @@ function UnitsTab() {
                         Default Unit
                     </label>
                     <select
-                        className="h-[40px] p-1 bg-black text-white p-2"
+                        className="h-[40px] bg-black text-white p-2"
                         value={product.unit}
                         onChange={(e) => dispatch(updateUnit(e.target.value))}
                     >
@@ -72,5 +72,3 @@ function UnitsTab() {
         </div>
     );
 }
-
-export default UnitsTab;

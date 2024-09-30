@@ -60,34 +60,36 @@ export default class StateManager<T extends Record<string, any>> {
 
     set<K extends string>(key: K, value: any): this {
         const keys = key.split(".");
-        let clone = cloneDeep(this.data);
-        let obj: any = clone;
+        let clone = cloneDeep(this.data); // Clone the original data
+        let obj: any = clone; // Reference for traversal
 
-        // Traverse to the second-to-last key
-        for (let i = 0; i < keys.length - 1; i++) {
-            let k = keys[i];
-
+        // Resolve dynamic keys before starting the loop
+        const resolvedKeys = keys.map((k) => {
             if (k.startsWith("{{") && k.endsWith("}}")) {
-                const dynamicKeyName = k.slice(2, -2);
-                const dynamicKey = this.data[dynamicKeyName];
-
-                if (dynamicKey in obj) {
-                    obj = obj[dynamicKey];
-                } else {
-                    console.log(
-                        `Dynamic key is missing for "${dynamicKeyName}"`
-                    );
-                    return this;
-                }
-            } else {
-                obj = obj[k] || (typeof obj[k] === "object" ? obj[k] : {}); // Check type before creating
+                const dynamicKeyName = k.slice(2, -2); // Extract dynamic key placeholder
+                return this.data[dynamicKeyName] ?? k; // Resolve dynamic key or use the placeholder if undefined
             }
+            return k;
+        });
+
+        // Traverse to the second-to-last key using resolved keys
+        for (let i = 0; i < resolvedKeys.length - 1; i++) {
+            const k = resolvedKeys[i];
+
+            // Ensure the key path is initialized correctly without duplication
+            if (!(k in obj) || typeof obj[k] !== "object") {
+                obj[k] = {}; // Initialize only if not an object
+            }
+            obj = obj[k]; // Move to the next level in the object hierarchy
         }
 
-        // Set the value at the last key
-        let finalKey = keys[keys.length - 1];
+        // Set the value at the last key using the resolved key path
+        const finalKey = resolvedKeys[resolvedKeys.length - 1];
         obj[finalKey] = value;
+
+        // Update the main data structure
         this.data = clone;
+
         return this;
     }
 
@@ -99,7 +101,7 @@ export default class StateManager<T extends Record<string, any>> {
 
         // If the value exists and a callback is provided, call the callback with the value
         if (value !== undefined && callback) {
-            const newValue = callback(clone(value));
+            const newValue = callback(cloneDeep(value));
             if (newValue != undefined) {
                 this.set(key, newValue);
             }
@@ -302,7 +304,7 @@ export default class StateManager<T extends Record<string, any>> {
                 const lastValue = this.lastData[key];
 
                 // Check if the value has changed again after listeners have run
-                if (currentValue !== lastValue) {
+                if (!isEqual(currentValue, lastValue)) {
                     updatedFields[key as keyof T] = currentValue;
                 }
             }
@@ -311,7 +313,9 @@ export default class StateManager<T extends Record<string, any>> {
         // Dispatch updated fields if any changes were detected
         if (Object.keys(updatedFields).length > 0) {
             this.lastData = cloneDeep(this.data); // Sync `lastData` with the current state
-            this.dispatchFunction(this.reducerFunction({ ...updatedFields }));
+            this.dispatchFunction(
+                this.reducerFunction(cloneDeep(updatedFields))
+            );
         }
     }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Prices from "./Prices";
 import Measurements from "./Mesurements";
 import { useDispatch, useSelector } from "react-redux";
@@ -62,7 +62,7 @@ function Units({ data }: { data: any }) {
                         Product sale base
                     </label>
                     <select
-                        className="h-[40px] p-1 bg-black text-white p-2"
+                        className="h-[40px] bg-black text-white p-2"
                         value={product.saleUnitsBase}
                         onChange={handleChangeSaleUnitsBase}
                     >

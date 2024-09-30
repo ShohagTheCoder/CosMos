@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/store/store";
 import {
@@ -20,7 +20,7 @@ function Measurements({ units }: { units: any }) {
                     <div className="measurement bg-gray-900 p-2">
                         Unit :{" "}
                         <select
-                            className="h-[40px] p-1 bg-black text-white p-2"
+                            className="h-[40px] bg-black text-white p-2"
                             value={measurement.unit}
                             onChange={(e) =>
                                 dispatch(

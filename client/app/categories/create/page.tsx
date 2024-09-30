@@ -9,7 +9,7 @@ import React, { useState } from "react";
 function CreateCategory() {
     const [categoryName, setCategoryName] = useState("");
     const [categoryDescription, setCategoryDescription] = useState("");
-    const { notification, success, error } = useNotification();
+    const { notification, notifyError, notifySuccess } = useNotification();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -20,12 +20,12 @@ function CreateCategory() {
                 description: categoryDescription,
             });
 
-            success("Category created successfully");
+            notifySuccess("Category created successfully");
             console.log("Category created successfully:", response.data);
             // Optionally, handle successful response (e.g., redirect or show a success message)
         } catch (err: any) {
             // Show the error message using the notification hook
-            error(err, "Faild to create category");
+            notifyError(err, "Faild to create category");
             console.error("Error creating category:", e);
             // Optionally, handle error (e.g., show an error message to the user)
         }

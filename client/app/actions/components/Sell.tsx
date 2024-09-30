@@ -4,7 +4,6 @@ import { Customer, CustomerWithId } from "@/app/interfaces/customer.inerface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { CartState, initialCartState } from "@/app/store/slices/cartSlice";
 import { RootState } from "@/app/store/store";
-import apiClient from "@/app/utils/apiClient";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CustomerCard from "./components/CustomerCard";
@@ -12,7 +11,6 @@ import CartProduct from "./components/CartProduct";
 import CustomerDetails from "./components/CustomerDetails";
 import SellDetails from "./components/SellDetails";
 // eslint-disable-next-line no-unused-vars
-import SellReceipt from "@/app/components/bills/SellReceipt";
 import Notification from "@/app/elements/notification/Notification";
 import { logout } from "../functions/authHandlers";
 import ProductsCard from "./ProductsCard";
@@ -34,7 +32,6 @@ import useCartManager from "@/app/store/providers/cartProvider";
 import CommandHandler from "@/app/common/handlers/commandHandler";
 import Notifications from "@/app/elements/notification/Notifications";
 // eslint-disable-next-line no-unused-vars
-import { addNotification } from "@/app/store/slices/notificationsSlice";
 import SellPageSelector from "./components/SellPageSelector";
 import { cloneDeep } from "lodash";
 
@@ -87,6 +84,8 @@ export default function Sell({
         name: "unknown",
         value: 0,
     });
+
+    const [sellButtonLoading, setSellButtonLoading] = useState(false);
 
     const commandHandler = useRef(
         new CommandHandler(
@@ -226,17 +225,23 @@ export default function Sell({
     }, [command]);
 
     async function handleCompleteSell() {
-        try {
-            let sell = { ...cart };
-            if (!sell.customer) {
-                sell.paid = sell.totalPrice;
-                sell.due = 0;
-            }
-            await apiClient.post("/sells", sell);
-            notifySuccess("Sell created successfully");
-        } catch (e) {
-            notifyError("Faild to create sell");
-        }
+        setSellButtonLoading(true);
+        let sell = { ...cart };
+        apiCall
+            .post("/sells", sell)
+            .success((data, message) => {
+                console.log(data);
+                notifySuccess(message);
+            })
+            .error((error) => {
+                console.log(error);
+                notifyError(error);
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    setSellButtonLoading(false);
+                }, 3000);
+            });
     }
 
     function updateSetting(payload: any) {
@@ -542,26 +547,35 @@ export default function Sell({
                                     <SellDetails />
                                     <div className="flex gap-4">
                                         <button
-                                            onDoubleClick={() =>
-                                                handleCompleteSell()
-                                            }
-                                            className="w-1/2 pt-3 pb-2 border-2 border-dashed border-green-600 bg-green-900 hover:bg-green-700 text-white"
+                                            disabled={sellButtonLoading}
+                                            onDoubleClick={handleCompleteSell}
+                                            className={`w-1/2 pt-3 pb-2 border-2 border-dashed border-green-600 bg-green-900 hover:bg-green-700 text-white ${
+                                                sellButtonLoading
+                                                    ? "cursor-not-allowed"
+                                                    : "cursor-pointer"
+                                            }`}
                                         >
                                             Sell & Print
                                         </button>
                                         <button
-                                            onDoubleClick={() =>
-                                                handleCompleteSell()
-                                            }
-                                            className="w-1/3 pt-3 pb-2 border-dashed border-2 border-blue-600 bg-blue-900 hover:bg-blue-700 text-white"
+                                            disabled={sellButtonLoading}
+                                            onDoubleClick={handleCompleteSell}
+                                            className={`w-1/3 pt-3 pb-2 border-2 border-dashed border-blue-600 bg-blue-900 hover:bg-blue-700 text-white ${
+                                                sellButtonLoading
+                                                    ? "cursor-not-allowed"
+                                                    : "cursor-pointer"
+                                            }`}
                                         >
                                             Sell
                                         </button>
                                         <button
-                                            onDoubleClick={() =>
-                                                handleCompleteSell()
-                                            }
-                                            className="w-1/2 pt-3 pb-2 border-dashed border-2 border-yellow-600 bg-yellow-900 hover:bg-blue-700 text-white"
+                                            disabled={sellButtonLoading}
+                                            onDoubleClick={handleCompleteSell}
+                                            className={`w-1/2 pt-3 pb-2 border-dashed border-2 border-yellow-600 bg-yellow-900 hover:bg-blue-700 text-white ${
+                                                sellButtonLoading
+                                                    ? "cursor-not-allowed"
+                                                    : "cursor-pointer"
+                                            }`}
                                         >
                                             Pending
                                         </button>

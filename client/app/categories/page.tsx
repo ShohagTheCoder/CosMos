@@ -1,9 +1,9 @@
 import React from "react";
 
-export default function BrandsPage() {
+export default function CategoriesPage() {
     return (
         <div className="h-screen flex justify-center items-center">
-            <p>Brands page</p>
+            <p>Categories page</p>
         </div>
     );
 }

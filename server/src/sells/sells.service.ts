@@ -1,17 +1,12 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Stock } from 'src/stocks/schemas/stocks.schema';
 import { Sell, SellDocument } from './schemas/sell.schema';
 import { CreateSellDto } from './dto/create-sell.dto';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { StocksService } from 'src/stocks/stocks.service';
 import { UsersService } from 'src/users/users.service';
-import {
-    Price,
-    Product,
-    ProductDocument,
-} from 'src/products/schemas/product.schema';
+import { Product, ProductDocument } from 'src/products/schemas/product.schema';
 
 @Injectable()
 export class SellsService {
@@ -44,8 +39,6 @@ export class SellsService {
     }
 
     async create(createSellDto: CreateSellDto) {
-        // console.log(createSellDto);
-        // return;
         try {
             const shop = await this.usersService.findShop();
 
@@ -91,7 +84,11 @@ export class SellsService {
                 createdSell.dueTransaction = customerToCart._id.toString();
             }
 
-            return await createdSell.save();
+            return {
+                status: 'success',
+                data: await createdSell.save(),
+                message: 'Sell complete',
+            };
         } catch (error) {
             // Handle errors appropriately
             console.error('Error creating sell:', error);

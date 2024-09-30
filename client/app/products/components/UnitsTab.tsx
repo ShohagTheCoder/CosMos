@@ -10,7 +10,7 @@ import { RootState } from "@/app/store/store";
 import SelectInput from "@/app/elements/select/SelectInput";
 import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 import getUnits from "@/app/functions/getUnits";
-import savedUnits from "../create/units";
+import defaultUnits from "../common/defaultUnits";
 import getProductUnitPurchasePrice from "@/app/functions/purchase/getProductUnitPurchasePrice";
 
 export default function UnitsTab() {
@@ -32,7 +32,7 @@ export default function UnitsTab() {
                                 dispatch(
                                     selectUnits({
                                         base: "kg",
-                                        units: savedUnits.weight,
+                                        units: defaultUnits.weight,
                                     })
                                 )
                             }
@@ -45,7 +45,7 @@ export default function UnitsTab() {
                                 dispatch(
                                     selectUnits({
                                         base: "pcs",
-                                        units: savedUnits.pices,
+                                        units: defaultUnits.pices,
                                     })
                                 )
                             }
@@ -58,7 +58,7 @@ export default function UnitsTab() {
                                 dispatch(
                                     selectUnits({
                                         base: "ltr",
-                                        units: savedUnits.volume,
+                                        units: defaultUnits.volume,
                                     })
                                 )
                             }

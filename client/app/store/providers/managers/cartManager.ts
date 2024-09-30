@@ -4,6 +4,8 @@ import { Dispatch } from "@reduxjs/toolkit";
 import { CartState } from "../../slices/cartSlice";
 import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 import getMeasurementTo from "@/app/functions/getMeasurementTo";
+import { cloneDeep } from "lodash";
+import getUnits from "@/app/functions/getUnits";
 
 type ReducerFunction = any;
 
@@ -124,8 +126,30 @@ export class CartManager<T extends CartState> extends StateManager<T> {
         return this;
     }
 
-    changeMeasurement(to: number) {
+    changeUnit(to: number) {
         const product = this.get(`products.{{activeProduct}}`);
+        if (!product) return this;
+
+        const filteredUnits = getUnits(product.units);
+        const unitEntries = Object.entries(filteredUnits);
+
+        const currentIndex = unitEntries.findIndex(
+            ([key]) => key === product.unit
+        );
+        const newIndex =
+            (currentIndex + to + unitEntries.length) % unitEntries.length;
+
+        const [_, newUnit] = unitEntries[newIndex] || [];
+
+        if (newUnit?.unit) {
+            this.set(`products.${product._id}.unit`, newUnit.unit);
+        }
+
+        return this;
+    }
+
+    changeMeasurement(to: number) {
+        let product = this.get("products.{{activeProduct}}");
         if (product) {
             const measurement = getMeasurementTo(product, to);
             this.update(

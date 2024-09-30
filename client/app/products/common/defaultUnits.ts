@@ -6,7 +6,7 @@ interface UnitBases {
     volume: Record<string, Unit>;
 }
 
-const savedUnits: UnitBases = {
+const defaultUnits: UnitBases = {
     weight: {
         g: {
             label: "Gram",
@@ -79,4 +79,4 @@ const savedUnits: UnitBases = {
     },
 };
 
-export default savedUnits;
+export default defaultUnits;

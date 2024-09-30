@@ -18,6 +18,7 @@ const useNotification = () => {
             setNotification({ type: SUCCESS, message });
             clearAfterTimeout(timeout);
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         []
     );
 
@@ -38,6 +39,7 @@ const useNotification = () => {
             setNotification({ type: ERROR, message });
             clearAfterTimeout(timeout);
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         []
     );
 

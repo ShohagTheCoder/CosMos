@@ -195,11 +195,11 @@ export default class CommandHandler extends KeyboardHandler {
         );
 
         this.longPress("ArrowLeft", () => {
-            this.cartManager.changeMeasurement(-1).save();
+            this.cartManager.changeUnit(-1).save();
         });
 
         this.longPress("ArrowRight", () => {
-            this.cartManager.changeMeasurement(1).save();
+            this.cartManager.changeUnit(1).save();
         });
 
         // look
@@ -348,7 +348,7 @@ export default class CommandHandler extends KeyboardHandler {
                 }
                 this.cartManager.set("selectedProductIndex", newIndex).save();
             } else {
-                this.cartManager.changeMeasurement(-1);
+                this.cartManager.changeMeasurement(-1).save();
             }
         });
 
@@ -366,7 +366,7 @@ export default class CommandHandler extends KeyboardHandler {
                 }
                 this.cartManager.set("selectedProductIndex", newIndex).save();
             } else {
-                this.cartManager.changeMeasurement(1);
+                this.cartManager.changeMeasurement(1).save();
             }
         });
 

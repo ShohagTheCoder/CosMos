@@ -16,7 +16,9 @@ export interface ApiResponse<T = any> {
 
 class ApiCall {
     private axiosInstance: AxiosInstance;
-    private successCallback: (data: any) => void = () => {};
+    // eslint-disable-next-line no-unused-vars
+    private successCallback: (data: any, message: string) => void = () => {};
+    // eslint-disable-next-line no-unused-vars
     private errorCallback: (error: Error) => void = () => {};
     private finallyCallback: () => void = () => {};
 
@@ -44,7 +46,7 @@ class ApiCall {
                 throw new Error(response.data.message); // Server-side error message
             }
 
-            this.successCallback(response.data.data); // Call success callback with data
+            this.successCallback(response.data.data, response.data.message); // Call success callback with data
         } catch (error: any) {
             // Use detailed error message if available, otherwise generic
             const errorMessage =
@@ -86,12 +88,14 @@ class ApiCall {
     }
 
     // Success callback registration
-    public success(callback: (data: any) => void): this {
+    // eslint-disable-next-line no-unused-vars
+    public success(callback: (data: any, message: string) => void): this {
         this.successCallback = callback;
         return this; // Allow chaining
     }
 
     // Error callback registration
+    // eslint-disable-next-line no-unused-vars
     public error(callback: (error: Error) => void): this {
         this.errorCallback = callback;
         return this; // Allow chaining

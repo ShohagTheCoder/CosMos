@@ -4,17 +4,17 @@ import Product, {
     Unit,
 } from "@/app/products/interfaces/product.interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import savedUnits from "@/app/products/create/units";
 import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 import { getUpdatedSaleUnitsBase } from "@/app/functions/getUpdatedSaleUnitsBase";
 import updatePricesForNewBase from "@/app/functions/updatePricesForNewBase";
 import getProductUnitPurchasePrice from "@/app/functions/purchase/getProductUnitPurchasePrice";
+import defaultUnits from "@/app/products/common/defaultUnits";
 
 const initialState: Product = {
     SKU: "",
     name: "",
     description: "",
-    units: savedUnits.weight,
+    units: defaultUnits.weight,
     updatePrice: 0,
     prices: [],
     measurements: [],
