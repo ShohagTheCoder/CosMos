@@ -1,8 +1,4 @@
-import {
-    Injectable,
-    NotFoundException,
-    UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './entities/user.entity';
 import { Model } from 'mongoose';
@@ -77,6 +73,7 @@ export class UsersService {
         return user ? user.toObject() : null;
     }
 
+    // eslint-disable-next-line no-unused-vars
     update(id: number, updateUserDto: any) {
         return `This action updates a #${id} user`;
     }

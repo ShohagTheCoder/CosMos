@@ -47,6 +47,13 @@ export class SellsService {
                 return;
             }
 
+            if (Object.keys(createSellDto.products).length == 0) {
+                if (createSellDto.customer == undefined) {
+                    throw new Error('Sell is emty');
+                    return;
+                }
+            }
+
             // Update stock for each product in cart
             for (const product of Object.values(createSellDto.products)) {
                 if (product.purchaseEnable) {

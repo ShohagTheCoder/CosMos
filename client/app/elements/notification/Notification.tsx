@@ -36,7 +36,7 @@ const Notification: React.FC<NotificationProps> = ({
 
     return (
         <div
-            className={`flex items-center p-4 mb-4 border rounded-md ${style} ${className}`}
+            className={`flex items-center mt-4 p-4 border rounded-md ${style} ${className}`}
         >
             <svg
                 className="w-5 h-5 mr-3"

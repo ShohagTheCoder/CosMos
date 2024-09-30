@@ -226,9 +226,8 @@ export default function Sell({
 
     async function handleCompleteSell() {
         setSellButtonLoading(true);
-        let sell = { ...cart };
         apiCall
-            .post("/sells", sell)
+            .post("/sells", cartManager.getData())
             .success((data, message) => {
                 console.log(data);
                 notifySuccess(message);
@@ -344,7 +343,6 @@ export default function Sell({
             {/* <SellReceipt /> */}
             <div className="print:hidden">
                 <Sidebar active="sell" userId={user._id} />
-
                 <div className="ps-[94px] 2xl:ps-[150px] bg-white dark:bg-gray-950">
                     <div className="grid grid-cols-1 2xl:grid-cols-9">
                         <div className="col-span-8 me-3 lg:pe-3">

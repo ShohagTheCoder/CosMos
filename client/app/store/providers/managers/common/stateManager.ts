@@ -93,6 +93,10 @@ export default class StateManager<T extends Record<string, any>> {
         return this;
     }
 
+    getData() {
+        return cloneDeep(this.data);
+    }
+
     // Method to check if a property exists and call a callback if provided
     // eslint-disable-next-line no-unused-vars
     update(key: string, callback: (value: any) => void): this {
