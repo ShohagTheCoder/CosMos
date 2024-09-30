@@ -50,9 +50,8 @@ export default function Sell({
     commands,
     setting,
 }: SellProps) {
-    const products = useMemo(
-        () => productArrayToObject(productsArray, (item) => !item.sellEnable),
-        [productsArray]
+    const [products, setProducts] = useState(
+        productArrayToObject(productsArray, (item) => !item.sellEnable)
     );
 
     const customers = useMemo(
@@ -60,6 +59,7 @@ export default function Sell({
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [productsArray]
     );
+
     let [command, setCommand] = useState("");
     const [filteredCustomers, setFilteredCustomers] = useState(customers);
     const dispatch = useDispatch();
@@ -275,11 +275,9 @@ export default function Sell({
 
     // Add to cart with product shortcut
     function getProductByCommand(shortcut: string) {
-        console.log("Shortcut", shortcut);
         let command = commands.find(
             (_: any) => _.command.toLowerCase() == shortcut
         );
-        console.log(command);
         if (command && command.value != null) {
             let product = products[command.value];
             setCommand("");
@@ -302,26 +300,25 @@ export default function Sell({
                         .set(`products.${product._id}.prices`, data.prices)
                         .save();
 
-                    products[product._id].prices = {
-                        ...product,
-                        price: product.price + amount,
-                        ...data,
-                    };
+                    setProducts((state: Record<string, ProductWithID>) => {
+                        state[product._id].prices = data.prices;
+                        return state;
+                    });
                 })
                 .error((error) => console.log(error));
         }
     }
 
-    function handleProductUpdate(product: any) {
+    function handleProductUpdate(p: ProductWithID) {
         setProductUpdateShortcut(false);
-        products[product._id] = product;
-        if (cart.products[product._id]) {
-            cartManager
-                .set(`products.${product._id}`, {
-                    product,
-                })
-                .save();
-        }
+
+        setProducts((state: Record<string, ProductWithID>) => {
+            state[p._id] = p;
+            return p;
+        });
+
+        // Update the product in the cart manager
+        cartManager.set(`products.${p._id}.prices`, p.prices).save();
     }
 
     function handleSellPageChange(sellPageKey: string) {
