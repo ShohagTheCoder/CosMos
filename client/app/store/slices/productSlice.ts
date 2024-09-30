@@ -13,7 +13,7 @@ import defaultUnits from "@/app/products/common/defaultUnits";
 const initialState: Product = {
     SKU: "",
     name: "",
-    description: "",
+    description: "Descripton",
     units: defaultUnits.weight,
     updatePrice: 0,
     prices: [],
@@ -28,7 +28,7 @@ const initialState: Product = {
     priority: 1,
     quantity: 1,
     count: 1,
-    keywords: [],
+    keywords: ["product"],
     discount: 0,
     extraDiscount: 0,
     stockAlert: 10,

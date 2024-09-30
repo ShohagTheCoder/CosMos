@@ -1,17 +1,45 @@
 "use client";
 
+import apiCall from "@/app/common/apiCall";
 import Sidebar from "@/app/components/Sidebar";
 import { CartState } from "@/app/store/slices/cartSlice";
 import { convertStandardToBnBD } from "@/app/utils/numberFormat";
 import Link from "next/link";
+import { useState } from "react";
+
+interface SellState extends CartState {
+    _id: string;
+}
 
 export default function Sells({
-    sells,
+    sells: initialSells,
     userId,
 }: {
-    sells: CartState[];
+    sells: SellState[];
     userId: string;
 }) {
+    const [sells, setSells] = useState(initialSells);
+
+    function handleSellDelete(index: number) {
+        const sure = window.confirm(
+            "Are you sure you want to delete the product?"
+        );
+
+        if (sure) {
+            const sell = sells[index];
+
+            apiCall
+                .delete(`sells/${sell._id}`)
+                .success(() => {
+                    // Create a new array by filtering out the item to delete
+                    setSells(sells.filter((_, i) => i !== index));
+                })
+                .error((error) => {
+                    console.log(error);
+                });
+        }
+    }
+
     return (
         <div className="bg-gray-900 text-white min-h-screen py-4">
             <Sidebar userId={userId} active="sells" />
@@ -83,7 +111,12 @@ export default function Sells({
                                         >
                                             View
                                         </Link>
-                                        <button className="bg-red-600 text-white font-semibold py-1 px-3 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
+                                        <button
+                                            onDoubleClick={() =>
+                                                handleSellDelete(key)
+                                            }
+                                            className="bg-red-600 text-white font-semibold py-1 px-3 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                                        >
                                             Delete
                                         </button>
                                     </div>

@@ -54,6 +54,11 @@ export class SellsService {
                 }
             }
 
+            if (!createSellDto.customer) {
+                createSellDto.paid = createSellDto.totalPrice;
+                createSellDto.due = 0;
+            }
+
             // Update stock for each product in cart
             for (const product of Object.values(createSellDto.products)) {
                 if (product.purchaseEnable) {
@@ -107,7 +112,16 @@ export class SellsService {
         return this.sellModel.findByIdAndUpdate(id, updateSellDto);
     }
 
-    remove(id: string) {
-        return this.sellModel.findByIdAndDelete(id);
+    async remove(id: string) {
+        try {
+            await this.sellModel.findByIdAndDelete(id);
+            return {
+                status: 'success',
+                message: 'Sell deleted successfully',
+                data: null,
+            };
+        } catch (error) {
+            throw error;
+        }
     }
 }
