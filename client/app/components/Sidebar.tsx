@@ -1,6 +1,6 @@
 "use client";
 import "./style.css";
-import HomeIcon from "../icons/HomeIcon";
+import HomeIcon from "../icons/ShopIcon";
 import ProductsIcon from "../icons/ProductsIcon";
 import SellsIcon from "../icons/SellsIcon";
 import UserIcon from "../icons/UserIcon";
@@ -12,6 +12,8 @@ import PurchaseIcon from "../icons/PurchaseIcon";
 import SellIcon from "../icons/SellIcon";
 import TrashIcon from "../icons/TrashIcon";
 import SidebarItem from "./SidebarItem";
+import ColsIcon from "../icons/ColsIcon";
+import ShopIcon from "../icons/ShopIcon";
 
 export default function Sidebar({
     active = "home",
@@ -25,14 +27,14 @@ export default function Sidebar({
             <div className="h-full flex flex-col justify-between items-center py-6">
                 <div className="flex flex-col justify-center items-center gap-4">
                     <SidebarItem
-                        label="Home"
-                        icon={<HomeIcon />}
+                        label="Dashboard"
+                        icon={<ColsIcon />}
                         link="/"
                         isActive={active === "home"}
                     />
                     <SidebarItem
                         label="Shop"
-                        icon={<HomeIcon />}
+                        icon={<ShopIcon />}
                         link="/shop"
                         isActive={active === "shop"}
                     />

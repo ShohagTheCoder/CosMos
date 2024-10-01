@@ -21,7 +21,9 @@ export default class KeyboardHandler {
     private keyUpCommonCallback?: KeyEventCallback;
 
     constructor() {
-        window.addEventListener("focus", this.resetActiveKeys.bind(this));
+        if (typeof window !== "undefined") {
+            window.addEventListener("focus", this.resetActiveKeys.bind(this));
+        }
     }
 
     public setKeyDownCommonCallback(callback: KeyEventCallback) {

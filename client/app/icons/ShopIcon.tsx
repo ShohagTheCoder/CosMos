@@ -6,7 +6,7 @@ interface IconProps {
     fill?: string;
 }
 
-const HomeIcon: React.FC<IconProps> = ({
+const ShopIcon: React.FC<IconProps> = ({
     width = "24",
     height = "24",
     fill = "currentColor",
@@ -26,4 +26,4 @@ const HomeIcon: React.FC<IconProps> = ({
     );
 };
 
-export default HomeIcon;
+export default ShopIcon;

@@ -292,7 +292,7 @@ function CartProduct({
                                                         />
                                                     </td>
                                                     <td className="pe-3 text-lg text-end">
-                                                        {product.subTotal}৳
+                                                        {product.subTotal} ৳
                                                     </td>
                                                 </tr>
                                             </tbody>

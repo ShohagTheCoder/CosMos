@@ -95,7 +95,7 @@ export default function Sell({
             handleUpdateProductPrice,
             handleCompleteSell,
             setCommandCounter,
-            setProductUpdateShortcut,
+            handleProductUpdateShortcut,
             handleSellPageChange
         )
     ).current;
@@ -253,21 +253,22 @@ export default function Sell({
             .error((error) => console.log(error));
     }
 
-    function handleProductUpdateShortcut(productId: string | undefined) {
-        let product: ProductWithID | undefined = undefined;
+    function handleProductUpdateShortcut(
+        productId: string | undefined = undefined
+    ) {
+        let product: ProductWithID | undefined;
         if (productId) {
             product = products[productId];
         } else {
             if (command.length >= 2) {
                 product =
                     Object.values(filteredProducts)[cart.selectedProductIndex];
-            } else if (cart.activeProduct) {
-                product = products[cart.activeProduct];
+            } else if (cartManager.get("activeProduct")) {
+                product = products[cartManager.get("activeProduct")];
             }
         }
 
         if (product) {
-            product = { ...product, product };
             dispatch(setProduct(product));
             setProductUpdateShortcut(true);
         }

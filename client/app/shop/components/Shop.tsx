@@ -100,7 +100,12 @@ export default function Shop({ shop: initialShop, sells: initialSells }: any) {
                                 <p className="text-gray-400 font-medium">
                                     Sells:{" "}
                                     <span className="font-semibold">
-                                        {account.balance} ৳
+                                        {sells.reduce(
+                                            (acc: number, sell: any) =>
+                                                acc + sell.totalPrice,
+                                            0
+                                        )}{" "}
+                                        ৳
                                     </span>
                                 </p>
                             </div>

@@ -1,5 +1,5 @@
 import "./style.css";
-import HomeIcon from "../icons/HomeIcon";
+import HomeIcon from "../icons/ShopIcon";
 import ProductsIcon from "../icons/ProductsIcon";
 import SellsIcon from "../icons/SellsIcon";
 import UserIcon from "../icons/UserIcon";

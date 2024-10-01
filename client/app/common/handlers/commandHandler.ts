@@ -12,7 +12,7 @@ export default class CommandHandler extends KeyboardHandler {
     private handleUpdateProductPrice: any;
     private setCommandCounter: any;
     private handleCompleteSell: any;
-    private setProductUpdateShortcut: any;
+    private handleProductUpdateShortcut: any;
     private handleSellPageChange: any;
     private getProductByCommand: (
         // eslint-disable-next-line no-unused-vars
@@ -27,7 +27,7 @@ export default class CommandHandler extends KeyboardHandler {
         handleUpdateProductPrice: any,
         handleCompleteSell: any,
         setCommandCounter: any,
-        setProductUpdateShortcut: any,
+        handleProductUpdateShortcut: any,
         handleSellPageChange: any
     ) {
         super();
@@ -37,7 +37,7 @@ export default class CommandHandler extends KeyboardHandler {
         this.setCommandCounter = setCommandCounter;
         this.handleUpdateProductPrice = handleUpdateProductPrice;
         this.getProductByCommand = getProductByCommand;
-        this.setProductUpdateShortcut = setProductUpdateShortcut;
+        this.handleProductUpdateShortcut = handleProductUpdateShortcut;
         this.handleSellPageChange = handleSellPageChange;
         // Call setup commands
         this.setupCommands();
@@ -456,7 +456,12 @@ export default class CommandHandler extends KeyboardHandler {
             if (/^[1-9][0-9]*$/.test(this.value)) {
                 let splited = this.value.split("0", 2);
                 let commandKey = splited[0];
-                let quantity = parseInt(splited[1]);
+                let quantity;
+                if (this.value.endsWith("0")) {
+                    quantity = parseInt(splited[1] + "0");
+                } else {
+                    quantity = parseInt(splited[1]);
+                }
                 this.addToCartByShortcutKey(commandKey, quantity);
                 return;
             }
@@ -541,7 +546,7 @@ export default class CommandHandler extends KeyboardHandler {
         });
 
         this.listen("ControlRight", () => {
-            this.setProductUpdateShortcut(true);
+            this.handleProductUpdateShortcut();
         });
     }
 }
