@@ -132,6 +132,7 @@ export default function Sell({
 
         // Cleanup funtion to remove the evern listener
         return () => {
+            commandHandler.destroy();
             window.removeEventListener("keydown", () => {});
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps

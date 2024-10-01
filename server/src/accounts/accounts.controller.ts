@@ -8,7 +8,6 @@ import {
     Delete,
 } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
-import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 
 @Controller('accounts')
@@ -20,9 +19,13 @@ export class AccountsController {
         return this.accountsService.create(createAccountDto);
     }
 
+    @Post('cashout')
+    async cashout(@Body() cashoutDto: any) {
+        return await this.accountsService.cashout(cashoutDto);
+    }
+
     @Post('send-money')
     sendMoney(@Body() sendMoneyDto: any) {
-        console.log(sendMoneyDto);
         return this.accountsService.sendMoney(sendMoneyDto);
     }
 

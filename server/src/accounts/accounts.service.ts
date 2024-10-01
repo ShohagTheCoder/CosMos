@@ -86,6 +86,56 @@ export class AccountsService {
         }
     }
 
+    async cashout(cashoutDto: any) {
+        const { accountId, amount, note, action } = cashoutDto;
+
+        // Find the sender's account
+        const sender = await this.accountModel.findById(accountId);
+
+        if (sender) {
+            // Check if the sender has sufficient balance (considering the minimum balance)
+            if (sender.balance + sender.minimumBalance < amount) {
+                throw new Error('Insufficient balance for cashout');
+            }
+
+            // Update the sender's account balance
+            sender.balance -= amount;
+
+            // Create a new transaction for cashout
+            const transaction = new this.transactionModel();
+            transaction.sender = sender._id.toString();
+            transaction.senderName = sender.name;
+            transaction.amount = amount;
+            transaction.senderNewBalance = sender.balance;
+            transaction.action = action;
+            transaction.note = note;
+
+            // Save the transaction and update account details
+            if (await transaction.save()) {
+                // Update sender's last transaction details
+                sender.lastTransaction = transaction._id.toString();
+                sender.lastTransactionAmount = -amount;
+                sender.lastTransactionAccountName = 'Cashout'; // No specific receiver
+                sender.lastTransactionDate = transaction.date;
+                sender.lastTransactionNote = note;
+                sender.lastTransactionAction = action;
+
+                // Save the sender's updated details
+                await sender.save();
+
+                return {
+                    status: 'success',
+                    data: transaction,
+                    message: 'Cashout successful',
+                };
+            } else {
+                throw new Error('Failed to record cashout transaction');
+            }
+        } else {
+            throw new Error('Sender account not found');
+        }
+    }
+
     findAll() {
         return `This action returns all accounts`;
     }

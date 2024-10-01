@@ -31,6 +31,12 @@ export default function Sidebar({
                         isActive={active === "home"}
                     />
                     <SidebarItem
+                        label="Shop"
+                        icon={<HomeIcon />}
+                        link="/shop"
+                        isActive={active === "shop"}
+                    />
+                    <SidebarItem
                         label="Sells"
                         icon={<SellIcon />}
                         link="/actions/sell"

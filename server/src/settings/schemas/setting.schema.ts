@@ -1,13 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { User } from 'src/users/entities/user.entity';
+import { User } from 'src/users/schemas/user.schema';
 
 @Schema({ timestamps: true }) // Automatically handles createdAt and updatedAt
 export class Setting extends Document {
     @Prop({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: User.name,
+        ref: 'User',
     })
     user: string;
 

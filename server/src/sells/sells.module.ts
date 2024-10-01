@@ -12,9 +12,8 @@ import {
 } from 'src/transactions/schemas/transaction.schema';
 import { Product, ProductSchema } from 'src/products/schemas/product.schema';
 import { StocksService } from 'src/stocks/stocks.service';
-import { User } from 'src/users/entities/user.entity';
 import { Setting, SettingSchema } from 'src/settings/schemas/setting.schema';
-import { UserSchema } from 'src/users/schemas/user.schema';
+import { User, UserSchema } from 'src/users/schemas/user.schema';
 import { UsersService } from 'src/users/users.service';
 
 @Module({

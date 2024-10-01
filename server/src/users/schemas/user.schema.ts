@@ -21,10 +21,10 @@ export class User extends Document {
     @Prop()
     salary: number;
 
-    @Prop()
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Account' }) // Use 'Account' directly
     account: string;
 
-    @Prop()
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Setting' }) // Use 'Setting' directly
     setting: string;
 }
 

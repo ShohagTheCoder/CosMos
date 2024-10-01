@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { Product } from 'src/products/schemas/product.schema';
 import { Supplier } from 'src/suppliers/schemas/supplier.schema';
-import { User } from 'src/users/entities/user.entity';
+import { User } from 'src/users/schemas/user.schema';
 
 @Schema()
 export class Purchase extends Document {

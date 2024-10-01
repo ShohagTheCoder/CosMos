@@ -1,8 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from './entities/user.entity';
 import { Model } from 'mongoose';
-import { UserDocument } from './schemas/user.schema';
+import { User, UserDocument } from './schemas/user.schema';
 import { Account, AccountDocument } from 'src/accounts/schemas/account.schema';
 import { Setting, SettingDocument } from 'src/settings/schemas/setting.schema';
 
@@ -50,7 +49,10 @@ export class UsersService {
     }
 
     async findShop() {
-        return await this.userModel.findOne({ role: 'shop' });
+        return await this.userModel
+            .findOne({ role: 'shop' })
+            .populate([{ path: 'account' }, { path: 'setting' }]) // Array of objects
+            .exec();
     }
 
     async findOne(id: string) {

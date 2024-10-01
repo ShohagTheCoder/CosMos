@@ -1,22 +1,42 @@
 "use client";
-import Sidebar from "@/app/components/Sidebar";
+import Cashout from "@/app/components/Cashout";
 import TansferMoney from "@/app/components/TansferMoney";
 import CustomersIcon from "@/app/icons/CustomersIcon";
+import UserIcon from "@/app/icons/UserIcon";
 import React, { useState } from "react";
 
-export default function User({
-    user = { name: "unknown" },
-    account = { balance: 0 },
-    sells = [],
-}: any) {
+export default function Shop({ shop: initialShop, sells: initialSells }: any) {
+    const [shop, setShop] = useState(initialShop);
+    const [sells, setSells] = useState(initialSells);
+    const [account, setAccount] = useState(shop.account);
     const [tansferMoneyPopup, setTansferMoneyPopup] = useState(false);
+    const [cashoutPopup, setCashoutPopup] = useState(false);
 
     function handleTansferMoney(data: any) {
         setTansferMoneyPopup(false);
     }
 
+    function handleCashout(data: any) {
+        // Update the account balance in the state
+        const updatedAccount = {
+            ...account,
+            balance: account.balance - data.amount,
+        };
+        setAccount(updatedAccount);
+
+        // Update the shop state with the new account balance
+        setShop((prevShop: any) => ({
+            ...prevShop,
+            account: updatedAccount,
+        }));
+
+        setTimeout(() => {
+            setCashoutPopup(false);
+        }, 3000);
+    }
+
     return (
-        <div className="bg-gray-900 text-gray-100 min-h-screen py-6">
+        <main className="bg-gray-900 text-gray-100 min-h-screen py-6">
             {tansferMoneyPopup && (
                 <TansferMoney
                     account={account}
@@ -24,7 +44,14 @@ export default function User({
                     handleClose={() => setTansferMoneyPopup(false)}
                 />
             )}
-            <Sidebar active="user" userId={user._id} />
+            {cashoutPopup && (
+                <Cashout
+                    account={shop.account}
+                    callback={handleCashout}
+                    handleClose={() => setCashoutPopup(!cashoutPopup)}
+                />
+            )}
+
             <div className="container max-w-3xl mx-auto px-4">
                 {/* Profile and Account Info */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 py-6">
@@ -32,15 +59,17 @@ export default function User({
                     <div className="md:col-span-2 bg-gray-800 shadow-lg rounded-lg p-6">
                         <div className="flex items-center space-x-6">
                             <img
-                                src="/images/users/user.jpg"
+                                src={`/images/users/${
+                                    shop.image || "user.jpg"
+                                }`}
                                 alt="Profile"
                                 className="h-20 w-20 rounded-full object-cover"
                             />
                             <div>
                                 <h2 className="text-2xl font-semibold">
-                                    {user.name}
+                                    Shop Owner
                                 </h2>
-                                <p className="text-gray-400">Details</p>
+                                <p className="text-gray-400">Owner Details</p>
                             </div>
                         </div>
                     </div>
@@ -49,17 +78,17 @@ export default function User({
                     <div className="md:col-span-2 bg-gray-800 shadow-lg rounded-lg p-6">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <p className="text-gray-400 font-medium text-xl">
+                                <p className="text-gray-400 font-medium">
                                     {account.balance >= 0 ? (
                                         <>
-                                            Balance :{" "}
+                                            Balance:{" "}
                                             <span className="text-green-400 font-semibold">
                                                 {account.balance} ৳
                                             </span>
                                         </>
                                     ) : (
                                         <>
-                                            Due :{" "}
+                                            Due:{" "}
                                             <span className="text-red-400 font-semibold">
                                                 {Math.abs(account.balance)} ৳
                                             </span>
@@ -67,12 +96,26 @@ export default function User({
                                     )}
                                 </p>
                             </div>
-                            <div className="col-span-2">
+                            <div>
+                                <p className="text-gray-400 font-medium">
+                                    Sells:{" "}
+                                    <span className="font-semibold">
+                                        {account.balance} ৳
+                                    </span>
+                                </p>
+                            </div>
+                            <div className="col-span-2 flex gap-3">
                                 <button
                                     onClick={() => setTansferMoneyPopup(true)}
                                     className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium transition duration-300"
                                 >
                                     Send Money
+                                </button>
+                                <button
+                                    onClick={() => setCashoutPopup(true)}
+                                    className="w-full py-2 px-4 bg-blue-800 hover:bg-blue-700 text-white rounded-md font-medium transition duration-300"
+                                >
+                                    Cash out
                                 </button>
                             </div>
                         </div>
@@ -90,12 +133,17 @@ export default function User({
                                 key={sell._id}
                                 className="bg-gray-800 p-6 rounded-lg shadow-lg"
                             >
-                                <p className="text-lg font-semibold text-gray-100 mb-2 flex gap-3">
-                                    <CustomersIcon />
-                                    {sell.customer
-                                        ? sell.customer.name
-                                        : "Unknown"}
-                                </p>
+                                <div className="flex justify-between">
+                                    <p className="text-lg font-semibold text-gray-100 mb-2 flex gap-3">
+                                        <UserIcon /> {sell.user.name}
+                                    </p>
+                                    <p className="text-lg font-semibold text-gray-100 mb-2 flex gap-3">
+                                        <CustomersIcon />
+                                        {sell.customer
+                                            ? sell.customer.name
+                                            : "Unknown"}
+                                    </p>
+                                </div>
                                 <div className="my-2 flex gap-3 justify-between bg-gray-900 py-2 px-3">
                                     <p>Paid : {sell.paid} ৳</p>
                                     <p>Due : {sell.due} ৳</p>
@@ -141,6 +189,6 @@ export default function User({
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }

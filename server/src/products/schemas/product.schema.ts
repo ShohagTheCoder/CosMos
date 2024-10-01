@@ -1,8 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { Stock } from '../../stocks/schemas/stocks.schema';
-import { Brand } from 'src/brands/schemas/brand.schema';
-import { Category } from 'src/categories/schemas/category.schema';
 
 // Define nested schemas
 @Schema()
@@ -115,10 +112,10 @@ export class Product extends Document {
     @Prop({ required: true })
     unit: string;
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Brand.name })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Brand' })
     brand: string;
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Category.name })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Category' })
     category: string;
 
     @Prop()
@@ -173,7 +170,7 @@ export class Product extends Document {
     @Prop({ default: 1 })
     priority: number;
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Stock.name })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Stock' })
     stock: string;
 
     @Prop()

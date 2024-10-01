@@ -3,40 +3,40 @@ import { Document } from 'mongoose';
 
 @Schema()
 export class Transaction extends Document {
-    @Prop()
+    @Prop({ default: '' })
     sender: string;
 
-    @Prop()
+    @Prop({ default: 'Anonymous Sender' })
     senderName: string;
 
-    @Prop()
+    @Prop({ default: '' })
     receiver: string;
 
-    @Prop()
+    @Prop({ default: 'Anonymous Receiver' })
     receiverName: string;
 
-    @Prop()
+    @Prop({ default: 0 })
     amount: number;
 
-    @Prop()
+    @Prop({ default: 0 })
     senderNewBalance: number;
 
-    @Prop()
+    @Prop({ default: 0 })
     receiverNewBalance: number;
 
-    @Prop()
+    @Prop({ default: '' })
     senderLastTransaction: string;
 
-    @Prop()
+    @Prop({ default: '' })
     receiverLastTransaction: string;
 
-    @Prop()
+    @Prop({ default: 'Cashout or Unknown' })
     action: string;
 
-    @Prop()
+    @Prop({ default: '' })
     note: string;
 
-    @Prop()
+    @Prop({ default: Date.now })
     date: Date;
 }
 

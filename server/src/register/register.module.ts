@@ -3,8 +3,7 @@ import { RegisterService } from './register.service';
 import { RegisterController } from './register.controller';
 import { UsersService } from 'src/users/users.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User } from 'src/users/entities/user.entity';
-import { UserSchema } from 'src/users/schemas/user.schema';
+import { User, UserSchema } from 'src/users/schemas/user.schema';
 import { Account, AccountSchema } from 'src/accounts/schemas/account.schema';
 import { Setting, SettingSchema } from 'src/settings/schemas/setting.schema';
 

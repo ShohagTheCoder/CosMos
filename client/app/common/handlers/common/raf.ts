@@ -1,49 +1,63 @@
 import { KeyboardEvent } from "react";
 
+// eslint-disable-next-line no-unused-vars
 type KeyEventCallback = (e: KeyboardEvent) => void;
 
-export class KeyboardHandler {
-    private keyListeners: { [key: string]: KeyEventCallback[] } = {};
-    private groupKeyListeners: { [key: string]: KeyEventCallback[] } = {};
-    private longPressListeners: { [key: string]: KeyEventCallback[] } = {};
-    private longPressTimers: { [key: string]: NodeJS.Timeout } = {};
+export default class KeyboardHandler {
+    private keyListeners: { [code: string]: KeyEventCallback[] } = {};
+    private groupKeyListeners: { [code: string]: KeyEventCallback[] } = {};
+    private longPressListeners: { [code: string]: KeyEventCallback[] } = {};
+    private longPressTimers: { [code: string]: NodeJS.Timeout } = {};
     private longPressDuration = 500; // Default long press duration (in milliseconds)
     private activeKeys: Set<string> = new Set();
     private longPressTriggered: Set<string> = new Set(); // Track keys that triggered a long press
+    private groupPressedTriggered: Set<string> = new Set(); // Track group keys that triggered
 
     // List of keys that can be continuously pressed without being released
-    private continuableKeys: Set<string> = new Set([
-        "Backspace",
-        "Delete",
-        "ArrowLeft",
-        "ArrowRight",
-        "ArrowUp",
-        "ArrowDown",
-        // Add more keys as needed
-    ]);
+    private continuableKeys: Set<string> = new Set(["Backspace", "Space"]);
+
+    // List of keys for which to prevent default actions
+    private preventDefaultKeys: Set<string> = new Set();
+    public params: any = {};
+
+    public value: string = ""; // Store the current input value
+
+    // New callbacks to handle common key up and key down events
+    private keyDownCommonCallback?: KeyEventCallback;
+    private keyUpCommonCallback?: KeyEventCallback;
 
     constructor() {}
 
-    // Method to add a new continuable key from outside
-    public addContinuableKey(key: string) {
-        this.continuableKeys.add(key);
+    // Set common key down callback
+    public setKeyDownCommonCallback(callback: KeyEventCallback) {
+        this.keyDownCommonCallback = callback;
     }
 
-    // Listen for a single key or an array of keys
-    public listen(keys: string | string[], callback: KeyEventCallback) {
-        const keyArray = Array.isArray(keys) ? keys : [keys];
-        keyArray.forEach((key) => {
-            if (!this.keyListeners[key]) {
-                this.keyListeners[key] = [];
+    // Set common key up callback
+    public setKeyUpCommonCallback(callback: KeyEventCallback) {
+        this.keyUpCommonCallback = callback;
+    }
+
+    // Method to add a new continuable key from outside
+    public addContinuableKey(code: string) {
+        this.continuableKeys.add(code);
+    }
+
+    // Listen for a single code or an array of codes
+    public listen(codes: string | string[], callback: KeyEventCallback) {
+        const codeArray = Array.isArray(codes) ? codes : [codes];
+        codeArray.forEach((code) => {
+            if (!this.keyListeners[code]) {
+                this.keyListeners[code] = [];
             }
-            this.keyListeners[key].push(callback);
+            this.keyListeners[code].push(callback);
         });
         return this;
     }
 
-    // Group pressed keys
-    public group(keys: string[], callback: KeyEventCallback) {
-        const groupKey = keys.sort().join("+");
+    // Group pressed codes
+    public group(codes: string[], callback: KeyEventCallback) {
+        const groupKey = codes.sort().join("+");
         if (!this.groupKeyListeners[groupKey]) {
             this.groupKeyListeners[groupKey] = [];
         }
@@ -53,100 +67,132 @@ export class KeyboardHandler {
 
     // Long press support with dynamic duration
     public longPress(
-        key: string,
+        codes: string | string[], // Accept a single code or an array of codes
         callback: KeyEventCallback,
         duration: number = this.longPressDuration
     ) {
-        if (!this.longPressListeners[key]) {
-            this.longPressListeners[key] = [];
-        }
-        this.longPressListeners[key].push(callback);
+        const codeArray = Array.isArray(codes) ? codes : [codes];
+        codeArray.forEach((code) => {
+            if (!this.longPressListeners[code]) {
+                this.longPressListeners[code] = [];
+            }
+            this.longPressListeners[code].push(callback);
+        });
         this.longPressDuration = duration; // Store the duration for each listener
         return this;
     }
 
-    // Handle keydown event
+    // Set keys to prevent default actions
+    public setPreventDefaultKeys(keys: string[]) {
+        this.preventDefaultKeys = new Set(keys);
+    }
+
+    // Handle key down event
     public handleKeyDown(e: KeyboardEvent) {
-        const key = e.key;
+        const code = e.code;
+        const inputElement = e.target as HTMLInputElement;
+        this.value = inputElement.value;
 
-        // Prevent default behavior for non-continuable keys
-        if (!this.continuableKeys.has(key) && this.activeKeys.has(key)) {
-            e.preventDefault(); // Prevent default action for non-continuable keys
-            return; // Skip further processing for this key
+        // Prevent default behavior for non-continuable codes
+        if (!this.continuableKeys.has(code) && this.activeKeys.has(code)) {
+            e.preventDefault(); // Prevent default action for non-continuable codes
+            return; // Skip further processing for this code
         }
 
-        // Check if the key is in long press and already triggered
-        if (this.longPressTriggered.has(key)) {
-            e.preventDefault(); // Prevent the default action if the key is already triggered
-            return; // Skip further processing for this key
+        // Prevent default behavior for specified keys
+        if (this.preventDefaultKeys.has(code)) {
+            e.preventDefault(); // Prevent default action for specified keys
         }
 
-        this.activeKeys.add(key); // Add the key to active keys
-        this.longPressTriggered.delete(key); // Reset the long press flag for the current key
+        this.activeKeys.add(code); // Add the code to active keys
 
         // Start long press detection
         this.handleLongPressStart(e);
 
-        // Handle individual key press events
-        this.handleKeyPress(e, this.keyListeners);
-
-        // After handling individual key press, check for group presses
+        // After handling individual code press, check for group presses
         this.handleGroupPress(e);
+
+        // Call the common key down callback if provided
+        if (this.keyDownCommonCallback && !e.defaultPrevented) {
+            this.keyDownCommonCallback(e);
+        }
     }
 
-    // Handle keyup event
+    public isPrintableKey(e: KeyboardEvent): boolean {
+        // Check if the key is a single character (which indicates it's printable)
+        return e.key.length === 1 && !e.ctrlKey && !e.metaKey;
+    }
+
+    // Handle key up event
     public handleKeyUp(e: KeyboardEvent) {
-        const key = e.key;
+        const code = e.code;
 
         // Clear any active long press timers and reset state
-        if (this.longPressTimers[key]) {
-            clearTimeout(this.longPressTimers[key]);
-            delete this.longPressTimers[key];
+        if (this.longPressTimers[code]) {
+            clearTimeout(this.longPressTimers[code]);
+            delete this.longPressTimers[code];
         }
 
-        // Remove the key from active keys and reset long press flags
-        this.activeKeys.delete(key);
-        this.longPressTriggered.delete(key); // Clear the long press trigger on key release
+        // Remove the code from active keys and reset long press flags
+        this.activeKeys.delete(code);
 
-        // After releasing the key, check for group presses again
-        this.handleGroupPress(e); // Ensure to call this to capture released keys
+        // Check if the code triggered a long press
+        if (this.longPressTriggered.has(code)) {
+            this.longPressTriggered.delete(code); // Clear the long press trigger on code release
+            return;
+        }
+
+        if (this.groupPressedTriggered.has(code)) {
+            this.groupPressedTriggered.delete(code); // Clear the group trigger on code release
+            return;
+        }
+
+        this.handleKeyPress(e, this.keyListeners);
+        // Call the common key up callback if provided and not prevented
+        if (this.keyUpCommonCallback && !e.defaultPrevented) {
+            this.keyUpCommonCallback(e);
+        }
     }
 
     // Start a timer for long press detection
     private handleLongPressStart(e: KeyboardEvent) {
-        const key = e.key;
-        const listeners = this.longPressListeners[key];
-        if (listeners && !this.longPressTriggered.has(key)) {
-            // Prevent multiple triggers without key up
-            this.longPressTimers[key] = setTimeout(() => {
-                this.longPressTriggered.add(key); // Mark this key as having triggered a long press
+        const code = e.code;
+        const listeners = this.longPressListeners[code];
+        if (listeners && !this.longPressTriggered.has(code)) {
+            // Prevent multiple triggers without code up
+            this.longPressTimers[code] = setTimeout(() => {
+                this.longPressTriggered.add(code); // Mark this code as having triggered a long press
                 e.preventDefault(); // Prevent default action for long press
                 listeners.forEach((callback) => callback(e)); // Call each registered long press callback
             }, this.longPressDuration);
         }
     }
 
-    // Handle group pressed keys
+    // Handle group pressed codes
     private handleGroupPress(e: KeyboardEvent) {
-        const pressedKeys = Array.from(this.activeKeys).sort().join("+");
-        if (this.groupKeyListeners[pressedKeys]) {
-            this.groupKeyListeners[pressedKeys].forEach(
-                (callback) => callback(e) // Call each registered group key callback
+        const pressedCodes = Array.from(this.activeKeys).sort().join("+");
+        if (this.groupKeyListeners[pressedCodes]) {
+            e.preventDefault();
+            this.activeKeys.forEach((code) => {
+                this.groupPressedTriggered.add(code); // Mark group code as triggered
+            });
+            this.groupKeyListeners[pressedCodes].forEach(
+                (callback) => callback(e) // Call each registered group code callback
             );
         }
     }
 
-    // Handle individual key press events
+    // Handle individual code press events
     private handleKeyPress(
         e: KeyboardEvent,
-        listeners: { [key: string]: KeyEventCallback[] }
+        listeners: { [code: string]: KeyEventCallback[] }
     ) {
-        const key = e.key;
-        // Skip calling regular listeners if the long press was triggered for this key
-        if (this.longPressTriggered.has(key)) return;
+        const code = e.code;
+        // Skip calling regular listeners if the long press was triggered for this code
+        if (this.longPressTriggered.has(code)) return;
 
-        if (listeners[key]) {
-            listeners[key].forEach((callback) => callback(e)); // Call each registered key callback
+        if (listeners[code]) {
+            listeners[code].forEach((callback) => callback(e)); // Call each registered code callback
         }
     }
 
@@ -157,36 +203,6 @@ export class KeyboardHandler {
         this.longPressListeners = {};
         this.activeKeys.clear();
         this.longPressTriggered.clear();
-    }
-}
-
-// Define a child class for command-specific behavior
-export class CommandHandler extends KeyboardHandler {
-    constructor() {
-        super();
-        this.setupCommands();
-    }
-
-    private setupCommands() {
-        // Define specific key combinations or long press commands here
-        this.listen("Enter", () => {
-            console.log("Enter key pressed");
-        });
-
-        this.listen("x", () => {
-            console.log("Key 'x' pressed");
-        });
-
-        this.group(["c", "x"], () => {
-            console.log("Group key (c + x) pressed");
-        });
-
-        this.listen("c", () => {
-            console.log("Key 'c' pressed");
-        });
-
-        this.longPress("c", () => {
-            console.log("Key 'c' long-pressed");
-        });
+        this.groupPressedTriggered.clear(); // Clear group pressed tracking
     }
 }
