@@ -4,6 +4,7 @@ import { CartState } from "@/app/store/slices/cartSlice";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { KeyboardEvent } from "react";
 import apiClient from "@/app/utils/apiClient";
+import splitIntoParts from "@/app/functions/splitIntoParts";
 
 // Define a child class for command-specific behavior
 export default class CommandHandler extends KeyboardHandler {
@@ -52,7 +53,8 @@ export default class CommandHandler extends KeyboardHandler {
         }
 
         if (/^[0-9]*00[0-9]*$/.test(this.value)) {
-            let splited = this.value.split("00", 2);
+            let splited = splitIntoParts(this.value, "00", 2);
+            // let splited = this.value.split("00", 2);
             let commandKey = splited[0];
             let amount = parseInt(splited[1] + e.key);
             if (commandKey.length > 0) {
@@ -87,7 +89,8 @@ export default class CommandHandler extends KeyboardHandler {
         }
 
         if (/^[0-9]+$/.test(this.value)) {
-            let splited = this.value.split("0", 2);
+            let splited = splitIntoParts(this.value, "0", 2);
+            // let splited = this.value.split("0", 2);
             let commandKey = splited[0];
             let quantity = parseInt(splited[1] + e.key);
             let product = this.getProductByCommand(commandKey);
@@ -421,8 +424,11 @@ export default class CommandHandler extends KeyboardHandler {
 
         // Enter and NumpadEnter
         this.listen(["NumpadEnter", "Enter"], (e) => {
-            if (/^[0-9]*00[0-9]*$/.test(this.value)) {
-                let splited = this.value.split("00", 2);
+            console.log(this.value);
+            if (/^\d*00[1-9]\d*[^0]\d*$/.test(this.value)) {
+                console.log("gd");
+                let splited = splitIntoParts(this.value, "00", 2);
+                // let splited = this.value.split("00", 2);
                 let commandKey = splited[0];
                 let amount = parseInt(splited[1]);
                 if (commandKey.length > 0) {
@@ -454,14 +460,11 @@ export default class CommandHandler extends KeyboardHandler {
             }
 
             if (/^[1-9][0-9]*$/.test(this.value)) {
-                let splited = this.value.split("0", 2);
-                let commandKey = splited[0];
-                let quantity;
-                if (this.value.endsWith("0")) {
-                    quantity = parseInt(splited[1] + "0");
-                } else {
-                    quantity = parseInt(splited[1]);
-                }
+                const splited = splitIntoParts(this.value, "0", 2);
+                console.log(splited);
+                // let splited = this.value.split("0", 2);
+                const commandKey = splited[0];
+                const quantity = parseInt(splited[1]);
                 this.addToCartByShortcutKey(commandKey, quantity);
                 return;
             }

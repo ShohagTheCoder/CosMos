@@ -235,7 +235,7 @@ function CartProduct({
                                                                 cartManager
                                                                     .set(
                                                                         `products.${product._id}.discount`,
-                                                                        parseInt(
+                                                                        parseFloat(
                                                                             e
                                                                                 .target
                                                                                 .value
@@ -264,7 +264,10 @@ function CartProduct({
                                                     </td>
                                                     <td className="pe-3">
                                                         {(
-                                                            product.price *
+                                                            (product.price *
+                                                                product.unit
+                                                                    .value -
+                                                                product.discount) *
                                                             product.count
                                                         ).toFixed(0)}{" "}
                                                         ৳
@@ -280,7 +283,7 @@ function CartProduct({
                                                                 cartManager
                                                                     .set(
                                                                         `products.${product._id}.extraDiscount`,
-                                                                        parseInt(
+                                                                        parseFloat(
                                                                             e
                                                                                 .target
                                                                                 .value
@@ -321,7 +324,9 @@ function CartProduct({
                                                 cartManager
                                                     .set(
                                                         `products.${product._id}.quantity`,
-                                                        parseInt(e.target.value)
+                                                        parseFloat(
+                                                            e.target.value
+                                                        )
                                                     )
                                                     .save();
                                             }}
