@@ -24,9 +24,17 @@ export class AccountsController {
         return await this.accountsService.cashout(cashoutDto);
     }
 
-    @Post('send-money')
+    @Post('sendMoney')
     sendMoney(@Body() sendMoneyDto: any) {
-        return this.accountsService.sendMoney(sendMoneyDto);
+        if (this.accountsService.sendMoney(sendMoneyDto)) {
+            return {
+                status: 'success',
+                message: 'Send money successfull',
+                data: null,
+            };
+        } else {
+            throw new Error('Faild to send money');
+        }
     }
 
     @Get()

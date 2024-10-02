@@ -83,6 +83,7 @@ export class AccountsService {
             }
         } else {
             console.log('Account not found');
+            return null;
         }
     }
 
@@ -136,8 +137,8 @@ export class AccountsService {
         }
     }
 
-    findAll() {
-        return `This action returns all accounts`;
+    async findAll() {
+        return await this.accountModel.find();
     }
 
     async findOne(id: string) {

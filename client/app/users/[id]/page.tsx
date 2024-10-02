@@ -12,9 +12,17 @@ export default async function UserPage({ params: { id = "undefined" } }: any) {
         const { data: user } = await apiClient(`users/${id}`);
         const { data: account } = await apiClient(`accounts/${user.account}`);
         const { data: sells } = await apiClient(`sells/findByUser/${id}`);
+        const { data: accounts } = await apiClient(`accounts`);
 
         // Call user component
-        return <User user={user} account={account} sells={sells} />;
+        return (
+            <User
+                user={user}
+                account={account}
+                sells={sells}
+                accounts={accounts}
+            />
+        );
     } catch (error) {
         return <NoResponse />;
     }

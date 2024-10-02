@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 interface SearchableSelectInputProps {
     value: string | number;
+    // eslint-disable-next-line no-unused-vars
     onChange: (value: string | number | undefined) => void; // Accept undefined if no selection
     className?: string;
     options?: {
@@ -67,22 +68,33 @@ function SearchableSelectInput({
         };
     }, []);
 
-    // Handle pressing "Enter" key
+    // Handle pressing "Enter" key and other keys
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
+            // Handle "Enter" key: Select the first option if available
             if (filteredOptions.length > 0) {
-                // Select the first option if available
                 handleSelectOption(filteredOptions[0].value);
             } else {
-                // If no options are available, pass undefined
-                onChange(undefined);
+                onChange(undefined); // No options, pass undefined
             }
             setIsDropdownOpen(false);
         }
     };
 
+    // Handle input change and immediately check for matches
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchTerm(e.target.value);
+        const newValue = e.target.value;
+        setSearchTerm(newValue);
+
+        // Check if the new value matches any of the options
+        const matchExists = selectOptions.some(
+            (option) => option.label.toLowerCase() === newValue.toLowerCase()
+        );
+
+        // If no match exists, pass undefined to prevent unexpected selection
+        if (!matchExists) {
+            onChange(undefined);
+        }
         setIsDropdownOpen(true);
     };
 
@@ -128,7 +140,7 @@ function SearchableSelectInput({
             {/* Dropdown list */}
             {isDropdownOpen && filteredOptions.length > 0 && (
                 <ul className="absolute z-10 w-full bg-gray-800 border border-gray-600 rounded-md max-h-48 overflow-y-auto mt-1">
-                    {filteredOptions.map((option) => (
+                    {filteredOptions.map((option: any) => (
                         <li
                             key={option.value}
                             onClick={() => handleSelectOption(option.value)}

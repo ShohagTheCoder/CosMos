@@ -41,7 +41,7 @@ export default function Dashboard() {
     return (
         <main className="bg-gray-900">
             <Sidebar active="home" userId={userId} />
-            <div className="2xl:container mx-auto py-8 px-4 text-white min-h-screen ps-[100px] 2xl:ps-0">
+            <div className="container mx-auto py-8 px-4 text-white min-h-screen ps-[100px] 2xl:ps-0">
                 {/* Top Navigation Bar */}
                 <div className="flex justify-between items-center mb-8">
                     <div className="text-3xl font-bold">Dashboard</div>
@@ -68,57 +68,9 @@ export default function Dashboard() {
                 </div>
 
                 {/* Main Grid Layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    {/* Sidebar */}
-                    <aside className="lg:col-span-3 bg-gray-800 p-6 rounded-lg shadow-lg">
-                        <nav className="space-y-4">
-                            <Link
-                                href="/dashboard"
-                                className="block p-3 bg-gray-700 rounded hover:bg-gray-600 transition-all duration-200"
-                            >
-                                Dashboard Home
-                            </Link>
-                            <Link
-                                href="/actions/sell"
-                                className="block p-3 bg-gray-700 rounded hover:bg-gray-600 transition-all duration-200"
-                            >
-                                Sell
-                            </Link>
-                            <Link
-                                href="/sells"
-                                className="block p-3 bg-gray-700 rounded hover:bg-gray-600 transition-all duration-200"
-                            >
-                                Sells
-                            </Link>
-                            <Link
-                                href="/products"
-                                className="block p-3 bg-gray-700 rounded hover:bg-gray-600 transition-all duration-200"
-                            >
-                                Products
-                            </Link>
-                            <Link
-                                href="/products/create"
-                                className="block p-3 bg-gray-700 rounded hover:bg-gray-600 transition-all duration-200"
-                            >
-                                Create Product
-                            </Link>
-                            <Link
-                                href="/customers"
-                                className="block p-3 bg-gray-700 rounded hover:bg-gray-600 transition-all duration-200"
-                            >
-                                Customers
-                            </Link>
-                            <Link
-                                href="/customers/create"
-                                className="block p-3 bg-gray-700 rounded hover:bg-gray-600 transition-all duration-200"
-                            >
-                                Create Customer
-                            </Link>
-                        </nav>
-                    </aside>
-
+                <div className="cgrid grid-cols-1">
                     {/* Main Content */}
-                    <section className="lg:col-span-9 bg-gray-800 p-6 rounded-lg shadow-lg space-y-8">
+                    <section className="p-6 bg-gray-800 rounded-lg shadow-lg space-y-8">
                         <div className="flex flex-wrap">
                             <div className="w-1/3 px-4">
                                 <h1 className="text-2xl font-bold mb-6">

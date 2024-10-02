@@ -2,9 +2,11 @@ import React, { useState } from "react";
 
 interface TagsInputProps {
     value: string[];
+    // eslint-disable-next-line no-unused-vars
     onChange: (tags: string[]) => void;
     className?: string;
     options?: {
+        // eslint-disable-next-line no-unused-vars
         validate?: (tag: string) => boolean;
         label?: string;
         placeholder?: string;

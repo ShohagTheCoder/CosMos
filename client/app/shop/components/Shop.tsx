@@ -1,19 +1,26 @@
 "use client";
 import Cashout from "@/app/components/Cashout";
-import TansferMoney from "@/app/components/TansferMoney";
+import TransferMoney from "@/app/components/TransferMoney";
 import CustomersIcon from "@/app/icons/CustomersIcon";
 import UserIcon from "@/app/icons/UserIcon";
 import React, { useState } from "react";
 
-export default function Shop({ shop: initialShop, sells: initialSells }: any) {
+export default function Shop({
+    shop: initialShop,
+    sells: initialSells,
+    accounts = [],
+}: any) {
     const [shop, setShop] = useState(initialShop);
     const [sells, setSells] = useState(initialSells);
     const [account, setAccount] = useState(shop.account);
-    const [tansferMoneyPopup, setTansferMoneyPopup] = useState(false);
+    const [tansferMoneyPopup, setTransferMoneyPopup] = useState(false);
     const [cashoutPopup, setCashoutPopup] = useState(false);
 
-    function handleTansferMoney(data: any) {
-        setTansferMoneyPopup(false);
+    function handleTransferMoney(amount: any) {
+        setAccount((account: any) => ({
+            ...account,
+            balance: account.balance - amount,
+        }));
     }
 
     function handleCashout(data: any) {
@@ -38,10 +45,11 @@ export default function Shop({ shop: initialShop, sells: initialSells }: any) {
     return (
         <main className="bg-gray-900 text-gray-100 min-h-screen py-6">
             {tansferMoneyPopup && (
-                <TansferMoney
+                <TransferMoney
+                    accounts={accounts}
                     account={account}
-                    callback={handleTansferMoney}
-                    handleClose={() => setTansferMoneyPopup(false)}
+                    callback={handleTransferMoney}
+                    handleClose={() => setTransferMoneyPopup(false)}
                 />
             )}
             {cashoutPopup && (
@@ -111,7 +119,7 @@ export default function Shop({ shop: initialShop, sells: initialSells }: any) {
                             </div>
                             <div className="col-span-2 flex gap-3">
                                 <button
-                                    onClick={() => setTansferMoneyPopup(true)}
+                                    onClick={() => setTransferMoneyPopup(true)}
                                     className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium transition duration-300"
                                 >
                                     Send Money
