@@ -7,7 +7,7 @@ export default class KeyboardHandler {
     private groupKeyListeners: { [code: string]: KeyEventCallback[] } = {};
     private longPressListeners: { [code: string]: KeyEventCallback[] } = {};
     private longPressTimers: { [code: string]: NodeJS.Timeout } = {};
-    private longPressDuration = 500; // Default long press duration (in milliseconds)
+    private longPressDuration = 350; // Default long press duration (in milliseconds)
     private activeKeys: Set<string> = new Set();
     private longPressTriggered: Set<string> = new Set(); // Track keys that triggered a long press
     private groupPressedTriggered: Set<string> = new Set(); // Track group keys that triggered

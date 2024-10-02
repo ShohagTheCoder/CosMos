@@ -13,6 +13,7 @@ import ExtraDiscountIcon from "@/app/icons/ExtraDiscountIcon";
 import InfoIcon from "@/app/icons/InfoIcon";
 import apiCall from "@/app/common/apiCall";
 import useCartManager from "@/app/store/providers/cartProvider";
+import NoteIcon from "@/app/icons/NoteIcon";
 
 function CartProduct({
     setProductUpdateShortcut,
@@ -145,6 +146,13 @@ function CartProduct({
                                         : ""
                                 }`}
                             >
+                                {product.note ? (
+                                    <div className="flex gap-3">
+                                        <NoteIcon height="20" /> {product.note}
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
                                 <div className="overflow-hidden flex">
                                     {settingState.cartImage ? (
                                         <div className="w-[160px] h-auto relative">
@@ -411,36 +419,46 @@ function CartProduct({
                     return (
                         <div
                             key={p._id}
-                            className="flex gap-3 border-2 border-dashed border-gray-600 p-2 mb-2"
+                            className="border-2 border-dashed border-gray-600 p-2 mb-2"
                         >
-                            {settingState.cartImage ? (
-                                <div className="">
-                                    <img
-                                        onClick={() => {
-                                            cartManager
-                                                .set(
-                                                    "activeProduct",
-                                                    product._id
-                                                )
-                                                .save();
-                                        }}
-                                        src={`/images/products/${product.image}`}
-                                        className="h-[50px] w-[50px] object-cover"
-                                        alt={product.image}
-                                    />
+                            {product.note ? (
+                                <div className="mb-2 flex gap-3">
+                                    <NoteIcon height="20" /> {product.note}
                                 </div>
                             ) : (
                                 ""
                             )}
-                            <div className="w-full">
-                                <p>{product.name}</p>
-                                <div className="flex justify-between">
-                                    <p className="text-end">
-                                        {product.quantity} {product.unit.label}
-                                    </p>
-                                    <p className="text-end">
-                                        {product.subTotal} ৳
-                                    </p>
+                            <div className="flex gap-3">
+                                {settingState.cartImage ? (
+                                    <div className="">
+                                        <img
+                                            onClick={() => {
+                                                cartManager
+                                                    .set(
+                                                        "activeProduct",
+                                                        product._id
+                                                    )
+                                                    .save();
+                                            }}
+                                            src={`/images/products/${product.image}`}
+                                            className="h-[50px] w-[50px] object-cover"
+                                            alt={product.image}
+                                        />
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
+                                <div className="w-full">
+                                    <p>{product.name}</p>
+                                    <div className="flex justify-between">
+                                        <p className="text-end">
+                                            {product.quantity}{" "}
+                                            {product.unit.label}
+                                        </p>
+                                        <p className="text-end">
+                                            {product.subTotal} ৳
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

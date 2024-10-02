@@ -5,6 +5,7 @@ import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { KeyboardEvent } from "react";
 import apiClient from "@/app/utils/apiClient";
 import splitIntoParts from "@/app/functions/splitIntoParts";
+import { capitalize } from "lodash";
 
 // Define a child class for command-specific behavior
 export default class CommandHandler extends KeyboardHandler {
@@ -182,6 +183,7 @@ export default class CommandHandler extends KeyboardHandler {
         this.longPress(
             [
                 "Numpad0",
+                "Numpad1",
                 "Numpad2",
                 "Numpad3",
                 "Numpad4",
@@ -246,6 +248,15 @@ export default class CommandHandler extends KeyboardHandler {
         this.group(["NumpadAdd", "NumpadEnter"], () => {
             this.cartManager.changeActiveProduct(1).save();
         });
+
+        // Group press listeners
+        this.group(["Delete", "Insert"], () => {
+            this.cartManager
+                .set("customer", undefined)
+                .set("greeting", undefined)
+                .save();
+        });
+
         this.group(["Numpad2", "Numpad5"], () => {
             this.setCommand("");
             this.cartManager
@@ -424,7 +435,6 @@ export default class CommandHandler extends KeyboardHandler {
 
         // Enter and NumpadEnter
         this.listen(["NumpadEnter", "Enter"], (e) => {
-            console.log(this.value);
             if (/^\d*00[1-9]\d*[^0]\d*$/.test(this.value)) {
                 console.log("gd");
                 let splited = splitIntoParts(this.value, "00", 2);
@@ -545,6 +555,26 @@ export default class CommandHandler extends KeyboardHandler {
                     .set("products.{{activeProduct}}.discount", amount)
                     .save();
                 return;
+            }
+
+            if (/^[.\u0964][^\d]*[\p{L}]+/u.test(this.value)) {
+                if (this.cartManager.get("activeProduct")) {
+                    this.cartManager
+                        .set(
+                            "products.{{activeProduct}}.note",
+                            capitalize(this.value.slice(1).trim())
+                        )
+                        .save();
+                }
+                this.setCommand("");
+            }
+
+            if (/^,[^\d]*[\p{L}]+/u.test(this.value)) {
+                this.cartManager
+                    .set("greeting", capitalize(this.value.slice(1).trim()))
+                    .save();
+
+                this.setCommand("");
             }
         });
 

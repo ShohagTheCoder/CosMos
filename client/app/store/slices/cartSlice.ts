@@ -11,6 +11,7 @@ export interface CartState {
     due: number;
     paid: number;
     user?: any;
+    greeting: string | undefined;
     customerAccount: any;
 }
 
@@ -19,6 +20,7 @@ export const initialCartState: CartState = {
     products: {},
     user: undefined,
     customer: undefined,
+    greeting: undefined,
     totalPrice: 0,
     paid: 0,
     due: 0,

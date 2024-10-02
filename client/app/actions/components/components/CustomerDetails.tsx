@@ -39,6 +39,19 @@ function CustomerDetails() {
                 </table>
             </div>
         );
+    } else if (cart.greeting) {
+        return (
+            <div className="min-w-full bg-slate-900 border-dashed border-2 border-slate-600 mb-3">
+                <div className="p-3 grid grid-cols-2 gap-3">
+                    <div>
+                        <p>কারস্টমার</p>
+                    </div>
+                    <div>
+                        <p>{cart.greeting}</p>
+                    </div>
+                </div>
+            </div>
+        );
     }
 }
 

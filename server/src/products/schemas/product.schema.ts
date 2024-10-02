@@ -159,6 +159,9 @@ export class Product extends Document {
     displaySaleUnit: string;
 
     @Prop()
+    note: string;
+
+    @Prop()
     displayPurchaseUnit: string;
 
     @Prop({ default: 1 })
