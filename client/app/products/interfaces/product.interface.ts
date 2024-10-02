@@ -31,6 +31,7 @@ type CategoryType = string | { name: string };
 export default interface Product {
     [x: string]: any;
     _id?: string;
+    product?: any;
     SKU: string;
     name: string;
     image?: string;
@@ -76,5 +77,4 @@ export interface ProductWithID extends Product {
     displayPurchaseUnit: string;
     brand: { name: string }; // Enforce the populated form
     category: { name: string }; // Enforce the populated form
-    product?: Product;
 }

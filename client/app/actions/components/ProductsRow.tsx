@@ -53,7 +53,11 @@ function ProductsRow({
                                         {product.description}
                                     </p>
                                 </div>
-                                <p># {getStockLine(product)}</p>
+                                {product.purchaseEnable ? (
+                                    <p># {getStockLine(product)}</p>
+                                ) : (
+                                    <p>Available</p>
+                                )}
                             </div>
                             <div className="flex gap-3 min-w-[200px] mr-3 justify-between items-center py-2 px-3">
                                 <p>

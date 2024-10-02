@@ -65,10 +65,16 @@ function ProductsCard({
                                     {product.name}
                                 </h2>
 
-                                <p className="text-base mb-1">
+                                <p className="text-base">
                                     {product.description}
                                 </p>
-                                <p># {getStockLine(product)}</p>
+                                {product.purchaseEnable ? (
+                                    <p className="mt-1">
+                                        # {getStockLine(product)}
+                                    </p>
+                                ) : (
+                                    ""
+                                )}
                             </div>
                             <div className="flex flex-wrap justify-between items-center bg-gray-400 dark:bg-slate-700 py-2 px-3">
                                 <span>

@@ -53,6 +53,7 @@ export default function StockManagement({ image, setImage }: any) {
 
     async function handleUpdateProduct() {
         setDisable(true);
+
         const update = Object.entries(product).reduce(
             (acc: any, [key, value]) => {
                 if (value !== product.product[key] && key !== "product") {
@@ -82,7 +83,6 @@ export default function StockManagement({ image, setImage }: any) {
             dispatch(setProductProduct({ ...product, ...result.data }));
             setImage(null);
             notifySuccess("Product updated successfully!");
-            console.log(result.data);
         } catch (error) {
             notifyError("Failed to update product.");
             console.error(error);
@@ -96,6 +96,7 @@ export default function StockManagement({ image, setImage }: any) {
             <Notification
                 type={notification.type}
                 message={notification.message}
+                className="mb-3"
             />
             <div className="grid grid-cols-2 gap-6">
                 <NumberInput
