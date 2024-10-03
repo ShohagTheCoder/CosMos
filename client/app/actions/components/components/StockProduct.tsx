@@ -14,6 +14,7 @@ import InfoIcon from "@/app/icons/InfoIcon";
 import apiCall from "@/app/common/apiCall";
 import useStockManager from "@/app/store/providers/stockProvider";
 import NoteIcon from "@/app/icons/NoteIcon";
+import fixFloatingPoint from "@/app/functions/fixFloatingPoint";
 
 function StockProduct({
     setProductUpdateShortcut,
@@ -197,21 +198,21 @@ function StockProduct({
                                                         }
                                                     </td>
                                                     <td className="pe-3">
-                                                        {product.price.toFixed(
-                                                            0
+                                                        {fixFloatingPoint(
+                                                            product.price
                                                         )}{" "}
                                                         ৳
                                                     </td>
                                                     <td className="pe-3">%</td>
                                                     <td className="pe-3 text-center">
                                                         <p className="no-spin py-1 w-[46px] bg-gray-900 text-center outline-none">
-                                                            {product.baseDiscount.toFixed(
-                                                                0
+                                                            {fixFloatingPoint(
+                                                                product.baseDiscount
                                                             )}
                                                         </p>
                                                     </td>
                                                     <td className="pe-3 text-end">
-                                                        {Math.ceil(
+                                                        {fixFloatingPoint(
                                                             product.discountPrice
                                                         )}{" "}
                                                         ৳
@@ -222,19 +223,20 @@ function StockProduct({
                                                         1 {product.unit.label}
                                                     </td>
                                                     <td className="pe-3">
-                                                        {(
+                                                        {fixFloatingPoint(
                                                             product.price *
-                                                            product.unit.value
-                                                        ).toFixed(0)}{" "}
+                                                                product.unit
+                                                                    .value
+                                                        )}{" "}
                                                         ৳
                                                     </td>
                                                     <td className="pe-3">%</td>
                                                     <td className="pe-3">
                                                         <input
                                                             type="number"
-                                                            value={
+                                                            value={fixFloatingPoint(
                                                                 product.discount
-                                                            }
+                                                            )}
                                                             step={
                                                                 product.unit
                                                                     .value
@@ -247,7 +249,7 @@ function StockProduct({
                                                                             e
                                                                                 .target
                                                                                 .value
-                                                                        )
+                                                                        ) || 0
                                                                     )
                                                                     .save();
                                                             }}
@@ -255,12 +257,11 @@ function StockProduct({
                                                         />
                                                     </td>
                                                     <td className="pe-3 text-end">
-                                                        {(
-                                                            product.price *
+                                                        {fixFloatingPoint(
+                                                            product.discountPrice *
                                                                 product.unit
-                                                                    .value -
-                                                            product.discount
-                                                        ).toFixed(0)}{" "}
+                                                                    .value
+                                                        )}{" "}
                                                         ৳
                                                     </td>
                                                 </tr>
@@ -271,22 +272,19 @@ function StockProduct({
                                                             product.unit.label}
                                                     </td>
                                                     <td className="pe-3">
-                                                        {(
-                                                            (product.price *
-                                                                product.unit
-                                                                    .value -
-                                                                product.discount) *
-                                                            product.quantity
-                                                        ).toFixed(0)}{" "}
+                                                        {fixFloatingPoint(
+                                                            product.subTotal -
+                                                                product.extraDiscount
+                                                        )}
                                                         ৳
                                                     </td>
                                                     <td className="pe-3">%</td>
                                                     <td className="pe-3">
                                                         <input
                                                             type="number"
-                                                            value={
+                                                            value={fixFloatingPoint(
                                                                 product.extraDiscount
-                                                            }
+                                                            )}
                                                             onChange={(e) => {
                                                                 stockManager
                                                                     .set(
@@ -295,7 +293,7 @@ function StockProduct({
                                                                             e
                                                                                 .target
                                                                                 .value
-                                                                        )
+                                                                        ) || 0
                                                                     )
                                                                     .save();
                                                             }}
@@ -303,7 +301,10 @@ function StockProduct({
                                                         />
                                                     </td>
                                                     <td className="pe-3 text-lg text-end">
-                                                        {product.subTotal} ৳
+                                                        {fixFloatingPoint(
+                                                            product.subTotal
+                                                        )}{" "}
+                                                        ৳
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -334,7 +335,7 @@ function StockProduct({
                                                         `products.${product._id}.quantity`,
                                                         parseFloat(
                                                             e.target.value
-                                                        )
+                                                        ) || 0
                                                     )
                                                     .save();
                                             }}

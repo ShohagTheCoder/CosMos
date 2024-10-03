@@ -271,6 +271,7 @@ export default class CommandHandler extends KeyboardHandler {
         });
 
         this.group(["Numpad4", "Numpad7"], () => {
+            this.setCommand("");
             this.stateManager
                 .decrement("products.{{activeProduct}}.extraDiscount")
                 .save();

@@ -1,4 +1,5 @@
 "use client";
+import fixFloatingPoint from "@/app/functions/fixFloatingPoint";
 import useCartManager from "@/app/store/providers/cartProvider";
 import { RootState } from "@/app/store/store";
 import React from "react";
@@ -14,7 +15,7 @@ function SellDetails() {
             <div className="single-row flex justify-between items-center">
                 <p className=" text-lg font-semibold pt-1">সর্বমোট :</p>
                 <p className=" text-lg font-semibold pt-1">
-                    {cart.totalPrice.toLocaleString("en-US")}
+                    {Math.ceil(cart.totalPrice).toLocaleString("en-US")}
                     <span> ৳</span>
                 </p>
             </div>
