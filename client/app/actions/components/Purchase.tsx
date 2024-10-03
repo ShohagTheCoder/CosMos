@@ -35,6 +35,7 @@ import StockProduct from "./components/StockProduct";
 import SupplierCard from "./components/SupplierCart";
 import FinalView from "../sell/components/FinalView";
 import ProductUpdateShortcut from "../sell/components/ProductUpdateShortcut";
+import apiClient from "@/app/utils/apiClient";
 
 interface PurchaseProps {
     productsArray: ProductWithID[];
@@ -157,7 +158,7 @@ export default function Purchase({
             );
 
             if (product) {
-                stockManager.addToStock(product).save();
+                stockManager.addTo(product).save();
                 setCommand("");
                 return;
             }
@@ -226,23 +227,37 @@ export default function Purchase({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [command]);
 
+    useEffect(() => {
+        setFilteredProducts(products);
+    }, [products]);
+
     async function handleCompletePurchase() {
         setPurchaseButtonLoading(true);
         apiCall
             .post("/purchases", stockManager.getData())
-            .success((data, message) => {
-                console.log(data);
+            .success(async (data, message) => {
                 notifySuccess(message);
+                try {
+                    let { data: _productsArray } = await apiClient.get(
+                        "products/for-purchase"
+                    );
+                    setProducts(
+                        productArrayToObject(
+                            _productsArray,
+                            (item) => !item.purchaseEnable
+                        )
+                    );
+                } catch (error) {
+                    console.log(error);
+                }
             })
             .error((error) => {
                 console.log(error);
                 notifyError(error);
             })
             .finally(() => {
-                setTimeout(() => {
-                    // setPurchaseButtonLoading(false);
-                    // window.location.reload();
-                    stockManager.reset(initialStockState);
+                setTimeout(async () => {
+                    stockManager.reset(initialStockState).save();
                 }, 3000);
             });
     }
@@ -467,9 +482,7 @@ export default function Purchase({
                                                         }
                                                         callback={(product) => {
                                                             stockManager
-                                                                .addToStock(
-                                                                    product
-                                                                )
+                                                                .addTo(product)
                                                                 .save();
                                                             setCommand("");
                                                             document
@@ -495,9 +508,7 @@ export default function Purchase({
                                                         }
                                                         callback={(product) => {
                                                             stockManager
-                                                                .addToStock(
-                                                                    product
-                                                                )
+                                                                .addTo(product)
                                                                 .save();
                                                             setCommand("");
                                                             document

@@ -51,7 +51,7 @@ export default class SellCommandHandler extends CommandHandler {
                         ]!,
                         quantity: 1,
                     };
-                    this.stateManager.addToCart(product).save();
+                    this.stateManager.addTo(product).save();
                     this.setCommand("");
                     return;
                 }

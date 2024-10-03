@@ -52,7 +52,7 @@ export default class PurchaseCommandHandler extends CommandHandler {
                         ]!,
                         quantity: 1,
                     };
-                    this.stateManager.addToStock(product).save();
+                    this.stateManager.addTo(product).save();
                     this.setCommand("");
                     return;
                 }

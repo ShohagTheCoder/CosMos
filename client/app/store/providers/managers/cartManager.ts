@@ -52,7 +52,7 @@ export class CartManager<T extends CartState> extends StateManager<T> {
         });
     }
 
-    addToCart(payload: ProductWithID) {
+    addTo(payload: ProductWithID) {
         let exist = this.has(
             `products.${payload._id}`,
             (product: ProductWithID) => {
@@ -81,7 +81,7 @@ export class CartManager<T extends CartState> extends StateManager<T> {
     }
 
     // Remove to cart
-    removeToCart(id: string | undefined = undefined): this {
+    removeTo(id: string | undefined = undefined): this {
         id = id ?? this.get("activeProduct"); // Use nullish coalescing for default assignment
 
         if (!id) {

@@ -59,7 +59,7 @@ export default class CommandHandler extends KeyboardHandler {
                 let product = this.getProductByCommand(commandKey);
                 if (product) {
                     this.stateManager
-                        .addToCart(product)
+                        .addTo(product)
                         .update(`products.{{activeProduct}}.discount`, () => {
                             if (amount < product.price / 2) {
                                 console.log("amount is price");
@@ -79,7 +79,7 @@ export default class CommandHandler extends KeyboardHandler {
             let product = this.getProductByCommand(this.value);
             if (product) {
                 this.stateManager
-                    .addToCart(product)
+                    .addTo(product)
                     .set(`products.${product._id}.quantity`, parseInt(e.key))
                     .save();
             }
@@ -98,7 +98,7 @@ export default class CommandHandler extends KeyboardHandler {
                     .save();
             } else if (product) {
                 this.stateManager
-                    .addToCart(product)
+                    .addTo(product)
                     .set(`products.${product._id}.quantity`, quantity)
                     .save();
             }
@@ -107,14 +107,14 @@ export default class CommandHandler extends KeyboardHandler {
     }
 
     // Add to cart by shortcut key
-    public addToCartByShortcutKey(
+    public addToByShortcutKey(
         shortcutKey: string,
         quantity: number | undefined = undefined
     ) {
         if (shortcutKey.length == 0) return;
         const product = this.getProductByCommand(shortcutKey);
         if (product) {
-            this.stateManager.addToCart(product);
+            this.stateManager.addTo(product);
             if (quantity) {
                 this.stateManager.set(
                     `products.${product._id}.quantity`,
@@ -160,7 +160,7 @@ export default class CommandHandler extends KeyboardHandler {
             this.setCommand("");
         });
         this.longPress("Delete", () => {
-            this.stateManager.removeToCart(undefined).save();
+            this.stateManager.removeTo(undefined).save();
         });
         this.longPress(
             [
@@ -207,7 +207,7 @@ export default class CommandHandler extends KeyboardHandler {
 
         // Long presses listeners for KeyA-KeyZ
         this.longPress(alphabetKeyCodes, (e) => {
-            this.addToCartByShortcutKey(e.key);
+            this.addToByShortcutKey(e.key);
             // Replace with your desired action here
         });
 
@@ -431,7 +431,7 @@ export default class CommandHandler extends KeyboardHandler {
                     let product = this.getProductByCommand(commandKey);
                     if (product) {
                         this.stateManager
-                            .addToCart(product)
+                            .addTo(product)
                             .update(
                                 `products.{{activeProduct}}.discount`,
                                 () => {
@@ -451,7 +451,7 @@ export default class CommandHandler extends KeyboardHandler {
             }
 
             if (/^[1-9]+$/.test(this.value)) {
-                this.addToCartByShortcutKey(this.value, parseInt(e.key));
+                this.addToByShortcutKey(this.value, parseInt(e.key));
                 return;
             }
 
@@ -461,12 +461,12 @@ export default class CommandHandler extends KeyboardHandler {
                 // let splited = this.value.split("0", 2);
                 const commandKey = splited[0];
                 const quantity = parseInt(splited[1]);
-                this.addToCartByShortcutKey(commandKey, quantity);
+                this.addToByShortcutKey(commandKey, quantity);
                 return;
             }
 
             if (/^[a-zA-Z]$/.test(this.value)) {
-                this.addToCartByShortcutKey(this.value);
+                this.addToByShortcutKey(this.value);
                 return;
             }
 

@@ -34,6 +34,7 @@ import Notifications from "@/app/elements/notification/Notifications";
 import SellPageSelector from "./components/SellPageSelector";
 import { cloneDeep } from "lodash";
 import SellCommandHandler from "@/app/common/handlers/sellCommandHandler";
+import apiClient from "@/app/utils/apiClient";
 
 interface SellProps {
     productsArray: ProductWithID[];
@@ -100,6 +101,10 @@ export default function Sell({
         )
     ).current;
 
+    useEffect(() => {
+        setFilteredProducts(products);
+    }, [products]);
+
     // Single use effect
     useEffect(() => {
         if (user) {
@@ -156,7 +161,7 @@ export default function Sell({
             );
 
             if (product) {
-                cartManager.addToCart(product).save();
+                cartManager.addTo(product).save();
                 setCommand("");
                 return;
             }
@@ -229,9 +234,21 @@ export default function Sell({
         setSellButtonLoading(true);
         apiCall
             .post("/sells", cartManager.getData())
-            .success((data, message) => {
-                console.log(data);
+            .success(async (data, message) => {
                 notifySuccess(message);
+                try {
+                    let { data: _productsArray } = await apiClient.get(
+                        "products"
+                    );
+                    setProducts(
+                        productArrayToObject(
+                            _productsArray,
+                            (item) => !item.sellEnable
+                        )
+                    );
+                } catch (error) {
+                    console.log(error);
+                }
             })
             .error((error) => {
                 console.log(error);
@@ -240,7 +257,7 @@ export default function Sell({
             .finally(() => {
                 setTimeout(() => {
                     // setSellButtonLoading(false);
-                    cartManager.reset(initialCartState);
+                    cartManager.reset(initialCartState).save();
                 }, 3000);
             });
     }
@@ -463,9 +480,7 @@ export default function Sell({
                                                         }
                                                         callback={(product) => {
                                                             cartManager
-                                                                .addToCart(
-                                                                    product
-                                                                )
+                                                                .addTo(product)
                                                                 .save();
                                                             setCommand("");
                                                             document
@@ -491,9 +506,7 @@ export default function Sell({
                                                         }
                                                         callback={(product) => {
                                                             cartManager
-                                                                .addToCart(
-                                                                    product
-                                                                )
+                                                                .addTo(product)
                                                                 .save();
                                                             setCommand("");
                                                             document

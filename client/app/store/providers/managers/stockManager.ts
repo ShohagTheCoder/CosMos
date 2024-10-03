@@ -52,7 +52,7 @@ export class StockManager<T extends StockState> extends StateManager<T> {
         });
     }
 
-    addToStock(payload: ProductWithID) {
+    addTo(payload: ProductWithID) {
         console.log("Called");
         let exist = this.has(
             `products.${payload._id}`,
@@ -82,7 +82,7 @@ export class StockManager<T extends StockState> extends StateManager<T> {
     }
 
     // Remove to stock
-    removeToStock(id: string | undefined = undefined): this {
+    removeTo(id: string | undefined = undefined): this {
         id = id ?? this.get("activeProduct"); // Use nullish coalescing for default assignment
 
         if (!id) {
