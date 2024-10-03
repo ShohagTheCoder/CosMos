@@ -18,6 +18,7 @@ import { SettingsModule } from './settings/settings.module';
 import { CommandsModule } from './commands/commands.module';
 import { CategoriesModule } from './categories/categories.module';
 import { RegisterModule } from './register/register.module';
+import { ClearModule } from './clear/clear.module';
 
 @Module({
     imports: [
@@ -38,6 +39,7 @@ import { RegisterModule } from './register/register.module';
         CommandsModule,
         CategoriesModule,
         RegisterModule,
+        ClearModule,
     ],
     controllers: [AppController],
     providers: [AppService],
