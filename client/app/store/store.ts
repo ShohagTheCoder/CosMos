@@ -7,8 +7,8 @@ import helperReducer from "./slices/helperSlice";
 
 export const store = configureStore({
     reducer: {
-        cart: cartReducer,
         product: productReducer,
+        cart: cartReducer,
         stock: stockReducer,
         notifications: notificationsReducer,
         helper: helperReducer,

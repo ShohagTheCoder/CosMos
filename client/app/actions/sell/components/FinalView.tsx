@@ -7,7 +7,7 @@ export default function FinalView() {
 
     return (
         // <div className="fixed z-50 bg-gray-800 h-svh w-svw flex justify-center items-start">
-        <div className="bg-gray-800 w-full py-6 py-4">
+        <div className="bg-gray-800 w-full py-4">
             <div className="bg-gray-900 w-[400px] p-5 mx-auto">
                 <table className="w-full table-auto">
                     <thead>

@@ -2,10 +2,9 @@ import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import StateManager from "./common/stateManager";
 import { Dispatch } from "@reduxjs/toolkit";
 import { StockState } from "../../slices/stockSlice";
-import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 import getMeasurementTo from "@/app/functions/getMeasurementTo";
 import getUnits from "@/app/functions/getUnits";
-import getProductUnitPurchasePrice from "@/app/functions/purchase/getProductUnitPurchasePrice";
+import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 
 type ReducerFunction = any;
 
@@ -21,7 +20,7 @@ export class StockManager<T extends StockState> extends StateManager<T> {
             this.update(`products.${id}`, (product: ProductWithID) => {
                 // console.log(product);
                 let unit = product.units[product.unit];
-                product.price = getProductUnitPurchasePrice(product);
+                product.price = getProductUnitPrice(product);
                 product.count = product.quantity * unit.value;
                 product.subTotal =
                     (product.price - product.discount / unit.value) *
@@ -54,6 +53,7 @@ export class StockManager<T extends StockState> extends StateManager<T> {
     }
 
     addToStock(payload: ProductWithID) {
+        console.log("Called");
         let exist = this.has(
             `products.${payload._id}`,
             (product: ProductWithID) => {

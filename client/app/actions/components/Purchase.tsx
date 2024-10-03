@@ -1,15 +1,10 @@
 "use client";
 import Sidebar from "@/app/components/Sidebar";
-import { Customer } from "@/app/interfaces/customer.inerface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
-import { CartState, initialCartState } from "@/app/store/slices/cartSlice";
+import { initialStockState } from "@/app/store/slices/stockSlice";
 import { RootState } from "@/app/store/store";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import CustomerCard from "./components/CustomerCard";
-import CartProduct from "./components/CartProduct";
-import CustomerDetails from "./components/CustomerDetails";
-import SellDetails from "./components/SellDetails";
 // eslint-disable-next-line no-unused-vars
 import Notification from "@/app/elements/notification/Notification";
 import { logout } from "../functions/authHandlers";
@@ -18,27 +13,30 @@ import { arrayToObjectById } from "../functions/arrayToObjectById";
 import { updateHelperField } from "@/app/store/slices/helperSlice";
 import { productArrayToObject } from "../functions/productArrayToObject";
 import useNotification from "@/app/hooks/useNotification";
-import FinalView from "../sell/components/FinalView";
-// import { useHandleKeyUp } from "../sell/functions/keyboardHandler";
+// import { useHandleKeyUp } from "../purchase/functions/keyboardHandler";
 import ProductsRow from "./ProductsRow";
 import ColsIcon from "@/app/icons/ColsIcon";
 import RowIcon from "@/app/icons/RowIcon";
 import NotImageIcon from "@/app/icons/NotImageIcon";
 import ImageIcon from "@/app/icons/ImageIcon";
-import ProductUpdateShortcut from "../sell/components/ProductUpdateShortcut";
 import { setProduct } from "@/app/store/slices/productSlice";
 import apiCall from "@/app/common/apiCall";
-import useCartManager from "@/app/store/providers/cartProvider";
-import CommandHandler from "@/app/common/handlers/commandHandler";
+import useStockManager from "@/app/store/providers/stockProvider";
 import Notifications from "@/app/elements/notification/Notifications";
 // eslint-disable-next-line no-unused-vars
-import SellPageSelector from "./components/SellPageSelector";
 import { cloneDeep } from "lodash";
-import { SupplierWithId } from "@/app/interfaces/supplier.interface";
+import { Supplier, SupplierWithId } from "@/app/interfaces/supplier.interface";
 import PurchaseDetails from "./components/purchaseDetails";
 import SupplierDetails from "./components/SupplierDetails";
+import { StockState } from "@/app/store/slices/stockSlice";
+import PurchasePageSelector from "./components/PurchasePageSelector";
+import PurchaseCommandHandler from "@/app/common/handlers/purchaseCommandHandler";
+import StockProduct from "./components/StockProduct";
+import SupplierCard from "./components/SupplierCart";
+import FinalView from "../sell/components/FinalView";
+import ProductUpdateShortcut from "../sell/components/ProductUpdateShortcut";
 
-interface SellProps {
+interface PurchaseProps {
     productsArray: ProductWithID[];
     suppliersArray: SupplierWithId[];
     user: any;
@@ -46,33 +44,33 @@ interface SellProps {
     setting: any;
 }
 
-export default function Sell({
+export default function Purchase({
     productsArray,
     suppliersArray,
     user,
     commands,
     setting,
-}: SellProps) {
+}: PurchaseProps) {
     const [products, setProducts] = useState(
-        productArrayToObject(productsArray, (item) => !item.sellEnable)
+        productArrayToObject(productsArray, (item) => !item.purchaseEnable)
     );
 
-    const customers = useMemo(
+    const suppliers = useMemo(
         () => arrayToObjectById(suppliersArray),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [productsArray]
     );
 
     let [command, setCommand] = useState("");
-    const [filteredCustomers, setFilteredCustomers] = useState(customers);
+    const [filteredSuppliers, setFilteredSuppliers] = useState(suppliers);
     const dispatch = useDispatch();
-    let cart = useSelector((state: RootState) => state.cart);
+    let stock = useSelector((state: RootState) => state.stock);
     const [note, setNote] = useState("");
     const [filteredProducts, setFilteredProducts] = useState(products);
-    const [isCustomers, setIsCustomers] = useState(false);
+    const [isSuppliers, setIsSuppliers] = useState(false);
     let noteRef = useRef<HTMLTextAreaElement>(null);
     const helper = useSelector((state: RootState) => state.helper);
-    const activeSellPage = useRef("F5");
+    const activePage = useRef("F5");
     const [productUpdateShortcut, setProductUpdateShortcut] = useState(false);
     const { notification, notifySuccess, notifyError } = useNotification();
     const [settingState, setSettingState] = useState(setting);
@@ -81,32 +79,32 @@ export default function Sell({
     //     (state: RootState) => state.notifications
     // );
 
-    const cartManager = useCartManager();
+    const stockManager = useStockManager();
 
     const [commandCounter, setCommandCounter] = useState({
         name: "unknown",
         value: 0,
     });
 
-    const [sellButtonLoading, setSellButtonLoading] = useState(false);
+    const [purchaseButtonLoading, setPurchaseButtonLoading] = useState(false);
 
     const commandHandler = useRef(
-        new CommandHandler(
-            cartManager,
+        new PurchaseCommandHandler(
+            stockManager,
             setCommand,
             getProductByCommand,
             handleUpdateProductPrice,
             handleCompletePurchase,
             setCommandCounter,
             handleProductUpdateShortcut,
-            handleSellPageChange
+            handlePageChange
         )
     ).current;
 
     // Single use effect
     useEffect(() => {
         if (user) {
-            cartManager.set("user", user).save();
+            stockManager.set("user", user).save();
             // dispatch(setUser(user));
         }
 
@@ -143,13 +141,13 @@ export default function Sell({
 
     useEffect(() => {
         commandHandler.params = {
-            filteredCustomers,
+            filteredSuppliers,
             filteredProducts,
-            isCustomers,
+            isSuppliers,
             commandCounter,
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filteredCustomers, filteredProducts, isCustomers, commandCounter]);
+    }, [filteredSuppliers, filteredProducts, isSuppliers, commandCounter]);
 
     useEffect(() => {
         // Match barcode or SKU to add product
@@ -159,32 +157,32 @@ export default function Sell({
             );
 
             if (product) {
-                cartManager.addToCart(product).save();
+                stockManager.addToStock(product).save();
                 setCommand("");
                 return;
             }
         }
 
-        if (/^\s+/.test(command) && customers) {
-            setIsCustomers(true);
+        if (/^\s+/.test(command) && suppliers) {
+            setIsSuppliers(true);
             // Convert filtered array back to object
-            const filteredCustomersObject = Object.entries(customers).reduce<
+            const filteredSuppliersObject = Object.entries(suppliers).reduce<
                 Record<string, SupplierWithId>
-            >((acc, [key, customer]) => {
+            >((acc, [key, supplier]) => {
                 if (
-                    customer.name
+                    supplier.name
                         .toLowerCase()
                         .includes(command.trim().toLowerCase())
                 ) {
-                    acc[key] = customer;
+                    acc[key] = supplier;
                 }
                 return acc;
             }, {});
 
-            setFilteredCustomers(filteredCustomersObject);
+            setFilteredSuppliers(filteredSuppliersObject);
         } else if (/^(?![0-9\s.])[a-zA-Z]{2,10}/.test(command) && products) {
-            if (isCustomers) {
-                setIsCustomers(false);
+            if (isSuppliers) {
+                setIsSuppliers(false);
             }
 
             let filteredProductsObject = Object.entries(products).reduce<
@@ -210,28 +208,28 @@ export default function Sell({
 
             setFilteredProducts(filteredProductsObject);
         } else if (command.length == 0) {
-            if (isCustomers) {
-                setIsCustomers(false);
+            if (isSuppliers) {
+                setIsSuppliers(false);
             }
             setFilteredProducts(products);
         } else if (command == " ") {
-            if (!isCustomers) {
-                setIsCustomers(true);
+            if (!isSuppliers) {
+                setIsSuppliers(true);
             }
-            setFilteredCustomers(customers);
+            setFilteredSuppliers(suppliers);
         }
 
         // Reset selected product index
-        if (cart.selectedProductIndex > 0) {
-            cartManager.set("selectedProductIndex", 0);
+        if (stock.selectedProductIndex > 0) {
+            stockManager.set("selectedProductIndex", 0);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [command]);
 
     async function handleCompletePurchase() {
-        setSellButtonLoading(true);
+        setPurchaseButtonLoading(true);
         apiCall
-            .post("/purchases", cartManager.getData())
+            .post("/purchases", stockManager.getData())
             .success((data, message) => {
                 console.log(data);
                 notifySuccess(message);
@@ -242,7 +240,9 @@ export default function Sell({
             })
             .finally(() => {
                 setTimeout(() => {
-                    setSellButtonLoading(false);
+                    // setPurchaseButtonLoading(false);
+                    // window.location.reload();
+                    stockManager.reset(initialStockState);
                 }, 3000);
             });
     }
@@ -265,9 +265,9 @@ export default function Sell({
         } else {
             if (command.length >= 2) {
                 product =
-                    Object.values(filteredProducts)[cart.selectedProductIndex];
-            } else if (cartManager.get("activeProduct")) {
-                product = products[cartManager.get("activeProduct")];
+                    Object.values(filteredProducts)[stock.selectedProductIndex];
+            } else if (stockManager.get("activeProduct")) {
+                product = products[stockManager.get("activeProduct")];
             }
         }
 
@@ -277,7 +277,7 @@ export default function Sell({
         }
     }
 
-    // Add to cart with product shortcut
+    // Add to stock with product shortcut
     function getProductByCommand(shortcut: string) {
         let command = commands.find(
             (_: any) => _.command.toLowerCase() == shortcut
@@ -291,16 +291,16 @@ export default function Sell({
     }
 
     function handleUpdateProductPrice(amount: number) {
-        if (cartManager.get("activeProduct")) {
-            let product = cartManager.get("products.{{activeProduct}}");
-            cartManager.update(
+        if (stockManager.get("activeProduct")) {
+            let product = stockManager.get("products.{{activeProduct}}");
+            stockManager.update(
                 "products.{{activeProduct}}.updatePrice",
                 (updatePrice) => updatePrice + amount
             );
             apiCall
                 .patch(`/products/updatePrice/${product._id}`, { amount })
                 .success((data) => {
-                    cartManager
+                    stockManager
                         .set(`products.${product._id}.prices`, data.prices)
                         .save();
 
@@ -321,31 +321,33 @@ export default function Sell({
             return p;
         });
 
-        // Update the product in the cart manager
-        cartManager.set(`products.${p._id}.prices`, p.prices).save();
+        // Update the product in the stock manager
+        stockManager.set(`products.${p._id}.prices`, p.prices).save();
     }
 
-    function handleSellPageChange(sellPageKey: string) {
-        if (sellPageKey === activeSellPage.current) return;
-        // Deep copy cart states if necessary
-        let cartStates: Record<string, CartState> = cloneDeep(
-            helper.cartStates
+    function handlePageChange(pageKey: string) {
+        if (pageKey === activePage.current) return;
+        // Deep copy stock states if necessary
+        let stockStates: Record<string, StockState> = cloneDeep(
+            helper.stockStates
         );
-        // Ensure cart is defined before assignment
-        cartStates[activeSellPage.current] = cart;
-        // Update the active sell page first
-        activeSellPage.current = sellPageKey;
+        // Ensure stock is defined before assignment
+        stockStates[activePage.current] = stock;
+        // Update the active purchase page first
+        activePage.current = pageKey;
         // Dispatch Redux state update
-        dispatch(updateHelperField({ field: "cartStates", value: cartStates }));
-        // Use the cart manager to reset and save the new state
-        const newCartState = cartStates[sellPageKey] || initialCartState;
-        // Use the cart manager to reset and save the new state
-        cartManager.reset(newCartState).save();
+        dispatch(
+            updateHelperField({ field: "stockStates", value: stockStates })
+        );
+        // Use the stock manager to reset and save the new state
+        const newState = stockStates[pageKey] || initialStockState;
+        // Use the stock manager to reset and save the new state
+        stockManager.reset(newState).save();
     }
 
     return (
         <div className="text-black dark:text-white">
-            {/* <SellReceipt /> */}
+            {/* <PurchaseReceipt /> */}
             <div className="print:hidden">
                 <Sidebar active="purchase" userId={user._id} />
                 <div className="ps-[94px] 2xl:ps-[150px] bg-white dark:bg-gray-950">
@@ -361,11 +363,11 @@ export default function Sell({
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 lg:h-screen gap-6 overflow-x-hidden overflow-y-auto lg:overflow-y-hidden cosmos-scrollbar">
                         <div className="max-h=[1000px] h-full flex flex-col overflow-hidden col-span-8 lg:col-span-5 py-4 me-3 lg:me-0">
-                            <SellPageSelector
-                                activePage={activeSellPage.current}
-                                cartStates={helper.cartStates}
+                            <PurchasePageSelector
+                                activePage={activePage.current}
+                                stockStates={helper.stockStates}
                                 userName={user.name}
-                                handleSellPageChange={handleSellPageChange}
+                                handlePageChange={handlePageChange}
                                 logout={logout}
                             />
                             <div>
@@ -427,23 +429,23 @@ export default function Sell({
                                 ) : (
                                     <>
                                         {commandCounter.name ==
-                                            "completeSell" &&
+                                            "completePurchase" &&
                                         commandCounter.value >= 1 ? (
                                             <FinalView />
-                                        ) : isCustomers ? (
+                                        ) : isSuppliers ? (
                                             <div>
-                                                <CustomerCard
-                                                    customers={
-                                                        filteredCustomers
+                                                <SupplierCard
+                                                    suppliers={
+                                                        filteredSuppliers
                                                     }
                                                     callback={(
-                                                        customer: Customer
+                                                        supplier: Supplier
                                                     ) => {
-                                                        // dispatch(addCustomer(customer));
-                                                        cartManager
+                                                        // dispatch(addSupplier(supplier));
+                                                        stockManager
                                                             .set(
-                                                                "customer",
-                                                                customer
+                                                                "supplier",
+                                                                supplier
                                                             )
                                                             .save();
                                                         setCommand("");
@@ -461,11 +463,11 @@ export default function Sell({
                                                 {settingState.productRow ? (
                                                     <ProductsRow
                                                         selected={
-                                                            cart.selectedProductIndex
+                                                            stock.selectedProductIndex
                                                         }
                                                         callback={(product) => {
-                                                            cartManager
-                                                                .addToCart(
+                                                            stockManager
+                                                                .addToStock(
                                                                     product
                                                                 )
                                                                 .save();
@@ -489,11 +491,11 @@ export default function Sell({
                                                             handleProductUpdateShortcut
                                                         }
                                                         selected={
-                                                            cart.selectedProductIndex
+                                                            stock.selectedProductIndex
                                                         }
                                                         callback={(product) => {
-                                                            cartManager
-                                                                .addToCart(
+                                                            stockManager
+                                                                .addToStock(
                                                                     product
                                                                 )
                                                                 .save();
@@ -521,7 +523,7 @@ export default function Sell({
                         <div className="py-4 mb-4 lg:pe-3 col-span-8 lg:col-span-3 min-h-screen overflow-hidden grid grid-rows-1">
                             <div className="pe-3 h-auto overflow-y-auto overflow-x-hidden cosmos-scrollbar">
                                 <div>
-                                    <CartProduct
+                                    <StockProduct
                                         setProductUpdateShortcut={
                                             handleProductUpdateShortcut
                                         }
@@ -547,38 +549,38 @@ export default function Sell({
                                     <PurchaseDetails />
                                     <div className="flex gap-4">
                                         <button
-                                            disabled={sellButtonLoading}
+                                            disabled={purchaseButtonLoading}
                                             onDoubleClick={
                                                 handleCompletePurchase
                                             }
                                             className={`w-1/2 pt-3 pb-2 border-2 border-dashed border-green-600 bg-green-900 hover:bg-green-700 text-white ${
-                                                sellButtonLoading
+                                                purchaseButtonLoading
                                                     ? "cursor-not-allowed"
                                                     : "cursor-pointer"
                                             }`}
                                         >
-                                            Sell & Print
+                                            Purchase & Print
                                         </button>
                                         <button
-                                            disabled={sellButtonLoading}
+                                            disabled={purchaseButtonLoading}
                                             onDoubleClick={
                                                 handleCompletePurchase
                                             }
                                             className={`w-1/3 pt-3 pb-2 border-2 border-dashed border-blue-600 bg-blue-900 hover:bg-blue-700 text-white ${
-                                                sellButtonLoading
+                                                purchaseButtonLoading
                                                     ? "cursor-not-allowed"
                                                     : "cursor-pointer"
                                             }`}
                                         >
-                                            Sell
+                                            Purchase
                                         </button>
                                         <button
-                                            disabled={sellButtonLoading}
+                                            disabled={purchaseButtonLoading}
                                             onDoubleClick={
                                                 handleCompletePurchase
                                             }
                                             className={`w-1/2 pt-3 pb-2 border-dashed border-2 border-yellow-600 bg-yellow-900 hover:bg-blue-700 text-white ${
-                                                sellButtonLoading
+                                                purchaseButtonLoading
                                                     ? "cursor-not-allowed"
                                                     : "cursor-pointer"
                                             }`}

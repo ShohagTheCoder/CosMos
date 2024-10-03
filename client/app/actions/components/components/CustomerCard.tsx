@@ -8,6 +8,7 @@ function CustomerCard({
     callback,
 }: {
     customers: any;
+    // eslint-disable-next-line no-unused-vars
     callback: (customer: Customer) => void;
 }) {
     const selectedProductIndex = useSelector(

@@ -1,28 +1,25 @@
-import { CartManager } from "@/app/store/providers/managers/cartManager";
 import KeyboardHandler from "./common/KeyboardHandler";
-import { CartState } from "@/app/store/slices/cartSlice";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { KeyboardEvent } from "react";
-import apiClient from "@/app/utils/apiClient";
 import splitIntoParts from "@/app/functions/splitIntoParts";
 import { capitalize } from "lodash";
 
 // Define a child class for command-specific behavior
 export default class CommandHandler extends KeyboardHandler {
-    private cartManager: CartManager<CartState>;
-    private setCommand: any;
-    private handleUpdateProductPrice: any;
-    private setCommandCounter: any;
-    private handleCompleteSell: any;
-    private handleProductUpdateShortcut: any;
-    private handleSellPageChange: any;
-    private getProductByCommand: (
+    public stateManager: any;
+    public setCommand: any;
+    public handleUpdateProductPrice: any;
+    public setCommandCounter: any;
+    public handleCompleteSell: any;
+    public handleProductUpdateShortcut: any;
+    public handleSellPageChange: any;
+    public getProductByCommand: (
         // eslint-disable-next-line no-unused-vars
         shortcut: string
     ) => ProductWithID | undefined;
 
     constructor(
-        cartManager: CartManager<CartState>,
+        stateManager: any,
         setCommand: any,
         // eslint-disable-next-line no-unused-vars
         getProductByCommand: (shortcut: string) => ProductWithID | undefined,
@@ -33,7 +30,7 @@ export default class CommandHandler extends KeyboardHandler {
         handleSellPageChange: any
     ) {
         super();
-        this.cartManager = cartManager;
+        this.stateManager = stateManager;
         this.setCommand = setCommand;
         this.handleCompleteSell = handleCompleteSell;
         this.setCommandCounter = setCommandCounter;
@@ -47,7 +44,7 @@ export default class CommandHandler extends KeyboardHandler {
 
     public handleNumpadNumberKeyLongPress(e: KeyboardEvent) {
         if (this.value.length == 0) {
-            this.cartManager
+            this.stateManager
                 .set("products.{{activeProduct}}.quantity", parseInt(e.key))
                 .save();
             return;
@@ -61,7 +58,7 @@ export default class CommandHandler extends KeyboardHandler {
             if (commandKey.length > 0) {
                 let product = this.getProductByCommand(commandKey);
                 if (product) {
-                    this.cartManager
+                    this.stateManager
                         .addToCart(product)
                         .update(`products.{{activeProduct}}.discount`, () => {
                             if (amount < product.price / 2) {
@@ -81,7 +78,7 @@ export default class CommandHandler extends KeyboardHandler {
         if (/^[1-9]+$/.test(this.value)) {
             let product = this.getProductByCommand(this.value);
             if (product) {
-                this.cartManager
+                this.stateManager
                     .addToCart(product)
                     .set(`products.${product._id}.quantity`, parseInt(e.key))
                     .save();
@@ -96,11 +93,11 @@ export default class CommandHandler extends KeyboardHandler {
             let quantity = parseInt(splited[1] + e.key);
             let product = this.getProductByCommand(commandKey);
             if (commandKey.length == 0) {
-                this.cartManager
+                this.stateManager
                     .set(`products.{{activeProduct}}.quantity`, quantity)
                     .save();
             } else if (product) {
-                this.cartManager
+                this.stateManager
                     .addToCart(product)
                     .set(`products.${product._id}.quantity`, quantity)
                     .save();
@@ -117,29 +114,14 @@ export default class CommandHandler extends KeyboardHandler {
         if (shortcutKey.length == 0) return;
         const product = this.getProductByCommand(shortcutKey);
         if (product) {
-            this.cartManager.addToCart(product);
+            this.stateManager.addToCart(product);
             if (quantity) {
-                this.cartManager.set(
+                this.stateManager.set(
                     `products.${product._id}.quantity`,
                     quantity
                 );
             }
-            this.cartManager.save();
-        }
-    }
-
-    async handleAddCustomer() {
-        if (this.params.filteredCustomers) {
-            const customer: any = Object.values(this.params.filteredCustomers)[
-                this.cartManager.get("selectedProductIndex")
-            ];
-            const { data } = await apiClient.get(
-                `accounts/${customer.account}`
-            );
-            this.cartManager
-                .set("customer", customer)
-                .set("customerAccount", data)
-                .save();
+            this.stateManager.save();
         }
     }
 
@@ -169,16 +151,16 @@ export default class CommandHandler extends KeyboardHandler {
 
         // Long presses listeners
         this.longPress(["ArrowUp", "NumpadAdd"], () => {
-            this.cartManager.changeActiveProduct(-1).save();
+            this.stateManager.changeActiveProduct(-1).save();
         });
         this.longPress(["ArrowDown", "NumpadEnter"], () => {
-            this.cartManager.changeActiveProduct(1).save();
+            this.stateManager.changeActiveProduct(1).save();
         });
         this.longPress("NumpadSubtract", () => {
             this.setCommand("");
         });
         this.longPress("Delete", () => {
-            this.cartManager.removeToCart(undefined).save();
+            this.stateManager.removeToCart(undefined).save();
         });
         this.longPress(
             [
@@ -200,11 +182,11 @@ export default class CommandHandler extends KeyboardHandler {
         );
 
         this.longPress("ArrowLeft", () => {
-            this.cartManager.changeUnit(-1).save();
+            this.stateManager.changeUnit(-1).save();
         });
 
         this.longPress("ArrowRight", () => {
-            this.cartManager.changeUnit(1).save();
+            this.stateManager.changeUnit(1).save();
         });
 
         // look
@@ -246,12 +228,12 @@ export default class CommandHandler extends KeyboardHandler {
 
         // Group press listeners
         this.group(["NumpadAdd", "NumpadEnter"], () => {
-            this.cartManager.changeActiveProduct(1).save();
+            this.stateManager.changeActiveProduct(1).save();
         });
 
         // Group press listeners
         this.group(["Delete", "Insert"], () => {
-            this.cartManager
+            this.stateManager
                 .set("customer", undefined)
                 .set("greeting", undefined)
                 .save();
@@ -259,12 +241,12 @@ export default class CommandHandler extends KeyboardHandler {
 
         this.group(["Numpad2", "Numpad5"], () => {
             this.setCommand("");
-            this.cartManager
+            this.stateManager
                 .increment("products.{{activeProduct}}.discount")
                 .save();
         });
         this.group(["Numpad5", "Numpad8"], () => {
-            this.cartManager
+            this.stateManager
                 .decrement("products.{{activeProduct}}.discount")
                 .save();
             this.setCommand("");
@@ -272,24 +254,24 @@ export default class CommandHandler extends KeyboardHandler {
 
         this.group(["Numpad1", "Numpad4"], () => {
             this.setCommand("");
-            this.cartManager
+            this.stateManager
                 .increment("products.{{activeProduct}}.extraDiscount")
                 .save();
         });
         this.group(["PageUp", "PageDown"], () => {
             // this.setCommand("");
-            // this.cartManager
+            // this.stateManager
             //     .update("products.{{activeProduct}}", (product: ProductWithID) => {
 
             //     })
             //     .save();
             this.handleUpdateProductPrice(
-                -this.cartManager.get("products.{{activeProduct}}.updatePrice")
+                -this.stateManager.get("products.{{activeProduct}}.updatePrice")
             );
         });
 
         this.group(["Numpad4", "Numpad7"], () => {
-            this.cartManager
+            this.stateManager
                 .decrement("products.{{activeProduct}}.extraDiscount")
                 .save();
         });
@@ -328,14 +310,14 @@ export default class CommandHandler extends KeyboardHandler {
         this.listen("Numpad0", () => {
             if (this.value == ".") {
                 this.setCommand("");
-                this.cartManager.set("paid", 0).save();
+                this.stateManager.set("paid", 0).save();
             }
         });
 
         this.listen("NumpadAdd", () => {
             if (/^[1-9][0-9]*$/.test(this.value)) {
                 this.setCommand("");
-                this.cartManager
+                this.stateManager
                     .set(
                         "products.{{activeProduct}}.quantity",
                         parseInt(this.value)
@@ -353,16 +335,18 @@ export default class CommandHandler extends KeyboardHandler {
                 ? Object.keys(this.params.filteredCustomers).length - 1
                 : Object.keys(this.params.filteredProducts).length - 1;
             if (this.value.length > 0) {
-                let currentIndex = this.cartManager.get("selectedProductIndex");
+                let currentIndex = this.stateManager.get(
+                    "selectedProductIndex"
+                );
                 let newIndex = currentIndex;
                 if (currentIndex == 0) {
                     newIndex = max;
                 } else {
                     newIndex = currentIndex - 1;
                 }
-                this.cartManager.set("selectedProductIndex", newIndex).save();
+                this.stateManager.set("selectedProductIndex", newIndex).save();
             } else {
-                this.cartManager.changeMeasurement(-1).save();
+                this.stateManager.changeMeasurement(-1).save();
             }
         });
 
@@ -371,16 +355,18 @@ export default class CommandHandler extends KeyboardHandler {
                 ? Object.keys(this.params.filteredCustomers).length - 1
                 : Object.keys(this.params.filteredProducts).length - 1;
             if (this.value.length > 0) {
-                let currentIndex = this.cartManager.get("selectedProductIndex");
+                let currentIndex = this.stateManager.get(
+                    "selectedProductIndex"
+                );
                 let newIndex = currentIndex;
                 if (currentIndex == max) {
                     newIndex = 0;
                 } else {
                     newIndex = currentIndex + 1;
                 }
-                this.cartManager.set("selectedProductIndex", newIndex).save();
+                this.stateManager.set("selectedProductIndex", newIndex).save();
             } else {
-                this.cartManager.changeMeasurement(1).save();
+                this.stateManager.changeMeasurement(1).save();
             }
         });
 
@@ -391,19 +377,19 @@ export default class CommandHandler extends KeyboardHandler {
         // ArrowUp and NumpadAdd
         this.listen(["ArrowUp", "NumpadAdd"], () => {
             if (this.value.length == 0) {
-                this.cartManager
+                this.stateManager
                     .increment("products.{{activeProduct}}.quantity")
                     .save();
             }
 
             if (/^\*\d*$/.test(this.value)) {
-                this.cartManager
+                this.stateManager
                     .increment("products.{{activeProduct}}.discount")
                     .save();
             }
 
             if (/^\/\d*$/.test(this.value)) {
-                this.cartManager
+                this.stateManager
                     .increment("products.{{activeProduct}}.extraDiscount")
                     .save();
             }
@@ -414,19 +400,19 @@ export default class CommandHandler extends KeyboardHandler {
         // ArrowDown and NumpadEnter
         this.listen(["ArrowDown", "NumpadEnter"], () => {
             if (this.value.length == 0) {
-                this.cartManager
+                this.stateManager
                     .decrement("products.{{activeProduct}}.quantity")
                     .save();
             }
 
             if (/^\*\d*$/.test(this.value)) {
-                this.cartManager
+                this.stateManager
                     .decrement("products.{{activeProduct}}.discount")
                     .save();
             }
 
             if (/^\/\d*$/.test(this.value)) {
-                this.cartManager
+                this.stateManager
                     .decrement("products.{{activeProduct}}.extraDiscount")
                     .save();
             }
@@ -444,7 +430,7 @@ export default class CommandHandler extends KeyboardHandler {
                 if (commandKey.length > 0) {
                     let product = this.getProductByCommand(commandKey);
                     if (product) {
-                        this.cartManager
+                        this.stateManager
                             .addToCart(product)
                             .update(
                                 `products.{{activeProduct}}.discount`,
@@ -486,42 +472,12 @@ export default class CommandHandler extends KeyboardHandler {
 
             this.setCommand("");
 
-            if (
-                !this.params.isCustomers &&
-                this.value.length > 0 &&
-                this.params.filteredCustomers &&
-                this.params.filteredProducts
-            ) {
-                if (
-                    Object.keys(this.params.filteredProducts).length > 0 &&
-                    /^[a-zA-Z]+/.test(this.value)
-                ) {
-                    const filteredProducts: Record<string, ProductWithID> =
-                        this.params.filteredProducts;
-                    const product = {
-                        ...Object.values(filteredProducts)[
-                            this.cartManager.get("selectedProductIndex")
-                        ]!,
-                        quantity: 1,
-                    };
-                    this.cartManager.addToCart(product).save();
-                    this.setCommand("");
-                    return;
-                }
-            } else if (this.value.length > 1 && this.params.filteredCustomers) {
-                if (Object.keys(this.params.filteredCustomers).length > 0) {
-                    this.handleAddCustomer();
-                    this.setCommand("");
-                }
-                return;
-            }
-
             if (/^\.[1-9]*[0-9]*$/.test(this.value)) {
                 this.setCommand("");
 
                 if (this.value == ".") {
-                    this.cartManager
-                        .set("paid", this.cartManager.get("totalPrice"))
+                    this.stateManager
+                        .set("paid", this.stateManager.get("totalPrice"))
                         .save();
                     return;
                 }
@@ -529,7 +485,7 @@ export default class CommandHandler extends KeyboardHandler {
                 if (this.value.length > 1) {
                     let amount = parseInt(this.value.slice(1));
                     if (amount) {
-                        this.cartManager.set("paid", amount).save();
+                        this.stateManager.set("paid", amount).save();
                     }
                     return;
                 }
@@ -540,7 +496,7 @@ export default class CommandHandler extends KeyboardHandler {
                 let amount = parseInt(this.value.slice(1));
                 this.setCommand("");
                 // dispatch(addExtraDiscount({ key: undefined, amount }));
-                this.cartManager
+                this.stateManager
                     .set("products.{{activeProduct}}.extraDiscount", amount)
                     .save();
                 return;
@@ -551,15 +507,15 @@ export default class CommandHandler extends KeyboardHandler {
                 let amount = parseInt(this.value.slice(1));
                 this.setCommand("");
                 // dispatch(addDiscount({ key: undefined, amount }));
-                this.cartManager
+                this.stateManager
                     .set("products.{{activeProduct}}.discount", amount)
                     .save();
                 return;
             }
 
             if (/^[.\u0964][^\d]*[\p{L}]+/u.test(this.value)) {
-                if (this.cartManager.get("activeProduct")) {
-                    this.cartManager
+                if (this.stateManager.get("activeProduct")) {
+                    this.stateManager
                         .set(
                             "products.{{activeProduct}}.note",
                             capitalize(this.value.slice(1).trim())
@@ -570,7 +526,7 @@ export default class CommandHandler extends KeyboardHandler {
             }
 
             if (/^,[^\d]*[\p{L}]+/u.test(this.value)) {
-                this.cartManager
+                this.stateManager
                     .set("greeting", capitalize(this.value.slice(1).trim()))
                     .save();
 

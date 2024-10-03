@@ -1,12 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CartState } from "./cartSlice";
+import { StockState } from "./stockSlice";
 
 interface HelperState {
     cartStates: Record<string, CartState>;
+    stockStates: Record<string, StockState>;
 }
 
 const initialState: HelperState = {
     cartStates: {}, // Correct spelling and typing
+    stockStates: {}, // Correct spelling and typing
 };
 
 const helperSlice = createSlice({

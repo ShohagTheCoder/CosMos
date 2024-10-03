@@ -29,11 +29,11 @@ import ProductUpdateShortcut from "../sell/components/ProductUpdateShortcut";
 import { setProduct } from "@/app/store/slices/productSlice";
 import apiCall from "@/app/common/apiCall";
 import useCartManager from "@/app/store/providers/cartProvider";
-import CommandHandler from "@/app/common/handlers/commandHandler";
 import Notifications from "@/app/elements/notification/Notifications";
 // eslint-disable-next-line no-unused-vars
 import SellPageSelector from "./components/SellPageSelector";
 import { cloneDeep } from "lodash";
+import SellCommandHandler from "@/app/common/handlers/sellCommandHandler";
 
 interface SellProps {
     productsArray: ProductWithID[];
@@ -88,7 +88,7 @@ export default function Sell({
     const [sellButtonLoading, setSellButtonLoading] = useState(false);
 
     const commandHandler = useRef(
-        new CommandHandler(
+        new SellCommandHandler(
             cartManager,
             setCommand,
             getProductByCommand,
@@ -239,7 +239,8 @@ export default function Sell({
             })
             .finally(() => {
                 setTimeout(() => {
-                    setSellButtonLoading(false);
+                    // setSellButtonLoading(false);
+                    cartManager.reset(initialCartState);
                 }, 3000);
             });
     }

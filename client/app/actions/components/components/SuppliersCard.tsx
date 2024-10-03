@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 
 export default function SuppliersCard({ supplilers }: { supplilers: any }) {
     const selectedProductIndex = useSelector(
-        (state: RootState) => state.purchase.selectedProductIndex
+        (state: RootState) => state.stock.selectedProductIndex
     );
 
     function handleAddSuppliler() {
