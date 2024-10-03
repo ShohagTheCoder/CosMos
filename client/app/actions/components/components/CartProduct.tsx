@@ -113,7 +113,7 @@ function CartProduct({
                 <button
                     className="py-2 px-3 rounded-lg select-none hover:bg-red-800"
                     onDoubleClick={() => {
-                        cartManager.removeToCart(undefined).save();
+                        cartManager.removeTo(undefined).save();
                     }}
                 >
                     <TrashIcon height="20" width="20" />
@@ -276,7 +276,7 @@ function CartProduct({
                                                                 product.unit
                                                                     .value -
                                                                 product.discount) *
-                                                            product.count
+                                                            product.quantity
                                                         ).toFixed(0)}{" "}
                                                         ৳
                                                     </td>

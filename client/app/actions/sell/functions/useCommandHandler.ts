@@ -84,7 +84,7 @@ export function useHandleKeyUp(
                 console.log(product);
                 if (product) {
                     cartManager
-                        .addToCart(product)
+                        .addTo(product)
                         .update(`products.{{activeProduct}}.discount`, () => {
                             if (amount < product.price / 2) {
                                 console.log("amount is price");
@@ -108,7 +108,7 @@ export function useHandleKeyUp(
             console.log(product);
             if (product) {
                 cartManager
-                    .addToCart(product)
+                    .addTo(product)
                     .set(`products.${product._id}.quantity`, parseInt(e.key))
                     .save();
             }
@@ -123,7 +123,7 @@ export function useHandleKeyUp(
             console.log(product);
             if (product) {
                 cartManager
-                    .addToCart(product)
+                    .addTo(product)
                     .set(`products.${product._id}.quantity`, quantity)
                     .save();
             }
@@ -158,7 +158,7 @@ export function useHandleKeyUp(
             ) {
                 let product = getProductByCommand(command);
                 if (product) {
-                    cartManager.addToCart(product).save();
+                    cartManager.addTo(product).save();
                 }
                 return;
             }
@@ -479,7 +479,7 @@ export function useHandleKeyUp(
                     if (commandKey.length > 0) {
                         let product = getProductByCommand(commandKey);
                         if (product) {
-                            cartManager.addToCart(product).save();
+                            cartManager.addTo(product).save();
                         }
                     }
                     setCommand("");
@@ -495,7 +495,7 @@ export function useHandleKeyUp(
                     let product = getProductByCommand(command);
                     if (product) {
                         cartManager
-                            .addToCart(product)
+                            .addTo(product)
                             .set(
                                 `products.${product._id}.quantity`,
                                 parseInt(e.key)
@@ -513,7 +513,7 @@ export function useHandleKeyUp(
                     let product = getProductByCommand(commandKey);
                     if (product) {
                         cartManager
-                            .addToCart(product)
+                            .addTo(product)
                             .set(`products.${product._id}.quantity`, quantity)
                             .save();
                     }
@@ -526,7 +526,7 @@ export function useHandleKeyUp(
                     stopKeyUpHandlerRef.current = true;
                     let product = getProductByCommand(command);
                     if (product) {
-                        cartManager.addToCart(product).save();
+                        cartManager.addTo(product).save();
                     }
                     return;
                 }
@@ -788,7 +788,7 @@ export function useHandleKeyUp(
                                 ],
                                 quantity: 1,
                             };
-                            cartManager.addToCart(product).save();
+                            cartManager.addTo(product).save();
                             setCommand("");
                         }
                     } else if (command.length > 1 && filteredCustomers) {

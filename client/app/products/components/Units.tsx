@@ -27,7 +27,7 @@ function Units() {
     const units = product.units;
 
     function handleDynamicValue(unit: string, value: number) {
-        if (value > 100 || value < 0) return;
+        if (value > 10000 || value < 0) return;
         dispatch(updateUnitsDynamicValue({ key: unit, value }));
     }
 
@@ -132,7 +132,7 @@ function Units() {
                                                         value
                                                     )
                                                 }
-                                                inputClassName="!w-12"
+                                                inputClassName="!w-16"
                                                 buttonClassName="!bg-green-700"
                                             />
                                         </td>
@@ -173,7 +173,7 @@ function Units() {
                                                             value
                                                         )
                                                     }
-                                                    inputClassName="!w-12"
+                                                    inputClassName="!w-16"
                                                     buttonClassName="!bg-green-700"
                                                 />
                                             ) : (

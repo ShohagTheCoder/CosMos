@@ -7,8 +7,8 @@ import {
     addCustomerAccount,
     addDiscount,
     addExtraDiscount,
-    addToCart,
-    addToCartWith,
+    addTo,
+    addToWith,
     CartState,
     changeActiveProduct,
     decrementQuantity,
@@ -131,7 +131,7 @@ export default function Sell({
             if (productId) {
                 setCommand("");
                 dispatch(
-                    addToCartWith({
+                    addToWith({
                         product: products[productId],
                         quantity,
                     })
@@ -300,7 +300,7 @@ export default function Sell({
             if (!product) return;
             e.preventDefault();
             setCommand("");
-            dispatch(addToCart(product));
+            dispatch(addTo(product));
             return;
         }
 
@@ -533,7 +533,7 @@ export default function Sell({
                 stopLongPress();
                 e.preventDefault();
                 setCommand("");
-                dispatch(addToCart(product));
+                dispatch(addTo(product));
                 return;
             }
 
@@ -580,7 +580,7 @@ export default function Sell({
                     const productId = productsMap[key];
                     if (productId) {
                         dispatch(
-                            addToCartWith({
+                            addToWith({
                                 product: products[productId],
                                 quantity,
                             })
@@ -671,7 +671,7 @@ export default function Sell({
                             ],
                             quantity: 1,
                         };
-                        dispatch(addToCart(product));
+                        dispatch(addTo(product));
                         setCommand("");
                     }
                 } else if (command.length > 1 && filteredCustomers) {
@@ -792,8 +792,8 @@ export default function Sell({
         }
     }
 
-    function handleAddToCart(product: ProductWithID) {
-        dispatch(addToCart(product));
+    function handleaddTo(product: ProductWithID) {
+        dispatch(addTo(product));
     }
 
     function handleSellPageChange(sellPageKey: string) {
@@ -932,7 +932,7 @@ export default function Sell({
                                 // <ProductCard products={filteredProducts} />
                                 <ProductsCard
                                     selected={cart.selectedProductIndex}
-                                    callback={handleAddToCart}
+                                    callback={handleaddTo}
                                     products={filteredProducts}
                                 />
                             )}

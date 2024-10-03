@@ -113,7 +113,7 @@ function StockProduct({
                 <button
                     className="py-2 px-3 rounded-lg select-none hover:bg-red-800"
                     onDoubleClick={() => {
-                        stockManager.removeToStock(undefined).save();
+                        stockManager.removeTo(undefined).save();
                     }}
                 >
                     <TrashIcon height="20" width="20" />
@@ -276,7 +276,7 @@ function StockProduct({
                                                                 product.unit
                                                                     .value -
                                                                 product.discount) *
-                                                            product.count
+                                                            product.quantity
                                                         ).toFixed(0)}{" "}
                                                         ৳
                                                     </td>

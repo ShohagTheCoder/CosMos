@@ -453,6 +453,9 @@ const productSlice = createSlice({
         },
         addResource: (state: Product, action: PayloadAction<Resource>) => {
             const resource = action.payload;
+            if (!state.resources) {
+                state.resources = {};
+            }
             const existed = state.resources[resource._id];
             if (existed) {
                 state.resources[resource._id].quantity += 1;

@@ -2,9 +2,7 @@ import Product, {
     ProductWithID,
 } from "../products/interfaces/product.interface";
 
-export default function getProductUnitPrice(
-    product: Product | ProductWithID
-): number {
+export default function getProductUnitPrice(product: Product | ProductWithID) {
     const { units, unit, prices, quantity = 1, price: basePrice } = product;
     const selectedUnitValue = units[unit].value;
     let finalPrice = basePrice;
@@ -16,7 +14,7 @@ export default function getProductUnitPrice(
         ) {
             break;
         }
-        finalPrice = Math.ceil(priceInfo.price);
+        finalPrice = priceInfo.price;
     }
 
     return finalPrice;

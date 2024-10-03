@@ -10,13 +10,13 @@ export class Unit {
     @Prop()
     dynamic: boolean;
 
-    @Prop()
+    @Prop({ default: 1 })
     value: number;
 
     @Prop()
     label: string;
 
-    @Prop()
+    @Prop({ default: 1 })
     dynamicValue: boolean;
 
     @Prop()
@@ -31,10 +31,10 @@ export class Price {
     @Prop()
     unit: string;
 
-    @Prop({ required: true })
+    @Prop({ required: true, default: 1 })
     start: number;
 
-    @Prop({ type: Number })
+    @Prop({ type: Number, required: true })
     price: number;
 }
 
@@ -43,7 +43,7 @@ export class Measurement {
     @Prop()
     unit: string;
 
-    @Prop()
+    @Prop({ default: 1 })
     value: number;
 }
 
@@ -124,7 +124,7 @@ export class Product extends Document {
     @Prop({ default: 0 })
     updatePrice: number;
 
-    @Prop({ type: mongoose.Schema.Types.Mixed })
+    @Prop({ type: mongoose.Schema.Types.Mixed, default: {} })
     resources: Record<string, Resource>;
 
     @Prop()

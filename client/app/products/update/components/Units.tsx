@@ -25,7 +25,7 @@ function Units({ data }: { data: any }) {
 
     function handleDynamicValue(unit: string, sValue: string) {
         const value = parseInt(sValue);
-        if (value > 100 || value < 0) return;
+        if (value > 10000 || value < 0) return;
         dispatch(updateUnitsDynamicValue({ key: unit, value }));
     }
 

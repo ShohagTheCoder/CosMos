@@ -1,7 +1,7 @@
 import Product, {
     ProductWithID,
 } from "@/app/products/interfaces/product.interface";
-import { addToCart } from "@/app/store/slices/cartSlice";
+import { addTo } from "@/app/store/slices/cartSlice";
 import { RootState } from "@/app/store/store";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,9 +12,9 @@ function ProductCard({ products }: { products: any }) {
         (state: RootState) => state.cart.selectedProductIndex
     );
 
-    function handleAddToCart(_id: string) {
+    function handleaddTo(_id: string) {
         const newProduct: ProductWithID = products[_id];
-        dispatch(addToCart({ ...newProduct, subTotal: newProduct.price }));
+        dispatch(addTo({ ...newProduct, subTotal: newProduct.price }));
         document.getElementById("command")?.focus();
     }
 
@@ -23,7 +23,7 @@ function ProductCard({ products }: { products: any }) {
             {Object.values(products).map((product: any, key: number) => (
                 <div
                     key={product._id}
-                    onClick={() => handleAddToCart(product._id)}
+                    onClick={() => handleaddTo(product._id)}
                     className={`max-w-sm rounded overflow-hidden shadow-xl bg-gray-800 text-white ${
                         selectedProductIndex == key
                             ? "bg-green-900"

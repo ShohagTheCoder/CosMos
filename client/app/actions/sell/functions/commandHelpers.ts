@@ -1,7 +1,7 @@
 import {
     addDiscount,
     addExtraDiscount,
-    addToCart,
+    addTo,
     CartState,
     removeFromCart,
     resetSalePrice,
@@ -149,7 +149,7 @@ export function handleAddProductToCart(
         let product = products[productKey];
         if (!product) return;
         setCommand("");
-        dispatch(addToCart(product));
+        dispatch(addTo(product));
     }
 }
 

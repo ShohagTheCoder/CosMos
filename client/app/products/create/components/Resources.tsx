@@ -84,7 +84,7 @@ function Resources() {
                             </p>
                         </div>
                         <div className="">
-                            {Object.values(product.resources).map(
+                            {Object.values(product.resources || {}).map(
                                 (resource: Resource, key: number) => {
                                     const pro: ProductWithID = products.find(
                                         (p: ProductWithID) => {
@@ -99,7 +99,10 @@ function Resources() {
                                                     <div className="mr-3">
                                                         <img
                                                             className="w-[80px]"
-                                                            src="/product.jpg"
+                                                            src={`/images/products/${
+                                                                product.image ||
+                                                                "product.jpg"
+                                                            }`}
                                                             alt=""
                                                         />
                                                     </div>
@@ -135,7 +138,8 @@ function Resources() {
                                                                     className="bg-slate-800 py-2 px-3 mx-2"
                                                                 >
                                                                     {Object.values(
-                                                                        pro.units
+                                                                        pro.units ||
+                                                                            {}
                                                                     ).map(
                                                                         (
                                                                             unit: Unit,

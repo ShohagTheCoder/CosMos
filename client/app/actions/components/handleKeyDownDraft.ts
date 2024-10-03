@@ -24,7 +24,7 @@ function handleKeyDown(e: KeyboardEvent): void {
         if (!product) return;
         e.preventDefault();
         setCommand("");
-        dispatch(addToCart(product));
+        dispatch(addTo(product));
         return;
     }
 
@@ -260,7 +260,7 @@ function handleKeyDown(e: KeyboardEvent): void {
             stopLongPress();
             e.preventDefault();
             setCommand("");
-            dispatch(addToCart(product));
+            dispatch(addTo(product));
             return;
         }
 
@@ -307,7 +307,7 @@ function handleKeyDown(e: KeyboardEvent): void {
                 const productId = productsMap[key];
                 if (productId) {
                     dispatch(
-                        addToCartWith({
+                        addToWith({
                             product: products[productId],
                             quantity,
                         })
@@ -398,7 +398,7 @@ function handleKeyDown(e: KeyboardEvent): void {
                         ],
                         quantity: 1,
                     };
-                    dispatch(addToCart(product));
+                    dispatch(addTo(product));
                     setCommand("");
                 }
             } else if (command.length > 1 && filteredCustomers) {
