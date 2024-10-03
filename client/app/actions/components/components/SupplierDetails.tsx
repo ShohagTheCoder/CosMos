@@ -3,8 +3,8 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 function SupplierDetails() {
-    const purchase = useSelector((state: RootState) => state.purchase);
-    const supplier = purchase.supplier;
+    const stock = useSelector((state: RootState) => state.stock);
+    const supplier = stock.supplier;
 
     if (supplier) {
         return (
@@ -13,7 +13,7 @@ function SupplierDetails() {
                     <tbody>
                         <tr className="border-b border-gray-700">
                             <td className="px-4 py-3 font-semibold text-gray-300">
-                                কারস্টমার
+                                সাপ্লায়ার
                             </td>
                             <td className="px-4 py-3 text-gray-400">
                                 {supplier.name}
@@ -39,6 +39,8 @@ function SupplierDetails() {
                 </table>
             </div>
         );
+    } else {
+        return "";
     }
 }
 

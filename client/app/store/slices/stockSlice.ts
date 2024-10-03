@@ -1,11 +1,11 @@
 import getCurrentMeasurement from "@/app/functions/getCurrentMeasurement";
 import getProductsTotalPrice from "@/app/functions/getProductsTotalPrice";
-import getUpdatedPurchaseProduct from "@/app/functions/purchase/getUpdatedPurchaseProduct";
+import getUpdatedStockProduct from "@/app/functions/purchase/getUpdatedPurchaseProduct";
 import { Supplier } from "@/app/interfaces/supplier.interface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export interface PurchaseState {
+export interface StockState {
     receiver?: {
         name: string;
     };
@@ -16,34 +16,34 @@ export interface PurchaseState {
     selectedProductIndex: number;
 }
 
-const initialState: PurchaseState = {
+const initialState: StockState = {
     selectedProductIndex: 0,
     products: {},
     totalPrice: 0,
 };
 
-const purchaseSlice = createSlice({
-    name: "purchase",
+const stockSlice = createSlice({
+    name: "stock",
     initialState,
     reducers: {
-        addToPurchase: (
-            state: PurchaseState,
+        addToStock: (
+            state: StockState,
             action: PayloadAction<ProductWithID>
         ) => {
             let product = action.payload;
             const existingProduct = state.products[product._id];
 
             if (existingProduct) {
-                state.products[product._id] = getUpdatedPurchaseProduct(
+                state.products[product._id] = getUpdatedStockProduct(
                     existingProduct,
                     1,
                     null
                 );
             } else {
-                product = getUpdatedPurchaseProduct(
+                product = getUpdatedStockProduct(
                     product,
-                    product.purchaseMeasurements[0].value - 1,
-                    product.purchaseMeasurements[0].unit
+                    product.stockMeasurements[0].value - 1,
+                    product.stockMeasurements[0].unit
                 );
                 state.products = { ...state.products, [product._id]: product };
                 state.activeProduct = product._id;
@@ -51,18 +51,18 @@ const purchaseSlice = createSlice({
 
             state.totalPrice += product.subTotal;
         },
-        addToPurchaseProducts: (
-            state: PurchaseState,
+        addToStockProducts: (
+            state: StockState,
             action: PayloadAction<ProductWithID[]>
         ) => {
             const products = action.payload;
             // Loop through the new products and update the state
             products.forEach((product) => {
-                if (product.purchaseMeasurements.length > 0) {
-                    state.products[product._id] = getUpdatedPurchaseProduct(
+                if (product.stockMeasurements.length > 0) {
+                    state.products[product._id] = getUpdatedStockProduct(
                         product,
-                        product.purchaseMeasurements[0].value - 1,
-                        product.purchaseMeasurements[0].unit
+                        product.stockMeasurements[0].value - 1,
+                        product.stockMeasurements[0].unit
                     );
                 }
             });
@@ -70,7 +70,7 @@ const purchaseSlice = createSlice({
             // Calculate the new total price
             state.totalPrice = getProductsTotalPrice(state.products);
         },
-        removeFromPurchase: (state, action) => {
+        removeFromStock: (state, action) => {
             let productId = action.payload;
             if (productId == null) productId = state.activeProduct;
             const removedProduct = state.products[productId];
@@ -106,7 +106,7 @@ const purchaseSlice = createSlice({
             state.selectedProductIndex = 0;
         },
 
-        updatePaid: (state: PurchaseState, action: PayloadAction<number>) => {
+        updatePaid: (state: StockState, action: PayloadAction<number>) => {
             let paid = action.payload;
             if (!paid) {
                 paid = 0;
@@ -123,7 +123,7 @@ const purchaseSlice = createSlice({
             const product = state.products[key];
 
             if (product && product.quantity >= 0) {
-                const updatedProduct = getUpdatedPurchaseProduct(
+                const updatedProduct = getUpdatedStockProduct(
                     product,
                     quantity - product.quantity,
                     null
@@ -138,7 +138,7 @@ const purchaseSlice = createSlice({
                 });
             }
         },
-        incrementQuantity: (state: PurchaseState, action) => {
+        incrementQuantity: (state: StockState, action) => {
             let productId = action.payload;
             if (!productId) {
                 productId = state.activeProduct;
@@ -146,11 +146,7 @@ const purchaseSlice = createSlice({
             const product = state.products[productId];
 
             if (product) {
-                const updatedProduct = getUpdatedPurchaseProduct(
-                    product,
-                    1,
-                    null
-                );
+                const updatedProduct = getUpdatedStockProduct(product, 1, null);
                 state.products[productId] = updatedProduct;
                 state.totalPrice = getProductsTotalPrice({
                     ...state.products,
@@ -166,7 +162,7 @@ const purchaseSlice = createSlice({
             const product = state.products[productId];
 
             if (product && product.quantity > 0) {
-                const updatedProduct = getUpdatedPurchaseProduct(
+                const updatedProduct = getUpdatedStockProduct(
                     product,
                     -1,
                     null
@@ -183,14 +179,14 @@ const purchaseSlice = createSlice({
         },
 
         updateUnit: (
-            state: PurchaseState,
+            state: StockState,
             action: PayloadAction<{ key: string; unit: string }>
         ) => {
             const { key, unit } = action.payload;
             const product = state.products[key];
 
             if (product) {
-                const updatedProduct = getUpdatedPurchaseProduct(
+                const updatedProduct = getUpdatedStockProduct(
                     product,
                     null,
                     unit
@@ -207,7 +203,7 @@ const purchaseSlice = createSlice({
         },
 
         shiftMeasurementTo: (
-            state: PurchaseState,
+            state: StockState,
             action: PayloadAction<number>
         ) => {
             const id =
@@ -228,7 +224,7 @@ const purchaseSlice = createSlice({
                     measurement =
                         measurements[currentMeasurementIndex + action.payload];
                 }
-                const updatedProduct = getUpdatedPurchaseProduct(
+                const updatedProduct = getUpdatedStockProduct(
                     product,
                     measurement.value - product.quantity,
                     measurement.unit
@@ -245,7 +241,7 @@ const purchaseSlice = createSlice({
             }
         },
 
-        clearPurchase: (state) => {
+        clearStock: (state) => {
             state.products = {};
             state.totalPrice = 0;
         },
@@ -259,12 +255,12 @@ const purchaseSlice = createSlice({
         },
 
         addDiscount: (
-            state: PurchaseState,
+            state: StockState,
             action: PayloadAction<{ key: string; amount: number }>
         ) => {
             const { key, amount } = action.payload;
             if (!state.products[key] || amount < 0) return;
-            const updatedProduct = getUpdatedPurchaseProduct(
+            const updatedProduct = getUpdatedStockProduct(
                 {
                     ...state.products[key],
                     discount: amount,
@@ -279,12 +275,12 @@ const purchaseSlice = createSlice({
             });
         },
         addExtraDiscount: (
-            state: PurchaseState,
+            state: StockState,
             action: PayloadAction<{ key: string; amount: number }>
         ) => {
             const { key, amount } = action.payload;
             if (!state.products[key] || amount < 0) return;
-            const updatedProduct = getUpdatedPurchaseProduct(
+            const updatedProduct = getUpdatedStockProduct(
                 {
                     ...state.products[key],
                     extraDiscount: amount,
@@ -298,7 +294,7 @@ const purchaseSlice = createSlice({
                 [key]: updatedProduct,
             });
         },
-        setReceiver: (state: PurchaseState, action) => {
+        setReceiver: (state: StockState, action) => {
             if (action.payload._id) {
                 state.receiver = action.payload;
             }
@@ -307,14 +303,14 @@ const purchaseSlice = createSlice({
 });
 
 export const {
-    addToPurchase,
-    removeFromPurchase,
+    addToStock,
+    removeFromStock,
     updatePaid,
     updateQuantity,
     incrementQuantity,
-    addToPurchaseProducts,
+    addToStockProducts,
     decrementQuantity,
-    clearPurchase,
+    clearStock,
     addSupplier,
     changeActiveProduct,
     selectPreviousProduct,
@@ -325,5 +321,5 @@ export const {
     addDiscount,
     addExtraDiscount,
     setReceiver,
-} = purchaseSlice.actions;
-export default purchaseSlice.reducer;
+} = stockSlice.actions;
+export default stockSlice.reducer;

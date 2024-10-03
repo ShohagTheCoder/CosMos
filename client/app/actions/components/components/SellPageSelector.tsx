@@ -5,7 +5,7 @@ interface CartState {
 }
 
 interface SellPageSelectorProps {
-    activeSellPage: string; // Currently active sell page
+    activePage: string; // Currently active sell page
     cartStates: Record<string, CartState>; // Object containing customer information for different sell pages
     userName: string; // Logged-in user's name
     // eslint-disable-next-line no-unused-vars
@@ -14,7 +14,7 @@ interface SellPageSelectorProps {
 }
 
 const SellPageSelector: React.FC<SellPageSelectorProps> = ({
-    activeSellPage,
+    activePage,
     cartStates,
     userName,
     handleSellPageChange,
@@ -35,7 +35,7 @@ const SellPageSelector: React.FC<SellPageSelectorProps> = ({
                     <button
                         key={key}
                         className={`py-1 px-3 ${
-                            activeSellPage === key ? "bg-green-700" : ""
+                            activePage === key ? "bg-green-700" : ""
                         }`}
                         onClick={() => handleSellPageChange(key)}
                     >

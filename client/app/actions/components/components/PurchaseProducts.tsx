@@ -8,7 +8,7 @@ import {
     addDiscount,
     addExtraDiscount,
     updateUnit,
-} from "@/app/store/slices/purchaseSlice"; // Assuming your purchase slice location
+} from "@/app/store/slices/stockSlice"; // Assuming your purchase slice location
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import {
     convertBnBDToStandard,

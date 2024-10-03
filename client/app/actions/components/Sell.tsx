@@ -69,7 +69,7 @@ export default function Sell({
     const [isCustomers, setIsCustomers] = useState(false);
     let noteRef = useRef<HTMLTextAreaElement>(null);
     const helper = useSelector((state: RootState) => state.helper);
-    const activeSellPage = useRef("F5");
+    const activePage = useRef("F5");
     const [productUpdateShortcut, setProductUpdateShortcut] = useState(false);
     const { notification, notifySuccess, notifyError } = useNotification();
     const [settingState, setSettingState] = useState(setting);
@@ -323,15 +323,15 @@ export default function Sell({
     }
 
     function handleSellPageChange(sellPageKey: string) {
-        if (sellPageKey === activeSellPage.current) return;
+        if (sellPageKey === activePage.current) return;
         // Deep copy cart states if necessary
         let cartStates: Record<string, CartState> = cloneDeep(
             helper.cartStates
         );
         // Ensure cart is defined before assignment
-        cartStates[activeSellPage.current] = cart;
+        cartStates[activePage.current] = cart;
         // Update the active sell page first
-        activeSellPage.current = sellPageKey;
+        activePage.current = sellPageKey;
         // Dispatch Redux state update
         dispatch(updateHelperField({ field: "cartStates", value: cartStates }));
         // Use the cart manager to reset and save the new state
@@ -359,7 +359,7 @@ export default function Sell({
                     <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 lg:h-screen gap-6 overflow-x-hidden overflow-y-auto lg:overflow-y-hidden cosmos-scrollbar">
                         <div className="max-h=[1000px] h-full flex flex-col overflow-hidden col-span-8 lg:col-span-5 py-4 me-3 lg:me-0">
                             <SellPageSelector
-                                activeSellPage={activeSellPage.current}
+                                activePage={activePage.current}
                                 cartStates={helper.cartStates}
                                 userName={user.name}
                                 handleSellPageChange={handleSellPageChange}

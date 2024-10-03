@@ -13,7 +13,7 @@ export class Purchase extends Document {
     products: Map<string, Product>;
 
     @Prop()
-    receiver: User;
+    user: User;
 
     @Prop()
     totalPrice: number;

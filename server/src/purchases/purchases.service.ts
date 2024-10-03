@@ -6,6 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Purchase, PurchaseDocument } from '../schemas/purchase.schema';
 import { Model } from 'mongoose';
 import { AccountsService } from 'src/accounts/accounts.service';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class PurchasesService {
@@ -14,10 +15,23 @@ export class PurchasesService {
         private purchaseModel: Model<PurchaseDocument>,
         private stocksService: StocksService,
         private accountsService: AccountsService,
+        private usersService: UsersService,
     ) {}
 
     async create(createPurchaseDto: CreatePurchaseDto) {
         try {
+            const shop = await this.usersService.findShop();
+            if (!shop) {
+                throw new Error('Shop not found to exicute sell');
+                return;
+            }
+            if (Object.keys(createPurchaseDto.products).length == 0) {
+                if (createPurchaseDto.supplier == undefined) {
+                    throw new Error('Purchase is empty');
+                    return;
+                }
+            }
+
             // Update stock for each product in cart
             for (const product of Object.values(createPurchaseDto.products)) {
                 await this.stocksService.updateStockQuantityUp(
@@ -31,8 +45,8 @@ export class PurchasesService {
 
             // Create transaction from user to cart for sell's paid
             const cartToUser = await this.accountsService.sendMoney({
-                senderId: '66c6d8a0b0f83bdb4ed36c97',
-                receiverId: createPurchaseDto.receiver.account,
+                senderId: shop.account,
+                receiverId: createPurchaseDto.user.account,
                 amount: createPurchaseDto.totalPrice,
                 action: 'purchase',
                 note: createPurchaseDto.note,
@@ -40,11 +54,15 @@ export class PurchasesService {
 
             createdPurchase.transaction = cartToUser._id.toString();
 
-            return await createdPurchase.save();
+            return {
+                status: 'success',
+                data: await createdPurchase.save(),
+                message: 'Purchase complete',
+            };
         } catch (error) {
+            console.log(error);
             // Handle errors appropriately
-            console.error('Error creating purchase');
-            throw Error('Faild to create purchase'); // Re-throw the error or handle it as needed
+            throw new Error(error); // Re-throw the error or handle it as needed
         }
     }
 

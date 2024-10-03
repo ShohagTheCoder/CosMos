@@ -12,7 +12,7 @@ import { cookies } from "next/headers";
 import apiClient from "@/app/utils/apiClient";
 import { redirect } from "next/navigation"; // Import redirect
 
-async function page() {
+export default async function SellPage() {
     const cookiesList = cookies();
     const userId = cookiesList.get("user-id")?.value;
 
@@ -44,5 +44,3 @@ async function page() {
         return <NoResponse />;
     }
 }
-
-export default page;

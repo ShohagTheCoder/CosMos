@@ -14,9 +14,9 @@ interface CreateCustomerForm {
 
 export default function CreateCustomer() {
     const [form, setForm] = useState<CreateCustomerForm>({
-        name: "Shohag Ahmed",
-        address: "Bangladesh",
-        phoneNumber: "01400901280",
+        name: "",
+        address: "",
+        phoneNumber: "01",
         image: "",
     });
 
@@ -119,7 +119,7 @@ export default function CreateCustomer() {
                     )}
 
                     <button
-                        onClick={handleSubmit}
+                        onDoubleClick={handleSubmit}
                         disabled={loading}
                         className="w-full py-2 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                     >

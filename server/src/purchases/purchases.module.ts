@@ -12,6 +12,9 @@ import {
     Transaction,
     TransactionSchema,
 } from 'src/transactions/schemas/transaction.schema';
+import { UsersService } from 'src/users/users.service';
+import { User, UserSchema } from 'src/users/schemas/user.schema';
+import { Setting, SettingSchema } from 'src/settings/schemas/setting.schema';
 
 @Module({
     imports: [
@@ -21,9 +24,11 @@ import {
             { name: Account.name, schema: AccountSchema },
             { name: Product.name, schema: ProductSchema },
             { name: Transaction.name, schema: TransactionSchema },
+            { name: User.name, schema: UserSchema },
+            { name: Setting.name, schema: SettingSchema },
         ]),
     ],
     controllers: [PurchasesController],
-    providers: [PurchasesService, StocksService, AccountsService],
+    providers: [PurchasesService, StocksService, AccountsService, UsersService],
 })
 export class PurchasesModule {}

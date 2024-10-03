@@ -187,9 +187,6 @@ export class Product extends Document {
 
     @Prop()
     createdAt?: Date;
-
-    @Prop()
-    updatedAt?: Date;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

@@ -1,7 +1,7 @@
 export class CreatePurchaseDto {
     supplier: object;
     products: object;
-    receiver: {
+    user: {
         _id: string;
         account: string;
     };

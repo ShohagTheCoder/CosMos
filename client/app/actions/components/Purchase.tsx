@@ -1,433 +1,597 @@
 "use client";
-
 import Sidebar from "@/app/components/Sidebar";
+import { Customer } from "@/app/interfaces/customer.inerface";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
-import {
-    addSupplier,
-    addToPurchase,
-    addToPurchaseProducts,
-    changeActiveProduct,
-    decrementQuantity,
-    incrementQuantity,
-    removeFromPurchase,
-    resetSelectedProductIndex,
-    selectNexProduct,
-    selectPreviousProduct,
-    setReceiver,
-    shiftMeasurementTo,
-} from "@/app/store/slices/purchaseSlice";
+import { CartState, initialCartState } from "@/app/store/slices/cartSlice";
 import { RootState } from "@/app/store/store";
-import apiClient from "@/app/utils/apiClient";
-import { ERROR, SUCCESS } from "@/app/utils/constants/message";
-import Link from "next/link";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Notification, {
-    NotificationProps,
-} from "@/app/elements/notification/Notification";
+import CustomerCard from "./components/CustomerCard";
+import CartProduct from "./components/CartProduct";
+import CustomerDetails from "./components/CustomerDetails";
+import SellDetails from "./components/SellDetails";
+// eslint-disable-next-line no-unused-vars
+import Notification from "@/app/elements/notification/Notification";
 import { logout } from "../functions/authHandlers";
-import { SupplierWithId } from "@/app/interfaces/supplier.interface";
-import SellReceipt from "@/app/components/bills/SellReceipt";
-import PurchaseDetails from "./components/purchaseDetails";
-import { useEffect, useRef, useState } from "react";
-import PurchaseProducts from "./components/PurchaseProducts";
-import SupplierDetails from "./components/SupplierDetails";
-import PurchaseProductsCard from "./PurchaseProductCard";
+import ProductsCard from "./ProductsCard";
 import { arrayToObjectById } from "../functions/arrayToObjectById";
-import SuppliersCard from "./components/SuppliersCard";
+import { updateHelperField } from "@/app/store/slices/helperSlice";
+import { productArrayToObject } from "../functions/productArrayToObject";
+import useNotification from "@/app/hooks/useNotification";
+import FinalView from "../sell/components/FinalView";
+// import { useHandleKeyUp } from "../sell/functions/keyboardHandler";
+import ProductsRow from "./ProductsRow";
+import ColsIcon from "@/app/icons/ColsIcon";
+import RowIcon from "@/app/icons/RowIcon";
+import NotImageIcon from "@/app/icons/NotImageIcon";
+import ImageIcon from "@/app/icons/ImageIcon";
+import ProductUpdateShortcut from "../sell/components/ProductUpdateShortcut";
+import { setProduct } from "@/app/store/slices/productSlice";
+import apiCall from "@/app/common/apiCall";
+import useCartManager from "@/app/store/providers/cartProvider";
+import CommandHandler from "@/app/common/handlers/commandHandler";
+import Notifications from "@/app/elements/notification/Notifications";
+// eslint-disable-next-line no-unused-vars
+import SellPageSelector from "./components/SellPageSelector";
+import { cloneDeep } from "lodash";
+import { SupplierWithId } from "@/app/interfaces/supplier.interface";
+import PurchaseDetails from "./components/purchaseDetails";
+import SupplierDetails from "./components/SupplierDetails";
 
-interface PurchaseProps {
+interface SellProps {
     productsArray: ProductWithID[];
     suppliersArray: SupplierWithId[];
-    receiver: any;
+    user: any;
+    commands: any[];
+    setting: any;
 }
 
-export default function Purchase({
+export default function Sell({
     productsArray,
     suppliersArray,
-    receiver,
-}: PurchaseProps) {
-    const products = arrayToObjectById(
-        productsArray,
-        (item: ProductWithID) => !item.purchaseEnable
+    user,
+    commands,
+    setting,
+}: SellProps) {
+    const [products, setProducts] = useState(
+        productArrayToObject(productsArray, (item) => !item.sellEnable)
     );
-    const suppliers = arrayToObjectById(suppliersArray);
+
+    const customers = useMemo(
+        () => arrayToObjectById(suppliersArray),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [productsArray]
+    );
+
     let [command, setCommand] = useState("");
-    const [filteredSuppliers, setFilteredSuppliers] = useState(suppliers);
+    const [filteredCustomers, setFilteredCustomers] = useState(customers);
     const dispatch = useDispatch();
-    let purchase = useSelector((state: RootState) => state.purchase);
+    let cart = useSelector((state: RootState) => state.cart);
     const [note, setNote] = useState("");
     const [filteredProducts, setFilteredProducts] = useState(products);
-    const [isSuppliers, setIsSuppliers] = useState(false);
+    const [isCustomers, setIsCustomers] = useState(false);
     let noteRef = useRef<HTMLTextAreaElement>(null);
-    let forceOrder = 1;
+    const helper = useSelector((state: RootState) => state.helper);
+    const activeSellPage = useRef("F5");
+    const [productUpdateShortcut, setProductUpdateShortcut] = useState(false);
+    const { notification, notifySuccess, notifyError } = useNotification();
+    const [settingState, setSettingState] = useState(setting);
+    // eslint-disable-next-line no-unused-vars
+    // const notifications = useSelector(
+    //     (state: RootState) => state.notifications
+    // );
 
-    const [notification, setNotification] = useState<NotificationProps>({
-        type: "none",
-        message: "This is a message",
+    const cartManager = useCartManager();
+
+    const [commandCounter, setCommandCounter] = useState({
+        name: "unknown",
+        value: 0,
     });
+
+    const [sellButtonLoading, setSellButtonLoading] = useState(false);
+
+    const commandHandler = useRef(
+        new CommandHandler(
+            cartManager,
+            setCommand,
+            getProductByCommand,
+            handleUpdateProductPrice,
+            handleCompletePurchase,
+            setCommandCounter,
+            handleProductUpdateShortcut,
+            handleSellPageChange
+        )
+    ).current;
 
     // Single use effect
     useEffect(() => {
-        if (receiver) {
-            dispatch(setReceiver(receiver));
+        if (user) {
+            cartManager.set("user", user).save();
+            // dispatch(setUser(user));
         }
 
         window.addEventListener("keydown", (e: any) => {
-            if (e.key == "Tab") e.preventDefault();
-            let command = document.getElementById("command");
-            if (
-                document.activeElement != command &&
-                e.target.tagName != "TEXTAREA" &&
-                e.target.tagName != "INPUT"
-            ) {
-                command?.focus();
+            // Return if already focused on another input or textare
+            if (["TEXTAREA", "INPUT"].includes(e.target.tagName)) {
+                return;
             }
+
+            const usedKeys = [
+                "F5",
+                "F6",
+                "F7",
+                "F8",
+                "F9",
+                "PageUp",
+                "PageDown",
+                "Tab",
+            ];
+            if (usedKeys.includes(e.key)) {
+                e.preventDefault(); // Prevent tab default behavior
+            }
+            let command = document.getElementById("command");
+            command?.focus(); // Focus the command input element
         });
 
         // Cleanup funtion to remove the evern listener
         return () => {
+            commandHandler.destroy();
             window.removeEventListener("keydown", () => {});
         };
-    }, [receiver]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
-        if (command.startsWith(" ") && suppliers) {
-            setIsSuppliers(true);
+        commandHandler.params = {
+            filteredCustomers,
+            filteredProducts,
+            isCustomers,
+            commandCounter,
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filteredCustomers, filteredProducts, isCustomers, commandCounter]);
 
-            const tempFilteredSuppliers = Object.values(suppliers).filter(
-                (supplier) => {
-                    return supplier.name
-                        .toLowerCase()
-                        .includes(command.trim().toLowerCase());
-                }
+    useEffect(() => {
+        // Match barcode or SKU to add product
+        if (/^[0-9]+$/.test(command)) {
+            let product = productsArray.find(
+                (product) => product.SKU.toString() == command
             );
 
+            if (product) {
+                cartManager.addToCart(product).save();
+                setCommand("");
+                return;
+            }
+        }
+
+        if (/^\s+/.test(command) && customers) {
+            setIsCustomers(true);
             // Convert filtered array back to object
-            const filteredSuppliersObject = tempFilteredSuppliers.reduce<
+            const filteredCustomersObject = Object.entries(customers).reduce<
                 Record<string, SupplierWithId>
-            >((acc, supplier) => {
-                acc[supplier._id] = supplier;
+            >((acc, [key, customer]) => {
+                if (
+                    customer.name
+                        .toLowerCase()
+                        .includes(command.trim().toLowerCase())
+                ) {
+                    acc[key] = customer;
+                }
                 return acc;
             }, {});
 
-            setFilteredSuppliers(filteredSuppliersObject);
-        } else if (products) {
-            if (isSuppliers) {
-                setIsSuppliers(false);
+            setFilteredCustomers(filteredCustomersObject);
+        } else if (/^(?![0-9\s.])[a-zA-Z]{2,10}/.test(command) && products) {
+            if (isCustomers) {
+                setIsCustomers(false);
             }
 
-            const tempFilteredProducts = Object.values(products).filter(
-                (product) => {
-                    return product.name
-                        .toLowerCase()
-                        .includes(command.toLowerCase());
-                }
-            );
-
-            // Convert filtered array back to object
-            const filteredProductsObject = tempFilteredProducts.reduce<
+            let filteredProductsObject = Object.entries(products).reduce<
                 Record<string, ProductWithID>
-            >((acc, product) => {
-                acc[product._id] = product;
+            >((acc, [key, value]) => {
+                if (value.name.toLowerCase().includes(command.toLowerCase())) {
+                    acc[key] = value;
+                } else if (
+                    value.keywords.some((keyword) =>
+                        keyword.toLowerCase().includes(command.toLowerCase())
+                    )
+                ) {
+                    acc[key] = value;
+                } else if (
+                    value.brand?.name
+                        .toLowerCase()
+                        .includes(command.toLowerCase())
+                ) {
+                    acc[key] = value;
+                }
                 return acc;
             }, {});
 
             setFilteredProducts(filteredProductsObject);
+        } else if (command.length == 0) {
+            if (isCustomers) {
+                setIsCustomers(false);
+            }
+            setFilteredProducts(products);
+        } else if (command == " ") {
+            if (!isCustomers) {
+                setIsCustomers(true);
+            }
+            setFilteredCustomers(customers);
         }
 
         // Reset selected product index
-        if (purchase.selectedProductIndex > 0) {
-            dispatch(resetSelectedProductIndex());
+        if (cart.selectedProductIndex > 0) {
+            cartManager.set("selectedProductIndex", 0);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [command]);
 
     async function handleCompletePurchase() {
-        // console.log(purchase);
-        // return;
-        try {
-            await apiClient.post("/purchases", purchase);
-            setNotification({
-                type: SUCCESS,
-                message: "Purchase created successfully",
+        setSellButtonLoading(true);
+        apiCall
+            .post("/purchases", cartManager.getData())
+            .success((data, message) => {
+                console.log(data);
+                notifySuccess(message);
+            })
+            .error((error) => {
+                console.log(error);
+                notifyError(error);
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    setSellButtonLoading(false);
+                }, 3000);
             });
-            // setTimeout(() => {
-            //     window.location.reload();
-            // }, 3000);
-        } catch (error) {
-            setNotification({
-                type: ERROR,
-                message: "Faild to create purchase",
-            });
-        }
-    }
-    async function handleAddSupplier() {
-        if (filteredSuppliers) {
-            const supplier = Object.values(filteredSuppliers)[0];
-            dispatch(addSupplier(supplier));
-        }
     }
 
-    function handleNoteKeyDown(e: any) {
-        switch (e.key) {
-            case "Tab":
-                e.preventDefault();
-                document.getElementById("command")?.focus();
-                break;
-        }
+    function updateSetting(payload: any) {
+        apiCall
+            .patch(`/settings/${setting._id}`, payload)
+            .success(() => {
+                setSettingState((state: any) => ({ ...state, ...payload }));
+            })
+            .error((error) => console.log(error));
     }
 
-    function changePurchaseActiveProductTo(val: number) {
-        const purchaseProductsKey = Object.keys(purchase.products);
-        if (purchase.activeProduct && purchaseProductsKey.length > 1) {
-            let key = purchaseProductsKey.indexOf(purchase.activeProduct) + val;
-            if (key < 0) {
-                key = purchaseProductsKey.length - 1;
-            } else if (key >= purchaseProductsKey.length) {
-                key = 0;
+    function handleProductUpdateShortcut(
+        productId: string | undefined = undefined
+    ) {
+        let product: ProductWithID | undefined;
+        if (productId) {
+            product = products[productId];
+        } else {
+            if (command.length >= 2) {
+                product =
+                    Object.values(filteredProducts)[cart.selectedProductIndex];
+            } else if (cartManager.get("activeProduct")) {
+                product = products[cartManager.get("activeProduct")];
             }
+        }
 
-            dispatch(changeActiveProduct(purchaseProductsKey[key]));
+        if (product) {
+            dispatch(setProduct(product));
+            setProductUpdateShortcut(true);
         }
     }
 
-    let [isShift, setIsShift] = useState(false);
+    // Add to cart with product shortcut
+    function getProductByCommand(shortcut: string) {
+        let command = commands.find(
+            (_: any) => _.command.toLowerCase() == shortcut
+        );
+        if (command && command.value != null) {
+            let product = products[command.value];
+            setCommand("");
+            return product;
+        }
+        return;
+    }
 
-    function handleKeyDown(e: any): void {
-        // console.log(e.key);
-        let max = 0;
-        switch (e.key) {
-            case "Shift":
-                setIsShift(true);
-                break;
+    function handleUpdateProductPrice(amount: number) {
+        if (cartManager.get("activeProduct")) {
+            let product = cartManager.get("products.{{activeProduct}}");
+            cartManager.update(
+                "products.{{activeProduct}}.updatePrice",
+                (updatePrice) => updatePrice + amount
+            );
+            apiCall
+                .patch(`/products/updatePrice/${product._id}`, { amount })
+                .success((data) => {
+                    cartManager
+                        .set(`products.${product._id}.prices`, data.prices)
+                        .save();
 
-            case "Tab":
-                e.preventDefault();
-                noteRef.current?.focus();
-                break;
-
-            case "ArrowUp":
-                if (isShift) {
-                    changePurchaseActiveProductTo(-1);
-                } else {
-                    dispatch(incrementQuantity(false));
-                }
-                break;
-
-            case "ArrowDown":
-                if (isShift) {
-                    changePurchaseActiveProductTo(+1);
-                } else {
-                    dispatch(decrementQuantity(false));
-                }
-                break;
-
-            case "ArrowLeft":
-                e.preventDefault();
-                if (filteredSuppliers && filteredProducts) {
-                    max = isSuppliers
-                        ? Object.keys(filteredSuppliers).length - 1
-                        : Object.keys(filteredProducts).length - 1;
-                    if (command.length > 0) {
-                        dispatch(selectPreviousProduct(max));
-                    } else {
-                        dispatch(shiftMeasurementTo(-1));
-                    }
-                }
-                break;
-
-            case "ArrowRight":
-                e.preventDefault();
-                if (filteredSuppliers && filteredProducts) {
-                    max = isSuppliers
-                        ? Object.keys(filteredSuppliers).length - 1
-                        : Object.keys(filteredProducts).length - 1;
-                    if (command.length > 0) {
-                        dispatch(selectNexProduct(max));
-                    } else {
-                        dispatch(shiftMeasurementTo(1));
-                    }
-                }
-                break;
-            case "F9":
-                e.preventDefault();
-                window.location.href = "./sell";
-                break;
-            case "F10":
-                e.preventDefault();
-                window.location.href = "./return";
-                break;
-            case "Enter":
-                if (command == "++") {
-                    handleAddSupplerProducts();
-                    setCommand("");
-                    break;
-                }
-                if (
-                    !isSuppliers &&
-                    command.length > 0 &&
-                    filteredSuppliers &&
-                    filteredProducts
-                ) {
-                    if (Object.keys(filteredProducts).length > 0) {
-                        const product = {
-                            ...Object.values(filteredProducts)[
-                                purchase.selectedProductIndex
-                            ],
-                            quantity: 1,
-                        };
-                        dispatch(addToPurchase(product));
-                        setCommand("");
-                    }
-                } else if (command.length > 1 && filteredSuppliers) {
-                    if (Object.keys(filteredSuppliers).length > 0) {
-                        handleAddSupplier();
-                        setCommand("");
-                    }
-                } else {
-                    if (purchase.totalPrice == 0) break;
-                    if (forceOrder >= 5) {
-                        handleCompletePurchase();
-                    } else {
-                        forceOrder++;
-                    }
-                }
-                break;
-            case "Delete":
-                e.preventDefault();
-                dispatch(removeFromPurchase(purchase.activeProduct));
-                break;
+                    setProducts((state: Record<string, ProductWithID>) => {
+                        state[product._id].prices = data.prices;
+                        return state;
+                    });
+                })
+                .error((error) => console.log(error));
         }
     }
 
-    function handleAddSupplerProducts() {
-        if (purchase.supplier?.products) {
-            // Extract the products from the products object using the IDs
-            const supplierProducts = purchase.supplier.products
-                .map((id) => products[id])
-                .filter((product) => product !== undefined);
+    function handleProductUpdate(p: ProductWithID) {
+        setProductUpdateShortcut(false);
 
-            dispatch(addToPurchaseProducts(supplierProducts));
-        }
+        setProducts((state: Record<string, ProductWithID>) => {
+            state[p._id] = p;
+            return p;
+        });
+
+        // Update the product in the cart manager
+        cartManager.set(`products.${p._id}.prices`, p.prices).save();
     }
 
-    function handleKeyUp(e: any): void {
-        switch (e.key) {
-            case "Shift":
-                setIsShift(false);
-                break;
-        }
-    }
-
-    function handleAddToPurchase(product: ProductWithID) {
-        dispatch(addToPurchase(product));
+    function handleSellPageChange(sellPageKey: string) {
+        if (sellPageKey === activeSellPage.current) return;
+        // Deep copy cart states if necessary
+        let cartStates: Record<string, CartState> = cloneDeep(
+            helper.cartStates
+        );
+        // Ensure cart is defined before assignment
+        cartStates[activeSellPage.current] = cart;
+        // Update the active sell page first
+        activeSellPage.current = sellPageKey;
+        // Dispatch Redux state update
+        dispatch(updateHelperField({ field: "cartStates", value: cartStates }));
+        // Use the cart manager to reset and save the new state
+        const newCartState = cartStates[sellPageKey] || initialCartState;
+        // Use the cart manager to reset and save the new state
+        cartManager.reset(newCartState).save();
     }
 
     return (
-        <main>
-            <SellReceipt />
+        <div className="text-black dark:text-white">
+            {/* <SellReceipt /> */}
             <div className="print:hidden">
-                <Sidebar active="purchase" userId={undefined} />
-                <Notification
-                    type={notification.type}
-                    message={notification.message}
-                    className="justify-center"
-                />
-                <div className="ps-[94px] 2xl:ps-[150px] pe-3 bg-gray-100 dark:bg-gray-950">
-                    <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 gap-6 py-4 min-h-screen">
-                        <div className="col-span-8 lg:col-span-5">
-                            <div className="p-3 border-2 border-dashed border-slate-500 mb-3">
-                                <p className="bg-green-700 inline-block py-2 px-4 me-3">
-                                    Purchase
-                                </p>
-                                <Link href={"/"}>Home</Link>
-                                <Link className="ms-3" href={"/actions/sell"}>
-                                    Sell
-                                </Link>
-                                <Link className="ms-3" href={"/products"}>
-                                    Products
-                                </Link>
-                                <Link className="ms-3" href={"/suppliers"}>
-                                    Suppliers
-                                </Link>
-                                <p className="inline-block mx-4 bg-green-700 py-2 px-3">
-                                    {purchase.receiver?.name}
-                                </p>
-                                <button
-                                    onDoubleClick={logout}
-                                    className="bg-red-700 text-white py-1 px-3 rounded"
-                                >
-                                    Logout
-                                </button>
-                            </div>
-                            <div className="">
+                <Sidebar active="purchase" userId={user._id} />
+                <div className="ps-[94px] 2xl:ps-[150px] bg-white dark:bg-gray-950">
+                    <div className="grid grid-cols-1 2xl:grid-cols-9">
+                        <div className="col-span-8 me-3 lg:pe-3">
+                            <Notifications />
+                            <Notification
+                                type={notification.type}
+                                message={notification.message}
+                                className="justify-center"
+                            />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 lg:h-screen gap-6 overflow-x-hidden overflow-y-auto lg:overflow-y-hidden cosmos-scrollbar">
+                        <div className="max-h=[1000px] h-full flex flex-col overflow-hidden col-span-8 lg:col-span-5 py-4 me-3 lg:me-0">
+                            <SellPageSelector
+                                activePage={activeSellPage.current}
+                                cartStates={helper.cartStates}
+                                userName={user.name}
+                                handleSellPageChange={handleSellPageChange}
+                                logout={logout}
+                            />
+                            <div>
                                 <input
                                     id="command"
                                     value={command}
-                                    onChange={(e) => setCommand(e.target.value)}
-                                    onKeyDown={handleKeyDown}
-                                    onKeyUp={handleKeyUp}
+                                    onChange={(e) => {
+                                        setCommand(e.target.value);
+                                    }}
+                                    onKeyDown={(e) =>
+                                        commandHandler.handleKeyDown(e)
+                                    }
+                                    onKeyUp={(e) =>
+                                        commandHandler.handleKeyUp(e)
+                                    }
                                     type="text"
-                                    className="border-2 w-full md:w-1/2 xl:w-1/3 border-dashed border-slate-500 bg-black outline-none focus:border-green-500 text-white px-4 py-2 text-lg"
+                                    className="border-2 w-full md:w-1/2 xl:w-1/3 border-dashed border-slate-500 bg-transparent outline-none focus:border-green-500 px-4 py-2 text-lg"
                                     autoFocus
                                 />
                             </div>
-                            <div className="mt-3">
-                                {/* <ProductsCard selected={} /> */}
+                            <div className="flex gap-4 py-2 px-3 my-3 bg-gray-300  dark:bg-gray-800">
+                                <button
+                                    onClick={() => {
+                                        updateSetting({
+                                            productImage:
+                                                !settingState.productImage,
+                                        });
+                                    }}
+                                >
+                                    {settingState.productImage ? (
+                                        <NotImageIcon />
+                                    ) : (
+                                        <ImageIcon height="20" />
+                                    )}
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        updateSetting({
+                                            productRow:
+                                                !settingState.productRow,
+                                        });
+                                    }}
+                                >
+                                    {settingState.productRow ? (
+                                        <ColsIcon height="20" />
+                                    ) : (
+                                        <RowIcon height="18" />
+                                    )}
+                                </button>
                             </div>
-
-                            {isSuppliers ? (
-                                <div>
-                                    <SuppliersCard
-                                        supplilers={filteredSuppliers}
+                            <div className="overflow-x-hidden overflow-y-auto pb-4 pe-3 cosmos-scrollbar">
+                                {productUpdateShortcut ? (
+                                    <ProductUpdateShortcut
+                                        handleClose={() =>
+                                            setProductUpdateShortcut(false)
+                                        }
+                                        callback={handleProductUpdate}
                                     />
-                                </div>
-                            ) : (
-                                // <ProductCard products={filteredProducts} />
-                                <PurchaseProductsCard
-                                    selected={purchase.selectedProductIndex}
-                                    callback={handleAddToPurchase}
-                                    products={filteredProducts}
-                                />
-                            )}
-                        </div>
-                        <div className="col-span-8 lg:col-span-3">
-                            <PurchaseProducts />
-                            <SupplierDetails />
-                            <div className="">
-                                <textarea
-                                    ref={noteRef}
-                                    className="w-full resize-none bg-black text-white p-3 outline-none border-dashed border-2 border-gray-600 placeholder-slate-300 mb-1"
-                                    value={note}
-                                    onKeyDown={handleNoteKeyDown}
-                                    onChange={(e) => setNote(e.target.value)}
-                                    rows={2}
-                                    cols={50}
-                                    placeholder="কেনা সম্পর্কে কিছু লিখুন"
-                                ></textarea>
+                                ) : (
+                                    <>
+                                        {commandCounter.name ==
+                                            "completeSell" &&
+                                        commandCounter.value >= 1 ? (
+                                            <FinalView />
+                                        ) : isCustomers ? (
+                                            <div>
+                                                <CustomerCard
+                                                    customers={
+                                                        filteredCustomers
+                                                    }
+                                                    callback={(
+                                                        customer: Customer
+                                                    ) => {
+                                                        // dispatch(addCustomer(customer));
+                                                        cartManager
+                                                            .set(
+                                                                "customer",
+                                                                customer
+                                                            )
+                                                            .save();
+                                                        setCommand("");
+                                                        // if()
+                                                        document
+                                                            .getElementById(
+                                                                "command"
+                                                            )
+                                                            ?.focus();
+                                                    }}
+                                                />
+                                            </div>
+                                        ) : (
+                                            <>
+                                                {settingState.productRow ? (
+                                                    <ProductsRow
+                                                        selected={
+                                                            cart.selectedProductIndex
+                                                        }
+                                                        callback={(product) => {
+                                                            cartManager
+                                                                .addToCart(
+                                                                    product
+                                                                )
+                                                                .save();
+                                                            setCommand("");
+                                                            document
+                                                                .getElementById(
+                                                                    "command"
+                                                                )
+                                                                ?.focus();
+                                                        }}
+                                                        products={
+                                                            filteredProducts
+                                                        }
+                                                        showProductImage={
+                                                            settingState.productImage
+                                                        }
+                                                    />
+                                                ) : (
+                                                    <ProductsCard
+                                                        setProductUpdateShortcut={
+                                                            handleProductUpdateShortcut
+                                                        }
+                                                        selected={
+                                                            cart.selectedProductIndex
+                                                        }
+                                                        callback={(product) => {
+                                                            cartManager
+                                                                .addToCart(
+                                                                    product
+                                                                )
+                                                                .save();
+                                                            setCommand("");
+                                                            document
+                                                                .getElementById(
+                                                                    "command"
+                                                                )
+                                                                ?.focus();
+                                                        }}
+                                                        products={
+                                                            filteredProducts
+                                                        }
+                                                        showProductImage={
+                                                            settingState.productImage
+                                                        }
+                                                    />
+                                                )}
+                                            </>
+                                        )}
+                                    </>
+                                )}
                             </div>
-                            <PurchaseDetails />
-                            <div className="flex gap-4">
-                                <button
-                                    onDoubleClick={() =>
-                                        handleCompletePurchase()
-                                    }
-                                    className="w-1/2 pt-3 pb-2 border-2 border-dashed border-green-600 bg-green-900 hover:bg-green-700 text-white"
-                                >
-                                    বিক্রয় ও প্রিন্ট
-                                </button>
-                                <button
-                                    onDoubleClick={() =>
-                                        handleCompletePurchase()
-                                    }
-                                    className="w-1/2 pt-3 pb-2 border-dashed border-2 border-blue-600 bg-blue-900 hover:bg-blue-700 text-white"
-                                >
-                                    বিক্রয়
-                                </button>
+                        </div>
+                        <div className="py-4 mb-4 lg:pe-3 col-span-8 lg:col-span-3 min-h-screen overflow-hidden grid grid-rows-1">
+                            <div className="pe-3 h-auto overflow-y-auto overflow-x-hidden cosmos-scrollbar">
+                                <div>
+                                    <CartProduct
+                                        setProductUpdateShortcut={
+                                            handleProductUpdateShortcut
+                                        }
+                                        setting={setting}
+                                        handleUpdateProductPrice={
+                                            handleUpdateProductPrice
+                                        }
+                                    />
+                                    <SupplierDetails />
+                                    <div className="">
+                                        <textarea
+                                            ref={noteRef}
+                                            className="w-full resize-none p-3 outline-none border-dashed border-2 border-gray-600 placeholder-slate-300 mb-1 bg-transparent"
+                                            value={note}
+                                            onChange={(e) =>
+                                                setNote(e.target.value)
+                                            }
+                                            rows={2}
+                                            cols={50}
+                                            placeholder="বিক্রি সম্পর্কে কিছু লিখুন"
+                                        ></textarea>
+                                    </div>
+                                    <PurchaseDetails />
+                                    <div className="flex gap-4">
+                                        <button
+                                            disabled={sellButtonLoading}
+                                            onDoubleClick={
+                                                handleCompletePurchase
+                                            }
+                                            className={`w-1/2 pt-3 pb-2 border-2 border-dashed border-green-600 bg-green-900 hover:bg-green-700 text-white ${
+                                                sellButtonLoading
+                                                    ? "cursor-not-allowed"
+                                                    : "cursor-pointer"
+                                            }`}
+                                        >
+                                            Sell & Print
+                                        </button>
+                                        <button
+                                            disabled={sellButtonLoading}
+                                            onDoubleClick={
+                                                handleCompletePurchase
+                                            }
+                                            className={`w-1/3 pt-3 pb-2 border-2 border-dashed border-blue-600 bg-blue-900 hover:bg-blue-700 text-white ${
+                                                sellButtonLoading
+                                                    ? "cursor-not-allowed"
+                                                    : "cursor-pointer"
+                                            }`}
+                                        >
+                                            Sell
+                                        </button>
+                                        <button
+                                            disabled={sellButtonLoading}
+                                            onDoubleClick={
+                                                handleCompletePurchase
+                                            }
+                                            className={`w-1/2 pt-3 pb-2 border-dashed border-2 border-yellow-600 bg-yellow-900 hover:bg-blue-700 text-white ${
+                                                sellButtonLoading
+                                                    ? "cursor-not-allowed"
+                                                    : "cursor-pointer"
+                                            }`}
+                                        >
+                                            Pending
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
     );
 }

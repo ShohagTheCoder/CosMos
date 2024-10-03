@@ -53,8 +53,8 @@ export default function User({
 
                     {/* Account Info */}
                     <div className="md:col-span-2 bg-gray-800 shadow-lg rounded-lg p-6">
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
+                        <div className="flex flex-col gap-3">
+                            <div className="flex">
                                 <p className="text-gray-400 font-medium text-xl">
                                     {account.balance >= 0 ? (
                                         <>

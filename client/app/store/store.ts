@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import cartReducer from "./slices/cartSlice";
 import productReducer from "./slices/productSlice";
-import purchaseReducer from "./slices/purchaseSlice";
+import stockReducer from "./slices/stockSlice";
 import notificationsReducer from "./slices/notificationsSlice";
 import helperReducer from "./slices/helperSlice";
 
@@ -9,7 +9,7 @@ export const store = configureStore({
     reducer: {
         cart: cartReducer,
         product: productReducer,
-        purchase: purchaseReducer,
+        stock: stockReducer,
         notifications: notificationsReducer,
         helper: helperReducer,
     },
