@@ -6,8 +6,16 @@ import apiClient from "../utils/apiClient";
 import Commands from "./components/Commands";
 import Rules from "./components/Rules";
 import NoResponse from "../common/components/NoResponse";
+import { redirect } from "next/navigation";
 
 export default async function CommandsPage() {
+    const cookiesList = cookies();
+    const userId = cookiesList.get("user-id")?.value;
+
+    if (!userId) {
+        return redirect("/login"); // Use redirect from next/navigation
+    }
+
     try {
         const cookieStore = cookies();
         const userId = cookieStore.get("user-id")?.value;

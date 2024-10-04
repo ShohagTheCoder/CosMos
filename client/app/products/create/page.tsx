@@ -4,8 +4,15 @@ import Sidebar from "@/app/components/Sidebar";
 import { cookies } from "next/headers";
 import CreateProduct from "./components/CreateProduct";
 import NoResponse from "@/app/common/components/NoResponse";
+import { redirect } from "next/navigation";
 
-function CreateProductPage() {
+export default async function CreateProductPage() {
+    const cookiesList = cookies();
+    const userId = cookiesList.get("user-id")?.value;
+
+    if (!userId) {
+        return redirect("/login"); // Use redirect from next/navigation
+    }
     try {
         const cookieStore = cookies();
         const userId = cookieStore.get("user-id")?.value;
@@ -22,5 +29,3 @@ function CreateProductPage() {
         <NoResponse />;
     }
 }
-
-export default CreateProductPage;

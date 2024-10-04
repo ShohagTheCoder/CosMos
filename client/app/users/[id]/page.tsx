@@ -2,9 +2,20 @@ import apiClient from "@/app/utils/apiClient";
 import React from "react";
 import User from "./components/User";
 import NoResponse from "@/app/common/components/NoResponse";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default async function UserPage({ params: { id = "undefined" } }: any) {
-    if (id == "undefined") {
+export default async function UserPage({ params }: any) {
+    const cookiesList = cookies();
+    const userId = cookiesList.get("user-id")?.value;
+
+    if (!userId) {
+        return redirect("/login"); // Use redirect from next/navigation
+    }
+
+    let { id } = params();
+
+    if (!id) {
         return <NoResponse />;
     }
 
