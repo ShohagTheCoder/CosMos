@@ -321,7 +321,6 @@ export default function Purchase({
                 })
                 .success((data) => {
                     // Update the prices in stockManager
-                    console.log(data);
                     stockManager
                         .set(`products.${product._id}.prices`, data.prices)
                         .save();
@@ -381,16 +380,17 @@ export default function Purchase({
 
             // Update the product in the stock manager with the latest values
             if (update.purchasePrices) {
-                stockManager.set(
-                    `products.${product._id}.prices`,
-                    update.purchasePrices
-                );
+                stockManager.update(`products.${product._id}.prices`, () => {
+                    update.purchasePrices;
+                });
             }
 
             if (update.purchaseMeasurements) {
-                stockManager.set(
+                stockManager.update(
                     `products.${product._id}.measurements`,
-                    update.purchaseMeasurements
+                    () => {
+                        update.purchaseMeasurements;
+                    }
                 );
             }
             stockManager.save();

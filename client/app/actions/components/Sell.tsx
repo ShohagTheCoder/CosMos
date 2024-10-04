@@ -150,7 +150,6 @@ export default function Sell({
     }, [filteredCustomers, filteredProducts, isCustomers, commandCounter]);
 
     useEffect(() => {
-        console.log(products);
         // Match barcode or SKU to add product
         if (/^[0-9]+$/.test(command)) {
             let product = productsArray.find(
@@ -365,15 +364,16 @@ export default function Sell({
 
             // Update the product in the cart manager
             if (update.prices) {
-                cartManager.set(
-                    `products.${product._id}.prices`,
-                    product.prices
-                );
+                cartManager.update(`products.${product._id}.prices`, () => {
+                    return product.prices;
+                });
             }
             if (update.measurements) {
-                cartManager.set(
+                cartManager.update(
                     `products.${product._id}.measurements`,
-                    product.measurements
+                    () => {
+                        product.measurements;
+                    }
                 );
             }
             cartManager.save();

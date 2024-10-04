@@ -104,7 +104,7 @@ export default class StateManager<T extends Record<string, any>> {
         const value = this.get(key);
 
         // If the value exists and a callback is provided, call the callback with the value
-        if (value !== undefined && callback) {
+        if (value !== undefined && value !== null && callback) {
             const newValue = callback(cloneDeep(value));
             if (newValue != undefined) {
                 this.set(key, newValue);

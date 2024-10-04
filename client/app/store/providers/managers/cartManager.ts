@@ -18,7 +18,7 @@ export class CartManager<T extends CartState> extends StateManager<T> {
 
         this.listen("products.[?]", (id) => {
             this.update(`products.${id}`, (product: ProductWithID) => {
-                // console.log(product);
+                console.log(product);
                 let unit = product.units[product.unit];
                 product.price = getProductUnitPrice(product);
                 console.log(product.price);
