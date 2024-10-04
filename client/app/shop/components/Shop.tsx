@@ -85,8 +85,8 @@ export default function Shop({
                     {/* Account Info */}
                     <div className="md:col-span-2 bg-gray-800 shadow-lg rounded-lg p-6">
                         <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <p className="text-gray-400 font-medium">
+                            <div className="col-span-2">
+                                <p className="text-gray-400 text-xl">
                                     {account.balance >= 0 ? (
                                         <>
                                             Balance:{" "}
@@ -98,13 +98,16 @@ export default function Shop({
                                         <>
                                             Due:{" "}
                                             <span className="text-red-400 font-semibold">
-                                                {Math.abs(account.balance)} ৳
+                                                {Math.abs(
+                                                    account.balance
+                                                ).toLocaleString("en-US")}{" "}
+                                                ৳
                                             </span>
                                         </>
                                     )}
                                 </p>
                             </div>
-                            <div>
+                            {/* <div> 
                                 <p className="text-gray-400 font-medium">
                                     Sells:{" "}
                                     <span className="font-semibold">
@@ -116,7 +119,7 @@ export default function Shop({
                                         ৳
                                     </span>
                                 </p>
-                            </div>
+                            </div>  */}
                             <div className="col-span-2 flex gap-3">
                                 <button
                                     onClick={() => setTransferMoneyPopup(true)}

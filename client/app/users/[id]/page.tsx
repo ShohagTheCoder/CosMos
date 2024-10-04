@@ -13,7 +13,7 @@ export default async function UserPage({ params }: any) {
         return redirect("/login"); // Use redirect from next/navigation
     }
 
-    let { id } = params();
+    let { id } = params;
 
     if (!id) {
         return <NoResponse />;
