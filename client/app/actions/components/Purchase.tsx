@@ -225,11 +225,7 @@ export default function Purchase({
             stockManager.set("selectedProductIndex", 0);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [command]);
-
-    useEffect(() => {
-        setFilteredProducts(products);
-    }, [products]);
+    }, [command, products]);
 
     async function handleCompletePurchase() {
         setPurchaseButtonLoading(true);
@@ -306,38 +302,102 @@ export default function Purchase({
     }
 
     function handleUpdateProductPrice(amount: number) {
-        if (stockManager.get("activeProduct")) {
-            let product = stockManager.get("products.{{activeProduct}}");
+        const activeProductId = stockManager.get("activeProduct");
+
+        if (activeProductId) {
+            // Retrieve the active product from stockManager
+            const product = stockManager.get(`products.${activeProductId}`);
+
+            // Update the product price locally in stockManager
             stockManager.update(
-                "products.{{activeProduct}}.updatePrice",
-                (updatePrice) => updatePrice + amount
+                `products.${activeProductId}.updatePrice`,
+                (updatePrice) => (updatePrice ?? 0) + amount // Ensure `updatePrice` is a number
             );
+
+            // Call the API to update the purchase price
             apiCall
-                .patch(`/products/updatePrice/${product._id}`, { amount })
+                .patch(`/products/updatePurchasePrice/${product._id}`, {
+                    amount,
+                })
                 .success((data) => {
+                    // Update the prices in stockManager
+                    console.log(data);
                     stockManager
                         .set(`products.${product._id}.prices`, data.prices)
                         .save();
 
+                    // Update the prices in the React state immutably
                     setProducts((state: Record<string, ProductWithID>) => {
-                        state[product._id].prices = data.prices;
-                        return state;
+                        return {
+                            ...state,
+                            [product._id]: {
+                                ...state[product._id],
+                                prices: data.prices,
+                            },
+                        };
                     });
                 })
-                .error((error) => console.log(error));
+                .error((error) => console.error(error));
         }
     }
 
-    function handleProductUpdate(p: ProductWithID) {
+    async function handleProductUpdate(product: ProductWithID) {
         setProductUpdateShortcut(false);
 
-        setProducts((state: Record<string, ProductWithID>) => {
-            const updatedState = { ...state, [p._id]: p }; // Create a new state object with the updated product
-            return updatedState;
-        });
+        // Create an `update` object for the changed fields
+        const update: Partial<ProductWithID> = {};
 
-        // Update the product in the cart manager
-        stockManager.set(`products.${p._id}.prices`, p.prices).save();
+        // Track changes in properties (assuming `product` is the updated version)
+        for (const key in product) {
+            if (
+                product.hasOwnProperty(key) &&
+                key !== "_id" &&
+                key !== "product" // Exclude keys we don't want to update
+            ) {
+                update[key] = product[key];
+            }
+        }
+
+        // Handle `prices` and `measurements` transformation if they exist in `product`
+        if (product.prices) {
+            update.purchasePrices = [...product.prices];
+        }
+        if (product.measurements) {
+            update.purchaseMeasurements = [...product.measurements];
+        }
+
+        try {
+            // Send the update to the API
+            await apiClient.patch(`products/${product._id}`, update);
+
+            // Update the local state with the patched values
+            setProducts((state: Record<string, ProductWithID>) => {
+                const updatedProduct = {
+                    ...state[product._id],
+                    ...update,
+                };
+                return { ...state, [product._id]: updatedProduct };
+            });
+
+            // Update the product in the stock manager with the latest values
+            if (update.purchasePrices) {
+                stockManager.set(
+                    `products.${product._id}.prices`,
+                    update.purchasePrices
+                );
+            }
+
+            if (update.purchaseMeasurements) {
+                stockManager.set(
+                    `products.${product._id}.measurements`,
+                    update.purchaseMeasurements
+                );
+            }
+            stockManager.save();
+        } catch (error) {
+            console.error("Failed to update product:", error);
+        }
+        setProductUpdateShortcut(false); // Handle error state
     }
 
     function handlePageChange(pageKey: string) {
@@ -456,7 +516,6 @@ export default function Purchase({
                                                     callback={(
                                                         supplier: Supplier
                                                     ) => {
-                                                        // dispatch(addSupplier(supplier));
                                                         stockManager
                                                             .set(
                                                                 "supplier",
@@ -464,7 +523,6 @@ export default function Purchase({
                                                             )
                                                             .save();
                                                         setCommand("");
-                                                        // if()
                                                         document
                                                             .getElementById(
                                                                 "command"

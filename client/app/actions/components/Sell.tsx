@@ -101,10 +101,6 @@ export default function Sell({
         )
     ).current;
 
-    useEffect(() => {
-        setFilteredProducts(products);
-    }, [products]);
-
     // Single use effect
     useEffect(() => {
         if (user) {
@@ -154,6 +150,7 @@ export default function Sell({
     }, [filteredCustomers, filteredProducts, isCustomers, commandCounter]);
 
     useEffect(() => {
+        console.log(products);
         // Match barcode or SKU to add product
         if (/^[0-9]+$/.test(command)) {
             let product = productsArray.find(
@@ -228,7 +225,7 @@ export default function Sell({
             cartManager.set("selectedProductIndex", 0);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [command]);
+    }, [command, products]);
 
     async function handleCompleteSell() {
         setSellButtonLoading(true);
@@ -306,38 +303,84 @@ export default function Sell({
     }
 
     function handleUpdateProductPrice(amount: number) {
-        if (cartManager.get("activeProduct")) {
-            let product = cartManager.get("products.{{activeProduct}}");
+        const activeProductId = cartManager.get("activeProduct"); // Get active product ID
+
+        if (activeProductId) {
+            // Retrieve the active product using the correctly formatted path
+            const product = cartManager.get(`products.${activeProductId}`);
+
+            // Update the price locally in cartManager
             cartManager.update(
-                "products.{{activeProduct}}.updatePrice",
-                (updatePrice) => updatePrice + amount
+                `products.${activeProductId}.updatePrice`,
+                (updatePrice) => (updatePrice ?? 0) + amount // Ensure `updatePrice` is a number
             );
+
+            // Send the updated price to the server
             apiCall
                 .patch(`/products/updatePrice/${product._id}`, { amount })
                 .success((data) => {
+                    // Update the prices in the cart manager
                     cartManager
                         .set(`products.${product._id}.prices`, data.prices)
                         .save();
 
+                    // Log old and new state to verify changes
                     setProducts((state: Record<string, ProductWithID>) => {
-                        state[product._id].prices = data.prices;
-                        return state;
+                        const updatedState = {
+                            ...state,
+                            [product._id]: {
+                                ...state[product._id],
+                                prices: [...data.prices], // Ensure new reference for prices
+                            },
+                        };
+                        return updatedState;
                     });
                 })
                 .error((error) => console.log(error));
         }
     }
 
-    function handleProductUpdate(p: ProductWithID) {
-        setProductUpdateShortcut(false);
+    async function handleProductUpdate(product: ProductWithID) {
+        const update = Object.entries(product).reduce(
+            (acc: any, [key, value]) => {
+                if (
+                    product.product &&
+                    key in product.product &&
+                    value !== product.product[key] &&
+                    key !== "product"
+                ) {
+                    acc[key] = value;
+                }
+                return acc;
+            },
+            {}
+        );
 
-        setProducts((state: Record<string, ProductWithID>) => {
-            const updatedState = { ...state, [p._id]: p }; // Create a new state object with the updated product
-            return updatedState;
-        });
+        try {
+            await apiClient.patch(`products/${product._id}`, update);
+            setProducts((state: Record<string, ProductWithID>) => {
+                const updatedState = { ...state, [product._id]: product }; // Create a new state object with the updated product
+                return updatedState;
+            });
 
-        // Update the product in the cart manager
-        cartManager.set(`products.${p._id}.prices`, p.prices).save();
+            // Update the product in the cart manager
+            if (update.prices) {
+                cartManager.set(
+                    `products.${product._id}.prices`,
+                    product.prices
+                );
+            }
+            if (update.measurements) {
+                cartManager.set(
+                    `products.${product._id}.measurements`,
+                    product.measurements
+                );
+            }
+            cartManager.save();
+        } catch (error) {
+            console.error("Failed to update product:", error);
+        }
+        setProductUpdateShortcut(false); // You can add a toast or error message here instead of closing
     }
 
     function handleSellPageChange(sellPageKey: string) {

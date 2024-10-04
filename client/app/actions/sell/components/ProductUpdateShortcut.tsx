@@ -3,7 +3,6 @@ import Measurements from "@/app/products/components/Mesurements";
 import Prices from "@/app/products/components/Prices";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { RootState } from "@/app/store/store";
-import apiClient from "@/app/utils/apiClient";
 import React from "react";
 import { useSelector } from "react-redux";
 
@@ -17,29 +16,8 @@ export default function ProductUpdateShortcut({
 }) {
     const product = useSelector((state: RootState) => state.product);
 
-    async function handleSave() {
-        let update = Object.entries(product).reduce(
-            (acc: any, [key, value]) => {
-                if (
-                    product.product &&
-                    key in product.product &&
-                    value !== product.product[key] &&
-                    key !== "product"
-                ) {
-                    acc[key] = value;
-                }
-                return acc;
-            },
-            {}
-        );
-
-        try {
-            await apiClient.patch(`products/${product._id}`, update);
-            callback({ ...product, ...update });
-        } catch (error) {
-            handleClose();
-        }
-    }
+    // Return null if the product is not available yet
+    if (!product) return null;
 
     return (
         <div className="bg-gray-800 mb-4">
@@ -48,7 +26,9 @@ export default function ProductUpdateShortcut({
                     <div className="h-20">
                         <img
                             className="w-full h-full object-cover"
-                            src={`/images/products/${product.image}`}
+                            src={`/images/products/${
+                                product.image || "product.jpg"
+                            }`}
                             alt={product.name}
                         />
                     </div>
@@ -61,7 +41,7 @@ export default function ProductUpdateShortcut({
                 <div className="flex gap-3">
                     <button
                         className="py-2 px-3 bg-green-600 rounded-md"
-                        onClick={handleSave}
+                        onClick={() => callback(product as ProductWithID)}
                     >
                         Save
                     </button>

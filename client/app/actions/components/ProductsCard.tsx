@@ -1,7 +1,7 @@
+import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 import getStockLine from "@/app/functions/getStockLine";
 import InfoIcon from "@/app/icons/InfoIcon";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
-import useCartManager from "@/app/store/providers/cartProvider";
 
 interface ProductsCardProps {
     selected: number;
@@ -85,7 +85,7 @@ function ProductsCard({
                                     }
                                 </span>
                                 <p className="font-semibold text-xl text-green-900 dark:text-green-300 inline-block">
-                                    {product.price *
+                                    {getProductUnitPrice(product) *
                                         product.units?.[product.displaySaleUnit]
                                             ?.value}
                                     <span> ৳</span>

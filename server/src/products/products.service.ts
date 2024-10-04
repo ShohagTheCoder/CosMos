@@ -107,7 +107,31 @@ export class ProductsService {
 
             return new Response('Product price updated successfully')
                 .data({
-                    prices: { ...product.prices },
+                    prices: product.prices,
+                })
+                .done();
+        }
+
+        throw new Error('Product not found for id ' + id);
+    }
+    async updatePurchasePrice(id: string, updatePrice: { amount: number }) {
+        const product = await this.productModel.findById(id);
+
+        if (product) {
+            // Update prices by mapping over each price item
+            product.purchasePrices = product.purchasePrices.map(
+                (item: Price) => ({
+                    ...item,
+                    price: item.price + updatePrice.amount,
+                }),
+            );
+
+            // Save and return the updated product
+            await product.save();
+
+            return new Response('Product purchase price updated successfully')
+                .data({
+                    prices: product.purchasePrices,
                 })
                 .done();
         }

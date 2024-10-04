@@ -44,6 +44,14 @@ export class ProductsController {
         return this.productsService.updatePrice(id, updatePrice);
     }
 
+    @Patch('/updatePurchasePrice/:id')
+    updatePurchasePrice(
+        @Param('id') id: string,
+        @Body() updatePrice: { amount: number },
+    ) {
+        return this.productsService.updatePurchasePrice(id, updatePrice);
+    }
+
     @Patch(':id')
     update(@Param('id') id: string, @Body() updateProductDto: any) {
         return this.productsService.update(id, updateProductDto);
