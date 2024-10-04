@@ -332,8 +332,8 @@ export default function Sell({
         setProductUpdateShortcut(false);
 
         setProducts((state: Record<string, ProductWithID>) => {
-            state[p._id] = p;
-            return p;
+            const updatedState = { ...state, [p._id]: p }; // Create a new state object with the updated product
+            return updatedState;
         });
 
         // Update the product in the cart manager

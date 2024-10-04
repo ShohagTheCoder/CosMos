@@ -80,14 +80,14 @@ function ProductsCard({
                                 <span>
                                     1{" "}
                                     {
-                                        product.units[product.displaySaleUnit]
-                                            .label
+                                        product.units?.[product.displaySaleUnit]
+                                            ?.label
                                     }
                                 </span>
                                 <p className="font-semibold text-xl text-green-900 dark:text-green-300 inline-block">
                                     {product.price *
-                                        product.units[product.displaySaleUnit]
-                                            .value}
+                                        product.units?.[product.displaySaleUnit]
+                                            ?.value}
                                     <span> ৳</span>
                                 </p>
                             </div>
