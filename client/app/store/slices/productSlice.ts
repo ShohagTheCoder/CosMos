@@ -449,7 +449,7 @@ const productSlice = createSlice({
         },
 
         setProduct: (state, action) => {
-            return action.payload;
+            return { ...action.payload, product: action.payload };
         },
         addResource: (state: Product, action: PayloadAction<Resource>) => {
             const resource = action.payload;

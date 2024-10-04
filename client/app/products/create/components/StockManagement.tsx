@@ -54,9 +54,14 @@ export default function StockManagement({ image, setImage }: any) {
     async function handleUpdateProduct() {
         setDisable(true);
 
-        const update = Object.entries(product).reduce(
+        let update = Object.entries(product).reduce(
             (acc: any, [key, value]) => {
-                if (value !== product.product[key] && key !== "product") {
+                if (
+                    product.product &&
+                    key in product.product &&
+                    value !== product.product[key] &&
+                    key !== "product"
+                ) {
                     acc[key] = value;
                 }
                 return acc;
@@ -80,7 +85,7 @@ export default function StockManagement({ image, setImage }: any) {
                 `products/${product._id}`,
                 finalProduct
             );
-            dispatch(setProductProduct({ ...product, ...result.data }));
+            dispatch(setProductProduct(result.data));
             setImage(null);
             notifySuccess("Product updated successfully!");
         } catch (error) {

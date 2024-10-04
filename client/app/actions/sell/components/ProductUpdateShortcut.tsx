@@ -20,7 +20,12 @@ export default function ProductUpdateShortcut({
     async function handleSave() {
         let update = Object.entries(product).reduce(
             (acc: any, [key, value]) => {
-                if (value !== product.product[key] && key !== "product") {
+                if (
+                    product.product &&
+                    key in product.product &&
+                    value !== product.product[key] &&
+                    key !== "product"
+                ) {
                     acc[key] = value;
                 }
                 return acc;

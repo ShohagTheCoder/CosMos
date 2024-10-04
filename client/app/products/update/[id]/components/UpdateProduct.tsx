@@ -14,7 +14,7 @@ export default function UpdateProduct({ product }: any) {
     const [image, setImage] = useState(null);
 
     useEffect(() => {
-        dispatch(setProduct({ ...product, product: product }));
+        dispatch(setProduct(product));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
