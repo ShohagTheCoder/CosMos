@@ -34,11 +34,7 @@ export default function Cashout({ account, callback, handleClose }: any) {
     }
 
     const handleAmountChange = (amount: number) => {
-        if (amount > account.balance) {
-            setAmount(account.balance);
-        } else {
-            setAmount(amount);
-        }
+        setAmount(amount);
     };
 
     return (
@@ -85,16 +81,16 @@ export default function Cashout({ account, callback, handleClose }: any) {
 
                 {/* Input Fields */}
                 <div className="space-y-6">
-                    <div className="flex justify-stretch">
+                    <div className="">
                         <NumberInputControl
                             step={10}
                             value={amount}
                             onChange={(amount) => {
                                 handleAmountChange(amount);
                             }}
-                            className="w-full flex justify-between"
-                            buttonClassName="h-[50px] !w-[50px]"
-                            inputClassName="text-lg w-auto bg-gray-800 p-3 text-white placeholder-gray-400 focus:outline-none h-[50px]"
+                            className="w-full flex"
+                            buttonClassName="h-[50px] w-[50px]"
+                            inputClassName="text-lg flex-grow bg-gray-800 p-3 text-white placeholder-gray-400 focus:outline-none h-[50px]"
                         />
                     </div>
                     {/* Note Textarea */}

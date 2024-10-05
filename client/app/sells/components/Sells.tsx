@@ -1,6 +1,7 @@
 "use client";
 
 import apiCall from "@/app/common/apiCall";
+import SellsRow from "@/app/components/SellsRow";
 import Sidebar from "@/app/components/Sidebar";
 import { CartState } from "@/app/store/slices/cartSlice";
 import { convertStandardToBnBD } from "@/app/utils/numberFormat";
@@ -43,6 +44,9 @@ export default function Sells({
     return (
         <div className="bg-gray-900 text-white min-h-screen py-4">
             <Sidebar userId={userId} active="sells" />
+            {/* <div className="container mx-auto max-w-[1000px]">
+                <SellsRow sells={sells} />
+            </div> */}
             <div className="container mx-auto ps-[94px] pe-3">
                 <table className="w-full bg-gray-800 border border-gray-700 rounded-lg">
                     <thead>

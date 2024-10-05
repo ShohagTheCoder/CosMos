@@ -9,7 +9,7 @@ import TransferMoney from "@/app/components/TransferMoney";
 import PulseLoading from "@/app/elements/loding/PulseLoading";
 import CustomersIcon from "@/app/icons/CustomersIcon";
 import UserIcon from "@/app/icons/UserIcon";
-import React, { useEffect, useState } from "react";
+import React, { KeyboardEvent, useEffect, useState } from "react";
 
 export default function Shop({ shop: initialShop, accounts = [] }: any) {
     const [shop, setShop] = useState(initialShop);
@@ -45,6 +45,29 @@ export default function Shop({ shop: initialShop, accounts = [] }: any) {
             setCashoutPopup(false);
         }, 3000);
     }
+
+    useEffect(() => {
+        const handleKeyDown = (e: any) => {
+            // Check if the active element is not an input element and CtrlRight is pressed
+            const activeElement = document.activeElement;
+            if (
+                e.code === "ControlRight" &&
+                !(
+                    activeElement?.tagName === "INPUT" ||
+                    activeElement?.tagName === "TEXTAREA"
+                )
+            ) {
+                setCashoutPopup(true);
+            }
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+
+        // Cleanup function to remove the event listener
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [setCashoutPopup]); // Include setCashoutPopup as a dependency
 
     useEffect(() => {
         apiCall

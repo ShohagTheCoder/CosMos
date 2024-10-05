@@ -3,6 +3,7 @@ import apiCall from "../common/apiCall";
 import useNotification from "../hooks/useNotification";
 import Notification from "../elements/notification/Notification";
 import SearchableSelectInput from "../elements/select/SearchableSelectInput";
+import NumberInputControl from "../elements/inputs/NumberInputControl";
 
 function TransferMoney({
     accounts: initialAccounts,
@@ -18,21 +19,21 @@ function TransferMoney({
     const accounts = useMemo(
         () =>
             initialAccounts
-                .filter((_account: any) => _account._id !== account._id) // Exclude the current account based on accountId
+                .filter((_account: any) => _account._id !== account._id)
                 .map((account: any) => ({
                     label: account.name,
-                    value: account._id, // Use the correct id field here
+                    value: account._id,
                 })),
-        [initialAccounts, account] // Include accountId in the dependency array
+        [initialAccounts, account]
     );
 
     async function handleSendMoney() {
         if (!receiverId) {
-            notifyError("Please select receiver account first");
+            notifyError("Please select a receiver account first");
             return;
         }
-        if (amount > account.balance + 10000 || amount == 0) {
-            notifyError("Please enter correct amount");
+        if (amount > account.balance + 10000 || amount <= 0) {
+            notifyError("Please enter a valid amount");
             return;
         }
         apiCall
@@ -58,7 +59,7 @@ function TransferMoney({
 
     return (
         <div className="fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-80 z-50 flex justify-center items-center">
-            <div className="w-full max-w-lg mx-auto bg-gray-800 text-white rounded-lg p-6 shadow-lg">
+            <div className="w-full max-w-lg mx-auto bg-gray-900 text-white rounded-lg p-6 shadow-lg border border-gray-700">
                 <Notification
                     message={notification.message}
                     type={notification.type}
@@ -74,16 +75,19 @@ function TransferMoney({
                     </button>
                 </div>
                 {/* Account Balance */}
-                <div className="mb-4 p-3 bg-green-800 rounded-md">
-                    <p>Available Balance: {account.balance} ৳</p>
+                <div className="mb-4 p-4 rounded-md bg-gradient-to-r from-green-900 to-blue-900">
+                    <p className="text-xl text-center font-semibold">
+                        Balance: {account.balance} ৳
+                    </p>
                 </div>
+
                 {/* Receiver Select Input */}
                 <div className="mb-4">
                     <SearchableSelectInput
                         value={receiverId}
                         onChange={(value: any) => setReceiverId(value)}
                         options={{
-                            label: "Receiver account",
+                            label: "Receiver Account",
                             options: accounts,
                         }}
                     />
@@ -92,20 +96,19 @@ function TransferMoney({
                 {/* Input Fields */}
                 <div className="space-y-4">
                     {/* Amount */}
-                    <input
-                        id="amount"
-                        type="number"
-                        className="w-full bg-gray-700 p-3 rounded-md text-white placeholder-gray-400"
-                        placeholder="Amount"
+                    <NumberInputControl
                         value={amount}
-                        onChange={(e) => setAmount(parseInt(e.target.value))}
+                        onChange={setAmount}
+                        className="w-full flex"
+                        buttonClassName="h-[50px] w-[50px]"
+                        inputClassName="text-lg flex-grow w-auto bg-gray-800 p-3 text-white placeholder-gray-400 focus:outline-none h-[50px]"
                     />
 
                     {/* Note */}
                     <textarea
                         id="note"
-                        className="w-full bg-gray-700 p-3 rounded-md text-white placeholder-gray-400 resize-none"
-                        placeholder="Note"
+                        className="w-full bg-gray-800 p-3 rounded-md text-white placeholder-gray-400 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500 resize-none"
+                        placeholder="Add a note (optional)"
                         rows={2}
                         value={note}
                         onChange={(e) => setNote(e.target.value)}
@@ -115,8 +118,8 @@ function TransferMoney({
                 {/* Send Money Button */}
                 <div className="mt-6">
                     <button
-                        onClick={handleSendMoney}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-md font-semibold transition duration-300"
+                        onDoubleClick={handleSendMoney}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-md font-semibold transition duration-300 shadow-lg"
                     >
                         Send Money
                     </button>

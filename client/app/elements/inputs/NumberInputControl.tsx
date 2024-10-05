@@ -36,7 +36,7 @@ const NumberInputControl: React.FC<NumberInputControlProps> = ({
             <input
                 type="number"
                 step={step} // Allows decimal input
-                className={`h-8 bg-black w-10 text-white text-center outline-none border-none no-spin ${inputClassName}`}
+                className={`h-8 bg-black w-12 text-white text-center outline-none border-none no-spin ${inputClassName}`}
                 value={value}
                 onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
             />
