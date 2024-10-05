@@ -13,8 +13,10 @@ export default async function ProductsPage() {
     }
 
     try {
-        const { data: products } = await apiClient.get("products");
-        return <Products products={products} userId={userId} />;
+        const { data: totalDocuments } = await apiClient.get(
+            "products/countDocuments"
+        );
+        return <Products totalDocuments={totalDocuments} userId={userId} />;
     } catch (error) {
         return <NoResponse />;
     }

@@ -9,21 +9,27 @@ import TrashIcon from "@/app/icons/TrashIcon";
 import apiClient from "@/app/utils/apiClient";
 import { NONE, SUCCESS, ERROR } from "@/app/utils/constants/message";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ProductWithID } from "../interfaces/product.interface";
 import Notification from "@/app/elements/notification/Notification";
+import Pagination from "@/app/components/Pagination";
+import apiCall from "@/app/common/apiCall";
 export default function Products({
-    products: initialProducts,
+    totalDocuments = 0,
     userId,
 }: {
-    products: ProductWithID[];
+    totalDocuments: number;
     userId: string;
 }) {
-    const [products, setProducts] = useState<ProductWithID[]>(initialProducts);
+    const [products, setProducts] = useState<ProductWithID[]>([]);
     const [notification, setNotification] = useState<NotificationProps>({
         message: "",
         type: NONE,
     });
+
+    const limit = 10;
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalPages = Math.ceil(totalDocuments / limit);
 
     async function handleDeleteProduct(_id: string, index: number) {
         const sure = window.confirm(
@@ -52,6 +58,17 @@ export default function Products({
         }
     }
 
+    useEffect(() => {
+        apiCall
+            .get(`/products/query?page=${currentPage}&limit=${limit}`)
+            .success((data) => {
+                setProducts(data);
+            })
+            .error((error) => {
+                console.log(error.message);
+            });
+    }, [currentPage]);
+
     return (
         <div className="min-h-screen bg-white dark:bg-gray-800">
             <Sidebar userId={userId} active="products" />
@@ -60,7 +77,6 @@ export default function Products({
                     type={notification.type}
                     message={notification.message}
                 />
-
                 <div className="flex items-center justify-between gap-6 mb-4">
                     <h2 className="text-2xl font-bold">Products</h2>
                     <div className="w-auto flex gap-3 items-center">
@@ -79,6 +95,13 @@ export default function Products({
                         </Link>
                     </div>
                 </div>
+                <div>
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={(page) => setCurrentPage(page)}
+                    />
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {products.length == 0 ? (
                         <div className="col-span-6 min-h-[400px] flex justify-center items-center">
@@ -93,7 +116,9 @@ export default function Products({
                                         className="bg-white dark:bg-gray-700 shadow-md rounded-lg p-3 flex flex-col justify-between"
                                     >
                                         <img
-                                            src={`images/products/${product.image}`}
+                                            src={`images/products/${
+                                                product.image || "product.jpg"
+                                            }`}
                                             alt={product.name}
                                             className="w-full h-48 object-cover rounded-t-md"
                                         />
@@ -149,6 +174,13 @@ export default function Products({
                             )}
                         </>
                     )}
+                </div>
+                <div>
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={(page) => setCurrentPage(page)}
+                    />
                 </div>
             </div>
         </div>

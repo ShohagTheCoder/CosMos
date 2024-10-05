@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 
 @Controller('transactions')
@@ -8,6 +8,16 @@ export class TransactionsController {
     @Post()
     create(@Body() createTransactionDto: any) {
         return this.transactionsService.create(createTransactionDto);
+    }
+
+    @Get('countDocuments')
+    async countDocuments() {
+        return await this.transactionsService.countDocuments();
+    }
+
+    @Get('query')
+    async findByQuery(@Query() query: any) {
+        return await this.transactionsService.findByQuery(query);
     }
 
     @Get()

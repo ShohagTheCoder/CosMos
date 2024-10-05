@@ -27,6 +27,10 @@ export class ProductsService {
         return new Response('Here is all products').data(data).done();
     }
 
+    async countDocuments() {
+        return await this.productModel.countDocuments();
+    }
+
     async findByQuery({
         page = 1,
         limit = 10,

@@ -305,7 +305,9 @@ function CartProduct({
                                                     </td>
                                                     <td className="pe-3 text-lg text-end">
                                                         {fixFloatingPoint(
-                                                            product.subTotal
+                                                            product.subTotal.toLocaleString(
+                                                                "en-US"
+                                                            )
                                                         )}{" "}
                                                         ৳
                                                     </td>
@@ -424,6 +426,11 @@ function CartProduct({
                         <div
                             key={p._id}
                             className="border-2 border-dashed border-gray-600 p-2 mb-2"
+                            onClick={() => {
+                                cartManager
+                                    .set("activeProduct", product._id)
+                                    .save();
+                            }}
                         >
                             {product.note ? (
                                 <div className="mb-2 flex gap-3">
@@ -436,15 +443,9 @@ function CartProduct({
                                 {settingState.cartImage ? (
                                     <div className="">
                                         <img
-                                            onClick={() => {
-                                                cartManager
-                                                    .set(
-                                                        "activeProduct",
-                                                        product._id
-                                                    )
-                                                    .save();
-                                            }}
-                                            src={`/images/products/${product.image}`}
+                                            src={`/images/products/${
+                                                product.image || "product.jpg"
+                                            }`}
                                             className="h-[50px] w-[50px] object-cover"
                                             alt={product.image}
                                         />
@@ -460,7 +461,10 @@ function CartProduct({
                                             {product.unit.label}
                                         </p>
                                         <p className="text-end">
-                                            {product.subTotal} ৳
+                                            {product.subTotal.toLocaleString(
+                                                "en-US"
+                                            )}{" "}
+                                            ৳
                                         </p>
                                     </div>
                                 </div>

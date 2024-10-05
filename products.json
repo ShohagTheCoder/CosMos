@@ -1,0 +1,763 @@
+[
+    {
+        "_id": "66f9ff78971cddb6f21f558c",
+        "SKU": "765575",
+        "name": "Noodles",
+        "description": "Nice food",
+        "image": "765575-noodles.jpg",
+        "units": {
+            "pcs": {
+                "label": "Pcs",
+                "unit": "pcs",
+                "value": 1,
+                "dynamic": false,
+                "dynamicValue": false,
+                "enable": true
+            },
+            "box": {
+                "label": "Box",
+                "unit": "box",
+                "value": 12,
+                "dynamic": false,
+                "dynamicValue": true,
+                "enable": true
+            },
+            "bnd": {
+                "unit": "bnd",
+                "label": "Bundle",
+                "value": 500,
+                "dynamic": true,
+                "dynamicValue": true,
+                "enable": true
+            }
+        },
+        "prices": [
+            {
+                "unit": "bnd",
+                "start": 1,
+                "price": 300
+            }
+        ],
+        "measurements": [
+            {
+                "unit": "pcs",
+                "value": 1
+            }
+        ],
+        "keywords": ["testy"],
+        "saleUnitsBase": "pcs",
+        "price": 300,
+        "unit": "pcs",
+        "hasResources": false,
+        "updatePrice": 0,
+        "resourcesCost": 0,
+        "discountEnable": true,
+        "discount": 0,
+        "discounts": [],
+        "extraDiscount": 0,
+        "sellEnable": true,
+        "purchaseEnable": true,
+        "displaySaleUnit": "pcs",
+        "displayPurchaseUnit": "bnd",
+        "quantity": 1,
+        "count": 1,
+        "priority": 1,
+        "stockLow": 50,
+        "stockAlert": 10,
+        "subTotal": 32,
+        "maximumDiscount": 4,
+        "stock": {
+            "_id": "66f9ff78971cddb6f21f558d",
+            "SKU": "765575",
+            "name": "Noodles",
+            "stock": 497,
+            "stockLow": 50,
+            "stockAlert": 10,
+            "lastSupplier": "Shohag Ahmed",
+            "lastStockedDate": "2024-09-30T01:31:36.314Z",
+            "product": "66f9ff78971cddb6f21f558c",
+            "__v": 0
+        },
+        "createdAt": "2024-09-30T01:31:36.320Z",
+        "updatedAt": "2024-10-04T14:43:38.883Z",
+        "__v": 150
+    },
+    {
+        "_id": "66fd48dc520a656311b77ded",
+        "SKU": "346476",
+        "name": "Orange",
+        "description": "Descripton",
+        "image": "346476-orange.jpg",
+        "units": {
+            "g": {
+                "label": "Gram",
+                "unit": "g",
+                "value": 0.001,
+                "dynamic": false,
+                "dynamicValue": false,
+                "enable": false
+            },
+            "kg": {
+                "label": "KG",
+                "unit": "kg",
+                "value": 1,
+                "dynamic": false,
+                "dynamicValue": false,
+                "enable": true
+            },
+            "bag": {
+                "label": "Bag",
+                "unit": "bag",
+                "value": 50,
+                "dynamic": false,
+                "dynamicValue": true,
+                "enable": true
+            },
+            "qt": {
+                "label": "Q",
+                "unit": "qt",
+                "value": 100,
+                "dynamic": false,
+                "dynamicValue": false,
+                "enable": false
+            }
+        },
+        "prices": [
+            {
+                "unit": "kg",
+                "start": 1,
+                "price": 160
+            }
+        ],
+        "measurements": [
+            {
+                "unit": "kg",
+                "value": 1
+            }
+        ],
+        "keywords": ["product"],
+        "saleUnitsBase": "kg",
+        "price": 160,
+        "unit": "kg",
+        "hasResources": false,
+        "updatePrice": 0,
+        "resourcesCost": 0,
+        "discountEnable": true,
+        "discount": 0,
+        "discounts": [],
+        "extraDiscount": 0,
+        "sellEnable": true,
+        "purchaseEnable": true,
+        "displaySaleUnit": "kg",
+        "displayPurchaseUnit": "kg",
+        "quantity": 1,
+        "count": 1,
+        "priority": 1,
+        "stockLow": 50,
+        "stockAlert": 10,
+        "subTotal": 250,
+        "maximumDiscount": 50,
+        "stock": {
+            "_id": "66fd48dc520a656311b77dee",
+            "SKU": "346476",
+            "name": "Orange",
+            "stock": 43,
+            "stockLow": 50,
+            "stockAlert": 10,
+            "lastSupplier": "Shohag Ahmed",
+            "lastStockedDate": "2024-10-02T13:21:32.758Z",
+            "product": "66fd48dc520a656311b77ded",
+            "__v": 0
+        },
+        "createdAt": "2024-10-02T13:21:32.770Z",
+        "updatedAt": "2024-10-04T10:52:11.596Z",
+        "__v": 3
+    },
+    {
+        "_id": "66ffc7d36b7c2edae20f521e",
+        "SKU": "4758686",
+        "name": "Banana",
+        "description": "Descripton",
+        "image": "4758686-banana.jpg",
+        "units": {
+            "pcs": {
+                "label": "Pcs",
+                "unit": "pcs",
+                "value": 1,
+                "dynamic": false,
+                "dynamicValue": false,
+                "enable": true
+            },
+            "box": {
+                "label": "Box",
+                "unit": "box",
+                "value": 12,
+                "dynamic": false,
+                "dynamicValue": true,
+                "enable": false
+            },
+            "kor": {
+                "unit": "kor",
+                "label": "Kori",
+                "value": 20,
+                "dynamic": true,
+                "dynamicValue": true,
+                "enable": true
+            }
+        },
+        "prices": [
+            {
+                "unit": "kor",
+                "start": 1,
+                "price": 8
+            }
+        ],
+        "measurements": [
+            {
+                "unit": "pcs",
+                "value": 1
+            }
+        ],
+        "keywords": ["product"],
+        "saleUnitsBase": "pcs",
+        "price": 1,
+        "unit": "pcs",
+        "hasResources": false,
+        "updatePrice": 0,
+        "resourcesCost": 0,
+        "discountEnable": true,
+        "discount": 0,
+        "discounts": [],
+        "extraDiscount": 0,
+        "sellEnable": true,
+        "purchaseEnable": true,
+        "displaySaleUnit": "kor",
+        "displayPurchaseUnit": "kor",
+        "quantity": 1,
+        "count": 1,
+        "priority": 1,
+        "stockLow": 50,
+        "stockAlert": 10,
+        "subTotal": 1,
+        "maximumDiscount": 0,
+        "stock": {
+            "_id": "66ffc7d36b7c2edae20f521f",
+            "SKU": "4758686",
+            "name": "Banana",
+            "stock": 194,
+            "stockLow": 50,
+            "stockAlert": 10,
+            "lastSupplier": "Shohag Ahmed",
+            "lastStockedDate": "2024-10-04T10:47:47.314Z",
+            "product": "66ffc7d36b7c2edae20f521e",
+            "__v": 0
+        },
+        "createdAt": "2024-10-04T10:47:47.322Z",
+        "updatedAt": "2024-10-04T10:47:47.322Z",
+        "__v": 0
+    },
+    {
+        "_id": "66f9ff78971cddb6f21f5590",
+        "SKU": "765576",
+        "name": "Rice",
+        "description": "High-quality rice",
+        "image": null,
+        "units": {
+            "pcs": {
+                "label": "Pcs",
+                "unit": "pcs",
+                "value": 1,
+                "dynamic": false,
+                "dynamicValue": false,
+                "enable": true
+            },
+            "bag": {
+                "label": "Bag",
+                "unit": "bag",
+                "value": 20,
+                "dynamic": false,
+                "dynamicValue": true,
+                "enable": true
+            },
+            "bnd": {
+                "unit": "bnd",
+                "label": "Bundle",
+                "value": 1000,
+                "dynamic": true,
+                "dynamicValue": true,
+                "enable": true
+            }
+        },
+        "prices": [
+            {
+                "unit": "bnd",
+                "start": 1,
+                "price": 500
+            }
+        ],
+        "measurements": [
+            {
+                "unit": "pcs",
+                "value": 1
+            }
+        ],
+        "keywords": ["grains"],
+        "saleUnitsBase": "pcs",
+        "price": 500,
+        "unit": "pcs",
+        "hasResources": false,
+        "updatePrice": 0,
+        "resourcesCost": 0,
+        "discountEnable": true,
+        "discount": 0,
+        "discounts": [],
+        "extraDiscount": 0,
+        "sellEnable": true,
+        "purchaseEnable": true,
+        "displaySaleUnit": "pcs",
+        "displayPurchaseUnit": "bnd",
+        "quantity": 1,
+        "count": 1,
+        "priority": 1,
+        "stockLow": 30,
+        "stockAlert": 5,
+        "subTotal": 50,
+        "maximumDiscount": 10,
+        "stock": null,
+        "createdAt": "2024-09-30T01:31:36.320Z",
+        "updatedAt": "2024-10-04T14:43:38.883Z",
+        "__v": 150
+    },
+    {
+        "_id": "66f9ff78971cddb6f21f5591",
+        "SKU": "765577",
+        "name": "Pasta",
+        "description": "Delicious pasta",
+        "image": null,
+        "units": {
+            "pcs": {
+                "label": "Pcs",
+                "unit": "pcs",
+                "value": 1,
+                "dynamic": false,
+                "dynamicValue": false,
+                "enable": true
+            },
+            "box": {
+                "label": "Box",
+                "unit": "box",
+                "value": 12,
+                "dynamic": false,
+                "dynamicValue": true,
+                "enable": true
+            },
+            "bnd": {
+                "unit": "bnd",
+                "label": "Bundle",
+                "value": 250,
+                "dynamic": true,
+                "dynamicValue": true,
+                "enable": true
+            }
+        },
+        "prices": [
+            {
+                "unit": "bnd",
+                "start": 1,
+                "price": 400
+            }
+        ],
+        "measurements": [
+            {
+                "unit": "pcs",
+                "value": 1
+            }
+        ],
+        "keywords": ["italian"],
+        "saleUnitsBase": "pcs",
+        "price": 400,
+        "unit": "pcs",
+        "hasResources": false,
+        "updatePrice": 0,
+        "resourcesCost": 0,
+        "discountEnable": true,
+        "discount": 0,
+        "discounts": [],
+        "extraDiscount": 0,
+        "sellEnable": true,
+        "purchaseEnable": true,
+        "displaySaleUnit": "pcs",
+        "displayPurchaseUnit": "bnd",
+        "quantity": 1,
+        "count": 1,
+        "priority": 1,
+        "stockLow": 50,
+        "stockAlert": 10,
+        "subTotal": 40,
+        "maximumDiscount": 5,
+        "stock": null,
+        "createdAt": "2024-09-30T01:31:36.320Z",
+        "updatedAt": "2024-10-04T14:43:38.883Z",
+        "__v": 150
+    },
+    {
+        "_id": "66f9ff78971cddb6f21f5592",
+        "SKU": "765578",
+        "name": "Sauce",
+        "description": "Tasty sauce",
+        "image": null,
+        "units": {
+            "pcs": {
+                "label": "Pcs",
+                "unit": "pcs",
+                "value": 1,
+                "dynamic": false,
+                "dynamicValue": false,
+                "enable": true
+            },
+            "bottle": {
+                "label": "Bottle",
+                "unit": "bottle",
+                "value": 6,
+                "dynamic": false,
+                "dynamicValue": true,
+                "enable": true
+            },
+            "bnd": {
+                "unit": "bnd",
+                "label": "Bundle",
+                "value": 100,
+                "dynamic": true,
+                "dynamicValue": true,
+                "enable": true
+            }
+        },
+        "prices": [
+            {
+                "unit": "bnd",
+                "start": 1,
+                "price": 250
+            }
+        ],
+        "measurements": [
+            {
+                "unit": "pcs",
+                "value": 1
+            }
+        ],
+        "keywords": ["condiment"],
+        "saleUnitsBase": "pcs",
+        "price": 250,
+        "unit": "pcs",
+        "hasResources": false,
+        "updatePrice": 0,
+        "resourcesCost": 0,
+        "discountEnable": true,
+        "discount": 0,
+        "discounts": [],
+        "extraDiscount": 0,
+        "sellEnable": true,
+        "purchaseEnable": true,
+        "displaySaleUnit": "pcs",
+        "displayPurchaseUnit": "bnd",
+        "quantity": 1,
+        "count": 1,
+        "priority": 1,
+        "stockLow": 40,
+        "stockAlert": 5,
+        "subTotal": 25,
+        "maximumDiscount": 3,
+        "stock": null,
+        "createdAt": "2024-09-30T01:31:36.320Z",
+        "updatedAt": "2024-10-04T14:43:38.883Z",
+        "__v": 150
+    },
+    {
+        "_id": "66f9ff78971cddb6f21f5593",
+        "SKU": "765579",
+        "name": "Vegetable Oil",
+        "description": "High-quality vegetable oil",
+        "image": null,
+        "units": {
+            "pcs": {
+                "label": "Pcs",
+                "unit": "pcs",
+                "value": 1,
+                "dynamic": false,
+                "dynamicValue": false,
+                "enable": true
+            },
+            "liter": {
+                "label": "Liter",
+                "unit": "liter",
+                "value": 1,
+                "dynamic": false,
+                "dynamicValue": true,
+                "enable": true
+            },
+            "bnd": {
+                "unit": "bnd",
+                "label": "Bundle",
+                "value": 12,
+                "dynamic": true,
+                "dynamicValue": true,
+                "enable": true
+            }
+        },
+        "prices": [
+            {
+                "unit": "bnd",
+                "start": 1,
+                "price": 600
+            }
+        ],
+        "measurements": [
+            {
+                "unit": "pcs",
+                "value": 1
+            }
+        ],
+        "keywords": ["cooking"],
+        "saleUnitsBase": "pcs",
+        "price": 600,
+        "unit": "pcs",
+        "hasResources": false,
+        "updatePrice": 0,
+        "resourcesCost": 0,
+        "discountEnable": true,
+        "discount": 0,
+        "discounts": [],
+        "extraDiscount": 0,
+        "sellEnable": true,
+        "purchaseEnable": true,
+        "displaySaleUnit": "pcs",
+        "displayPurchaseUnit": "bnd",
+        "quantity": 1,
+        "count": 1,
+        "priority": 1,
+        "stockLow": 50,
+        "stockAlert": 10,
+        "subTotal": 60,
+        "maximumDiscount": 6,
+        "stock": null,
+        "createdAt": "2024-09-30T01:31:36.320Z",
+        "updatedAt": "2024-10-04T14:43:38.883Z",
+        "__v": 150
+    },
+    {
+        "_id": "66f9ff78971cddb6f21f5594",
+        "SKU": "765580",
+        "name": "Salt",
+        "description": "Pure sea salt",
+        "image": null,
+        "units": {
+            "pcs": {
+                "label": "Pcs",
+                "unit": "pcs",
+                "value": 1,
+                "dynamic": false,
+                "dynamicValue": false,
+                "enable": true
+            },
+            "pack": {
+                "label": "Pack",
+                "unit": "pack",
+                "value": 10,
+                "dynamic": false,
+                "dynamicValue": true,
+                "enable": true
+            },
+            "bnd": {
+                "unit": "bnd",
+                "label": "Bundle",
+                "value": 500,
+                "dynamic": true,
+                "dynamicValue": true,
+                "enable": true
+            }
+        },
+        "prices": [
+            {
+                "unit": "bnd",
+                "start": 1,
+                "price": 100
+            }
+        ],
+        "measurements": [
+            {
+                "unit": "pcs",
+                "value": 1
+            }
+        ],
+        "keywords": ["seasoning"],
+        "saleUnitsBase": "pcs",
+        "price": 100,
+        "unit": "pcs",
+        "hasResources": false,
+        "updatePrice": 0,
+        "resourcesCost": 0,
+        "discountEnable": true,
+        "discount": 0,
+        "discounts": [],
+        "extraDiscount": 0,
+        "sellEnable": true,
+        "purchaseEnable": true,
+        "displaySaleUnit": "pcs",
+        "displayPurchaseUnit": "bnd",
+        "quantity": 1,
+        "count": 1,
+        "priority": 1,
+        "stockLow": 20,
+        "stockAlert": 5,
+        "subTotal": 10,
+        "maximumDiscount": 1,
+        "stock": null,
+        "createdAt": "2024-09-30T01:31:36.320Z",
+        "updatedAt": "2024-10-04T14:43:38.883Z",
+        "__v": 150
+    },
+    {
+        "_id": "66f9ff78971cddb6f21f5595",
+        "SKU": "765581",
+        "name": "Sugar",
+        "description": "Refined sugar",
+        "image": null,
+        "units": {
+            "pcs": {
+                "label": "Pcs",
+                "unit": "pcs",
+                "value": 1,
+                "dynamic": false,
+                "dynamicValue": false,
+                "enable": true
+            },
+            "bag": {
+                "label": "Bag",
+                "unit": "bag",
+                "value": 20,
+                "dynamic": false,
+                "dynamicValue": true,
+                "enable": true
+            },
+            "bnd": {
+                "unit": "bnd",
+                "label": "Bundle",
+                "value": 1000,
+                "dynamic": true,
+                "dynamicValue": true,
+                "enable": true
+            }
+        },
+        "prices": [
+            {
+                "unit": "bnd",
+                "start": 1,
+                "price": 400
+            }
+        ],
+        "measurements": [
+            {
+                "unit": "pcs",
+                "value": 1
+            }
+        ],
+        "keywords": ["sweetener"],
+        "saleUnitsBase": "pcs",
+        "price": 400,
+        "unit": "pcs",
+        "hasResources": false,
+        "updatePrice": 0,
+        "resourcesCost": 0,
+        "discountEnable": true,
+        "discount": 0,
+        "discounts": [],
+        "extraDiscount": 0,
+        "sellEnable": true,
+        "purchaseEnable": true,
+        "displaySaleUnit": "pcs",
+        "displayPurchaseUnit": "bnd",
+        "quantity": 1,
+        "count": 1,
+        "priority": 1,
+        "stockLow": 50,
+        "stockAlert": 10,
+        "subTotal": 40,
+        "maximumDiscount": 5,
+        "stock": null,
+        "createdAt": "2024-09-30T01:31:36.320Z",
+        "updatedAt": "2024-10-04T14:43:38.883Z",
+        "__v": 150
+    },
+    {
+        "_id": "66f9ff78971cddb6f21f5596",
+        "SKU": "765582",
+        "name": "Black Pepper",
+        "description": "Ground black pepper",
+        "image": null,
+        "units": {
+            "pcs": {
+                "label": "Pcs",
+                "unit": "pcs",
+                "value": 1,
+                "dynamic": false,
+                "dynamicValue": false,
+                "enable": true
+            },
+            "gram": {
+                "label": "Gram",
+                "unit": "gram",
+                "value": 100,
+                "dynamic": false,
+                "dynamicValue": true,
+                "enable": true
+            },
+            "bnd": {
+                "unit": "bnd",
+                "label": "Bundle",
+                "value": 20,
+                "dynamic": true,
+                "dynamicValue": true,
+                "enable": true
+            }
+        },
+        "prices": [
+            {
+                "unit": "bnd",
+                "start": 1,
+                "price": 150
+            }
+        ],
+        "measurements": [
+            {
+                "unit": "pcs",
+                "value": 1
+            }
+        ],
+        "keywords": ["spice"],
+        "saleUnitsBase": "pcs",
+        "price": 150,
+        "unit": "pcs",
+        "hasResources": false,
+        "updatePrice": 0,
+        "resourcesCost": 0,
+        "discountEnable": true,
+        "discount": 0,
+        "discounts": [],
+        "extraDiscount": 0,
+        "sellEnable": true,
+        "purchaseEnable": true,
+        "displaySaleUnit": "pcs",
+        "displayPurchaseUnit": "bnd",
+        "quantity": 1,
+        "count": 1,
+        "priority": 1,
+        "stockLow": 30,
+        "stockAlert": 5,
+        "subTotal": 15,
+        "maximumDiscount": 2,
+        "stock": null,
+        "createdAt": "2024-09-30T01:31:36.320Z",
+        "updatedAt": "2024-10-04T14:43:38.883Z",
+        "__v": 150
+    }
+]

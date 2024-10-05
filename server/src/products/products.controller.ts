@@ -21,6 +21,11 @@ export class ProductsController {
         return await this.productsService.findAll();
     }
 
+    @Get('countDocuments')
+    async countDocuments() {
+        return await this.productsService.countDocuments();
+    }
+
     @Get('query')
     async findByQuery(@Query() query: any) {
         return await this.productsService.findByQuery(query);
