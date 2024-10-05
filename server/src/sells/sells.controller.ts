@@ -6,6 +6,7 @@ import {
     Param,
     Delete,
     Put,
+    Query,
 } from '@nestjs/common';
 import { SellsService } from './sells.service';
 import { CreateSellDto } from './dto/create-sell.dto';
@@ -19,6 +20,11 @@ export class SellsController {
         // console.log(createSellDto);
         // return;
         return this.sellsService.create(createSellDto);
+    }
+
+    @Get('query')
+    async findByQuery(@Query() query: any) {
+        return await this.sellsService.findByQuery(query);
     }
 
     @Get('findByUser/:id')

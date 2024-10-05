@@ -38,11 +38,14 @@ export class Sell {
     @Prop()
     dueTransaction: string;
 
-    @Prop()
-    createdAt: Date;
+    @Prop({ default: Date.now })
+    createdAt?: Date;
 
     @Prop()
-    updatedAt: Date;
+    updatedBy?: string;
+
+    @Prop({ default: Date.now })
+    updatedAt?: Date;
 }
 
 export type SellDocument = Sell & Document;

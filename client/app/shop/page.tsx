@@ -16,13 +16,12 @@ export default async function ShopPage() {
 
     try {
         const { data: shop } = await apiClient.get("/users/shop");
-        const { data: sells } = await apiClient.get("/sells");
         const { data: accounts } = await apiClient.get("/accounts");
         return (
             <div>
                 <Sidebar userId={userId} active="shop" />
                 <div>
-                    <Shop shop={shop} sells={sells} accounts={accounts} />
+                    <Shop shop={shop} accounts={accounts} />
                 </div>
             </div>
         );

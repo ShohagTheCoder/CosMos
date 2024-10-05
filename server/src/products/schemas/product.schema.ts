@@ -185,8 +185,14 @@ export class Product extends Document {
     @Prop()
     createdBy?: string;
 
-    @Prop()
+    @Prop({ default: Date.now })
     createdAt?: Date;
+
+    @Prop()
+    updatedBy?: string;
+
+    @Prop({ default: Date.now })
+    updatedAt?: Date;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

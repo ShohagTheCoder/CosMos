@@ -11,6 +11,8 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "open": "^10.1.0"
+        "date-fns": "^4.1.0",
+        "open": "^10.1.0",
+        "react-datepicker": "^7.4.0"
     }
 }

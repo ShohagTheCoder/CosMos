@@ -6,6 +6,7 @@ import {
     Param,
     Patch,
     Post,
+    Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 
@@ -18,6 +19,11 @@ export class ProductsController {
     @Get()
     async findAll() {
         return await this.productsService.findAll();
+    }
+
+    @Get('query')
+    async findByQuery(@Query() query: any) {
+        return await this.productsService.findByQuery(query);
     }
 
     // @UseGuards(SellerGuard)

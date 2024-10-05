@@ -3,6 +3,7 @@ import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface CartState {
+    [x: string]: any;
     products: Record<string, ProductWithID>;
     totalPrice: number;
     customer?: CustomerWithId;

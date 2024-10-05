@@ -1,20 +1,24 @@
 "use client";
+import apiCall from "@/app/common/apiCall";
 import Cashout from "@/app/components/Cashout";
+import DatePicker from "@/app/components/DatePicker";
+import DatePickerMini from "@/app/components/DatePickerMinit";
+import Pagination from "@/app/components/Pagination";
+import SellsRow from "@/app/components/SellsRow";
 import TransferMoney from "@/app/components/TransferMoney";
+import PulseLoading from "@/app/elements/loding/PulseLoading";
 import CustomersIcon from "@/app/icons/CustomersIcon";
 import UserIcon from "@/app/icons/UserIcon";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-export default function Shop({
-    shop: initialShop,
-    sells: initialSells,
-    accounts = [],
-}: any) {
+export default function Shop({ shop: initialShop, accounts = [] }: any) {
     const [shop, setShop] = useState(initialShop);
-    const [sells, setSells] = useState(initialSells);
+    const [sells, setSells] = useState([]);
     const [account, setAccount] = useState(shop.account);
     const [tansferMoneyPopup, setTransferMoneyPopup] = useState(false);
     const [cashoutPopup, setCashoutPopup] = useState(false);
+    const [startDate, setStartDate] = useState(new Date()); // Set to today's date or any default date
+    const [endDate, setEndDate] = useState(new Date()); // Set to today's date or any default date
 
     function handleTransferMoney(amount: any) {
         setAccount((account: any) => ({
@@ -41,6 +45,20 @@ export default function Shop({
             setCashoutPopup(false);
         }, 3000);
     }
+
+    useEffect(() => {
+        apiCall
+            .get(`/sells/query?startDate=${startDate}&endDate=${endDate}`)
+            .success((data) => {
+                setSells(data);
+            });
+    }, [startDate, endDate]);
+
+    const handleDateChange = (newStartDate: Date, newEndDate: Date) => {
+        setStartDate(newStartDate);
+        setEndDate(newEndDate);
+        // Optionally, you can fetch your sells here based on the new dates
+    };
 
     return (
         <main className="bg-gray-900 text-gray-100 min-h-screen py-6">
@@ -107,19 +125,6 @@ export default function Shop({
                                     )}
                                 </p>
                             </div>
-                            {/* <div> 
-                                <p className="text-gray-400 font-medium">
-                                    Sells:{" "}
-                                    <span className="font-semibold">
-                                        {sells.reduce(
-                                            (acc: number, sell: any) =>
-                                                acc + sell.totalPrice,
-                                            0
-                                        )}{" "}
-                                        ৳
-                                    </span>
-                                </p>
-                            </div>  */}
                             <div className="col-span-2 flex gap-3">
                                 <button
                                     onClick={() => setTransferMoneyPopup(true)}
@@ -140,68 +145,57 @@ export default function Shop({
 
                 {/* Sells Information */}
                 <div className="mt-8">
-                    <h3 className="text-xl font-semibold text-gray-100 mb-4">
-                        All Sells
-                    </h3>
+                    <div className="w-full mb-4">
+                        <div>
+                            <DatePickerMini
+                                startDate={startDate}
+                                endDate={endDate}
+                                onDateChange={handleDateChange}
+                            />
+                        </div>
+                    </div>
+                    <div className="flex justify-between items-center mb-3">
+                        <h3 className="text-xl font-semibold text-gray-100">
+                            All Sells
+                        </h3>
+                        <div className="flex gap-3">
+                            <p className="text-gray-400 text-lg">
+                                Paid:{" "}
+                                <span className="font-semibold">
+                                    {sells.reduce(
+                                        (acc: number, sell: any) =>
+                                            acc + sell.paid,
+                                        0
+                                    )}{" "}
+                                    ৳
+                                </span>
+                            </p>{" "}
+                            <p className="text-gray-400 text-lg">
+                                Sells:{" "}
+                                <span className="font-semibold">
+                                    {sells.reduce(
+                                        (acc: number, sell: any) =>
+                                            acc + sell.due,
+                                        0
+                                    )}{" "}
+                                    ৳
+                                </span>
+                            </p>{" "}
+                            <p className="text-gray-400 text-lg">
+                                Sells:{" "}
+                                <span className="font-semibold">
+                                    {sells.reduce(
+                                        (acc: number, sell: any) =>
+                                            acc + sell.totalPrice,
+                                        0
+                                    )}{" "}
+                                    ৳
+                                </span>
+                            </p>{" "}
+                        </div>
+                    </div>
                     <div className="space-y-4">
-                        {sells.map((sell: any) => (
-                            <div
-                                key={sell._id}
-                                className="bg-gray-800 p-6 rounded-lg shadow-lg"
-                            >
-                                <div className="flex justify-between">
-                                    <p className="text-lg font-semibold text-gray-100 mb-2 flex gap-3">
-                                        <UserIcon /> {sell.user.name}
-                                    </p>
-                                    <p className="text-lg font-semibold text-gray-100 mb-2 flex gap-3">
-                                        <CustomersIcon />
-                                        {sell.customer
-                                            ? sell.customer.name
-                                            : "Unknown"}
-                                    </p>
-                                </div>
-                                <div className="my-2 flex gap-3 justify-between bg-gray-900 py-2 px-3">
-                                    <p>Paid : {sell.paid} ৳</p>
-                                    <p>Due : {sell.due} ৳</p>
-                                    <p>Total price : {sell.totalPrice} ৳</p>
-                                </div>
-                                <div className="space-y-2">
-                                    {Object.values(sell.products).map(
-                                        (product: any) => (
-                                            <div
-                                                key={product._id}
-                                                className="border-l-4 border-blue-500 pl-4 flex gap-4"
-                                            >
-                                                <p>
-                                                    <span className="font-medium text-gray-400">
-                                                        Product Name:
-                                                    </span>{" "}
-                                                    {product.name}
-                                                </p>
-                                                <p>
-                                                    <span className="font-medium text-gray-400">
-                                                        Quantity:
-                                                    </span>{" "}
-                                                    {product.quantity}
-                                                </p>
-                                                <p>
-                                                    <span className="font-medium text-gray-400">
-                                                        Price:
-                                                    </span>{" "}
-                                                    {product.price} ৳
-                                                </p>
-                                                <p>
-                                                    <span className="font-medium text-gray-400">
-                                                        SubTotal:
-                                                    </span>{" "}
-                                                    {product.subTotal} ৳
-                                                </p>
-                                            </div>
-                                        )
-                                    )}
-                                </div>
-                            </div>
-                        ))}
+                        <SellsRow sells={sells} />
                     </div>
                 </div>
             </div>

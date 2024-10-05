@@ -1,11 +1,9 @@
 import React from "react";
 import NoResponse from "@/app/common/components/NoResponse";
 import Sell from "../components/Sell";
-import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { CustomerWithId } from "@/app/interfaces/customer.inerface";
 import {
     getCustomersInServer,
-    getProductsInServer,
     getUserInServer,
 } from "./../functions/apiHandlers";
 import { cookies } from "next/headers";
@@ -21,7 +19,10 @@ export default async function SellPage() {
     }
 
     try {
-        const products: ProductWithID[] = await getProductsInServer();
+        // const products: ProductWithID[] = await getProductsInServer();
+        const {
+            data: { data: products },
+        } = await apiClient.get("/products");
         const customers: CustomerWithId[] = await getCustomersInServer();
         const { data: commands } = await apiClient.get("commands");
         const user: any[] = await getUserInServer(userId!);

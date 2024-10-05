@@ -1,7 +1,12 @@
 import { ApiResponse } from '../interfaces/api-response.interface';
 
 export class Response<T = any> {
-    private response: ApiResponse<T>;
+    private response: ApiResponse<T> & {
+        limit?: number;
+        page?: number;
+        totalDocuments?: number;
+        totalPages?: number;
+    };
 
     constructor(message: string = 'Operation successful') {
         // Initialize default response structure with the provided or default message
@@ -42,8 +47,34 @@ export class Response<T = any> {
         return this;
     }
 
+    // Add pagination fields as optional
+    page(page: number): this {
+        this.response.page = page;
+        return this;
+    }
+
+    limit(limit: number): this {
+        this.response.limit = limit;
+        return this;
+    }
+
+    totalDocuments(totalDocuments: number): this {
+        this.response.totalDocuments = totalDocuments;
+        return this;
+    }
+
+    totalPages(totalPages: number): this {
+        this.response.totalPages = totalPages;
+        return this;
+    }
+
     // Explicitly finalize and return the response
-    done(): ApiResponse<T> {
+    done(): ApiResponse<T> & {
+        limit?: number;
+        page?: number;
+        totalDocuments?: number;
+        totalPages?: number;
+    } {
         return this.response;
     }
 }
