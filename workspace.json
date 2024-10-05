@@ -1,0 +1,122 @@
+[
+    {
+        "_id": "66ffc7d36b7c2edae20f521f",
+        "SKU": "765575",
+        "name": "Noodles",
+        "stock": 150,
+        "stockLow": 50,
+        "stockAlert": 10,
+        "lastSupplier": "Supplier A",
+        "lastStockedDate": "2024-10-01T10:47:47.314Z",
+        "product": "66f9ff78971cddb6f21f558c",
+        "__v": 0
+    },
+    {
+        "_id": "66ffc7d36b7c2edae20f5220",
+        "SKU": "765586",
+        "name": "Soy Sauce",
+        "stock": 80,
+        "stockLow": 50,
+        "stockAlert": 10,
+        "lastSupplier": "Supplier B",
+        "lastStockedDate": "2024-10-02T10:47:47.314Z",
+        "product": "66f9ff78971cddb6f21f559a",
+        "__v": 0
+    },
+    {
+        "_id": "66ffc7d36b7c2edae20f5221",
+        "SKU": "765587",
+        "name": "Olive Oil",
+        "stock": 100,
+        "stockLow": 30,
+        "stockAlert": 5,
+        "lastSupplier": "Supplier C",
+        "lastStockedDate": "2024-10-03T10:47:47.314Z",
+        "product": "66f9ff78971cddb6f21f559b",
+        "__v": 0
+    },
+    {
+        "_id": "66ffc7d36b7c2edae20f5222",
+        "SKU": "765578",
+        "name": "Tomato Sauce",
+        "stock": 120,
+        "stockLow": 50,
+        "stockAlert": 10,
+        "lastSupplier": "Supplier D",
+        "lastStockedDate": "2024-10-03T11:00:00.000Z",
+        "product": "66f9ff78971cddb6f21f559c",
+        "__v": 0
+    },
+    {
+        "_id": "66ffc7d36b7c2edae20f5223",
+        "SKU": "765579",
+        "name": "Pasta",
+        "stock": 200,
+        "stockLow": 50,
+        "stockAlert": 10,
+        "lastSupplier": "Supplier E",
+        "lastStockedDate": "2024-10-04T09:00:00.000Z",
+        "product": "66f9ff78971cddb6f21f559d",
+        "__v": 0
+    },
+    {
+        "_id": "66ffc7d36b7c2edae20f5224",
+        "SKU": "765580",
+        "name": "Rice",
+        "stock": 180,
+        "stockLow": 50,
+        "stockAlert": 10,
+        "lastSupplier": "Supplier F",
+        "lastStockedDate": "2024-10-03T14:00:00.000Z",
+        "product": "66f9ff78971cddb6f21f559e",
+        "__v": 0
+    },
+    {
+        "_id": "66ffc7d36b7c2edae20f5225",
+        "SKU": "765581",
+        "name": "Chili Powder",
+        "stock": 90,
+        "stockLow": 30,
+        "stockAlert": 5,
+        "lastSupplier": "Supplier G",
+        "lastStockedDate": "2024-10-02T12:00:00.000Z",
+        "product": "66f9ff78971cddb6f21f559f",
+        "__v": 0
+    },
+    {
+        "_id": "66ffc7d36b7c2edae20f5226",
+        "SKU": "765582",
+        "name": "Garlic Powder",
+        "stock": 130,
+        "stockLow": 50,
+        "stockAlert": 10,
+        "lastSupplier": "Supplier H",
+        "lastStockedDate": "2024-10-01T15:00:00.000Z",
+        "product": "66f9ff78971cddb6f21f55a0",
+        "__v": 0
+    },
+    {
+        "_id": "66ffc7d36b7c2edae20f5227",
+        "SKU": "765583",
+        "name": "Black Pepper",
+        "stock": 110,
+        "stockLow": 50,
+        "stockAlert": 10,
+        "lastSupplier": "Supplier I",
+        "lastStockedDate": "2024-10-04T10:30:00.000Z",
+        "product": "66f9ff78971cddb6f21f55a1",
+        "__v": 0
+    },
+    {
+        "_id": "66ffc7d36b7c2edae20f5228",
+        "SKU": "765584",
+        "name": "Curry Powder",
+        "stock": 140,
+        "stockLow": 50,
+        "stockAlert": 10,
+        "lastSupplier": "Supplier J",
+        "lastStockedDate": "2024-10-04T10:50:00.000Z",
+        "product": "66f9ff78971cddb6f21f55a2",
+        "__v": 0
+    }
+]

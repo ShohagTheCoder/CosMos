@@ -26,7 +26,7 @@ function Resources() {
     const [popup, setPopup] = useState(false);
 
     useEffect(() => {
-        apiClient.get("products").then((res) => setProducts(res.data));
+        apiClient.get("products").then((res) => setProducts(res.data.data));
     }, []);
 
     function handleAddResource() {

@@ -8,3 +8,6 @@
 
 # Client/public
 /client/public/images/*
+!/client/public/images/products/product.jpg
+!/client/public/images/users/user.jpg
+!/client/public/images/customers/customer.jpg

@@ -52,7 +52,9 @@ function ProductsCard({
                                 </button>
                                 <img
                                     className="w-full h-full object-cover"
-                                    src={`/images/products/${product.image}`}
+                                    src={`/images/products/${
+                                        product.image || "product.jpg"
+                                    }`}
                                     alt={product.name}
                                 />
                             </div>

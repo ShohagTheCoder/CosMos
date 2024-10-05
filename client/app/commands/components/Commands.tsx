@@ -47,7 +47,6 @@ export default function Commands({
                             : cmd
                     )
                 );
-                console.log(data);
             } catch (error) {
                 console.error("Failed to save command", error);
             } finally {

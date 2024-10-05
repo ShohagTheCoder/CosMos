@@ -2,7 +2,7 @@ import { ProductWithID } from "../products/interfaces/product.interface";
 
 export default function getStockLine(product: ProductWithID) {
     let output = "";
-    let stock = product.stock.stock;
+    let stock = product.stock?.stock;
     let unit = product.units[product.displaySaleUnit];
     let quantity = 0;
 

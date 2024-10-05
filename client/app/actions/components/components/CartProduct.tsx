@@ -169,7 +169,10 @@ function CartProduct({
                                                 <InfoIcon />
                                             </button>
                                             <img
-                                                src={`/images/products/${product.image}`}
+                                                src={`/images/products/${
+                                                    product.image ||
+                                                    "product.jpg"
+                                                }`}
                                                 alt={product.name}
                                                 className="h-full object-cover"
                                                 onClick={() => {

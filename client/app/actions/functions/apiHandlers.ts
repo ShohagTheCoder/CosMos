@@ -7,7 +7,7 @@ import { SupplierWithId } from "@/app/interfaces/supplier.interface";
 export async function getProductsInServer(): Promise<ProductWithID[]> {
     try {
         const res = await apiClient.get("products");
-        return res.data;
+        return res.data.data;
     } catch (error) {
         return []; // Return an empty object if there's an error
     }
