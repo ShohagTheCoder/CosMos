@@ -49,7 +49,7 @@ export default function User({
                 />
             )}
             <Sidebar active="user" userId={user._id} />
-            <div className="container max-w-3xl mx-auto px-4">
+            <div className="container max-w-4xl mx-auto px-4">
                 {/* Profile and Account Info */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 py-6">
                     {/* Profile Picture */}
@@ -122,44 +122,46 @@ export default function User({
                             />
                         </div>
                     </div>
-                    <div className="flex justify-between items-center mb-3">
-                        <h3 className="text-xl font-semibold text-gray-100">
-                            All Sells
-                        </h3>
-                        <div className="flex gap-3">
-                            <p className="text-gray-400 text-lg">
-                                Paid:{" "}
-                                <span className="font-semibold">
-                                    {sells.reduce(
-                                        (acc: number, sell: any) =>
-                                            acc + sell.paid,
-                                        0
-                                    )}{" "}
-                                    ৳
-                                </span>
-                            </p>{" "}
-                            <p className="text-gray-400 text-lg">
-                                Sells:{" "}
-                                <span className="font-semibold">
-                                    {sells.reduce(
-                                        (acc: number, sell: any) =>
-                                            acc + sell.due,
-                                        0
-                                    )}{" "}
-                                    ৳
-                                </span>
-                            </p>{" "}
-                            <p className="text-gray-400 text-lg">
-                                Sells:{" "}
-                                <span className="font-semibold">
-                                    {sells.reduce(
-                                        (acc: number, sell: any) =>
-                                            acc + sell.totalPrice,
-                                        0
-                                    )}{" "}
-                                    ৳
-                                </span>
-                            </p>{" "}
+                    <div className="bg-gray-800 rounded-lg p-6 shadow-lg mb-4">
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-xl font-semibold text-gray-100">
+                                Sales Report
+                            </h3>
+                            <div className="flex gap-4">
+                                <p className="text-gray-400 text-lg">
+                                    Paid:{" "}
+                                    <span className="font-semibold text-green-400">
+                                        {sells.reduce(
+                                            (acc: number, sell: any) =>
+                                                acc + sell.paid,
+                                            0
+                                        )}{" "}
+                                        ৳
+                                    </span>
+                                </p>
+                                <p className="text-gray-400 text-lg">
+                                    Due:{" "}
+                                    <span className="font-semibold text-yellow-400">
+                                        {sells.reduce(
+                                            (acc: number, sell: any) =>
+                                                acc + sell.due,
+                                            0
+                                        )}{" "}
+                                        ৳
+                                    </span>
+                                </p>
+                                <p className="text-gray-400 text-lg">
+                                    Total:{" "}
+                                    <span className="font-semibold text-blue-400">
+                                        {sells.reduce(
+                                            (acc: number, sell: any) =>
+                                                acc + sell.totalPrice,
+                                            0
+                                        )}{" "}
+                                        ৳
+                                    </span>
+                                </p>
+                            </div>
                         </div>
                     </div>
                     <div>

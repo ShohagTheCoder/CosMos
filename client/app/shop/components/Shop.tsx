@@ -1,14 +1,9 @@
 "use client";
 import apiCall from "@/app/common/apiCall";
 import Cashout from "@/app/components/Cashout";
-import DatePicker from "@/app/components/DatePicker";
 import DatePickerMini from "@/app/components/DatePickerMinit";
-import Pagination from "@/app/components/Pagination";
 import SellsRow from "@/app/components/SellsRow";
 import TransferMoney from "@/app/components/TransferMoney";
-import PulseLoading from "@/app/elements/loding/PulseLoading";
-import CustomersIcon from "@/app/icons/CustomersIcon";
-import UserIcon from "@/app/icons/UserIcon";
 import React, { KeyboardEvent, useEffect, useState } from "react";
 
 export default function Shop({ shop: initialShop, accounts = [] }: any) {
@@ -101,7 +96,7 @@ export default function Shop({ shop: initialShop, accounts = [] }: any) {
                 />
             )}
 
-            <div className="container max-w-3xl mx-auto px-4">
+            <div className="container max-w-4xl mx-auto px-4">
                 {/* Profile and Account Info */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 py-6">
                     {/* Profile Picture */}
@@ -177,46 +172,49 @@ export default function Shop({ shop: initialShop, accounts = [] }: any) {
                             />
                         </div>
                     </div>
-                    <div className="flex justify-between items-center mb-3">
-                        <h3 className="text-xl font-semibold text-gray-100">
-                            All Sells
-                        </h3>
-                        <div className="flex gap-3">
-                            <p className="text-gray-400 text-lg">
-                                Paid:{" "}
-                                <span className="font-semibold">
-                                    {sells.reduce(
-                                        (acc: number, sell: any) =>
-                                            acc + sell.paid,
-                                        0
-                                    )}{" "}
-                                    ৳
-                                </span>
-                            </p>{" "}
-                            <p className="text-gray-400 text-lg">
-                                Sells:{" "}
-                                <span className="font-semibold">
-                                    {sells.reduce(
-                                        (acc: number, sell: any) =>
-                                            acc + sell.due,
-                                        0
-                                    )}{" "}
-                                    ৳
-                                </span>
-                            </p>{" "}
-                            <p className="text-gray-400 text-lg">
-                                Sells:{" "}
-                                <span className="font-semibold">
-                                    {sells.reduce(
-                                        (acc: number, sell: any) =>
-                                            acc + sell.totalPrice,
-                                        0
-                                    )}{" "}
-                                    ৳
-                                </span>
-                            </p>{" "}
+                    <div className="bg-gray-800 rounded-lg p-6 shadow-lg mb-4">
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-xl font-semibold text-gray-100">
+                                Sales Report
+                            </h3>
+                            <div className="flex gap-4">
+                                <p className="text-gray-400 text-lg">
+                                    Paid:{" "}
+                                    <span className="font-semibold text-green-400">
+                                        {sells.reduce(
+                                            (acc: number, sell: any) =>
+                                                acc + sell.paid,
+                                            0
+                                        )}{" "}
+                                        ৳
+                                    </span>
+                                </p>
+                                <p className="text-gray-400 text-lg">
+                                    Due:{" "}
+                                    <span className="font-semibold text-yellow-400">
+                                        {sells.reduce(
+                                            (acc: number, sell: any) =>
+                                                acc + sell.due,
+                                            0
+                                        )}{" "}
+                                        ৳
+                                    </span>
+                                </p>
+                                <p className="text-gray-400 text-lg">
+                                    Total:{" "}
+                                    <span className="font-semibold text-blue-400">
+                                        {sells.reduce(
+                                            (acc: number, sell: any) =>
+                                                acc + sell.totalPrice,
+                                            0
+                                        )}{" "}
+                                        ৳
+                                    </span>
+                                </p>
+                            </div>
                         </div>
                     </div>
+
                     <div className="space-y-4">
                         <SellsRow sells={sells} />
                     </div>

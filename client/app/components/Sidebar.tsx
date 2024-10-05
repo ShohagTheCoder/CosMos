@@ -30,7 +30,7 @@ export default function Sidebar({
                         label="Dashboard"
                         icon={<ColsIcon />}
                         link="/"
-                        isActive={active === "home"}
+                        isActive={active === "dashboard"}
                     />
                     <SidebarItem
                         label="Shop"
