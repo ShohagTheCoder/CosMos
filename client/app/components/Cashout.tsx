@@ -10,6 +10,16 @@ export default function Cashout({ account, callback, handleClose }: any) {
     const [cashoutButtonLoading, setCashoutButtonLoading] = useState(false);
 
     const { notification, notifyError, notifySuccess } = useNotification();
+    const notes = [
+        { label: "Bill", note: "This is a bill of ?" },
+        { label: "Salary", note: "This is a salary payment for ?" },
+        { label: "Expense", note: "This is an expense for ?" },
+        { label: "Donation", note: "This is a donation to ?" },
+        {
+            label: "Others",
+            note: "This is a miscellaneous payment for ?",
+        },
+    ];
 
     async function handleCashout() {
         setCashoutButtonLoading(true);
@@ -23,6 +33,7 @@ export default function Cashout({ account, callback, handleClose }: any) {
             .success((data, message) => {
                 notifySuccess(message);
                 setAmount(0);
+                setNote(""); // Clear note after successful cashout
                 callback(data);
             })
             .error((error) => {
@@ -80,8 +91,8 @@ export default function Cashout({ account, callback, handleClose }: any) {
                 </div>
 
                 {/* Input Fields */}
-                <div className="space-y-6">
-                    <div className="">
+                <div className="space-y-4">
+                    <div>
                         <NumberInputControl
                             step={10}
                             value={amount}
@@ -92,6 +103,18 @@ export default function Cashout({ account, callback, handleClose }: any) {
                             buttonClassName="h-[50px] w-[50px]"
                             inputClassName="text-lg flex-grow bg-gray-800 p-3 text-white placeholder-gray-400 focus:outline-none h-[50px]"
                         />
+                    </div>
+                    {/* Quick Note Buttons */}
+                    <div className="flex flex-wrap mb-3 gap-2">
+                        {notes.map((item) => (
+                            <button
+                                key={item.label}
+                                onClick={() => setNote(item.note)}
+                                className="bg-gray-600 text-white rounded-md px-2 py-1 hover:bg-blue-700 transition duration-300"
+                            >
+                                {item.label}
+                            </button>
+                        ))}
                     </div>
                     {/* Note Textarea */}
                     <textarea
@@ -107,7 +130,7 @@ export default function Cashout({ account, callback, handleClose }: any) {
                 {/* Cashout Button */}
                 <button
                     onDoubleClick={handleCashout}
-                    className={`mt-8 w-full py-3 rounded-lg font-semibold text-lg tracking-wide shadow-md ${
+                    className={`mt-4 w-full py-3 rounded-lg font-semibold text-lg tracking-wide shadow-md ${
                         cashoutButtonLoading
                             ? "bg-blue-500 cursor-not-allowed"
                             : "bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50"
