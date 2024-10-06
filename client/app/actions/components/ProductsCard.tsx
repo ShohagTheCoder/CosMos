@@ -28,14 +28,14 @@ function ProductsCard({
     }
 
     return (
-        <div className="h-auto max-h-[2000px] grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="pb-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4">
             {Object.values(products)
                 .slice(0, 20)
                 .map((product: ProductWithID, key: number) => (
                     <div
                         onClick={() => handleCallback(product._id)}
                         key={product._id}
-                        className={`max-w-sm rounded overflow-hidden bg-gray-300 dark:bg-gray-800 shadow ${
+                        className={`flex flex-col max-w-sm rounded overflow-hidden bg-gray-300 dark:bg-gray-800 shadow ${
                             selected == key
                                 ? "bg-green-200 dark:bg-green-900"
                                 : ""
@@ -63,7 +63,7 @@ function ProductsCard({
                         ) : (
                             ""
                         )}
-                        <div>
+                        <div className="flex flex-col flex-grow">
                             <div className="p-3">
                                 <h2 className="font-semibold text-xl">
                                     {product.name}
@@ -80,7 +80,7 @@ function ProductsCard({
                                     ""
                                 )}
                             </div>
-                            <div className="flex flex-wrap justify-between items-center bg-gray-400 dark:bg-slate-700 py-2 px-3">
+                            <div className="flex flex-wrap mt-auto justify-between items-center bg-gray-400 dark:bg-slate-700 py-2 px-3">
                                 <span>
                                     1{" "}
                                     {
