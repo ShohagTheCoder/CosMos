@@ -120,7 +120,14 @@ export class ProductsService {
 
     async findAllForPurchase() {
         try {
-            return await this.productModel.find().populate('stock').exec();
+            const products = await this.productModel
+                .find()
+                .populate('stock')
+                .populate('brand')
+                .populate('category')
+                .exec();
+
+            return new Response().data(products).done();
         } catch (error) {
             console.error('Error finding products for purchase:', error);
             throw error;

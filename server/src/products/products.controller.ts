@@ -7,7 +7,6 @@ import {
     Patch,
     Post,
     Query,
-    Req,
     UseGuards,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
@@ -19,6 +18,12 @@ import { Permissions } from 'src/auth/guards/permissions';
 @Controller('products')
 export class ProductsController {
     constructor(private readonly productsService: ProductsService) {}
+
+    @Permissions('sale')
+    @Get('forPurchase')
+    async findAllForPurchase() {
+        return await this.productsService.findAllForPurchase();
+    }
 
     @Permissions('sale')
     @Get()
@@ -36,13 +41,6 @@ export class ProductsController {
     @Get('query')
     async findByQuery(@Query() query: any) {
         return await this.productsService.findByQuery(query);
-    }
-
-    // @UseGuards(SellerGuard)
-    @Permissions('purchase')
-    @Get('for-purchase')
-    async findAllForPurchase() {
-        return await this.productsService.findAllForPurchase();
     }
 
     @Get(':id')

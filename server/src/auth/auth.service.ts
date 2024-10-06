@@ -13,11 +13,13 @@ export class AuthService {
     ) {}
 
     async validateUser(username: string, password: string) {
+        console.log(username);
         const user = await this.usersService.findByUsername(username);
 
         if (user && user.password === password) {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
             const { password, ...result } = user;
+            console.log(result);
             return result;
         }
 
@@ -25,6 +27,7 @@ export class AuthService {
     }
 
     async login(user: User) {
+        console.log(user);
         const payload = {
             sub: user._id, // Payload containing the user's unique ID
             permissions: user.permissions,
