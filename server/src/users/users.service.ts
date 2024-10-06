@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { Account, AccountDocument } from 'src/accounts/schemas/account.schema';
 import { Setting, SettingDocument } from 'src/settings/schemas/setting.schema';
+import { Response } from 'src/common/utils/apiResponse';
 
 @Injectable()
 export class UsersService {
@@ -14,34 +15,47 @@ export class UsersService {
     ) {}
 
     async create(createUserDto: any) {
-        const user = new this.userModel(createUserDto);
-        const account = new this.accountModel({
-            owner: user._id.toString(),
-            name: createUserDto.name,
-            type: 'sell',
-            username: createUserDto.email,
-            password: createUserDto.password,
-            balance: 0,
-            minimumBalance: 100000,
-            maximumBalance: 100000,
-            limit: 100000,
-        });
-        user.account = account._id.toString();
+        // console.log(createUserDto);
+        // return;
+        try {
+            const user = new this.userModel(createUserDto);
+            const account = new this.accountModel({
+                owner: user._id.toString(),
+                name: createUserDto.name,
+                type: 'sell',
+                username: createUserDto.email,
+                password: createUserDto.password,
+                balance: 0,
+                minimumBalance: 100000,
+                maximumBalance: 100000,
+                limit: 100000,
+            });
+            user.account = account._id.toString();
 
-        const setting = new this.settingModel({
-            user: user._id.toString(),
-            darkMode: true,
-            productImage: true,
-            cartImage: true,
-            productRow: true,
-        });
+            const setting = new this.settingModel({
+                user: user._id.toString(),
+                darkMode: true,
+                productImage: true,
+                cartImage: true,
+                productRow: true,
+            });
 
-        // Updaet user setting fied
-        user.setting = setting._id.toString();
+            // Updaet user setting fied
+            user.setting = setting._id.toString();
 
-        await user.save();
-        await setting.save();
-        return await account.save();
+            await user.save();
+            await setting.save();
+            await account.save();
+
+            return {
+                status: 'success',
+                message: 'User created successfully',
+                data: null,
+            };
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
     }
 
     findAll() {

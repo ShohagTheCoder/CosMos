@@ -14,7 +14,7 @@ export class SellerGuard implements CanActivate {
         const request = context.switchToHttp().getRequest();
         const user = request.user;
 
-        if (user.canSell) {
+        if (user.permissions?.['sale']) {
             return true;
         }
 

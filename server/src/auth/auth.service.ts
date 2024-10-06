@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { permission } from 'process';
 import { Response } from 'src/common/utils/apiResponse';
 import { User } from 'src/users/schemas/user.schema';
 import { UsersService } from 'src/users/users.service';
@@ -26,6 +27,7 @@ export class AuthService {
     async login(user: User) {
         const payload = {
             sub: user._id, // Payload containing the user's unique ID
+            permissions: user.permissions,
         };
 
         return new Response('Login successful')

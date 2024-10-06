@@ -21,11 +21,26 @@ export class User extends Document {
     @Prop()
     salary: number;
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Account' }) // Use 'Account' directly
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Account' })
     account: string;
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Setting' }) // Use 'Setting' directly
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Setting' })
     setting: string;
+
+    // Use an object for permissions
+    @Prop({
+        type: mongoose.Schema.Types.Mixed,
+        default: {
+            sale: false,
+            purchase: false,
+            dashboard: false,
+            cashout: false,
+            sendMoney: false,
+            trashes: false,
+            products: false,
+        },
+    })
+    permissions: Record<string, boolean>;
 }
 
 export type UserDocument = User & Document;

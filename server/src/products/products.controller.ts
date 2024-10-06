@@ -7,31 +7,39 @@ import {
     Patch,
     Post,
     Query,
+    Req,
+    UseGuards,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { PermissionGuard } from 'src/auth/guards/permission.guard';
+import { Permissions } from 'src/auth/guards/permissions';
 
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, PermissionGuard)
 @Controller('products')
 export class ProductsController {
     constructor(private readonly productsService: ProductsService) {}
 
-    // @UseGuards(SellerGuard)
+    @Permissions('sale')
     @Get()
     async findAll() {
         return await this.productsService.findAll();
     }
 
+    @Permissions('sale')
     @Get('countDocuments')
     async countDocuments() {
         return await this.productsService.countDocuments();
     }
 
+    @Permissions('sale')
     @Get('query')
     async findByQuery(@Query() query: any) {
         return await this.productsService.findByQuery(query);
     }
 
     // @UseGuards(SellerGuard)
+    @Permissions('purchase')
     @Get('for-purchase')
     async findAllForPurchase() {
         return await this.productsService.findAllForPurchase();

@@ -21,7 +21,7 @@ import { Setting, SettingSchema } from 'src/settings/schemas/setting.schema';
             { name: Setting.name, schema: SettingSchema },
         ]),
         UsersModule,
-        PassportModule,
+        PassportModule.register({ defaultStrategy: 'jwt' }),
         JwtModule.register({
             secret: SECRET,
             signOptions: { expiresIn: '12h' },
@@ -29,5 +29,6 @@ import { Setting, SettingSchema } from 'src/settings/schemas/setting.schema';
     ],
     controllers: [AuthController],
     providers: [AuthService, UsersService, JwtStrategy, LocalStrategy],
+    exports: [JwtModule],
 })
 export class AuthModule {}
