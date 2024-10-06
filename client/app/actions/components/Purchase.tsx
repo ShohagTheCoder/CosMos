@@ -233,6 +233,7 @@ export default function Purchase({
             .post("/purchases", stockManager.getData())
             .success(async (data, message) => {
                 notifySuccess(message);
+                stockManager.reset(initialStockState).set("user", user).save();
                 try {
                     let { data: _productsArray } = await apiClient.get(
                         "products/for-purchase"
@@ -253,7 +254,7 @@ export default function Purchase({
             })
             .finally(() => {
                 setTimeout(async () => {
-                    stockManager.reset(initialStockState).save();
+                    setPurchaseButtonLoading(false);
                 }, 3000);
             });
     }

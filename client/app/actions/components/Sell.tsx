@@ -232,6 +232,7 @@ export default function Sell({
             .post("/sells", cartManager.getData())
             .success(async (data, message) => {
                 notifySuccess(message);
+                cartManager.reset(initialCartState).set("user", user).save();
                 try {
                     let { data: _productsArray } = await apiClient.get(
                         "products"
@@ -253,7 +254,7 @@ export default function Sell({
             .finally(() => {
                 setTimeout(() => {
                     // setSellButtonLoading(false);
-                    cartManager.reset(initialCartState).save();
+                    setSellButtonLoading(false);
                 }, 3000);
             });
     }
