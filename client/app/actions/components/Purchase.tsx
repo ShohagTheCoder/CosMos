@@ -493,6 +493,20 @@ export default function Purchase({
                                         <RowIcon height="18" />
                                     )}
                                 </button>
+                                <button
+                                    onClick={() => {
+                                        updateSetting({
+                                            productDescription:
+                                                !settingState.productDescription,
+                                        });
+                                    }}
+                                >
+                                    {settingState.productDescription ? (
+                                        <ColsIcon height="20" />
+                                    ) : (
+                                        <RowIcon height="18" />
+                                    )}
+                                </button>
                             </div>
                             <div className="overflow-x-hidden overflow-y-auto pe-3 cosmos-scrollbar">
                                 {productUpdateShortcut ? (
@@ -556,6 +570,9 @@ export default function Purchase({
                                                         showProductImage={
                                                             settingState.productImage
                                                         }
+                                                        showProductDescription={
+                                                            settingState.productDescription
+                                                        }
                                                     />
                                                 ) : (
                                                     <ProductsCard
@@ -581,6 +598,9 @@ export default function Purchase({
                                                         }
                                                         showProductImage={
                                                             settingState.productImage
+                                                        }
+                                                        showProductDescription={
+                                                            settingState.productDescription
                                                         }
                                                     />
                                                 )}

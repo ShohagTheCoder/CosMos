@@ -10,6 +10,7 @@ interface ProductsCardProps {
     callback: (product: ProductWithID) => void;
     products: Record<string, ProductWithID>;
     showProductImage: boolean;
+    showProductDescription: boolean;
     // eslint-disable-next-line no-unused-vars
     setProductUpdateShortcut: (productId: string) => void;
 }
@@ -19,6 +20,7 @@ function ProductsCard({
     callback,
     products,
     showProductImage = true,
+    showProductDescription = true,
     setProductUpdateShortcut,
 }: ProductsCardProps) {
     function handleCallback(id: string) {
@@ -68,10 +70,13 @@ function ProductsCard({
                                 <h2 className="font-semibold text-xl">
                                     {product.name}
                                 </h2>
-
-                                <p className="text-base">
-                                    {product.description}
-                                </p>
+                                {showProductDescription ? (
+                                    <p className="text-base">
+                                        {product.description}
+                                    </p>
+                                ) : (
+                                    ""
+                                )}
                                 {product.purchaseEnable ? (
                                     <p className="mt-1">
                                         # {getStockLine(product)}

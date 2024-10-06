@@ -17,6 +17,9 @@ export class Setting extends Document {
     productImage: boolean;
 
     @Prop({ default: true })
+    productDescription: boolean;
+
+    @Prop({ default: true })
     cartImage: boolean;
 
     @Prop({ default: true })

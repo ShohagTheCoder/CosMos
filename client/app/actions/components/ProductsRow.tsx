@@ -7,6 +7,7 @@ interface ProductsRowProps {
     callback: (product: ProductWithID) => void;
     products: Record<string, ProductWithID>;
     showProductImage: boolean;
+    showProductDescription: boolean;
 }
 
 function ProductsRow({
@@ -14,6 +15,7 @@ function ProductsRow({
     callback,
     products,
     showProductImage = true,
+    showProductDescription = true,
 }: ProductsRowProps) {
     function handleCallback(id: string) {
         if (products) {
@@ -29,13 +31,13 @@ function ProductsRow({
                     <div
                         key={product._id}
                         onClick={() => handleCallback(product._id)}
-                        className={`grid w-full grid-cols-5 rounded overflow-hidden bg-gray-300 dark:bg-gray-800 shadow ${
+                        className={`grid w-full grid-cols-6 rounded overflow-hidden bg-gray-300 dark:bg-gray-800 shadow ${
                             selected == key
                                 ? "bg-green-200 dark:bg-green-900"
                                 : ""
                         }`}
                     >
-                        <div className="col-span-2 flex flex-wrap">
+                        <div className="col-span-3 flex flex-wrap">
                             {showProductImage ? (
                                 <img
                                     className="w-[60px] object-cover"
@@ -47,23 +49,27 @@ function ProductsRow({
                             ) : (
                                 ""
                             )}
-                            <div className="py-1 ps-3">
-                                <h2 className="font-semibold text-xl mb-1">
+                            <div className="py-2 ps-3 flex flex-col gap-1">
+                                <h2 className="font-semibold text-xl">
                                     {product.name}
                                 </h2>
-                                <p className="text-base">
-                                    {product.description}
-                                </p>
+                                {showProductDescription ? (
+                                    <p className="text-base">
+                                        {product.description}
+                                    </p>
+                                ) : (
+                                    ""
+                                )}
                             </div>
                         </div>
-                        <div className="flex justify-end items-center">
+                        <div className="flex items-center">
                             <p>
                                 {product.purchaseEnable
                                     ? `# ${getStockLine(product)}`
                                     : "Available"}
                             </p>
                         </div>
-                        <div className="flex justify-end items-center">
+                        <div className="flex items-center">
                             <p className="">
                                 1 {product.units[product.displaySaleUnit].label}
                             </p>
