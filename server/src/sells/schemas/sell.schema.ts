@@ -4,7 +4,7 @@ import {
     Customer,
     CustomerSchema,
 } from 'src/customers/schemas/customer.schema';
-import { Product } from 'src/products/schemas/product.schema';
+import { Product } from 'src/products/dto/schemas/product.schema';
 
 @Schema()
 export class Sell {

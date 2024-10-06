@@ -73,7 +73,9 @@ function SelectProductPopup({ products, callback, handleClose }: any) {
                             >
                                 <img
                                     className="w-full h-48 object-cover"
-                                    src={`/images/products/${product.image}`}
+                                    src={`/images/products/${
+                                        product.image || "product.jpg"
+                                    }`}
                                     alt={product.name}
                                 />
                                 <div className="p-4">

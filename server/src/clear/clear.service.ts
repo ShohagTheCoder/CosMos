@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { Account } from 'src/accounts/schemas/account.schema';
 import { Purchase } from 'src/schemas/purchase.schema';
 import { Sell } from 'src/sells/schemas/sell.schema';
-import { Stock } from 'src/stocks/schemas/stocks.schema';
+import { Stock } from 'src/stocks/schemas/stock.schema';
 import { Transaction } from 'src/transactions/schemas/transaction.schema';
 import { Trash } from 'src/trash/schemas/trash.schema';
 

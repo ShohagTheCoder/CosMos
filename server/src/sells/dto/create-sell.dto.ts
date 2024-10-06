@@ -1,4 +1,4 @@
-import { Product } from 'src/products/schemas/product.schema';
+import { Product } from 'src/products/dto/schemas/product.schema';
 
 // Define the type for createSellDto
 export interface CreateSellDto {

@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Price, Product, ProductDocument } from './schemas/product.schema';
-import { Stock, StockDocument } from 'src/stocks/schemas/stocks.schema';
+import { Price, Product, ProductDocument } from './dto/schemas/product.schema';
+import { Stock, StockDocument } from 'src/stocks/schemas/stock.schema';
 import { TrashService } from 'src/trash/trash.service';
 import { Response } from 'src/common/utils/apiResponse';
 
@@ -131,16 +131,56 @@ export class ProductsService {
         return this.productModel.findById(id);
     }
 
+    async createMany(createProductsDto: any[]) {
+        const errors: string[] = [];
+        const createdProducts: any[] = [];
+
+        // Use Promise.all for concurrent processing
+        await Promise.all(
+            createProductsDto.map(async (createProductDto) => {
+                const stockDto = {
+                    SKU: createProductDto.SKU,
+                    name: createProductDto.name,
+                    stockLow: createProductDto.stockLow,
+                    stockAlert: createProductDto.stockAlert,
+                };
+
+                try {
+                    // Create product and stock instances
+                    const createdProduct = new this.productModel(
+                        createProductDto,
+                    );
+                    const createdStock = new this.stockModel(stockDto);
+
+                    if (createdProduct && createdStock) {
+                        createdProduct.stock = createdStock._id.toString();
+                        createdStock.product = createdProduct._id.toString();
+
+                        // Save stock first, then product
+                        await createdStock.save();
+                        const savedProduct = await createdProduct.save();
+                        createdProducts.push(savedProduct);
+                    }
+                } catch (error) {
+                    errors.push(
+                        `Error creating product "${createProductDto.name}": ${error.message}`,
+                    );
+                }
+            }),
+        );
+
+        return new Response('Products created successfully')
+            .data(createdProducts)
+            .errors(errors.length ? errors : null) // Include errors only if present
+            .done();
+    }
+
     create(createProductDto: any) {
-        const stockDto: any = {
+        const stockDto = {
             SKU: createProductDto.SKU, // Ensure SKU is part of CreateProductDto
             name: createProductDto.name,
-            stock: 0,
             stockLow: createProductDto.stockLow,
             stockAlert: createProductDto.stockAlert,
-            lastSupplier: 'Shohag Ahmed',
-            lastReceiver: 'Shohag Ahmed',
-            lastStockedDate: new Date(),
         };
 
         try {
@@ -152,17 +192,17 @@ export class ProductsService {
                 createdProduct.stock = createdStock._id.toString();
                 createdStock.product = createdProduct._id.toString();
 
-                createdStock.save();
-                return createdProduct.save();
+                createdStock.save(); // Save stock first, async call
+                return createdProduct.save(); // Return the saved product
             } else {
                 throw new HttpException(
-                    'Product or stock creation failed',
+                    'Failed to create product or stock due to invalid input data.',
                     HttpStatus.BAD_REQUEST,
                 );
             }
         } catch (error) {
             throw new HttpException(
-                'An error occurred',
+                `An error occurred during product creation: ${error.message}`,
                 HttpStatus.INTERNAL_SERVER_ERROR,
             );
         }
@@ -248,5 +288,38 @@ export class ProductsService {
         // Delete the product and return the result
         await stock.deleteOne();
         return await product.deleteOne();
+    }
+
+    async clearAll() {
+        try {
+            // Retrieve the count of all products from the database
+            const productsCount = await this.productModel.countDocuments();
+
+            // If no products are found, return early with a message
+            if (productsCount === 0) {
+                return {
+                    status: 'success',
+                    message: 'No products found to clear.',
+                };
+            }
+
+            // Delete all stock documents in one operation
+            await this.stockModel.deleteMany({});
+
+            // Delete all product documents in one operation
+            await this.productModel.deleteMany({});
+
+            // Return a success message indicating that all products and stocks have been cleared
+            return {
+                status: 'success',
+                message:
+                    'All products and their associated stocks have been cleared successfully.',
+            };
+        } catch (error) {
+            // Throw the original error message for better debugging
+            throw new Error(
+                `Failed to delete products and stocks: ${error.message}`,
+            );
+        }
     }
 }

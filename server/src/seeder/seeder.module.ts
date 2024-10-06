@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { SeederService } from './seeder.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Product, ProductSchema } from '../products/schemas/product.schema';
+import { Product, ProductSchema } from '../products/dto/schemas/product.schema';
 import { Command, CommandSchema } from '../commands/schemas/command.schema';
 
 @Module({

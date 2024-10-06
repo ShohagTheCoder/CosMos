@@ -5,9 +5,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Purchase, PurchaseSchema } from '../schemas/purchase.schema';
 import { StocksService } from 'src/stocks/stocks.service';
 import { AccountsService } from 'src/accounts/accounts.service';
-import { Stock, StockSchema } from 'src/stocks/schemas/stocks.schema';
+import { Stock, StockSchema } from 'src/stocks/schemas/stock.schema';
 import { Account, AccountSchema } from 'src/accounts/schemas/account.schema';
-import { Product, ProductSchema } from 'src/products/schemas/product.schema';
+import {
+    Product,
+    ProductSchema,
+} from 'src/products/dto/schemas/product.schema';
 import {
     Transaction,
     TransactionSchema,

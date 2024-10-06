@@ -1,3 +1,4 @@
+import fixFloatingPoint from "@/app/functions/fixFloatingPoint";
 import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 import getStockLine from "@/app/functions/getStockLine";
 import InfoIcon from "@/app/icons/InfoIcon";
@@ -28,8 +29,9 @@ function ProductsCard({
 
     return (
         <div className="h-auto max-h-[2000px] grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4">
-            {Object.values(products).map(
-                (product: ProductWithID, key: number) => (
+            {Object.values(products)
+                .slice(0, 20)
+                .map((product: ProductWithID, key: number) => (
                     <div
                         onClick={() => handleCallback(product._id)}
                         key={product._id}
@@ -87,16 +89,19 @@ function ProductsCard({
                                     }
                                 </span>
                                 <p className="font-semibold text-xl text-green-900 dark:text-green-300 inline-block">
-                                    {getProductUnitPrice(product) *
-                                        product.units?.[product.displaySaleUnit]
-                                            ?.value}
+                                    {fixFloatingPoint(
+                                        getProductUnitPrice(product) *
+                                            product.units?.[
+                                                product.displaySaleUnit
+                                            ]?.value,
+                                        1
+                                    )}
                                     <span> ৳</span>
                                 </p>
                             </div>
                         </div>
                     </div>
-                )
-            )}
+                ))}
         </div>
     );
 }

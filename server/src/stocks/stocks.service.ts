@@ -1,10 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Stock, StockDocument } from './schemas/stocks.schema'; // Adjust the path if necessary
+import { Stock, StockDocument } from './schemas/stock.schema'; // Adjust the path if necessary
 import { CreateStockDto } from './dto/CreateStockDto'; // Adjust the path if necessary
 import { UpdateStockDto } from './dto/UpdateStockDto'; // Adjust the path if necessary
-import { Product, ProductDocument } from 'src/products/schemas/product.schema';
+import {
+    Product,
+    ProductDocument,
+} from 'src/products/dto/schemas/product.schema';
 
 @Injectable()
 export class StocksService {

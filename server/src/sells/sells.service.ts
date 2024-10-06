@@ -6,7 +6,10 @@ import { CreateSellDto } from './dto/create-sell.dto';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { StocksService } from 'src/stocks/stocks.service';
 import { UsersService } from 'src/users/users.service';
-import { Product, ProductDocument } from 'src/products/schemas/product.schema';
+import {
+    Product,
+    ProductDocument,
+} from 'src/products/dto/schemas/product.schema';
 import { Response } from 'src/common/utils/apiResponse';
 
 @Injectable()

@@ -4,4 +4,9 @@ export interface ApiResponse<T = any> {
     code: number; // HTTP status code (e.g., 200, 400, 500)
     message: string; // Descriptive message explaining the result or error
     data: T | null; // Payload data (null in case of error)
+    errors?: T | null; // Payload data (null in case of error)
+    page?: number | null;
+    totalDocuments?: number | null;
+    totalPages?: number | null;
+    limit?: number | null;
 }

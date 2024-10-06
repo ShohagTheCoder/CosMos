@@ -2,12 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Trash, TrashDocument } from './schemas/trash.schema';
-import { Product, ProductDocument } from 'src/products/schemas/product.schema';
+import {
+    Product,
+    ProductDocument,
+} from 'src/products/dto/schemas/product.schema';
 import {
     Supplier,
     SupplierDocument,
 } from 'src/suppliers/schemas/supplier.schema';
-import { Stock, StockDocument } from 'src/stocks/schemas/stocks.schema';
+import { Stock, StockDocument } from 'src/stocks/schemas/stock.schema';
 
 interface TrashItem {
     source: string; // Collection name or identifier

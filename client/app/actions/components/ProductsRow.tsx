@@ -23,8 +23,9 @@ function ProductsRow({
 
     return (
         <div className="flex flex-col gap-3">
-            {Object.values(products).map(
-                (product: ProductWithID, key: number) => (
+            {Object.values(products)
+                .slice(0, 20)
+                .map((product: ProductWithID, key: number) => (
                     <div
                         key={product._id}
                         onClick={() => handleCallback(product._id)}
@@ -76,8 +77,7 @@ function ProductsRow({
                             </div>
                         </div>
                     </div>
-                )
-            )}
+                ))}
         </div>
     );
 }

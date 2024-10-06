@@ -2,7 +2,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import products from './date/products';
-import { Product, ProductDocument } from '../products/schemas/product.schema';
+import {
+    Product,
+    ProductDocument,
+} from '../products/dto/schemas/product.schema';
 import { Command, CommandDocument } from '../commands/schemas/command.schema';
 
 @Injectable()

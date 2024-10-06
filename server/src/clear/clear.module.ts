@@ -5,7 +5,7 @@ import { ClearController } from './clear.controller';
 import { Account, AccountSchema } from 'src/accounts/schemas/account.schema';
 import { Purchase, PurchaseSchema } from 'src/schemas/purchase.schema';
 import { Sell, SellSchema } from 'src/sells/schemas/sell.schema';
-import { Stock, StockSchema } from 'src/stocks/schemas/stocks.schema';
+import { Stock, StockSchema } from 'src/stocks/schemas/stock.schema';
 import {
     Transaction,
     TransactionSchema,

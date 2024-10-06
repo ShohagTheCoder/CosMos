@@ -6,7 +6,7 @@ export class Stock extends Document {
     @Prop()
     product: string;
 
-    @Prop()
+    @Prop({ required: true })
     SKU: string;
 
     @Prop()
@@ -27,7 +27,7 @@ export class Stock extends Document {
     @Prop()
     unit: string;
 
-    @Prop()
+    @Prop({ default: 0 })
     stock: number;
 
     @Prop()

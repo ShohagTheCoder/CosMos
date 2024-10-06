@@ -169,7 +169,10 @@ function StockProduct({
                                                 <InfoIcon />
                                             </button>
                                             <img
-                                                src={`/images/products/${product.image}`}
+                                                src={`/images/products/${
+                                                    product.image ||
+                                                    "product.jpg"
+                                                }`}
                                                 alt={product.name}
                                                 className="h-full object-cover"
                                                 onClick={() => {
@@ -441,7 +444,9 @@ function StockProduct({
                                                     )
                                                     .save();
                                             }}
-                                            src={`/images/products/${product.image}`}
+                                            src={`/images/products/${
+                                                product.image || "product.jpg"
+                                            }`}
                                             className="h-[50px] w-[50px] object-cover"
                                             alt={product.image}
                                         />

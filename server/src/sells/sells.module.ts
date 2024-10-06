@@ -3,14 +3,17 @@ import { SellsController } from './sells.controller';
 import { SellsService } from './sells.service';
 import { Sell, SellSchema } from './schemas/sell.schema';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Stock, StockSchema } from 'src/stocks/schemas/stocks.schema';
+import { Stock, StockSchema } from 'src/stocks/schemas/stock.schema';
 import { AccountsService } from 'src/accounts/accounts.service';
 import { Account, AccountSchema } from 'src/accounts/schemas/account.schema';
 import {
     Transaction,
     TransactionSchema,
 } from 'src/transactions/schemas/transaction.schema';
-import { Product, ProductSchema } from 'src/products/schemas/product.schema';
+import {
+    Product,
+    ProductSchema,
+} from 'src/products/dto/schemas/product.schema';
 import { StocksService } from 'src/stocks/stocks.service';
 import { Setting, SettingSchema } from 'src/settings/schemas/setting.schema';
 import { User, UserSchema } from 'src/users/schemas/user.schema';

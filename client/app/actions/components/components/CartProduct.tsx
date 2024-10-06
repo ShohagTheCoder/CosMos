@@ -149,10 +149,12 @@ function CartProduct({
                             >
                                 {product.note ? (
                                     <div className="flex gap-3">
-                                        <NoteIcon height="20" /> {product.note}
+                                        {product.name}
+                                        <NoteIcon height="20" />
+                                        {product.note}
                                     </div>
                                 ) : (
-                                    ""
+                                    product.name
                                 )}
                                 <div className="overflow-hidden flex">
                                     {settingState.cartImage ? (

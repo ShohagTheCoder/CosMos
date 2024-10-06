@@ -141,7 +141,6 @@ export default class CommandHandler extends KeyboardHandler {
             "NumpadSubtract",
             "PageUp",
             "PageDown",
-            "Minus",
             "Tab",
             "F5",
             "F6",
@@ -286,11 +285,6 @@ export default class CommandHandler extends KeyboardHandler {
         this.listen(["F5", "F6", "F7", "F8"], (e) => {
             this.setCommand("");
             this.handleSellPageChange(e.key);
-        });
-
-        // Regular listeners
-        this.listen("Minus", () => {
-            this.setCommand("");
         });
 
         // Define specific key combinations or long press commands here

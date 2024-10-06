@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Product, ProductSchema } from './schemas/product.schema';
-import { Stock, StockSchema } from 'src/stocks/schemas/stocks.schema';
+import { Product, ProductSchema } from './dto/schemas/product.schema';
+import { Stock, StockSchema } from 'src/stocks/schemas/stock.schema';
 import { TrashService } from 'src/trash/trash.service';
 import { Trash, TrashSchema } from 'src/trash/schemas/trash.schema';
 import {

@@ -87,7 +87,7 @@ export class Product extends Document {
     @Prop({ required: true })
     measurements: Measurement[];
 
-    @Prop({ required: true })
+    @Prop({ default: ['keyword'] })
     keywords: string[];
 
     @Prop()
@@ -118,7 +118,7 @@ export class Product extends Document {
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Category' })
     category: string;
 
-    @Prop()
+    @Prop({ default: false })
     hasResources: boolean;
 
     @Prop({ default: 0 })
@@ -127,7 +127,7 @@ export class Product extends Document {
     @Prop({ type: mongoose.Schema.Types.Mixed, default: {} })
     resources: Record<string, Resource>;
 
-    @Prop()
+    @Prop({ default: 0 })
     resourcesCost: number;
 
     @Prop({ default: true })
@@ -141,7 +141,7 @@ export class Product extends Document {
 
     @Prop({
         default: function (this: Product) {
-            return Math.floor(this.price / 5);
+            return Math.floor(this.price / 2);
         },
     })
     maximumDiscount: number;
@@ -176,10 +176,10 @@ export class Product extends Document {
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Stock' })
     stock: string;
 
-    @Prop()
+    @Prop({ default: 50 })
     stockLow: number;
 
-    @Prop()
+    @Prop({ default: 20 })
     stockAlert: number;
 
     @Prop()

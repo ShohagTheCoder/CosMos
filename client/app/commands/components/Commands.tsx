@@ -123,7 +123,7 @@ export default function Commands({
                                             <img
                                                 src={`/images/products/${
                                                     products[command.value]
-                                                        .image
+                                                        .image || "product.jpg"
                                                 }`}
                                                 alt={
                                                     products[command.value].name

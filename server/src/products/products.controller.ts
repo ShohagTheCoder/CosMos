@@ -42,6 +42,11 @@ export class ProductsController {
         return this.productsService.findOne(id);
     }
 
+    @Post('createMany')
+    createMany(@Body() createProductsDto: any) {
+        return this.productsService.createMany(createProductsDto);
+    }
+
     @Post()
     async create(@Body() createProductDto: any) {
         return this.productsService.create(createProductDto);
@@ -66,6 +71,11 @@ export class ProductsController {
     @Patch(':id')
     update(@Param('id') id: string, @Body() updateProductDto: any) {
         return this.productsService.update(id, updateProductDto);
+    }
+
+    @Delete('clearAll')
+    clearAll() {
+        return this.productsService.clearAll();
     }
 
     @Delete(':id')
