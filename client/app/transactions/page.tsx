@@ -1,7 +1,5 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import NoResponse from "../common/components/NoResponse";
-import apiClient from "../utils/apiClient";
 import Transactions from "./components/Transactions";
 import apiServer from "../utils/apiServer";
 import ErrorResponse from "../common/components/ErrorResponse";

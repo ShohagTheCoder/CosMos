@@ -11,12 +11,31 @@ export class RegisterService {
             phoneNumber: createRegisterDto.phoneNumber,
             password: createRegisterDto.password,
             role: 'shop',
+            permissions: {
+                sale: true,
+                purchase: true,
+                products: true,
+                dashboard: true,
+                cashout: true,
+                trashes: true,
+                sendMoney: true,
+            },
         };
+
         const ownerdata = {
             name: createRegisterDto.name,
             phoneNumber: createRegisterDto.phoneNumber,
             password: createRegisterDto.password,
             role: 'owner',
+            permissions: {
+                sale: true,
+                purchase: true,
+                products: true,
+                dashboard: true,
+                cashout: true,
+                trashes: true,
+                sendMoney: true,
+            },
         };
 
         // If shop does not already exist

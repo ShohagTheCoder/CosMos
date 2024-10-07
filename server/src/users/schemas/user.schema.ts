@@ -1,6 +1,22 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 
+// Define a type for Permissions
+export interface Permissions {
+    sale: boolean;
+    purchase: boolean;
+    dashboard: boolean;
+    cashout: boolean;
+    sendMoney: boolean;
+    trashes: boolean;
+    products: boolean;
+}
+
+// Define a type for Actions (if needed)
+export interface Actions {
+    [action: string]: Record<string, any>; // This can be refined based on the actions structure.
+}
+
 @Schema()
 export class User extends Document {
     @Prop({ required: true })
@@ -12,14 +28,14 @@ export class User extends Document {
     @Prop({ required: true })
     phoneNumber: string;
 
-    @Prop({ type: mongoose.Schema.Types.Mixed })
-    actions: Record<string, object>;
+    @Prop({ type: mongoose.Schema.Types.Mixed, default: {} })
+    actions: Actions;
 
     @Prop({ default: 'user' })
     role: string;
 
     @Prop()
-    salary: number;
+    salary?: number;
 
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Account' })
     account: string;
@@ -27,7 +43,7 @@ export class User extends Document {
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Setting' })
     setting: string;
 
-    // Use an object for permissions
+    // Use the Permissions interface for better typing
     @Prop({
         type: mongoose.Schema.Types.Mixed,
         default: {
@@ -40,7 +56,7 @@ export class User extends Document {
             products: false,
         },
     })
-    permissions: Record<string, boolean>;
+    permissions: Permissions;
 }
 
 export type UserDocument = User & Document;

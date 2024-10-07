@@ -2,7 +2,7 @@
 
 import TextInput from "@/app/elements/inputs/TextInput";
 import apiClient from "@/app/utils/apiClient";
-import { useState, FormEvent, useEffect } from "react";
+import { useState, FormEvent } from "react";
 
 interface CreateUserForm {
     shopName: string;

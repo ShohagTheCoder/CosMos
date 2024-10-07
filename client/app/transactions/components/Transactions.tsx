@@ -16,7 +16,7 @@ interface Transaction {
     date: string; // Store the date as a string
 }
 
-export default function Transactions({ totalDocuments, userId }: any) {
+export default function Transactions({ totalDocuments }: any) {
     // Use the Transaction[] type for the transactions state
     const [transactions, setTransactions] = useState<Transaction[]>([]);
 
