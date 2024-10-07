@@ -1,19 +1,17 @@
 "use client";
 import Cashout from "@/app/components/Cashout";
-import DatePickerMini from "@/app/components/DatePickerMinit";
-import SellsRow from "@/app/components/SellsRow";
+import PurchasesList from "@/app/components/common/PurchasesList";
+import SellsList from "@/app/components/common/SellsList";
+import TransactionsList from "@/app/components/common/TransactionsList";
 import TransferMoney from "@/app/components/TransferMoney";
-import apiClient from "@/app/utils/apiClient";
+import Tab from "@/app/elements/tab/Tab";
 import React, { useEffect, useState } from "react";
 
 export default function Shop({ shop: initialShop, accounts = [] }: any) {
     const [shop, setShop] = useState(initialShop);
-    const [sells, setSells] = useState([]);
     const [account, setAccount] = useState(shop.account);
     const [tansferMoneyPopup, setTransferMoneyPopup] = useState(false);
     const [cashoutPopup, setCashoutPopup] = useState(false);
-    const [startDate, setStartDate] = useState(new Date()); // Set to today's date or any default date
-    const [endDate, setEndDate] = useState(new Date()); // Set to today's date or any default date
 
     function handleTransferMoney(amount: any) {
         setAccount((account: any) => ({
@@ -64,19 +62,15 @@ export default function Shop({ shop: initialShop, accounts = [] }: any) {
         };
     }, [setCashoutPopup]); // Include setCashoutPopup as a dependency
 
-    useEffect(() => {
-        apiClient
-            .get(`/sells/query?startDate=${startDate}&endDate=${endDate}`)
-            .then((res) => {
-                setSells(res.data.data);
-            });
-    }, [startDate, endDate]);
-
-    const handleDateChange = (newStartDate: Date, newEndDate: Date) => {
-        setStartDate(newStartDate);
-        setEndDate(newEndDate);
-        // Optionally, you can fetch your sells here based on the new dates
-    };
+    const tabContents = [
+        { id: "sales", title: "Sales", content: <SellsList /> },
+        { id: "purchases", title: "Purchases", content: <PurchasesList /> },
+        {
+            id: "transactions",
+            title: "Transactions",
+            content: <TransactionsList />,
+        },
+    ];
 
     return (
         <main className="bg-gray-900 text-gray-100 min-h-screen py-6">
@@ -98,7 +92,7 @@ export default function Shop({ shop: initialShop, accounts = [] }: any) {
 
             <div className="container max-w-4xl mx-auto px-4">
                 {/* Profile and Account Info */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 py-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 py-4">
                     {/* Profile Picture */}
                     <div className="md:col-span-2 bg-gray-800 shadow-lg rounded-lg p-6">
                         <div className="flex items-center space-x-6">
@@ -132,11 +126,11 @@ export default function Shop({ shop: initialShop, accounts = [] }: any) {
                                         </>
                                     ) : (
                                         <>
-                                            Due:{" "}
+                                            Balance :{" "}
                                             <span className="text-red-400 font-semibold">
-                                                {Math.abs(
-                                                    account.balance
-                                                ).toLocaleString("en-US")}{" "}
+                                                {account.balance.toLocaleString(
+                                                    "en-US"
+                                                )}{" "}
                                                 ৳
                                             </span>
                                         </>
@@ -160,70 +154,16 @@ export default function Shop({ shop: initialShop, accounts = [] }: any) {
                         </div>
                     </div>
                 </div>
-
-                {/* Sells Information */}
-                <div className="mt-8">
-                    <div className="w-full mb-4">
-                        <div>
-                            <DatePickerMini
-                                startDate={startDate}
-                                endDate={endDate}
-                                onDateChange={handleDateChange}
-                            />
-                        </div>
-                    </div>
-                    <div className="bg-gray-800 rounded-lg p-6 shadow-lg mb-4">
-                        <div className="flex justify-between items-center">
-                            <h3 className="text-xl font-semibold text-gray-100">
-                                Sales Report
-                            </h3>
-                            <div className="flex gap-4">
-                                <p className="text-gray-400 text-lg">
-                                    Paid:{" "}
-                                    <span className="font-semibold text-green-400">
-                                        {sells
-                                            .reduce(
-                                                (acc: number, sell: any) =>
-                                                    acc + sell.paid,
-                                                0
-                                            )
-                                            .toLocaleString("en-US")}{" "}
-                                        ৳
-                                    </span>
-                                </p>
-                                <p className="text-gray-400 text-lg">
-                                    Due:{" "}
-                                    <span className="font-semibold text-yellow-400">
-                                        {sells
-                                            .reduce(
-                                                (acc: number, sell: any) =>
-                                                    acc + sell.due,
-                                                0
-                                            )
-                                            .toLocaleString("en-US")}{" "}
-                                        ৳
-                                    </span>
-                                </p>
-                                <p className="text-gray-400 text-lg">
-                                    Total:{" "}
-                                    <span className="font-semibold text-blue-400">
-                                        {sells
-                                            .reduce(
-                                                (acc: number, sell: any) =>
-                                                    acc + sell.totalPrice,
-                                                0
-                                            )
-                                            .toLocaleString("en-US")}{" "}
-                                        ৳
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="space-y-4">
-                        <SellsRow sells={sells} />
-                    </div>
+                <div>
+                    <Tab
+                        tabs={tabContents}
+                        options={{
+                            classes: {
+                                container: "bg-slate-900",
+                                tabContent: "px-0",
+                            },
+                        }}
+                    />
                 </div>
             </div>
         </main>

@@ -21,11 +21,11 @@ export default async function SellPage() {
     try {
         const {
             data: { data: products },
-        } = await apiServer.get("/products");
+        } = await apiServer().get("/products");
         const customers: CustomerWithId[] = await getCustomersInServer();
-        const { data: commands } = await apiServer.get("commands");
-        const { data: user } = await apiServer.get(`users/${userId}`);
-        const { data: setting } = await apiServer.get(
+        const { data: commands } = await apiServer().get("commands");
+        const { data: user } = await apiServer().get(`users/${userId}`);
+        const { data: setting } = await apiServer().get(
             `settings/findByUserId/${userId}`
         );
 

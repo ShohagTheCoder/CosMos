@@ -425,7 +425,7 @@ export default function Purchase({
             {/* <PurchaseReceipt /> */}
             <div className="print:hidden">
                 <Sidebar active="purchase" userId={user._id} />
-                <div className="ps-[94px] 2xl:ps-[150px] bg-white dark:bg-gray-950">
+                <div className="ps-[94px] 2xl:ps-[130px] 2xl:pe-[20px] bg-white dark:bg-gray-950">
                     <div className="grid grid-cols-1 2xl:grid-cols-9">
                         <div className="col-span-8 me-3 lg:pe-3">
                             <Notifications />
@@ -437,7 +437,7 @@ export default function Purchase({
                         </div>
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 lg:h-screen gap-6 overflow-x-hidden overflow-y-auto lg:overflow-y-hidden cosmos-scrollbar">
-                        <div className="max-h=[1000px] h-full flex flex-col overflow-hidden col-span-8 lg:col-span-5 py-4 me-3 lg:me-0">
+                        <div className="max-h=[1000px] h-full flex flex-col overflow-hidden col-span-8 lg:col-span-5 2xl:col-span-6 py-4 me-3 lg:me-0">
                             <PurchasePageSelector
                                 activePage={activePage.current}
                                 stockStates={helper.stockStates}

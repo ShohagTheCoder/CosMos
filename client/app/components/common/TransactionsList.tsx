@@ -1,4 +1,3 @@
-"use client";
 import React, { useEffect, useState } from "react";
 import Pagination from "@/app/components/Pagination";
 import apiClient from "@/app/utils/apiClient";
@@ -16,8 +15,9 @@ interface Transaction {
     date: string; // Store the date as a string
 }
 
-export default function Transactions({ totalDocuments, userId }: any) {
+export default function TransactionsList() {
     // Use the Transaction[] type for the transactions state
+    const [totalDocuments, setTotalDocument] = useState(1);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
 
     const limit = 6;
@@ -25,6 +25,15 @@ export default function Transactions({ totalDocuments, userId }: any) {
     const totalPages = Math.ceil(totalDocuments / limit);
 
     useEffect(() => {
+        apiClient
+            .get("/transactions/countDocuments")
+            .then((res) => {
+                console.log(res.data);
+                setTotalDocument(res.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
         apiClient
             .get(`/transactions/query?page=${currentPage}&limit=${limit}`)
             .then((res) => {
@@ -36,16 +45,8 @@ export default function Transactions({ totalDocuments, userId }: any) {
     }, [currentPage]);
 
     return (
-        <div className="bg-gray-900 text-gray-100 min-h-screen p-6">
+        <div className="bg-gray-900 text-gray-100 py-3">
             <div className="container max-w-5xl mx-auto">
-                <h1 className="text-3xl font-bold mb-6">Transactions</h1>
-                <div>
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={(page) => setCurrentPage(page)}
-                    />
-                </div>
                 {/* Transactions Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {transactions.map((transaction) => (
@@ -108,6 +109,13 @@ export default function Transactions({ totalDocuments, userId }: any) {
                             </div>
                         </div>
                     ))}
+                </div>
+                <div>
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={(page) => setCurrentPage(page)}
+                    />
                 </div>
             </div>
         </div>

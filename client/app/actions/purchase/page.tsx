@@ -25,11 +25,11 @@ export default async function PurchasePage() {
     try {
         let {
             data: { data: products },
-        } = await apiServer.get("/products/forPurchase");
-        const { data: suppliers } = await apiServer.get("suppliers");
-        const { data: commands } = await apiServer.get("commands");
-        const { data: user } = await apiServer.get(`users/${userId}`);
-        const { data: setting } = await apiServer.get(
+        } = await apiServer().get("/products/forPurchase");
+        const { data: suppliers } = await apiServer().get("suppliers");
+        const { data: commands } = await apiServer().get("commands");
+        const { data: user } = await apiServer().get(`users/${userId}`);
+        const { data: setting } = await apiServer().get(
             `settings/findByUserId/${userId}`
         );
         products = products.map((product: ProductWithID) => {

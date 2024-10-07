@@ -16,7 +16,7 @@ export default async function CustomersPage() {
     }
 
     try {
-        const { data: customers } = await apiServer.get("customers");
+        const { data: customers } = await apiServer().get("customers");
         return <Customers customers={customers} userId={userId} />;
     } catch (error: any) {
         return <ErrorResponse message={error.message} />;

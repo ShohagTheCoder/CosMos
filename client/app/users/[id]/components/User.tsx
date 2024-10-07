@@ -28,7 +28,7 @@ export default function User({
         apiClient
             .get(`/sells/query?startDate=${startDate}&endDate=${endDate}`)
             .then((res) => {
-                setSells(res.data);
+                setSells(res.data.data);
             });
     }, [startDate, endDate]);
 
@@ -51,7 +51,7 @@ export default function User({
             <Sidebar active="user" userId={user._id} />
             <div className="container max-w-4xl mx-auto px-4">
                 {/* Profile and Account Info */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 py-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 py-4">
                     {/* Profile Picture */}
                     <div className="md:col-span-2 bg-gray-800 shadow-lg rounded-lg p-6">
                         <div className="flex items-center space-x-6">
@@ -86,12 +86,10 @@ export default function User({
                                         </>
                                     ) : (
                                         <>
-                                            Due :{" "}
+                                            Balance :{" "}
                                             <span className="text-red-400 font-semibold">
-                                                {Math.abs(
-                                                    account.balance.toLocaleString(
-                                                        "en-US"
-                                                    )
+                                                {account.balance.toLocaleString(
+                                                    "en-US"
                                                 )}{" "}
                                                 ৳
                                             </span>

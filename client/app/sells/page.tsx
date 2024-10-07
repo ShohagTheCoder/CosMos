@@ -13,7 +13,7 @@ export default async function SellsPage() {
     }
 
     try {
-        const { data: sells } = await apiServer.get("sells");
+        const { data: sells } = await apiServer().get("sells");
         return <Sells sells={sells} userId={userId} />;
     } catch (error) {
         return <ErrorResponse message={error} />;

@@ -30,7 +30,7 @@ function ProductsCard({
     }
 
     return (
-        <div className="pb-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="pb-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
             {Object.values(products)
                 .slice(0, 20)
                 .map((product: ProductWithID, key: number) => (
@@ -44,7 +44,7 @@ function ProductsCard({
                         }`}
                     >
                         {showProductImage ? (
-                            <div className="w-full md:h-[180px] xl:h-[220px] relative">
+                            <div className="w-full md:h-[160px] xl:h-[200px] relative">
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();

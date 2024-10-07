@@ -15,8 +15,8 @@ export default async function ShopPage() {
     }
 
     try {
-        const { data: shop } = await apiServer.get("/users/shop");
-        const { data: accounts } = await apiServer.get("/accounts");
+        const { data: shop } = await apiServer().get("/users/shop");
+        const { data: accounts } = await apiServer().get("/accounts");
         return (
             <div>
                 <Sidebar userId={userId} active="shop" />

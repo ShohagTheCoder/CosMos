@@ -16,12 +16,12 @@ export default async function UserPage({ params }: any) {
     let { id } = params;
 
     try {
-        const { data: user } = await apiServer.get(`users/${id}`);
-        const { data: account } = await apiServer.get(
+        const { data: user } = await apiServer().get(`users/${id}`);
+        const { data: account } = await apiServer().get(
             `accounts/${user.account}`
         );
-        const { data: sells } = await apiServer.get(`sells/findByUser/${id}`);
-        const { data: accounts } = await apiServer.get(`accounts`);
+        const { data: sells } = await apiServer().get(`sells/findByUser/${id}`);
+        const { data: accounts } = await apiServer().get(`accounts`);
 
         // Call user component
         return (

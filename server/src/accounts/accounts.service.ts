@@ -82,7 +82,6 @@ export class AccountsService {
                 return null;
             }
         } else {
-            console.log('Account not found');
             return null;
         }
     }

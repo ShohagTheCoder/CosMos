@@ -19,10 +19,10 @@ export default async function CommandsPage() {
     try {
         const cookieStore = cookies();
         const userId = cookieStore.get("user-id")?.value;
-        const { data: commands } = await apiServer.get("commands");
+        const { data: commands } = await apiServer().get("commands");
         const {
             data: { data: productsArray },
-        } = await apiServer.get("products");
+        } = await apiServer().get("products");
         const products = productArrayToObject(
             productsArray,
             (product) => !product.sellEnable

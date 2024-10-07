@@ -15,7 +15,7 @@ export default async function TrashesPage() {
     }
 
     try {
-        const { data: trashes } = await apiServer.get("trash");
+        const { data: trashes } = await apiServer().get("trash");
         return (
             <div>
                 <Sidebar userId={userId} active="trashes" />

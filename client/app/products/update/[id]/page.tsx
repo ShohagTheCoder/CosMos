@@ -9,7 +9,7 @@ export default async function UpdateProductPage({ params }: any) {
     const { id } = params;
 
     try {
-        const { data: product } = await apiServer.get(`products/${id}`);
+        const { data: product } = await apiServer().get(`products/${id}`);
         const cookieStore = cookies();
         const userId = cookieStore.get("user-id")?.value;
 

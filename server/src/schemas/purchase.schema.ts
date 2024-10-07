@@ -24,8 +24,14 @@ export class Purchase extends Document {
     @Prop()
     transaction: string;
 
+    @Prop({ default: Date.now })
+    createdAt?: Date;
+
     @Prop()
-    dateTime: Date;
+    updatedBy?: string;
+
+    @Prop({ default: Date.now })
+    updatedAt?: Date;
 }
 
 export type PurchaseDocument = Purchase & Document;

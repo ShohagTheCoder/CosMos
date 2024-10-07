@@ -1,9 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import {
-    Customer,
-    CustomerSchema,
-} from 'src/customers/schemas/customer.schema';
 import { Product } from 'src/products/dto/schemas/product.schema';
 
 @Schema()

@@ -13,7 +13,7 @@ export default async function ProductsPage() {
     }
 
     try {
-        const { data: totalDocuments } = await apiServer.get(
+        const { data: totalDocuments } = await apiServer().get(
             `/products/countDocuments`
         );
 
