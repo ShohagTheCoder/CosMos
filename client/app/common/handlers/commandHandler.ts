@@ -277,7 +277,7 @@ export default class CommandHandler extends KeyboardHandler {
         });
 
         // Regular listeners
-        this.listen(["NumpadDivide", "NumpadMultiply"], () => {
+        this.listenKeyDown(["NumpadDivide", "NumpadMultiply"], () => {
             this.setCommand("");
         });
 
@@ -375,6 +375,7 @@ export default class CommandHandler extends KeyboardHandler {
                 this.stateManager
                     .increment("products.{{activeProduct}}.quantity")
                     .save();
+                this.setCommand("");
             }
 
             if (/^\*\d*$/.test(this.value)) {
@@ -388,8 +389,6 @@ export default class CommandHandler extends KeyboardHandler {
                     .increment("products.{{activeProduct}}.extraDiscount")
                     .save();
             }
-
-            this.setCommand("");
         });
 
         // ArrowDown and NumpadEnter
@@ -398,6 +397,7 @@ export default class CommandHandler extends KeyboardHandler {
                 this.stateManager
                     .decrement("products.{{activeProduct}}.quantity")
                     .save();
+                this.setCommand("");
             }
 
             if (/^\*\d*$/.test(this.value)) {
@@ -411,13 +411,11 @@ export default class CommandHandler extends KeyboardHandler {
                     .decrement("products.{{activeProduct}}.extraDiscount")
                     .save();
             }
-            this.setCommand("");
         });
 
         // Enter and NumpadEnter
         this.listen(["NumpadEnter", "Enter"], (e) => {
             if (/^\d*00[1-9]\d*[^0]\d*$/.test(this.value)) {
-                console.log("gd");
                 let splited = splitIntoParts(this.value, "00", 2);
                 // let splited = this.value.split("00", 2);
                 let commandKey = splited[0];
@@ -442,34 +440,33 @@ export default class CommandHandler extends KeyboardHandler {
                             .save();
                     }
                 }
+                this.setCommand("");
                 return;
             }
 
             if (/^[1-9]+$/.test(this.value)) {
                 this.addToByShortcutKey(this.value, parseInt(e.key));
+                this.setCommand("");
                 return;
             }
 
             if (/^[1-9][0-9]*$/.test(this.value)) {
                 const splited = splitIntoParts(this.value, "0", 2);
-                console.log(splited);
-                // let splited = this.value.split("0", 2);
                 const commandKey = splited[0];
                 const quantity = parseInt(splited[1]);
                 this.addToByShortcutKey(commandKey, quantity);
+                this.setCommand("");
                 return;
             }
 
             if (/^[a-zA-Z]$/.test(this.value)) {
                 this.addToByShortcutKey(this.value);
+                this.setCommand("");
                 return;
             }
 
-            this.setCommand("");
-
             if (/^\.[1-9]*[0-9]*$/.test(this.value)) {
                 this.setCommand("");
-
                 if (this.value == ".") {
                     this.stateManager
                         .set("paid", this.stateManager.get("totalPrice"))
@@ -518,6 +515,7 @@ export default class CommandHandler extends KeyboardHandler {
                         .save();
                 }
                 this.setCommand("");
+                return;
             }
 
             if (/^,[^\d]*[\p{L}]+/u.test(this.value)) {
@@ -526,6 +524,7 @@ export default class CommandHandler extends KeyboardHandler {
                     .save();
 
                 this.setCommand("");
+                return;
             }
         });
 

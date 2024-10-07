@@ -4,6 +4,7 @@ type KeyEventCallback = (e: KeyboardEvent) => void;
 
 export default class KeyboardHandler {
     private keyListeners: { [code: string]: KeyEventCallback[] } = {};
+    private keyDownListeners: { [code: string]: KeyEventCallback[] } = {};
     private groupKeyListeners: { [code: string]: KeyEventCallback[] } = {};
     private longPressListeners: { [code: string]: KeyEventCallback[] } = {};
     private longPressTimers: { [code: string]: NodeJS.Timeout } = {};
@@ -45,6 +46,17 @@ export default class KeyboardHandler {
                 this.keyListeners[code] = [];
             }
             this.keyListeners[code].push(callback);
+        });
+        return this;
+    }
+
+    public listenKeyDown(codes: string | string[], callback: KeyEventCallback) {
+        const codeArray = Array.isArray(codes) ? codes : [codes];
+        codeArray.forEach((code) => {
+            if (!this.keyDownListeners[code]) {
+                this.keyDownListeners[code] = [];
+            }
+            this.keyDownListeners[code].push(callback);
         });
         return this;
     }
@@ -93,10 +105,9 @@ export default class KeyboardHandler {
         }
 
         this.activeKeys.add(code);
-
         this.handleLongPressStart(e);
-
         this.handleGroupPress(e);
+        this.handleKeyDownPress(e, this.keyDownListeners);
 
         if (this.keyDownCommonCallback && !e.defaultPrevented) {
             this.keyDownCommonCallback(e);
@@ -165,6 +176,17 @@ export default class KeyboardHandler {
         const code = e.code;
 
         if (this.longPressTriggered.has(code)) return;
+
+        if (listeners[code]) {
+            listeners[code].forEach((callback) => callback(e));
+        }
+    }
+
+    private handleKeyDownPress(
+        e: KeyboardEvent,
+        listeners: { [code: string]: KeyEventCallback[] }
+    ) {
+        const code = e.code;
 
         if (listeners[code]) {
             listeners[code].forEach((callback) => callback(e));
