@@ -20,7 +20,6 @@ import RowIcon from "@/app/icons/RowIcon";
 import NotImageIcon from "@/app/icons/NotImageIcon";
 import ImageIcon from "@/app/icons/ImageIcon";
 import { setProduct } from "@/app/store/slices/productSlice";
-import apiCall from "@/app/common/apiCall";
 import useStockManager from "@/app/store/providers/stockProvider";
 import Notifications from "@/app/elements/notification/Notifications";
 // eslint-disable-next-line no-unused-vars
@@ -229,10 +228,10 @@ export default function Purchase({
 
     async function handleCompletePurchase() {
         setPurchaseButtonLoading(true);
-        apiCall
+        apiClient
             .post("/purchases", stockManager.getData())
-            .success(async (data, message) => {
-                notifySuccess(message);
+            .then(async (res) => {
+                notifySuccess(res.data.message);
                 stockManager.reset(initialStockState).set("user", user).save();
                 try {
                     let { data: _productsArray } = await apiClient.get(
@@ -248,7 +247,7 @@ export default function Purchase({
                     console.log(error);
                 }
             })
-            .error((error) => {
+            .catch((error) => {
                 console.log(error);
                 notifyError(error);
             })
@@ -260,12 +259,12 @@ export default function Purchase({
     }
 
     function updateSetting(payload: any) {
-        apiCall
+        apiClient
             .patch(`/settings/${setting._id}`, payload)
-            .success(() => {
+            .then(() => {
                 setSettingState((state: any) => ({ ...state, ...payload }));
             })
-            .error((error) => console.log(error));
+            .catch((error) => console.log(error));
     }
 
     function handleProductUpdateShortcut(
@@ -316,14 +315,14 @@ export default function Purchase({
             );
 
             // Call the API to update the purchase price
-            apiCall
+            apiClient
                 .patch(`/products/updatePurchasePrice/${product._id}`, {
                     amount,
                 })
-                .success((data) => {
+                .then((res) => {
                     // Update the prices in stockManager
                     stockManager
-                        .set(`products.${product._id}.prices`, data.prices)
+                        .set(`products.${product._id}.prices`, res.data.prices)
                         .save();
 
                     // Update the prices in the React state immutably
@@ -332,12 +331,12 @@ export default function Purchase({
                             ...state,
                             [product._id]: {
                                 ...state[product._id],
-                                prices: data.prices,
+                                prices: res.data.prices,
                             },
                         };
                     });
                 })
-                .error((error) => console.error(error));
+                .catch((error) => console.error(error));
         }
     }
 

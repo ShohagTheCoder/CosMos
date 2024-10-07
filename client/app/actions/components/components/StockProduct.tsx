@@ -11,10 +11,10 @@ import PriceTagIcon from "@/app/icons/PriceTagIcon";
 import DiscountIcon from "@/app/icons/DiscountIcon";
 import ExtraDiscountIcon from "@/app/icons/ExtraDiscountIcon";
 import InfoIcon from "@/app/icons/InfoIcon";
-import apiCall from "@/app/common/apiCall";
 import useStockManager from "@/app/store/providers/stockProvider";
 import NoteIcon from "@/app/icons/NoteIcon";
 import fixFloatingPoint from "@/app/functions/fixFloatingPoint";
+import apiClient from "@/app/utils/apiClient";
 
 function StockProduct({
     setProductUpdateShortcut,
@@ -43,13 +43,13 @@ function StockProduct({
     }
 
     function updateSetting(payload: any) {
-        apiCall
+        apiClient
             .patch(`/settings/${setting._id}`, payload)
-            .success(() => {
+            .then(() => {
                 console.log("Setting updated successfully");
                 setSettingState((state: any) => ({ ...state, ...payload }));
             })
-            .error((error) => console.log(error));
+            .catch((error) => console.log(error));
     }
 
     return (

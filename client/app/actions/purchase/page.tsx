@@ -11,6 +11,8 @@ import { SupplierWithId } from "@/app/interfaces/supplier.interface";
 import { redirect } from "next/navigation";
 import NoResponse from "@/app/common/components/NoResponse";
 import apiClient from "@/app/utils/apiClient";
+import ErrorResponse from "@/app/common/components/ErrorResponse";
+import apiServer from "@/app/utils/apiServer";
 
 export default async function PurchasePage() {
     const cookiesList = cookies();
@@ -21,18 +23,21 @@ export default async function PurchasePage() {
     }
 
     try {
-        let products: ProductWithID[] = await getProductsInServerForPurchase();
-        const suppliers: SupplierWithId[] = await getSuppliersInServer();
-        const { data: commands } = await apiClient.get("commands");
-        const user: any = await getUserInServer(userId!);
-        const { data: setting } = await apiClient.get(
+        let {
+            data: { data: products },
+        } = await apiServer.get("/products/forPurchase");
+        const { data: suppliers } = await apiServer.get("suppliers");
+        const { data: commands } = await apiServer.get("commands");
+        const { data: user } = await apiServer.get(`users/${userId}`);
+        const { data: setting } = await apiServer.get(
             `settings/findByUserId/${userId}`
         );
-        products = products.map((product) => {
+        products = products.map((product: ProductWithID) => {
             product.prices = product.purchasePrices;
             product.measurements = product.purchaseMeasurements;
             return product;
         });
+
         return (
             <div>
                 <Purchase
@@ -44,7 +49,7 @@ export default async function PurchasePage() {
                 />
             </div>
         );
-    } catch (error) {
-        return <NoResponse />;
+    } catch (error: any) {
+        return <ErrorResponse message={error.message} />;
     }
 }

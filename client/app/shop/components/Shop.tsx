@@ -1,10 +1,10 @@
 "use client";
-import apiCall from "@/app/common/apiCall";
 import Cashout from "@/app/components/Cashout";
 import DatePickerMini from "@/app/components/DatePickerMinit";
 import SellsRow from "@/app/components/SellsRow";
 import TransferMoney from "@/app/components/TransferMoney";
-import React, { KeyboardEvent, useEffect, useState } from "react";
+import apiClient from "@/app/utils/apiClient";
+import React, { useEffect, useState } from "react";
 
 export default function Shop({ shop: initialShop, accounts = [] }: any) {
     const [shop, setShop] = useState(initialShop);
@@ -65,10 +65,10 @@ export default function Shop({ shop: initialShop, accounts = [] }: any) {
     }, [setCashoutPopup]); // Include setCashoutPopup as a dependency
 
     useEffect(() => {
-        apiCall
+        apiClient
             .get(`/sells/query?startDate=${startDate}&endDate=${endDate}`)
-            .success((data) => {
-                setSells(data);
+            .then((res) => {
+                setSells(res.data.data);
             });
     }, [startDate, endDate]);
 
@@ -181,33 +181,39 @@ export default function Shop({ shop: initialShop, accounts = [] }: any) {
                                 <p className="text-gray-400 text-lg">
                                     Paid:{" "}
                                     <span className="font-semibold text-green-400">
-                                        {sells.reduce(
-                                            (acc: number, sell: any) =>
-                                                acc + sell.paid,
-                                            0
-                                        )}{" "}
+                                        {sells
+                                            .reduce(
+                                                (acc: number, sell: any) =>
+                                                    acc + sell.paid,
+                                                0
+                                            )
+                                            .toLocaleString("en-US")}{" "}
                                         ৳
                                     </span>
                                 </p>
                                 <p className="text-gray-400 text-lg">
                                     Due:{" "}
                                     <span className="font-semibold text-yellow-400">
-                                        {sells.reduce(
-                                            (acc: number, sell: any) =>
-                                                acc + sell.due,
-                                            0
-                                        )}{" "}
+                                        {sells
+                                            .reduce(
+                                                (acc: number, sell: any) =>
+                                                    acc + sell.due,
+                                                0
+                                            )
+                                            .toLocaleString("en-US")}{" "}
                                         ৳
                                     </span>
                                 </p>
                                 <p className="text-gray-400 text-lg">
                                     Total:{" "}
                                     <span className="font-semibold text-blue-400">
-                                        {sells.reduce(
-                                            (acc: number, sell: any) =>
-                                                acc + sell.totalPrice,
-                                            0
-                                        )}{" "}
+                                        {sells
+                                            .reduce(
+                                                (acc: number, sell: any) =>
+                                                    acc + sell.totalPrice,
+                                                0
+                                            )
+                                            .toLocaleString("en-US")}{" "}
                                         ৳
                                     </span>
                                 </p>

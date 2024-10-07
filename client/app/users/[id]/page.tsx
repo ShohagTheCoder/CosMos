@@ -1,9 +1,9 @@
-import apiClient from "@/app/utils/apiClient";
 import React from "react";
 import User from "./components/User";
-import NoResponse from "@/app/common/components/NoResponse";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import apiServer from "@/app/utils/apiServer";
+import ErrorResponse from "@/app/common/components/ErrorResponse";
 
 export default async function UserPage({ params }: any) {
     const cookiesList = cookies();
@@ -15,15 +15,13 @@ export default async function UserPage({ params }: any) {
 
     let { id } = params;
 
-    if (!id) {
-        return <NoResponse />;
-    }
-
     try {
-        const { data: user } = await apiClient(`users/${id}`);
-        const { data: account } = await apiClient(`accounts/${user.account}`);
-        const { data: sells } = await apiClient(`sells/findByUser/${id}`);
-        const { data: accounts } = await apiClient(`accounts`);
+        const { data: user } = await apiServer.get(`users/${id}`);
+        const { data: account } = await apiServer.get(
+            `accounts/${user.account}`
+        );
+        const { data: sells } = await apiServer.get(`sells/findByUser/${id}`);
+        const { data: accounts } = await apiServer.get(`accounts`);
 
         // Call user component
         return (
@@ -34,7 +32,7 @@ export default async function UserPage({ params }: any) {
                 accounts={accounts}
             />
         );
-    } catch (error) {
-        return <NoResponse />;
+    } catch (error: any) {
+        return <ErrorResponse message={error.message} />;
     }
 }

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import apiCall from "../common/apiCall";
 import useNotification from "../hooks/useNotification";
 import Notification from "../elements/notification/Notification";
 import NumberInputControl from "../elements/inputs/NumberInputControl";
+import apiClient from "../utils/apiClient";
 
 export default function Cashout({ account, callback, handleClose }: any) {
     const [amount, setAmount] = useState(0);
@@ -23,20 +23,20 @@ export default function Cashout({ account, callback, handleClose }: any) {
 
     async function handleCashout() {
         setCashoutButtonLoading(true);
-        apiCall
+        apiClient
             .post(`/accounts/cashout`, {
                 accountId: account._id,
                 amount,
                 note,
                 action: "Cashout",
             })
-            .success((data, message) => {
-                notifySuccess(message);
+            .then((res) => {
+                notifySuccess(res.data.message);
                 setAmount(0);
                 setNote(""); // Clear note after successful cashout
-                callback(data);
+                callback(res.data.data);
             })
-            .error((error) => {
+            .catch((error) => {
                 notifyError(error.message);
             })
             .finally(() => {

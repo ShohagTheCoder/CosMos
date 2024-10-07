@@ -7,18 +7,23 @@ import {
     Delete,
     Put,
     Query,
+    UseGuards,
 } from '@nestjs/common';
 import { SellsService } from './sells.service';
 import { CreateSellDto } from './dto/create-sell.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { PermissionGuard } from 'src/auth/guards/permission.guard';
+import { Permissions } from 'src/auth/guards/permissions';
 
+@UseGuards(JwtAuthGuard, PermissionGuard)
+@Permissions('sale')
 @Controller('sells')
 export class SellsController {
     constructor(private readonly sellsService: SellsService) {}
 
     @Post()
-    async create(@Body() createSellDto: any) {
-        // console.log(createSellDto);
-        // return;
+    async create(@Body() createSellDto: CreateSellDto) {
+        // Use the correct DTO type
         return this.sellsService.create(createSellDto);
     }
 
@@ -44,14 +49,13 @@ export class SellsController {
 
     @Get(':id')
     async findOne(@Param('id') id: string) {
-        console.log(id);
         return await this.sellsService.findOne(id);
     }
 
     @Put(':id')
     async update(
         @Param('id') id: string,
-        @Body() updateSellDto: CreateSellDto,
+        @Body() updateSellDto: any, // Assuming an Update DTO
     ) {
         return this.sellsService.update(id, updateSellDto);
     }

@@ -27,7 +27,6 @@ import NotImageIcon from "@/app/icons/NotImageIcon";
 import ImageIcon from "@/app/icons/ImageIcon";
 import ProductUpdateShortcut from "../sell/components/ProductUpdateShortcut";
 import { setProduct } from "@/app/store/slices/productSlice";
-import apiCall from "@/app/common/apiCall";
 import useCartManager from "@/app/store/providers/cartProvider";
 import Notifications from "@/app/elements/notification/Notifications";
 // eslint-disable-next-line no-unused-vars
@@ -228,10 +227,10 @@ export default function Sell({
 
     async function handleCompleteSell() {
         setSellButtonLoading(true);
-        apiCall
+        apiClient
             .post("/sells", cartManager.getData())
-            .success(async (data, message) => {
-                notifySuccess(message);
+            .then(async (res) => {
+                notifySuccess(res.data.message);
                 cartManager.reset(initialCartState).set("user", user).save();
                 try {
                     let { data: _productsArray } = await apiClient.get(
@@ -247,7 +246,7 @@ export default function Sell({
                     console.log(error);
                 }
             })
-            .error((error) => {
+            .catch((error) => {
                 console.log(error);
                 notifyError(error);
             })
@@ -260,12 +259,12 @@ export default function Sell({
     }
 
     function updateSetting(payload: any) {
-        apiCall
+        apiClient
             .patch(`/settings/${setting._id}`, payload)
-            .success(() => {
+            .then(() => {
                 setSettingState((state: any) => ({ ...state, ...payload }));
             })
-            .error((error) => console.log(error));
+            .catch((error) => console.log(error));
     }
 
     function handleProductUpdateShortcut(
@@ -316,12 +315,12 @@ export default function Sell({
             );
 
             // Send the updated price to the server
-            apiCall
+            apiClient
                 .patch(`/products/updatePrice/${product._id}`, { amount })
-                .success((data) => {
+                .then((res) => {
                     // Update the prices in the cart manager
                     cartManager
-                        .set(`products.${product._id}.prices`, data.prices)
+                        .set(`products.${product._id}.prices`, res.data.prices)
                         .save();
 
                     // Log old and new state to verify changes
@@ -330,13 +329,13 @@ export default function Sell({
                             ...state,
                             [product._id]: {
                                 ...state[product._id],
-                                prices: [...data.prices], // Ensure new reference for prices
+                                prices: [...res.data.prices], // Ensure new reference for prices
                             },
                         };
                         return updatedState;
                     });
                 })
-                .error((error) => console.log(error));
+                .catch((error) => console.log(error));
         }
     }
 

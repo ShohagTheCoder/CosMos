@@ -1,8 +1,8 @@
-import apiClient from "../utils/apiClient";
-import NoResponse from "../common/components/NoResponse";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import Sells from "./components/Sells";
+import ErrorResponse from "../common/components/ErrorResponse";
+import apiServer from "../utils/apiServer";
 
 export default async function SellsPage() {
     const cookiesList = cookies();
@@ -13,9 +13,9 @@ export default async function SellsPage() {
     }
 
     try {
-        const { data: sells } = await apiClient.get("sells");
+        const { data: sells } = await apiServer.get("sells");
         return <Sells sells={sells} userId={userId} />;
     } catch (error) {
-        return <NoResponse />;
+        return <ErrorResponse message={error} />;
     }
 }

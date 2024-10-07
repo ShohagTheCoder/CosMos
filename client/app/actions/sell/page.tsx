@@ -1,5 +1,4 @@
 import React from "react";
-import NoResponse from "@/app/common/components/NoResponse";
 import Sell from "../components/Sell";
 import { CustomerWithId } from "@/app/interfaces/customer.inerface";
 import {
@@ -7,8 +6,9 @@ import {
     getUserInServer,
 } from "./../functions/apiHandlers";
 import { cookies } from "next/headers";
-import apiClient from "@/app/utils/apiClient";
 import { redirect } from "next/navigation"; // Import redirect
+import ErrorResponse from "@/app/common/components/ErrorResponse";
+import apiServer from "@/app/utils/apiServer";
 
 export default async function SellPage() {
     const cookiesList = cookies();
@@ -19,14 +19,13 @@ export default async function SellPage() {
     }
 
     try {
-        // const products: ProductWithID[] = await getProductsInServer();
         const {
             data: { data: products },
-        } = await apiClient.get("/products");
+        } = await apiServer.get("/products");
         const customers: CustomerWithId[] = await getCustomersInServer();
-        const { data: commands } = await apiClient.get("commands");
-        const user: any[] = await getUserInServer(userId!);
-        const { data: setting } = await apiClient.get(
+        const { data: commands } = await apiServer.get("commands");
+        const { data: user } = await apiServer.get(`users/${userId}`);
+        const { data: setting } = await apiServer.get(
             `settings/findByUserId/${userId}`
         );
 
@@ -42,6 +41,6 @@ export default async function SellPage() {
             </div>
         );
     } catch (error: any) {
-        return <NoResponse />;
+        return <ErrorResponse message={error.message} />;
     }
 }

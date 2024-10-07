@@ -9,6 +9,7 @@ interface User {
     name: string;
     email: string;
     role: string;
+    image: string;
 }
 
 export default function Users() {
@@ -17,8 +18,8 @@ export default function Users() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await apiClient("users");
-                const users = response.data;
+                const { data } = await apiClient.get("users");
+                const users = data;
 
                 setUsers(users);
             } catch (error) {
@@ -41,7 +42,9 @@ export default function Users() {
                             <div className="relative">
                                 {/* Example image - replace with actual image URL */}
                                 <img
-                                    src="/images/product.jpg"
+                                    src={`/images/users/${
+                                        user.image || "user.jpg"
+                                    }`}
                                     alt={user.name}
                                     className="h-60 w-full object-cover"
                                 />

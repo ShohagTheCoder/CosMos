@@ -1,10 +1,10 @@
-import apiClient from "@/app/utils/apiClient";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import React from "react";
 import Sidebar from "../components/Sidebar";
-import NoResponse from "../common/components/NoResponse";
 import Shop from "./components/Shop";
+import ErrorResponse from "../common/components/ErrorResponse";
+import apiServer from "../utils/apiServer";
 
 export default async function ShopPage() {
     const cookiesList = cookies();
@@ -15,8 +15,8 @@ export default async function ShopPage() {
     }
 
     try {
-        const { data: shop } = await apiClient.get("/users/shop");
-        const { data: accounts } = await apiClient.get("/accounts");
+        const { data: shop } = await apiServer.get("/users/shop");
+        const { data: accounts } = await apiServer.get("/accounts");
         return (
             <div>
                 <Sidebar userId={userId} active="shop" />
@@ -25,7 +25,7 @@ export default async function ShopPage() {
                 </div>
             </div>
         );
-    } catch (error) {
-        return <NoResponse />;
+    } catch (error: any) {
+        return <ErrorResponse message={error.message} />;
     }
 }

@@ -4,6 +4,7 @@ import NoResponse from "../common/components/NoResponse";
 import Sidebar from "../components/Sidebar";
 import apiClient from "../utils/apiClient";
 import Trashes from "./components/Trashes";
+import apiServer from "../utils/apiServer";
 
 export default async function TrashesPage() {
     const cookiesList = cookies();
@@ -14,7 +15,7 @@ export default async function TrashesPage() {
     }
 
     try {
-        const { data: trashes } = await apiClient.get("trash");
+        const { data: trashes } = await apiServer.get("trash");
         return (
             <div>
                 <Sidebar userId={userId} active="trashes" />

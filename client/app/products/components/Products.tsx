@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { ProductWithID } from "../interfaces/product.interface";
 import Notification from "@/app/elements/notification/Notification";
 import Pagination from "@/app/components/Pagination";
-import apiCall from "@/app/common/apiCall";
+
 export default function Products({
     totalDocuments = 0,
     userId,
@@ -59,12 +59,12 @@ export default function Products({
     }
 
     useEffect(() => {
-        apiCall
+        apiClient
             .get(`/products/query?page=${currentPage}&limit=${limit}`)
-            .success((data) => {
-                setProducts(data);
+            .then((res) => {
+                setProducts(res.data.data);
             })
-            .error((error) => {
+            .catch((error) => {
                 console.log(error.message);
             });
     }, [currentPage]);

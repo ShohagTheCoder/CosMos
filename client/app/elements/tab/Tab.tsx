@@ -46,7 +46,7 @@ const Tab: React.FC<TabProps> = ({ tabs, options }) => {
 
     return (
         <div
-            className={`w-full mx-auto bg-gray-800 text-white rounded-lg shadow-md overflow-hidden ${options?.classes?.container}`}
+            className={`w-full mx-auto h-full flex flex-col bg-gray-800 text-white rounded-lg shadow-md overflow-hidden ${options?.classes?.container}`}
         >
             <div
                 className={`flex border-b border-gray-600 ${tabHeaderAlignment} ${options?.classes?.tabHeader}`}
@@ -65,11 +65,11 @@ const Tab: React.FC<TabProps> = ({ tabs, options }) => {
                     </button>
                 ))}
             </div>
-            <div className="relative">
+            <div className="flex-grow flex flex-col">
                 {tabs.map((tab) => (
                     <div
                         key={tab.id}
-                        className={`p-4 ${
+                        className={`p-4 flex-grow flex flex-col ${
                             tab.id === activeTab
                                 ? ""
                                 : `hidden ${options?.classes?.hiddenContent}`
@@ -81,7 +81,7 @@ const Tab: React.FC<TabProps> = ({ tabs, options }) => {
             </div>
             {options?.navigator && (
                 <div
-                    className={`flex justify-between border-t border-gray-600 p-2 bg-gray-700 ${options?.classes?.buttonContainer}`}
+                    className={`mt-auto flex justify-between border-t border-gray-600 p-2 bg-gray-700 ${options?.classes?.buttonContainer}`}
                 >
                     <button
                         onClick={handlePrev}

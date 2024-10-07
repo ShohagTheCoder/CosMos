@@ -3,12 +3,13 @@ import NoResponse from "@/app/common/components/NoResponse";
 import { cookies } from "next/headers";
 import apiClient from "@/app/utils/apiClient";
 import UpdateProduct from "./components/UpdateProduct";
+import apiServer from "@/app/utils/apiServer";
 
 export default async function UpdateProductPage({ params }: any) {
     const { id } = params;
 
     try {
-        const { data: product } = await apiClient(`products/${id}`);
+        const { data: product } = await apiServer.get(`products/${id}`);
         const cookieStore = cookies();
         const userId = cookieStore.get("user-id")?.value;
 

@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import apiCall from "../common/apiCall";
 import SalesReport from "./SalesReport";
+import apiClient from "../utils/apiClient";
 
 export default function Dashbaord() {
     const [sells, setSells] = useState([]);
@@ -10,10 +10,10 @@ export default function Dashbaord() {
     const [endDate, setEndDate] = useState(new Date()); // Set to today's date or any default date
 
     useEffect(() => {
-        apiCall
+        apiClient
             .get(`/sells/query?startDate=${startDate}&endDate=${endDate}`)
-            .success((data) => {
-                setSells(data);
+            .then((res) => {
+                setSells(res.data.data);
             });
     }, [startDate, endDate]);
 

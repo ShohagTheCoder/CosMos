@@ -1,9 +1,8 @@
 "use client";
 
-import apiCall from "@/app/common/apiCall";
-import SellsRow from "@/app/components/SellsRow";
 import Sidebar from "@/app/components/Sidebar";
 import { CartState } from "@/app/store/slices/cartSlice";
+import apiClient from "@/app/utils/apiClient";
 import { convertStandardToBnBD } from "@/app/utils/numberFormat";
 import Link from "next/link";
 import { useState } from "react";
@@ -29,13 +28,13 @@ export default function Sells({
         if (sure) {
             const sell = sells[index];
 
-            apiCall
+            apiClient
                 .delete(`sells/${sell._id}`)
-                .success(() => {
+                .then(() => {
                     // Create a new array by filtering out the item to delete
                     setSells(sells.filter((_, i) => i !== index));
                 })
-                .error((error) => {
+                .catch((error) => {
                     console.log(error);
                 });
         }

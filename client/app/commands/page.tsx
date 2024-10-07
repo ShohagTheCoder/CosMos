@@ -2,11 +2,11 @@ import { cookies } from "next/headers";
 import { productArrayToObject } from "../actions/functions/productArrayToObject";
 import Sidebar from "../components/Sidebar";
 import Tab from "../elements/tab/Tab";
-import apiClient from "../utils/apiClient";
 import Commands from "./components/Commands";
 import Rules from "./components/Rules";
 import NoResponse from "../common/components/NoResponse";
 import { redirect } from "next/navigation";
+import apiServer from "../utils/apiServer";
 
 export default async function CommandsPage() {
     const cookiesList = cookies();
@@ -19,10 +19,10 @@ export default async function CommandsPage() {
     try {
         const cookieStore = cookies();
         const userId = cookieStore.get("user-id")?.value;
-        const { data: commands } = await apiClient.get("commands");
+        const { data: commands } = await apiServer.get("commands");
         const {
             data: { data: productsArray },
-        } = await apiClient.get("products");
+        } = await apiServer.get("products");
         const products = productArrayToObject(
             productsArray,
             (product) => !product.sellEnable

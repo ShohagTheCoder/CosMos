@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from "react";
-import apiCall from "../common/apiCall";
 import useNotification from "../hooks/useNotification";
 import Notification from "../elements/notification/Notification";
 import SearchableSelectInput from "../elements/select/SearchableSelectInput";
 import NumberInputControl from "../elements/inputs/NumberInputControl";
+import apiClient from "../utils/apiClient";
 
 function TransferMoney({
     accounts: initialAccounts,
@@ -36,7 +36,7 @@ function TransferMoney({
             notifyError("Please enter a valid amount");
             return;
         }
-        apiCall
+        apiClient
             .post(`accounts/sendMoney`, {
                 senderId: account._id,
                 receiverId,
@@ -44,14 +44,14 @@ function TransferMoney({
                 note,
                 action: "Send money",
             })
-            .success((data, message) => {
-                notifySuccess(message);
+            .then((res) => {
+                notifySuccess(res.data.message);
                 callback(amount);
                 setTimeout(() => {
                     handleClose();
                 }, 3000);
             })
-            .error((error) => {
+            .catch((error) => {
                 notifyError(error.message);
                 console.log(error);
             });

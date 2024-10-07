@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import NoResponse from "../common/components/NoResponse";
-import apiClient from "../utils/apiClient";
 import Products from "./components/Products";
+import ErrorResponse from "../common/components/ErrorResponse";
+import apiServer from "../utils/apiServer";
 
 export default async function ProductsPage() {
     const cookiesList = cookies();
@@ -13,11 +13,12 @@ export default async function ProductsPage() {
     }
 
     try {
-        const { data: totalDocuments } = await apiClient.get(
-            "products/countDocuments"
+        const { data: totalDocuments } = await apiServer.get(
+            `/products/countDocuments`
         );
+
         return <Products totalDocuments={totalDocuments} userId={userId} />;
-    } catch (error) {
-        return <NoResponse />;
+    } catch (error: any) {
+        return <ErrorResponse message={error.message} />;
     }
 }

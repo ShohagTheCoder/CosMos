@@ -31,7 +31,7 @@ export async function POST(req: Request) {
 
             // Set a cookie with the token or session identifier
             response.cookies.set("access_token", access_token, {
-                httpOnly: true,
+                httpOnly: false,
                 path: "/",
                 maxAge: 60 * 60 * 24, // 1 day
             });
