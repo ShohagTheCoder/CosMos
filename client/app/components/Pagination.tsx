@@ -15,15 +15,15 @@ const Pagination: React.FC<PaginationProps> = ({
     const isLastPage = currentPage === totalPages;
 
     return (
-        <div className="flex items-center justify-center gap-2 py-4">
+        <div className="flex items-center justify-center py-4">
             {/* Previous Button */}
             <button
                 onClick={() => onPageChange(currentPage - 1)}
                 disabled={isFirstPage}
-                className={`px-4 py-2 rounded-md transition-colors ${
+                className={`px-4 me-2 h-[40px] border border-gray-500 transition-colors ${
                     isFirstPage
                         ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-                        : "bg-gray-700 hover:bg-gray-600 text-white"
+                        : "bg-gray-800 hover:bg-gray-600 text-white"
                 }`}
             >
                 Previous
@@ -34,10 +34,10 @@ const Pagination: React.FC<PaginationProps> = ({
                 <button
                     key={page}
                     onClick={() => onPageChange(page)}
-                    className={`px-3 py-2 rounded-md transition-colors ${
+                    className={`h-[40px] pt-1 w-[40px] border border-gray-500 transition-colors ${
                         page === currentPage
                             ? "bg-blue-500 text-white"
-                            : "bg-gray-700 hover:bg-gray-600 text-gray-300"
+                            : "bg-gray-800 hover:bg-gray-600 text-gray-300"
                     }`}
                 >
                     {page}
@@ -48,10 +48,10 @@ const Pagination: React.FC<PaginationProps> = ({
             <button
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={isLastPage}
-                className={`px-4 py-2 rounded-md transition-colors ${
+                className={`px-4 ms-2 h-[40px] border border-gray-500 transition-colors ${
                     isLastPage
                         ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-                        : "bg-gray-700 hover:bg-gray-600 text-white"
+                        : "bg-gray-800 hover:bg-gray-600 text-white"
                 }`}
             >
                 Next

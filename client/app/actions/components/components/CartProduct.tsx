@@ -54,7 +54,7 @@ function CartProduct({
 
     return (
         <div className="cart">
-            <div className="flex flex-wrap justify-between items-center py-2 px-2 bg-gray-800 mb-3">
+            <div className="flex flex-wrap justify-between items-center py-2 px-2 bg-gray-300 dark:bg-gray-800 mb-3">
                 <button
                     className="flex items-center p-1 py-2 px-3 rounded-lg select-none hover:bg-green-800"
                     onClick={() => {
@@ -143,7 +143,7 @@ function CartProduct({
                             <div
                                 className={`p-3 flex flex-col gap-3 ${
                                     product._id == cart.activeProduct
-                                        ? "bg-green-950"
+                                        ? "bg-green-300 dark:bg-green-950"
                                         : ""
                                 }`}
                             >
@@ -193,7 +193,7 @@ function CartProduct({
                                     <div className="flex flex-wrap w-full">
                                         <table className="text-left text-sm w-full">
                                             <tbody>
-                                                <tr className="odd:bg-gray-700 ">
+                                                <tr className="odd:bg-gray-200 dark:bg-gray-700 ">
                                                     <td className="px-3 py-3">
                                                         1{" "}
                                                         {
@@ -210,7 +210,7 @@ function CartProduct({
                                                     </td>
                                                     <td className="pe-3">%</td>
                                                     <td className="pe-3 text-center">
-                                                        <p className="no-spin py-1 w-[46px] bg-gray-900 text-center outline-none">
+                                                        <p className="no-spin py-1 w-[46px] dark:bg-gray-900 text-center outline-none">
                                                             {fixFloatingPoint(
                                                                 product.baseDiscount
                                                             )}
@@ -223,7 +223,7 @@ function CartProduct({
                                                         ৳
                                                     </td>
                                                 </tr>
-                                                <tr className="even:bg-gray-800">
+                                                <tr className="even:bg-gray-300 dark:bg-gray-800">
                                                     <td className="px-3 py-3">
                                                         1 {product.unit.label}
                                                     </td>
@@ -258,7 +258,7 @@ function CartProduct({
                                                                     )
                                                                     .save();
                                                             }}
-                                                            className="no-spin h-[30px] w-[46px] bg-gray-900 text-center outline-none"
+                                                            className="no-spin h-[30px] w-[46px] dark:bg-gray-900 text-center outline-none"
                                                         />
                                                     </td>
                                                     <td className="pe-3 text-end">
@@ -270,7 +270,7 @@ function CartProduct({
                                                         ৳
                                                     </td>
                                                 </tr>
-                                                <tr className="odd:bg-gray-700">
+                                                <tr className="bg-gray-200 dark:bg-gray-700">
                                                     <td className="px-3 py-3">
                                                         {product.quantity +
                                                             " " +
@@ -302,7 +302,7 @@ function CartProduct({
                                                                     )
                                                                     .save();
                                                             }}
-                                                            className="no-spin h-[30px] w-[46px] bg-gray-900 text-center outline-none"
+                                                            className="no-spin h-[30px] w-[46px] dark:bg-gray-900 text-center outline-none"
                                                         />
                                                     </td>
                                                     <td className="pe-3 text-lg text-end">
@@ -318,7 +318,7 @@ function CartProduct({
                                         </table>
                                     </div>
                                 </div>
-                                <div className="flex justify-between bg-slate-900 pe-3">
+                                <div className="flex justify-between bg-gray-200 dark:bg-slate-900 pe-3">
                                     <div className="flex flex-warp">
                                         <button
                                             className="h-[40px] w-[40px] select-none hover:bg-green-500 hover:text-white text-2xl bg-gray-300 text-gray-700 border-0"

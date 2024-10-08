@@ -28,10 +28,9 @@ function SidebarItem({
                 } transition-all duration-200`}
             >
                 {/* Icon */}
-                <span className="w-6 h-6">{icon}</span>
-
-                {/* Label (Visible only when expanded) */}
-                {isExpanded && <span className="ml-2 text-sm">{label}</span>}
+                <span className="w-6 h-6 text-black dark:text-white">
+                    {icon}
+                </span>
             </a>
         </div>
     );

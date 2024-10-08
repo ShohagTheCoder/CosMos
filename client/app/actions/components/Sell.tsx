@@ -614,7 +614,7 @@ export default function Sell({
                                     <div className="">
                                         <textarea
                                             ref={noteRef}
-                                            className="w-full resize-none p-3 outline-none border-dashed border-2 border-gray-600 placeholder-slate-300 mb-1 bg-transparent"
+                                            className="w-full resize-none p-3 outline-none border-dashed border-2 border-gray-600 placeholder-black dark:placeholder-slate-300 mb-1 bg-transparent"
                                             value={note}
                                             onChange={(e) =>
                                                 setNote(e.target.value)

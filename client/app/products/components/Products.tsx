@@ -102,7 +102,7 @@ export default function Products({
                         onPageChange={(page) => setCurrentPage(page)}
                     />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                <div className="my-4 grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {products.length == 0 ? (
                         <div className="col-span-6 min-h-[400px] flex justify-center items-center">
                             <PulseFadeLoading />
@@ -113,7 +113,7 @@ export default function Products({
                                 (product: ProductWithID, index: number) => (
                                     <div
                                         key={index}
-                                        className="bg-white dark:bg-gray-700 shadow-md rounded-lg p-3 flex flex-col justify-between"
+                                        className="bg-white dark:bg-gray-800 border border-gray-500 shadow-md rounded-lg flex flex-col justify-between"
                                     >
                                         <img
                                             src={`images/products/${
@@ -122,7 +122,7 @@ export default function Products({
                                             alt={product.name}
                                             className="w-full h-48 object-cover rounded-t-md"
                                         />
-                                        <div className="pt-3">
+                                        <div className="p-3">
                                             <h3 className="text-lg font-bold mb-1">
                                                 {product.name}
                                             </h3>

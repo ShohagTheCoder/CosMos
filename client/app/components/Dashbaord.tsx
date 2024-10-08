@@ -18,8 +18,8 @@ export default function Dashbaord() {
     }, [startDate, endDate]);
 
     return (
-        <main className="bg-gray-900">
-            <div className="container mx-auto py-8 px-4 text-white min-h-screen ps-[94px]">
+        <main className="bg-white text-black dark:text-white dark:bg-gray-900">
+            <div className="container mx-auto py-8 px-4 min-h-screen ps-[94px]">
                 {/* Top Navigation Bar */}
                 <div className="flex justify-between items-center mb-8">
                     <div className="text-3xl font-bold">Dashboard</div>
@@ -48,7 +48,7 @@ export default function Dashbaord() {
                 {/* Main Grid Layout */}
                 <div className="grid grid-cols-1">
                     {/* Main Content */}
-                    <div className="p-6 bg-gray-800 rounded-lg shadow-lg space-y-8">
+                    <div className="p-6 bg-gray-300 dark:bg-gray-800 rounded-lg shadow-lg space-y-8">
                         <div className="grid grid-cols-2 gap-4">
                             <div className="">
                                 <SalesReport
