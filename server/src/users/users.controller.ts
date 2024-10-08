@@ -32,6 +32,15 @@ export class UsersController {
         return await this.usersService.findShop();
     }
 
+    @Get('shopExist')
+    async shopExist() {
+        if (await this.usersService.findShop()) {
+            return true;
+        }
+
+        return false;
+    }
+
     @Get(':id')
     async findOne(@Param('id') id: string) {
         return await this.usersService.findOne(id);

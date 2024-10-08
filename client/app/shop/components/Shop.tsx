@@ -62,16 +62,6 @@ export default function Shop({ shop: initialShop, accounts = [] }: any) {
         };
     }, [setCashoutPopup]); // Include setCashoutPopup as a dependency
 
-    const tabContents = [
-        { id: "sales", title: "Sales", content: <SellsList /> },
-        { id: "purchases", title: "Purchases", content: <PurchasesList /> },
-        {
-            id: "transactions",
-            title: "Transactions",
-            content: <TransactionsList />,
-        },
-    ];
-
     return (
         <main className="bg-gray-900 text-gray-100 min-h-screen py-6">
             {tansferMoneyPopup && (
@@ -117,7 +107,7 @@ export default function Shop({ shop: initialShop, accounts = [] }: any) {
                         <div className="grid grid-cols-2 gap-4">
                             <div className="col-span-2">
                                 <p className="text-gray-400 text-xl">
-                                    {account.balance >= 0 ? (
+                                    {account?.balance >= 0 ? (
                                         <>
                                             Balance:{" "}
                                             <span className="text-green-400 font-semibold">
@@ -128,7 +118,7 @@ export default function Shop({ shop: initialShop, accounts = [] }: any) {
                                         <>
                                             Balance :{" "}
                                             <span className="text-red-400 font-semibold">
-                                                {account.balance.toLocaleString(
+                                                {account?.balance?.toLocaleString(
                                                     "en-US"
                                                 )}{" "}
                                                 ৳
@@ -153,17 +143,6 @@ export default function Shop({ shop: initialShop, accounts = [] }: any) {
                             </div>
                         </div>
                     </div>
-                </div>
-                <div>
-                    <Tab
-                        tabs={tabContents}
-                        options={{
-                            classes: {
-                                container: "bg-slate-900",
-                                tabContent: "px-0",
-                            },
-                        }}
-                    />
                 </div>
             </div>
         </main>

@@ -51,10 +51,10 @@ export default function Sidebar({
                         isActive={active === "purchase"}
                     />
                     <SidebarItem
-                        label="Sells List"
+                        label="Details"
                         icon={<SellsIcon />}
-                        link="/sells"
-                        isActive={active === "sells"}
+                        link="/details"
+                        isActive={active === "details"}
                     />
                     <SidebarItem
                         label="Products"
