@@ -42,7 +42,7 @@ export default function Sells({
 
     return (
         <div className="bg-gray-900 text-white min-h-screen py-4">
-            <Sidebar userId={userId} active="sells" />
+            <Sidebar userId={userId} active="reports" />
             {/* <div className="container mx-auto max-w-[1000px]">
                 <SellsRow sells={sells} />
             </div> */}

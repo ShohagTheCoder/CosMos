@@ -11,7 +11,6 @@ interface PurchasePageSelectorProps {
     userName: string; // Logged-in user's name
     // eslint-disable-next-line no-unused-vars
     handlePageChange: (pageKey: string) => void; // Handler function to change sell page
-    logout: () => void; // Function to handle logout
 }
 
 const PurchasePageSelector: React.FC<PurchasePageSelectorProps> = ({
@@ -19,7 +18,6 @@ const PurchasePageSelector: React.FC<PurchasePageSelectorProps> = ({
     stockStates,
     userName,
     handlePageChange,
-    logout,
 }) => {
     // Define the buttons and their corresponding labels
     const sellPageButtons = [
@@ -48,12 +46,12 @@ const PurchasePageSelector: React.FC<PurchasePageSelectorProps> = ({
                 <p className="inline-block bg-green-800 py-1 px-3 rounded text-white">
                     {userName}
                 </p>
-                <button
-                    onDoubleClick={logout}
+                <a
+                    href="/logout"
                     className="bg-red-800 text-white py-1 px-3 rounded"
                 >
                     Logout
-                </button>
+                </a>
             </div>
         </div>
     );

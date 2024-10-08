@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import Transactions from "./components/Transactions";
 import apiServer from "../utils/apiServer";
 import ErrorResponse from "../common/components/ErrorResponse";
+import Sidebar from "../components/Sidebar";
 
 export default async function TransactionsPage() {
     const cookiesList = cookies();
@@ -16,7 +17,17 @@ export default async function TransactionsPage() {
         const { data: totalDocuments } = await apiServer().get(
             "transactions/countDocuments"
         );
-        return <Transactions totalDocuments={totalDocuments} userId={userId} />;
+        return (
+            <div>
+                <Sidebar userId={userId} active="reports" />
+                <div>
+                    <Transactions
+                        totalDocuments={totalDocuments}
+                        userId={userId}
+                    />
+                </div>
+            </div>
+        );
     } catch (error: any) {
         return <ErrorResponse message={error.message} />;
     }

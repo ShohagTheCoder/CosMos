@@ -7,7 +7,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 // eslint-disable-next-line no-unused-vars
 import Notification from "@/app/elements/notification/Notification";
-import { logout } from "../functions/authHandlers";
 import ProductsCard from "./ProductsCard";
 import { arrayToObjectById } from "../functions/arrayToObjectById";
 import { updateHelperField } from "@/app/store/slices/helperSlice";
@@ -449,7 +448,6 @@ export default function Purchase({
                                 stockStates={helper.stockStates}
                                 userName={user.name}
                                 handlePageChange={handlePageChange}
-                                logout={logout}
                             />
                             <div>
                                 <input

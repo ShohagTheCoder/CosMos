@@ -22,9 +22,9 @@ export default function Sidebar({
     userId: undefined | string;
 }) {
     return (
-        <div className="bg-gray-300 dark:bg-gray-900 fixed text-black dark:text-white start-0 top-0 w-[80px] h-screen border-r-2 border-dashed border-slate-600 z-[1000] overflow-x-hidden overflow-y-auto cosmos-scrollbar">
-            <div className="h-full flex flex-col justify-between items-center py-6">
-                <div className="flex flex-col justify-center items-center gap-4">
+        <div className="bg-gray-300 dark:bg-gray-900 fixed text-black dark:text-white start-0 top-0 w-[80px] h-screen border-r-2 border-dashed border-slate-600">
+            <div className="h-full flex flex-col justify-between items-center py-6 cosmos-scrollbar">
+                <div className="flex flex-col justify-center items-center gap-4 relative">
                     <SidebarItem
                         label="Dashboard"
                         icon={<ColsIcon />}
@@ -50,34 +50,47 @@ export default function Sidebar({
                         isActive={active === "purchase"}
                     />
                     <SidebarItem
-                        label="Details"
+                        label="Reports"
                         icon={<SellsIcon />}
-                        link="/details"
-                        isActive={active === "details"}
+                        isActive={active === "reports"}
+                        submenu={[
+                            {
+                                link: "/sells",
+                                label: "Sells",
+                            },
+                            {
+                                link: "/purchases",
+                                label: "Purchases",
+                            },
+                            {
+                                link: "/transactions",
+                                label: "Transactions",
+                            },
+                        ]}
                     />
                     <SidebarItem
                         label="Products"
                         icon={<ProductsIcon />}
                         link="/products"
                         isActive={active === "products"}
-                    />
-                    <SidebarItem
-                        label="Create Product"
-                        icon={<AddIcon />}
-                        link="/products/create"
-                        isActive={active === "createProduct"}
+                        submenu={[
+                            {
+                                link: "/products/create",
+                                label: "Create",
+                            },
+                        ]}
                     />
                     <SidebarItem
                         label="Customers"
                         icon={<CustomersIcon />}
                         link="/customers"
                         isActive={active === "customers"}
-                    />
-                    <SidebarItem
-                        label="Create Customer"
-                        icon={<AddIcon />}
-                        link="/customers/create"
-                        isActive={active === "createCustomer"}
+                        submenu={[
+                            {
+                                link: "/customers/create",
+                                label: "Create",
+                            },
+                        ]}
                     />
                     <SidebarItem
                         label="Commands"
@@ -106,6 +119,12 @@ export default function Sidebar({
                         icon={<SettingIcon />}
                         link="/settings"
                         isActive={active === "settings"}
+                        submenu={[
+                            {
+                                link: "/logout",
+                                label: "Logout",
+                            },
+                        ]}
                     />
                 </div>
             </div>

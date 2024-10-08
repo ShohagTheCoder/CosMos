@@ -1,12 +1,11 @@
-import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import Sells from "./components/Sells";
-import ErrorResponse from "../common/components/ErrorResponse";
+import { redirect } from "next/navigation";
 import apiServer from "../utils/apiServer";
+import ErrorResponse from "../common/components/ErrorResponse";
 import Sidebar from "../components/Sidebar";
-import SellsList from "../components/common/SellsList";
+import PurchasesList from "../components/common/PurchasesList";
 
-export default async function SellsPage() {
+export default async function PurchasesPage() {
     const cookiesList = cookies();
     const userId = cookiesList.get("user-id")?.value;
 
@@ -15,17 +14,15 @@ export default async function SellsPage() {
     }
 
     try {
-        // const { data: sells } = await apiServer().get("sells");
-        // return <Sells sells={sells} userId={userId} />;
         return (
-            <div className="ps-[90px]">
+            <div className="ps-90px">
                 <Sidebar userId={userId} active="reports" />
                 <div className="container max-w-[1200px] mx-auto py-4">
-                    <SellsList />
+                    <PurchasesList />
                 </div>
             </div>
         );
-    } catch (error) {
-        return <ErrorResponse message={error} />;
+    } catch (error: any) {
+        return <ErrorResponse message={error.message} />;
     }
 }

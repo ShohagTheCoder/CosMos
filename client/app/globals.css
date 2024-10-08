@@ -81,3 +81,7 @@ body {
 }
 
 /* Hover effect for Firefox is not directly supported, but thumb colors can change dynamically if needed */
+
+.sidebar-menu-item:hover > .sidebar-submenu-item {
+    display: block;
+}

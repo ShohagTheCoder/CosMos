@@ -16,7 +16,7 @@ export default function DetailsPage() {
         <div>
             <Sidebar userId={userId} active="details" />
             <div className="ps-[90px] bg-gray-900 min-h-screen">
-                <Details />
+                {/* <Details /> */}
             </div>
         </div>
     );

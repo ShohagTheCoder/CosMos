@@ -12,7 +12,6 @@ import CustomerDetails from "./components/CustomerDetails";
 import SellDetails from "./components/SellDetails";
 // eslint-disable-next-line no-unused-vars
 import Notification from "@/app/elements/notification/Notification";
-import { logout } from "../functions/authHandlers";
 import ProductsCard from "./ProductsCard";
 import { arrayToObjectById } from "../functions/arrayToObjectById";
 import { updateHelperField } from "@/app/store/slices/helperSlice";
@@ -430,7 +429,6 @@ export default function Sell({
                                 cartStates={helper.cartStates}
                                 userName={user.name}
                                 handleSellPageChange={handleSellPageChange}
-                                logout={logout}
                             />
                             <div>
                                 <input
