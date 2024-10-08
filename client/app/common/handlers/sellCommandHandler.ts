@@ -13,8 +13,7 @@ export default class SellCommandHandler extends CommandHandler {
         handleUpdateProductPrice: any,
         handleCompleteSell: any,
         setCommandCounter: any,
-        handleProductUpdateShortcut: any,
-        handleSellPageChange: any
+        handleProductUpdateShortcut: any
     ) {
         super(
             stateManager,
@@ -23,8 +22,7 @@ export default class SellCommandHandler extends CommandHandler {
             handleUpdateProductPrice,
             handleCompleteSell,
             setCommandCounter,
-            handleProductUpdateShortcut,
-            handleSellPageChange
+            handleProductUpdateShortcut
         );
 
         // Call setup sell commands

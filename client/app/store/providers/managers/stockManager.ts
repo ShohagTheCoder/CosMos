@@ -18,7 +18,6 @@ export class StockManager<T extends StockState> extends StateManager<T> {
 
         this.listen("products.[?]", (id) => {
             this.update(`products.${id}`, (product: ProductWithID) => {
-                // console.log(product);
                 let unit = product.units[product.unit];
                 product.price = getProductUnitPrice(product);
                 product.count = product.quantity * unit.value;
@@ -53,7 +52,6 @@ export class StockManager<T extends StockState> extends StateManager<T> {
     }
 
     addTo(payload: ProductWithID) {
-        console.log("Called");
         let exist = this.has(
             `products.${payload._id}`,
             (product: ProductWithID) => {

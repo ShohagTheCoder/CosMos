@@ -96,8 +96,7 @@ export default function Purchase({
             handleUpdateProductPrice,
             handleCompletePurchase,
             setCommandCounter,
-            handleProductUpdateShortcut,
-            handlePageChange
+            handleProductUpdateShortcut
         )
     ).current;
 
@@ -145,9 +144,16 @@ export default function Purchase({
             filteredProducts,
             isSuppliers,
             commandCounter,
+            handlePageChange,
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filteredSuppliers, filteredProducts, isSuppliers, commandCounter]);
+    }, [
+        filteredSuppliers,
+        filteredProducts,
+        isSuppliers,
+        commandCounter,
+        handlePageChange,
+    ]);
 
     useEffect(() => {
         // Match barcode or SKU to add product

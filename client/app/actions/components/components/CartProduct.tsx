@@ -373,14 +373,14 @@ function CartProduct({
                                                         .save();
                                                 }}
                                             >
-                                                {Object.values(
+                                                {Object.keys(
                                                     getUnits(product.units)
                                                 ).map((unit) => (
                                                     <option
-                                                        key={unit.unit}
-                                                        value={unit.unit}
+                                                        key={unit}
+                                                        value={unit}
                                                     >
-                                                        {unit.unit}
+                                                        {unit}
                                                     </option>
                                                 ))}
                                             </select>

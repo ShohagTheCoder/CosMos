@@ -95,8 +95,7 @@ export default function Sell({
             handleUpdateProductPrice,
             handleCompleteSell,
             setCommandCounter,
-            handleProductUpdateShortcut,
-            handleSellPageChange
+            handleProductUpdateShortcut
         )
     ).current;
 
@@ -144,9 +143,16 @@ export default function Sell({
             filteredProducts,
             isCustomers,
             commandCounter,
+            handleSellPageChange,
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filteredCustomers, filteredProducts, isCustomers, commandCounter]);
+    }, [
+        filteredCustomers,
+        filteredProducts,
+        isCustomers,
+        commandCounter,
+        handleSellPageChange,
+    ]);
 
     useEffect(() => {
         // Match barcode or SKU to add product

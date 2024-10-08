@@ -12,7 +12,6 @@ export default class CommandHandler extends KeyboardHandler {
     public setCommandCounter: any;
     public handleCompleteSell: any;
     public handleProductUpdateShortcut: any;
-    public handleSellPageChange: any;
     public getProductByCommand: (
         // eslint-disable-next-line no-unused-vars
         shortcut: string
@@ -26,8 +25,7 @@ export default class CommandHandler extends KeyboardHandler {
         handleUpdateProductPrice: any,
         handleCompleteSell: any,
         setCommandCounter: any,
-        handleProductUpdateShortcut: any,
-        handleSellPageChange: any
+        handleProductUpdateShortcut: any
     ) {
         super();
         this.stateManager = stateManager;
@@ -37,7 +35,6 @@ export default class CommandHandler extends KeyboardHandler {
         this.handleUpdateProductPrice = handleUpdateProductPrice;
         this.getProductByCommand = getProductByCommand;
         this.handleProductUpdateShortcut = handleProductUpdateShortcut;
-        this.handleSellPageChange = handleSellPageChange;
         // Call setup commands
         this.setupCommands();
     }
@@ -284,7 +281,7 @@ export default class CommandHandler extends KeyboardHandler {
         // Regular listeners
         this.listen(["F5", "F6", "F7", "F8"], (e) => {
             this.setCommand("");
-            this.handleSellPageChange(e.key);
+            this.params.handleSellPageChange(e.key);
         });
 
         // Define specific key combinations or long press commands here

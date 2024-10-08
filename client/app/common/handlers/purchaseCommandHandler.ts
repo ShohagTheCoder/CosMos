@@ -13,8 +13,7 @@ export default class PurchaseCommandHandler extends CommandHandler {
         handleUpdateProductPrice: any,
         handleCompletePurchase: any,
         setCommandCounter: any,
-        handleProductUpdateShortcut: any,
-        handlePurchasePageChange: any
+        handleProductUpdateShortcut: any
     ) {
         super(
             stockManager,
@@ -23,8 +22,7 @@ export default class PurchaseCommandHandler extends CommandHandler {
             handleUpdateProductPrice,
             handleCompletePurchase,
             setCommandCounter,
-            handleProductUpdateShortcut,
-            handlePurchasePageChange
+            handleProductUpdateShortcut
         );
 
         // Call setup purchase commands

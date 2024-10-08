@@ -18,10 +18,8 @@ export class CartManager<T extends CartState> extends StateManager<T> {
 
         this.listen("products.[?]", (id) => {
             this.update(`products.${id}`, (product: ProductWithID) => {
-                console.log(product);
                 let unit = product.units[product.unit];
                 product.price = getProductUnitPrice(product);
-                console.log(product.price);
                 product.count = product.quantity * unit.value;
                 product.subTotal =
                     (product.price - product.discount / unit.value) *
