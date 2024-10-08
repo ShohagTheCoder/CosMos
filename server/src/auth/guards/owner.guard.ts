@@ -14,7 +14,7 @@ export class OwnerGuard implements CanActivate {
         const request = context.switchToHttp().getRequest();
         const user = request.user;
 
-        if (user.role == 'owner') {
+        if (user.role === 'owner' || user.role === 'shop') {
             return true;
         }
 

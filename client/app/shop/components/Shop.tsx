@@ -1,10 +1,6 @@
 "use client";
 import Cashout from "@/app/components/Cashout";
-import PurchasesList from "@/app/components/common/PurchasesList";
-import SellsList from "@/app/components/common/SellsList";
-import TransactionsList from "@/app/components/common/TransactionsList";
 import TransferMoney from "@/app/components/TransferMoney";
-import Tab from "@/app/elements/tab/Tab";
 import React, { useEffect, useState } from "react";
 
 export default function Shop({ shop: initialShop, accounts = [] }: any) {
@@ -141,6 +137,11 @@ export default function Shop({ shop: initialShop, accounts = [] }: any) {
                                     Cash out
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div className="flex items-center gap-4">
+                            <a href="/users/create">Create user</a>
                         </div>
                     </div>
                 </div>

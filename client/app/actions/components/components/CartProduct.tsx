@@ -427,7 +427,7 @@ function CartProduct({
                     return (
                         <div
                             key={p._id}
-                            className="border-2 border-dashed border-gray-600 p-2 mb-2"
+                            className="border-2 border-dashed dark:hover:bg-green-950 border-gray-600 p-2 mb-2"
                             onClick={() => {
                                 cartManager
                                     .set("activeProduct", product._id)

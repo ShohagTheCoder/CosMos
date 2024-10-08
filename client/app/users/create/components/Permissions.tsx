@@ -1,28 +1,23 @@
-import apiCall from "@/app/common/apiCall";
 import Notification from "@/app/elements/notification/Notification";
 import useNotification from "@/app/hooks/useNotification";
 import apiClient from "@/app/utils/apiClient";
+import Switch from "@/app/elements/switch/Switch"; // Adjust the import path as needed
 import React, { FormEvent, useState } from "react";
 
-export default function Permissions({
-    handleCheckboxChange,
-    form,
-    setForm,
-}: any) {
+export default function Permissions({ handleCheckboxChange, form }: any) {
     const [loading, setLoading] = useState(false);
-    const { notification, notifyError, notifySuccess, clearNotifications } =
-        useNotification();
+    const { notification, notifyError, notifySuccess } = useNotification();
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setLoading(true);
 
-        apiCall
+        apiClient
             .post("/users", form)
-            .success((data, message) => {
-                notifySuccess(message);
+            .then((res) => {
+                notifySuccess(res.data.message);
             })
-            .error((error) => {
+            .catch((error) => {
                 console.log(error);
                 notifyError(error.message);
             })
@@ -38,25 +33,18 @@ export default function Permissions({
             <div className="flex flex-col gap-2">
                 <h2 className="font-semibold text-lg">Permissions</h2>
                 {Object.keys(form.permissions).map((permission) => (
-                    <div key={permission} className="flex items-center">
-                        <input
-                            type="checkbox"
-                            id={permission}
+                    <div
+                        key={permission}
+                        className="flex items-center justify-between"
+                    >
+                        <Switch
                             checked={form.permissions[permission]}
-                            onChange={(e) =>
-                                handleCheckboxChange(
-                                    permission,
-                                    e.target.checked
-                                )
+                            onChange={(checked) =>
+                                handleCheckboxChange(permission, checked)
                             }
-                            className="form-checkbox h-4 w-4 text-blue-600"
+                            className="w-full bg-slate-900 py-3 flex justify-between items-center"
+                            label={permission}
                         />
-                        <label
-                            htmlFor={permission}
-                            className="ml-2 text-sm capitalize"
-                        >
-                            {permission}
-                        </label>
                     </div>
                 ))}
                 <Notification

@@ -37,7 +37,7 @@ function ProductsCard({
                     <div
                         onClick={() => handleCallback(product._id)}
                         key={product._id}
-                        className={`flex flex-col max-w-sm rounded overflow-hidden bg-gray-300 dark:bg-gray-800 shadow ${
+                        className={`flex flex-col max-w-sm rounded overflow-hidden bg-gray-300 dark:hover:bg-green-900 dark:bg-gray-800 transition-transform shadow ${
                             selected == key
                                 ? "bg-green-200 dark:bg-green-900"
                                 : ""

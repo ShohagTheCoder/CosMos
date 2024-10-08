@@ -423,7 +423,12 @@ function StockProduct({
                     return (
                         <div
                             key={p._id}
-                            className="border-2 border-dashed border-gray-600 p-2 mb-2"
+                            className="border-2 border-dashed dark:hover:bg-green-950 border-gray-600 p-2 mb-2"
+                            onClick={() => {
+                                stockManager
+                                    .set("activeProduct", product._id)
+                                    .save();
+                            }}
                         >
                             {product.note ? (
                                 <div className="mb-2 flex gap-3">

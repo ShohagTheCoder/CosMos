@@ -57,8 +57,8 @@ body {
 
 /* For Webkit-based browsers (Chrome, Safari) */
 .cosmos-scrollbar::-webkit-scrollbar {
-    width: 12px; /* Width of the scrollbar */
-    height: 12px; /* Height of the scrollbar for horizontal scrolling */
+    width: 10px; /* Width of the scrollbar */
+    height: 10px; /* Height of the scrollbar for horizontal scrolling */
 }
 
 .cosmos-scrollbar::-webkit-scrollbar-track {

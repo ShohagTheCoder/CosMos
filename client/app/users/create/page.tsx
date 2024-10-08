@@ -76,6 +76,7 @@ export default function CreateUser() {
                         titleAlignment: "center",
                         classes: {
                             container: "min-h-[500px]",
+                            tabContent: "p-6",
                         },
                     }}
                 />

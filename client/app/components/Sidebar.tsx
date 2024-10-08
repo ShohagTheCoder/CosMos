@@ -1,6 +1,5 @@
 "use client";
 import "./style.css";
-import HomeIcon from "../icons/ShopIcon";
 import ProductsIcon from "../icons/ProductsIcon";
 import SellsIcon from "../icons/SellsIcon";
 import UserIcon from "../icons/UserIcon";
@@ -23,7 +22,7 @@ export default function Sidebar({
     userId: undefined | string;
 }) {
     return (
-        <div className="bg-gray-300 dark:bg-gray-900 fixed text-black dark:text-white start-0 top-0 w-[80px] h-screen border-r-2 border-dashed border-slate-600 z-[1000]">
+        <div className="bg-gray-300 dark:bg-gray-900 fixed text-black dark:text-white start-0 top-0 w-[80px] h-screen border-r-2 border-dashed border-slate-600 z-[1000] overflow-x-hidden overflow-y-auto cosmos-scrollbar">
             <div className="h-full flex flex-col justify-between items-center py-6">
                 <div className="flex flex-col justify-center items-center gap-4">
                     <SidebarItem
@@ -93,7 +92,7 @@ export default function Sidebar({
                         isActive={active === "trashes"}
                     />
                 </div>
-                <div className="flex flex-col justify-center items-center gap-4 border-t-2 border-dashed pt-5 border-gray-500">
+                <div className="flex flex-col justify-center items-center gap-4 border-t-2 border-dashed mt-5 pt-4 border-gray-500">
                     {userId && (
                         <SidebarItem
                             label="User Profile"
