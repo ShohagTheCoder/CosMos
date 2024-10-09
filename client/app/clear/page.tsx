@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import apiCall from "../common/apiCall";
 import useNotification from "../hooks/useNotification";
 import Notification from "../elements/notification/Notification";
+import apiClient from "../utils/apiClient";
 
 export default function ClearPage() {
     const [password, setPassword] = useState("");
@@ -10,12 +10,12 @@ export default function ClearPage() {
 
     function handleClear() {
         if (password === "clear") {
-            apiCall
+            apiClient
                 .get("/clear")
-                .success((data, message) => {
-                    notifySuccess(message);
+                .then((res) => {
+                    notifySuccess(res.data.message);
                 })
-                .error((error) => {
+                .catch((error) => {
                     notifyError(error.message);
                 });
         }

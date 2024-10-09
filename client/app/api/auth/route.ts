@@ -2,7 +2,6 @@
 import { NextResponse } from "next/server";
 import apiClient from "@/app/utils/apiClient";
 import { decodeJwt } from "./decodeJwt";
-import { ApiResponse } from "@/app/common/apiCall";
 
 export async function POST(req: Request) {
     try {
@@ -11,9 +10,7 @@ export async function POST(req: Request) {
         console.log(username, password);
 
         // Call the login API
-        const { data } = await apiClient.post<
-            ApiResponse<{ access_token: string }>
-        >("auth/login", {
+        const { data } = await apiClient.post("auth/login", {
             username,
             password,
         });
