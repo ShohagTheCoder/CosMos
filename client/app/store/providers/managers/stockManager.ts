@@ -139,10 +139,10 @@ export class StockManager<T extends StockState> extends StateManager<T> {
             (currentIndex + to + unitEntries.length) % unitEntries.length;
 
         // eslint-disable-next-line no-unused-vars
-        const [_, newUnit] = unitEntries[newIndex] || [];
+        const [unit, _] = unitEntries[newIndex] || [];
 
-        if (newUnit?.unit) {
-            this.set(`products.${product._id}.unit`, newUnit.unit);
+        if (unit) {
+            this.set(`products.${product._id}.unit`, unit);
         }
 
         return this;

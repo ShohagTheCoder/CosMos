@@ -1,7 +1,7 @@
 "use client";
-import apiCall from "@/app/common/apiCall";
 import Notification from "@/app/elements/notification/Notification";
 import useNotification from "@/app/hooks/useNotification";
+import apiClient from "@/app/utils/apiClient";
 import React, { useState } from "react";
 
 export default function ClearProductsPage() {
@@ -10,12 +10,12 @@ export default function ClearProductsPage() {
 
     function handleClear() {
         if (password === "clear") {
-            apiCall
+            apiClient
                 .delete("/products/clearAll")
-                .success((data, message) => {
-                    notifySuccess(message);
+                .then((res) => {
+                    notifySuccess(res.data.message);
                 })
-                .error((error) => {
+                .catch((error) => {
                     notifyError(error.message);
                 });
         }

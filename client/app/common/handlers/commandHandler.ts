@@ -185,8 +185,6 @@ export default class CommandHandler extends KeyboardHandler {
             this.stateManager.changeUnit(1).save();
         });
 
-        // look
-
         this.longPress("PageUp", () => {
             this.handleUpdateProductPrice(10);
         });

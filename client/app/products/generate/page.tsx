@@ -4,8 +4,7 @@ import { productNames } from "./data/productNames";
 import useNotification from "@/app/hooks/useNotification";
 import Notification from "@/app/elements/notification/Notification";
 import { productUnits } from "./data/productUnits";
-import apiCall from "@/app/common/apiCall";
-
+import apiClient from "@/app/utils/apiClient";
 type ProductUnitCategory = "weight" | "pieces" | "volume";
 
 // Define the main units to always include per category
@@ -228,12 +227,12 @@ export default function ProductsGeneratePage() {
         // Function to create products in chunks
         const createProductsInChunks = async (chunks: any) => {
             for (const chunk of chunks) {
-                apiCall
+                apiClient
                     .post("/products/createMany", chunk)
-                    .success((_, message) => {
-                        notifySuccess(message); // Assuming the success message is in the response
+                    .then((res) => {
+                        notifySuccess(res.data.message); // Assuming the success message is in the response
                     })
-                    .error((error) => {
+                    .catch((error) => {
                         notifyError(error.message);
                     });
             }

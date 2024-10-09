@@ -1,10 +1,16 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
+import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
+import mongoose, { Document, Schema as MongooseSchema } from 'mongoose';
 
 // Define nested schemas
 @Schema()
 export class Unit {
-    @Prop()
+    @Prop({
+        default: function (this: Unit) {
+            // Set default unit as the key of this unit object in `Product.units`
+            const unitKeys = Object.keys(this['_parent']?.units || {});
+            return unitKeys.length > 0 ? unitKeys[0] : '';
+        },
+    })
     unit: string;
 
     @Prop()
@@ -25,6 +31,9 @@ export class Unit {
     @Prop({ default: true })
     enable: boolean;
 }
+
+// Convert Unit schema to Mongoose schema
+const UnitSchema = SchemaFactory.createForClass(Unit);
 
 @Schema()
 export class Price {
@@ -78,7 +87,12 @@ export class Product extends Document {
     @Prop({ default: 'product.jpg' })
     image: string;
 
-    @Prop({ type: mongoose.Schema.Types.Mixed, required: true })
+    // Define `units` as a map of subdocuments
+    @Prop({
+        type: mongoose.Schema.Types.Map,
+        of: UnitSchema,
+        required: true,
+    })
     units: Record<string, Unit>;
 
     @Prop({ required: true })
