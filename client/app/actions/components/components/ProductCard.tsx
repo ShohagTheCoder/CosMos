@@ -1,20 +1,15 @@
-import Product, {
-    ProductWithID,
-} from "@/app/products/interfaces/product.interface";
-import { addTo } from "@/app/store/slices/cartSlice";
+import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { RootState } from "@/app/store/store";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 function ProductCard({ products }: { products: any }) {
-    const dispatch = useDispatch();
     const selectedProductIndex = useSelector(
         (state: RootState) => state.cart.selectedProductIndex
     );
 
     function handleaddTo(_id: string) {
         const newProduct: ProductWithID = products[_id];
-        dispatch(addTo({ ...newProduct, subTotal: newProduct.price }));
         document.getElementById("command")?.focus();
     }
 
