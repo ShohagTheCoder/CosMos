@@ -47,7 +47,7 @@ export default function PurchaseProductsCard({
                         <p className="text-gray-300 text-base mb-1">
                             {product.description}
                         </p>
-                        <p># {getStockLine(product.stock, product.units)}</p>
+                        <p># {getStockLine(product)}</p>
                         <p className="font-semibold text-xl text-green-400 inline-block">
                             {convertStandardToBnBD(
                                 getProductUnitpurchasePrice(product) *

@@ -1,10 +1,6 @@
 import { StockState } from "@/app/store/slices/stockSlice";
 import React from "react";
 
-interface CartState {
-    customer?: { name: string };
-}
-
 interface PurchasePageSelectorProps {
     activePage: string; // Currently active sell page
     stockStates: Record<string, StockState>; // Object containing customer information for different sell pages

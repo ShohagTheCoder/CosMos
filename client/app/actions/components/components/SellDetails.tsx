@@ -1,5 +1,4 @@
 "use client";
-import fixFloatingPoint from "@/app/functions/fixFloatingPoint";
 import useCartManager from "@/app/store/providers/cartProvider";
 import { RootState } from "@/app/store/store";
 import React from "react";

@@ -1,10 +1,7 @@
 import React from "react";
 import Sell from "../components/Sell";
 import { CustomerWithId } from "@/app/interfaces/customer.inerface";
-import {
-    getCustomersInServer,
-    getUserInServer,
-} from "./../functions/apiHandlers";
+import { getCustomersInServer } from "./../functions/apiHandlers";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation"; // Import redirect
 import ErrorResponse from "@/app/common/components/ErrorResponse";

@@ -2,8 +2,8 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
     addPrice,
-    updatePriceMax,
     updatePricePrice,
+    updatePriceStart,
     updatePriceUnit,
 } from "@/app/store/slices/productSlice";
 import { RootState } from "@/app/store/store";
@@ -48,10 +48,10 @@ function Prices() {
                     <input
                         type="number"
                         className="h-[30px] bg-black w-[60px] text-white p-2"
-                        value={price.max}
+                        value={price.start}
                         onChange={(e) =>
                             dispatch(
-                                updatePriceMax({ key, max: e.target.value })
+                                updatePriceStart({ key, start: e.target.value })
                             )
                         }
                     />

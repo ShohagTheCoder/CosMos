@@ -16,14 +16,12 @@ export default function UpdateCustomer({ params }: any) {
     });
 
     useEffect(() => {
-        apiClient()
-            .get(`customers/${id}`)
-            .then((res) => {
-                setName(res.data.name);
-                setEmail(res.data.email);
-                setAddress(res.data.address);
-                setPhoneNumber(res.data.phoneNumber);
-            });
+        apiClient.get(`customers/${id}`).then((res) => {
+            setName(res.data.name);
+            setEmail(res.data.email);
+            setAddress(res.data.address);
+            setPhoneNumber(res.data.phoneNumber);
+        });
     }, []);
 
     async function handleUpdateCustomer() {

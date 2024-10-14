@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
     addPurchasePrice,
-    updatePurchasePriceMax,
+    updatePurchasePriceStart,
     updatePurchasePricePrice,
     updatePurchasePriceUnit,
 } from "@/app/store/slices/productSlice";
@@ -51,12 +51,12 @@ function PurchasePrices() {
                     <input
                         type="number"
                         className="h-[30px] bg-black w-[60px] text-white p-2"
-                        value={price.max}
+                        value={price.start}
                         onChange={(e) =>
                             dispatch(
-                                updatePurchasePriceMax({
+                                updatePurchasePriceStart({
                                     key,
-                                    max: e.target.value,
+                                    start: e.target.value,
                                 })
                             )
                         }

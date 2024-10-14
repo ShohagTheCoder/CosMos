@@ -1,7 +1,7 @@
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { RootState } from "@/app/store/store";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 function ProductCard({ products }: { products: any }) {
     const selectedProductIndex = useSelector(
