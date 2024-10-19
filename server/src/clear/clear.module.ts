@@ -11,6 +11,11 @@ import {
     TransactionSchema,
 } from 'src/transactions/schemas/transaction.schema';
 import { Trash, TrashSchema } from 'src/trash/schemas/trash.schema';
+import {
+    Customer,
+    CustomerSchema,
+} from 'src/customers/schemas/customer.schema';
+import { User, UserSchema } from 'src/users/schemas/user.schema';
 
 @Module({
     imports: [
@@ -22,6 +27,8 @@ import { Trash, TrashSchema } from 'src/trash/schemas/trash.schema';
             { name: Purchase.name, schema: PurchaseSchema },
             { name: Stock.name, schema: StockSchema },
             { name: Trash.name, schema: TrashSchema },
+            { name: Customer.name, schema: CustomerSchema },
+            { name: User.name, schema: UserSchema },
         ]),
     ],
     providers: [ClearService],

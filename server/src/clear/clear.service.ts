@@ -2,11 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Account } from 'src/accounts/schemas/account.schema';
+import { Customer } from 'src/customers/schemas/customer.schema';
 import { Purchase } from 'src/schemas/purchase.schema';
 import { Sell } from 'src/sells/schemas/sell.schema';
 import { Stock } from 'src/stocks/schemas/stock.schema';
 import { Transaction } from 'src/transactions/schemas/transaction.schema';
 import { Trash } from 'src/trash/schemas/trash.schema';
+import { User } from 'src/users/schemas/user.schema';
 
 @Injectable()
 export class ClearService {
@@ -18,6 +20,8 @@ export class ClearService {
         @InjectModel(Purchase.name) private purchaseModel: Model<Purchase>,
         @InjectModel(Stock.name) private stockModel: Model<Stock>,
         @InjectModel(Trash.name) private trashModel: Model<Trash>,
+        @InjectModel(Customer.name) private customerModel: Model<Customer>,
+        @InjectModel(User.name) private userModel: Model<User>,
     ) {}
 
     async clear() {
@@ -39,6 +43,12 @@ export class ClearService {
 
             // 6. Clear all purchases
             await this.trashModel.deleteMany({});
+
+            // 6. Clear all purchases
+            await this.customerModel.deleteMany({});
+
+            // 6. Clear all purchases
+            await this.userModel.deleteMany({});
 
             return {
                 status: 'success',

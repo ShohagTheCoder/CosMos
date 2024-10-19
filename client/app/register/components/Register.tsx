@@ -37,12 +37,12 @@ export default function Register() {
 
         try {
             await apiClient.post("register", form);
-            setSuccess("User created successfully!");
+            setSuccess("User registered!");
             setTimeout(() => {
-                window.location.reload();
+                window.location.href = "/login";
             }, 1000);
         } catch (error) {
-            setError("Failed to create user.");
+            setError("Failed to register shop.");
             console.error(error);
         } finally {
             setLoading(false);

@@ -14,6 +14,10 @@ export default function ClearPage() {
                 .get("/clear")
                 .then((res) => {
                     notifySuccess(res.data.message);
+
+                    setTimeout(() => {
+                        window.location.href = "/register";
+                    }, 2000);
                 })
                 .catch((error) => {
                     notifyError(error.message);
