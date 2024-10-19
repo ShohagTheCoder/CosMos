@@ -31,7 +31,6 @@ export default class PurchaseCommandHandler extends CommandHandler {
 
     setupPurchaseCommands() {
         this.listen(["Enter", "NumpadEnter"], () => {
-            console.log("HEy");
             if (
                 !this.params.isSuppliers &&
                 this.value.length > 0 &&

@@ -97,11 +97,6 @@ export default function Sell({
 
     // Single use effect
     useEffect(() => {
-        if (user) {
-            cartManager.set("user", user).save();
-            // dispatch(setUser(user));
-        }
-
         window.addEventListener("keydown", (e: any) => {
             // Return if already focused on another input or textare
             if (["TEXTAREA", "INPUT"].includes(e.target.tagName)) {
@@ -230,10 +225,10 @@ export default function Sell({
     async function handleCompleteSell() {
         setSellButtonLoading(true);
         apiClient
-            .post("/sells", cartManager.getData())
+            .post("/sells", { ...cartManager.getData(), user })
             .then(async (res) => {
                 notifySuccess(res.data.message);
-                cartManager.reset(initialCartState).set("user", user).save();
+                cartManager.reset(initialCartState);
                 try {
                     let { data: _productsArray } = await apiClient.get(
                         "products"
@@ -388,8 +383,8 @@ export default function Sell({
         setProductUpdateShortcut(false); // You can add a toast or error message here instead of closing
     }
 
-    function handleSellPageChange(sellPageKey: string) {
-        if (sellPageKey === activePage.current) return;
+    function handleSellPageChange(pageKey: string) {
+        if (pageKey === activePage.current) return;
         // Deep copy cart states if necessary
         let cartStates: Record<string, CartState> = cloneDeep(
             helper.cartStates
@@ -397,13 +392,13 @@ export default function Sell({
         // Ensure cart is defined before assignment
         cartStates[activePage.current] = cart;
         // Update the active sell page first
-        activePage.current = sellPageKey;
+        activePage.current = pageKey;
         // Dispatch Redux state update
         dispatch(updateHelperField({ field: "cartStates", value: cartStates }));
         // Use the cart manager to reset and save the new state
-        const newCartState = cartStates[sellPageKey] || initialCartState;
+        const newState = cartStates[pageKey] || initialCartState;
         // Use the cart manager to reset and save the new state
-        cartManager.reset(newCartState).save();
+        cartManager.reset(newState);
     }
 
     return (

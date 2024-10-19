@@ -16,6 +16,7 @@ import {
     CustomerSchema,
 } from 'src/customers/schemas/customer.schema';
 import { User, UserSchema } from 'src/users/schemas/user.schema';
+import { Command, CommandSchema } from 'src/commands/schemas/command.schema';
 
 @Module({
     imports: [
@@ -29,6 +30,7 @@ import { User, UserSchema } from 'src/users/schemas/user.schema';
             { name: Trash.name, schema: TrashSchema },
             { name: Customer.name, schema: CustomerSchema },
             { name: User.name, schema: UserSchema },
+            { name: Command.name, schema: CommandSchema },
         ]),
     ],
     providers: [ClearService],

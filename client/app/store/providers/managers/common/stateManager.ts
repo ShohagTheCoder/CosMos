@@ -258,12 +258,15 @@ export default class StateManager<T extends Record<string, any>> {
         return this;
     }
 
-    reset(initialState: T): this {
+    reset(initialState: T): void {
         this.data = initialState;
-        return this;
+        this.lastData = initialState;
+        this.dispatchFunction(this.reducerFunction(initialState));
     }
 
     save(): void {
+        let hasChanges = false;
+
         // First iteration: Identify changes and trigger listeners
         for (const key in this.data) {
             if (this.data.hasOwnProperty(key)) {
@@ -297,31 +300,16 @@ export default class StateManager<T extends Record<string, any>> {
                     if (this.listeners[key]) {
                         this.listeners[key]();
                     }
+
+                    hasChanges = true; // Mark that a change has occurred
                 }
             }
         }
 
-        // Second iteration: Determine final updated fields and dispatch changes
-        const updatedFields: Partial<T> = {};
-
-        for (const key in this.data) {
-            if (this.data.hasOwnProperty(key)) {
-                const currentValue = this.data[key];
-                const lastValue = this.lastData[key];
-
-                // Check if the value has changed again after listeners have run
-                if (!isEqual(currentValue, lastValue)) {
-                    updatedFields[key as keyof T] = currentValue;
-                }
-            }
-        }
-
-        // Dispatch updated fields if any changes were detected
-        if (Object.keys(updatedFields).length > 0) {
-            this.lastData = cloneDeep(this.data); // Sync `lastData` with the current state
-            this.dispatchFunction(
-                this.reducerFunction(cloneDeep(updatedFields))
-            );
+        // Dispatch the entire state only if changes have been detected
+        if (hasChanges) {
+            this.lastData = { ...this.data }; // Use shallow copy instead of deep clone
+            this.dispatchFunction(this.reducerFunction(this.data)); // Dispatch data directly without deep cloning
         }
     }
 }

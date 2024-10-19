@@ -3,9 +3,6 @@ import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { createSlice } from "@reduxjs/toolkit";
 
 export interface StockState {
-    receiver?: {
-        name: string;
-    };
     products: Record<string, ProductWithID>;
     totalPrice: number;
     supplier?: Supplier;
@@ -24,7 +21,7 @@ const stockSlice = createSlice({
     initialState: initialStockState,
     reducers: {
         updateStockState: (state, action) => {
-            return { ...state, ...action.payload };
+            return action.payload;
         },
     },
 });

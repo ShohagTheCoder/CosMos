@@ -102,11 +102,6 @@ export default function Purchase({
 
     // Single use effect
     useEffect(() => {
-        if (user) {
-            stockManager.set("user", user).save();
-            // dispatch(setUser(user));
-        }
-
         window.addEventListener("keydown", (e: any) => {
             // Return if already focused on another input or textare
             if (["TEXTAREA", "INPUT"].includes(e.target.tagName)) {
@@ -235,10 +230,10 @@ export default function Purchase({
     async function handleCompletePurchase() {
         setPurchaseButtonLoading(true);
         apiClient
-            .post("/purchases", stockManager.getData())
+            .post("/purchases", { ...stockManager.getData(), user })
             .then(async (res) => {
                 notifySuccess(res.data.message);
-                stockManager.reset(initialStockState).set("user", user).save();
+                stockManager.reset(initialStockState);
                 try {
                     let { data: _productsArray } = await apiClient.get(
                         "products/for-purchase"
@@ -426,7 +421,7 @@ export default function Purchase({
         // Use the stock manager to reset and save the new state
         const newState = stockStates[pageKey] || initialStockState;
         // Use the stock manager to reset and save the new state
-        stockManager.reset(newState).save();
+        stockManager.reset(newState);
     }
 
     return (

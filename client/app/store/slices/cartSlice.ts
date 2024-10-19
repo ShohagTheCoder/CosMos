@@ -11,7 +11,6 @@ export interface CartState {
     selectedProductIndex: number;
     due: number;
     paid: number;
-    user?: any;
     greeting: string | undefined;
     customerAccount: any;
 }
@@ -19,7 +18,6 @@ export interface CartState {
 export const initialCartState: CartState = {
     selectedProductIndex: 0,
     products: {},
-    user: undefined,
     customer: undefined,
     greeting: undefined,
     totalPrice: 0,
@@ -35,7 +33,7 @@ const cartSlice = createSlice({
     initialState: initialCartState,
     reducers: {
         updateCartState: (state, action) => {
-            return { ...state, ...action.payload };
+            return action.payload;
         },
     },
 });
