@@ -11,10 +11,13 @@ import { RootState } from "@/app/store/store";
 import apiClient from "@/app/utils/apiClient";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { ProductWithID } from "../interfaces/product.interface";
+import { ErrorMap } from "../create/components/CreateProduct";
 
-function General({ image, setImage }: any) {
+function General({ image, setImage, validationHandler }: any) {
     const dispatch = useDispatch();
     const product = useSelector((state: RootState) => state.product);
+    const [products, setProducts] = useState<ProductWithID[]>([]);
     const [brands, setBrands] = useState<any[]>([]);
     const [categories, setCategories] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -22,10 +25,12 @@ function General({ image, setImage }: any) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [brandsResponse, categoriesResponse] = await Promise.all([
-                    apiClient.get("brands"),
-                    apiClient.get("categories"),
-                ]);
+                const [productsResponse, brandsResponse, categoriesResponse] =
+                    await Promise.all([
+                        apiClient.get("products"),
+                        apiClient.get("brands"),
+                        apiClient.get("categories"),
+                    ]);
 
                 setBrands(
                     brandsResponse.data.map((item: any) => ({
@@ -40,6 +45,8 @@ function General({ image, setImage }: any) {
                         label: item.name,
                     }))
                 );
+
+                setProducts(productsResponse.data.data);
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
@@ -49,6 +56,10 @@ function General({ image, setImage }: any) {
 
         fetchData();
     }, []);
+
+    function validateSKU(SKU: string) {
+        return;
+    }
 
     if (loading) {
         return (
@@ -82,9 +93,20 @@ function General({ image, setImage }: any) {
                     }}
                     options={{
                         label: "SKU",
-                        validate: (value) => value.length >= 6,
+                        validate: (SKU) =>
+                            validationHandler.validate("SKU", SKU, [
+                                () =>
+                                    SKU.length >= 4
+                                        ? true
+                                        : "The value is short",
+
+                                () =>
+                                    products.some((p) => p.SKU === SKU)
+                                        ? "SKU is already exist"
+                                        : true,
+                            ]),
                         validMessage: "SKU looks good!",
-                        invalidMessage: "Please enter a valid SKU",
+                        invalidMessage: validationHandler.errors["SKU"],
                         placeholder: "Ex: K4674D",
                     }}
                 />

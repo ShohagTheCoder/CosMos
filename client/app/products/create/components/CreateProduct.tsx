@@ -5,18 +5,17 @@ import UnitsTab from "../../components/UnitsTab";
 import Resources from "./Resources";
 import StockManagement from "./StockManagement";
 import Tab from "@/app/elements/tab/Tab";
+import useValidationHandler from "@/app/hooks/useValidationHandler";
+
+export interface ErrorMap {
+    [key: string]: string;
+}
 
 export default function CreateProduct() {
-    useEffect(() => {
-        const handleBeforeUnload = (e: any) => {
-            e.returnValue = "Are you sure you want to leave or refresh?";
-            return "Are you sure you want to leave or refresh?";
-        };
-        window.addEventListener("beforeunload", handleBeforeUnload);
-        return () => {
-            window.removeEventListener("beforeunload", handleBeforeUnload);
-        };
-    }, []);
+    const validationHandler = useValidationHandler({
+        SKU: "Plese enter SKU",
+        Name: "Please enter Name",
+    });
 
     const [image, setImage] = useState(null);
 
@@ -24,7 +23,13 @@ export default function CreateProduct() {
         {
             id: "general",
             title: "General",
-            content: <General image={image} setImage={setImage} />,
+            content: (
+                <General
+                    image={image}
+                    setImage={setImage}
+                    validationHandler={validationHandler}
+                />
+            ),
         },
         {
             id: "units",
@@ -39,7 +44,13 @@ export default function CreateProduct() {
         {
             id: "create",
             title: "Create",
-            content: <StockManagement image={image} setImage={setImage} />,
+            content: (
+                <StockManagement
+                    image={image}
+                    setImage={setImage}
+                    validationHandler={validationHandler}
+                />
+            ),
         },
     ];
 

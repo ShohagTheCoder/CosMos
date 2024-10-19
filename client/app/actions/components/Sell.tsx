@@ -11,12 +11,11 @@ import CartProduct from "./components/CartProduct";
 import CustomerDetails from "./components/CustomerDetails";
 import SellDetails from "./components/SellDetails";
 // eslint-disable-next-line no-unused-vars
-import Notification from "@/app/elements/notification/Notification";
+import Notification from "@/app/elements/notification/NotificationList";
 import ProductsCard from "./ProductsCard";
 import { arrayToObjectById } from "../functions/arrayToObjectById";
 import { updateHelperField } from "@/app/store/slices/helperSlice";
 import { productArrayToObject } from "../functions/productArrayToObject";
-import useNotification from "@/app/hooks/useNotification";
 import FinalView from "../sell/components/FinalView";
 // import { useHandleKeyUp } from "../sell/functions/keyboardHandler";
 import ProductsRow from "./ProductsRow";
@@ -27,12 +26,13 @@ import ImageIcon from "@/app/icons/ImageIcon";
 import ProductUpdateShortcut from "../sell/components/ProductUpdateShortcut";
 import { setProduct } from "@/app/store/slices/productSlice";
 import useCartManager from "@/app/store/providers/cartProvider";
-import Notifications from "@/app/elements/notification/Notifications";
 // eslint-disable-next-line no-unused-vars
 import SellPageSelector from "./components/SellPageSelector";
 import { cloneDeep } from "lodash";
 import SellCommandHandler from "@/app/common/handlers/sellCommandHandler";
 import apiClient from "@/app/utils/apiClient";
+import useNotifications from "@/app/hooks/useNotifications";
+import NotificationList from "@/app/elements/notification/NotificationList";
 
 interface SellProps {
     productsArray: ProductWithID[];
@@ -70,12 +70,9 @@ export default function Sell({
     const helper = useSelector((state: RootState) => state.helper);
     const activePage = useRef("F5");
     const [productUpdateShortcut, setProductUpdateShortcut] = useState(false);
-    const { notification, notifySuccess, notifyError } = useNotification();
+    const { notifications, notifySuccess, notifyError } = useNotifications();
     const [settingState, setSettingState] = useState(setting);
     // eslint-disable-next-line no-unused-vars
-    const notifications = useSelector(
-        (state: RootState) => state.notifications
-    );
 
     const cartManager = useCartManager();
 
@@ -325,7 +322,10 @@ export default function Sell({
                 .then((res) => {
                     // Update the prices in the cart manager
                     cartManager
-                        .set(`products.${product._id}.prices`, res.data.prices)
+                        .set(
+                            `products.${product._id}.prices`,
+                            res.data.data.prices
+                        )
                         .save();
 
                     // Log old and new state to verify changes
@@ -334,7 +334,7 @@ export default function Sell({
                             ...state,
                             [product._id]: {
                                 ...state[product._id],
-                                prices: [...res.data.prices], // Ensure new reference for prices
+                                prices: [...res.data.data.prices], // Ensure new reference for prices
                             },
                         };
                         return updatedState;
@@ -414,12 +414,7 @@ export default function Sell({
                 <div className="ps-[94px] 2xl:ps-[130px] 2xl:pe-[20px] bg-white dark:bg-gray-950">
                     <div className="grid grid-cols-1 2xl:grid-cols-9">
                         <div className="col-span-8 me-3 lg:pe-3">
-                            <Notifications />
-                            <Notification
-                                type={notification.type}
-                                message={notification.message}
-                                className="justify-center"
-                            />
+                            <NotificationList notifications={notifications} />
                         </div>
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 lg:h-screen gap-6 overflow-x-hidden overflow-y-auto lg:overflow-y-hidden cosmos-scrollbar">

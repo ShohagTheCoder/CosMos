@@ -5,7 +5,7 @@ import apiClient from "../utils/apiClient";
 import Link from "next/link";
 import Notification, {
     NotificationProps,
-} from "../elements/notification/Notification";
+} from "../elements/notification/NotificationList";
 import { ERROR, SUCCESS } from "../utils/constants/message";
 
 interface Supplier {

@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-import useNotification from "../hooks/useNotification";
-import Notification from "../elements/notification/Notification";
+import Notification from "../elements/notification/NotificationList";
 import NumberInputControl from "../elements/inputs/NumberInputControl";
 import apiClient from "../utils/apiClient";
+import useNotifications from "../hooks/useNotifications";
+import NotificationList from "../elements/notification/NotificationList";
 
 export default function Cashout({ account, callback, handleClose }: any) {
     const [amount, setAmount] = useState(0);
     const [note, setNote] = useState("");
     const [cashoutButtonLoading, setCashoutButtonLoading] = useState(false);
 
-    const { notification, notifyError, notifySuccess } = useNotification();
+    const { notifications, notifyError, notifySuccess } = useNotifications();
+
     const notes = [
         { label: "Bill", note: "This is a bill of ?" },
         { label: "Salary", note: "This is a salary payment for ?" },
@@ -73,11 +75,7 @@ export default function Cashout({ account, callback, handleClose }: any) {
                 </button>
 
                 {/* Notification */}
-                <Notification
-                    message={notification.message}
-                    type={notification.type}
-                    className="mb-4"
-                />
+                <NotificationList notifications={notifications} />
 
                 {/* Account Balance */}
                 <div className="mb-5 p-4 bg-gradient-to-r from-gray-700 to-green-900 rounded-lg text-center text-lg shadow-md">

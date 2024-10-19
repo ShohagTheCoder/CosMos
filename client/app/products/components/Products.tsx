@@ -3,16 +3,15 @@
 import Sidebar from "@/app/components/Sidebar";
 import PulseFadeLoading from "@/app/elements/loding/PulseFadeLoading";
 import exportProducts from "@/app/functions/exportProducts";
-import { NotificationProps } from "@/app/hooks/useNotification";
+import useNotifications from "@/app/hooks/useNotifications";
 import AddIcon from "@/app/icons/AddIcon";
 import TrashIcon from "@/app/icons/TrashIcon";
 import apiClient from "@/app/utils/apiClient";
-import { NONE, SUCCESS, ERROR } from "@/app/utils/constants/message";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ProductWithID } from "../interfaces/product.interface";
-import Notification from "@/app/elements/notification/Notification";
 import Pagination from "@/app/components/Pagination";
+import NotificationList from "@/app/elements/notification/NotificationList";
 
 export default function Products({
     totalDocuments = 0,
@@ -22,10 +21,8 @@ export default function Products({
     userId: string;
 }) {
     const [products, setProducts] = useState<ProductWithID[]>([]);
-    const [notification, setNotification] = useState<NotificationProps>({
-        message: "",
-        type: NONE,
-    });
+
+    const { notifications, notifyError, notifySuccess } = useNotifications();
 
     const limit = 10;
     const [currentPage, setCurrentPage] = useState(1);
@@ -43,17 +40,13 @@ export default function Products({
                     const updatedProducts = [...products];
                     updatedProducts.splice(index, 1);
                     setProducts(updatedProducts);
-                    setNotification({
-                        message: "Product deleted successfully",
-                        type: SUCCESS,
-                    });
+                    notifySuccess(
+                        result.data.message || "Product deleted successfully"
+                    );
                 }
             } catch (error) {
                 console.log("Failed to delete product:", error);
-                setNotification({
-                    message: "Failed to delete product",
-                    type: ERROR,
-                });
+                notifyError(error);
             }
         }
     }
@@ -73,9 +66,9 @@ export default function Products({
         <div className="min-h-screen bg-white dark:bg-gray-800">
             <Sidebar userId={userId} active="products" />
             <div className="container max-w-[1200px] mx-auto px-4 pt-8 pb-4">
-                <Notification
-                    type={notification.type}
-                    message={notification.message}
+                <NotificationList
+                    notifications={notifications}
+                    className="mb-3"
                 />
                 <div className="flex items-center justify-between gap-6 mb-4">
                     <h2 className="text-2xl font-bold">Products</h2>

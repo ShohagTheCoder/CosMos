@@ -1,15 +1,15 @@
 "use client";
 import TextArea from "@/app/elements/inputs/TextArea";
 import TextInput from "@/app/elements/inputs/TextInput";
-import Notification from "@/app/elements/notification/Notification";
-import useNotification from "@/app/hooks/useNotification";
+import NotificationList from "@/app/elements/notification/NotificationList";
+import useNotifications from "@/app/hooks/useNotifications";
 import apiClient from "@/app/utils/apiClient";
 import React, { useState } from "react";
 
 export default function CreateBrand() {
     const [brandName, setBrandName] = useState("");
     const [brandDescription, setBrandDescription] = useState("");
-    const { notification, notifySuccess, notifyError } = useNotification();
+    const { notifications, notifySuccess, notifyError } = useNotifications();
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
@@ -71,11 +71,9 @@ export default function CreateBrand() {
                             className="mb-4"
                         />
                     </div>
-                    <Notification
-                        type={notification.type}
-                        message={notification.message}
-                        className="justify-center"
-                    />
+
+                    <NotificationList notifications={notifications} />
+
                     <button
                         onDoubleClick={handleSubmit}
                         className="w-full bg-indigo-600 dark:bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-700 dark:hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400"

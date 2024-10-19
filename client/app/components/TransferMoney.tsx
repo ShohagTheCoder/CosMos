@@ -1,9 +1,11 @@
 import React, { useMemo, useState } from "react";
-import useNotification from "../hooks/useNotification";
-import Notification from "../elements/notification/Notification";
+import useNotification from "../hooks/useNotifications";
+import Notification from "../elements/notification/NotificationList";
 import SearchableSelectInput from "../elements/select/SearchableSelectInput";
 import NumberInputControl from "../elements/inputs/NumberInputControl";
 import apiClient from "../utils/apiClient";
+import useNotifications from "../hooks/useNotifications";
+import NotificationList from "../elements/notification/NotificationList";
 
 function TransferMoney({
     accounts: initialAccounts,
@@ -14,7 +16,7 @@ function TransferMoney({
     const [receiverId, setReceiverId] = useState("");
     const [amount, setAmount] = useState(0);
     const [note, setNote] = useState("");
-    const { notification, notifyError, notifySuccess } = useNotification();
+    const { notifications, notifyError, notifySuccess } = useNotifications();
 
     const accounts = useMemo(
         () =>
@@ -60,11 +62,7 @@ function TransferMoney({
     return (
         <div className="fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-80 z-50 flex justify-center items-center">
             <div className="w-full max-w-lg mx-auto bg-gray-900 text-white rounded-lg p-6 shadow-lg border border-gray-700">
-                <Notification
-                    message={notification.message}
-                    type={notification.type}
-                    className="mb-3"
-                />
+                <NotificationList notifications={notifications} />
                 {/* Close Button */}
                 <div className="flex justify-end mb-3">
                     <button

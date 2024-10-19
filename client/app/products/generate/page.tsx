@@ -1,10 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { productNames } from "./data/productNames";
-import useNotification from "@/app/hooks/useNotification";
-import Notification from "@/app/elements/notification/Notification";
 import { productUnits } from "./data/productUnits";
 import apiClient from "@/app/utils/apiClient";
+import useNotifications from "@/app/hooks/useNotifications";
+import NotificationList from "@/app/elements/notification/NotificationList";
 type ProductUnitCategory = "weight" | "pieces" | "volume";
 
 // Define the main units to always include per category
@@ -211,8 +211,8 @@ const ProductGenerator = ({ productNames, products, setProducts }: any) => {
 // Example usage of the ProductGenerator component
 export default function ProductsGeneratePage() {
     const [products, setProducts] = useState<any[]>([]);
-    const { notification, notifyError, notifySuccess, clearNotifications } =
-        useNotification();
+    const { notifications, notifyError, notifySuccess, clearAllNotifications } =
+        useNotifications();
 
     const CHUNK_SIZE = 100; // Maximum number of products per request
 
@@ -241,7 +241,7 @@ export default function ProductsGeneratePage() {
         // Execute the chunked requests
         createProductsInChunks(productChunks).then(() => {
             setTimeout(() => {
-                clearNotifications();
+                clearAllNotifications();
                 // window.history.back();
             }, 3000);
         });
@@ -253,11 +253,7 @@ export default function ProductsGeneratePage() {
                     Product List ({productNames.length}) Products
                 </h1>
                 <div className="">
-                    <Notification
-                        type={notification.type}
-                        message={notification.message}
-                        className="mt-0"
-                    />
+                    <NotificationList notifications={notifications} />
                 </div>
                 <div className="flex justify-end items-start">
                     <button

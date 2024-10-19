@@ -1,6 +1,6 @@
+import { NotificationType } from "@/app/hooks/useNotifications";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
-import { NotificationType } from "@/app/elements/notification/Notification";
 
 // Notification state interface
 export interface NotificationState {

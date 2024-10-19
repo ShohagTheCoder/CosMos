@@ -1,12 +1,12 @@
-import Notification from "@/app/elements/notification/Notification";
-import useNotification from "@/app/hooks/useNotification";
 import apiClient from "@/app/utils/apiClient";
 import Switch from "@/app/elements/switch/Switch"; // Adjust the import path as needed
 import React, { FormEvent, useState } from "react";
+import useNotifications from "@/app/hooks/useNotifications";
+import NotificationList from "@/app/elements/notification/NotificationList";
 
 export default function Permissions({ handleCheckboxChange, form }: any) {
     const [loading, setLoading] = useState(false);
-    const { notification, notifyError, notifySuccess } = useNotification();
+    const { notifications, notifyError, notifySuccess } = useNotifications();
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -47,10 +47,7 @@ export default function Permissions({ handleCheckboxChange, form }: any) {
                         />
                     </div>
                 ))}
-                <Notification
-                    message={notification.message}
-                    type={notification.type}
-                />
+                <NotificationList notifications={notifications} />
             </div>
             <button
                 onDoubleClick={handleSubmit}

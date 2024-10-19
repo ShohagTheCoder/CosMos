@@ -1,9 +1,10 @@
 "use client";
 import Button from "@/app/elements/buttons/Button";
 import NumberInput from "@/app/elements/inputs/NumberInput";
-import Notification from "@/app/elements/notification/Notification";
+import NotificationList from "@/app/elements/notification/NotificationList";
 import handleImageUpload from "@/app/functions/handleImageUpload";
-import useNotification from "@/app/hooks/useNotification";
+import useNotifications from "@/app/hooks/useNotifications";
+
 import {
     setProductProduct,
     updateProductField,
@@ -13,17 +14,27 @@ import apiClient from "@/app/utils/apiClient";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-export default function StockManagement({ image, setImage }: any) {
+export default function StockManagement({
+    image,
+    setImage,
+    validationHandler,
+}: any) {
     const dispatch = useDispatch();
     let product = useSelector((state: RootState) => state.product);
     const [disable, setDisable] = useState(false);
-    const { notification, notifySuccess, notifyError } = useNotification();
+    const { notifications, notifySuccess, notifyError } = useNotifications();
 
     async function handleCreateProduct() {
-        setDisable(true);
-        if (product.SKU.length < 4) {
-            return console.log("Please enter SKU");
+        if (!validationHandler.isValid()) {
+            // Show errors in notifications if any
+            for (let [key, value] of Object.entries(validationHandler.errors)) {
+                notifyError(`${key}: ${value}`);
+            }
+            return;
         }
+
+        // Disable the create button
+        setDisable(true);
 
         try {
             let finalProduct = { ...product };
@@ -44,7 +55,7 @@ export default function StockManagement({ image, setImage }: any) {
             notifySuccess("Product created successfully!");
             console.log(result.data);
         } catch (error) {
-            notifyError("Failed to update product.");
+            notifyError("Failed to create product.");
             console.error(error);
         } finally {
             setDisable(false);
@@ -98,11 +109,7 @@ export default function StockManagement({ image, setImage }: any) {
 
     return (
         <div className="w-[600px]">
-            <Notification
-                type={notification.type}
-                message={notification.message}
-                className="mb-3"
-            />
+            <NotificationList notifications={notifications} />
             <div className="grid grid-cols-2 gap-6">
                 <NumberInput
                     className="mb-3"

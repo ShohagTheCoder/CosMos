@@ -1,8 +1,7 @@
 "use client";
-import Notification from "@/app/elements/notification/Notification";
-import { NotificationProps } from "@/app/hooks/useNotification";
+import NotificationList from "@/app/elements/notification/NotificationList";
+import useNotifications from "@/app/hooks/useNotifications";
 import apiClient from "@/app/utils/apiClient";
-import { SUCCESS, ERROR } from "@/app/utils/constants/message";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -15,21 +14,14 @@ interface Trash {
 
 export default function Trashes({ trashes: _trashes }: any) {
     const [trashes, setTrashes] = useState<Trash[]>(_trashes);
-    const [notification, setNotification] = useState<NotificationProps>({
-        type: "none",
-        message: "This is a notification",
-    });
+    const { notifications, notifyError, notifySuccess } = useNotifications();
 
     async function handleTrashRestore(trash: Trash) {
         const connect = trash.connect;
 
         try {
             await apiClient.get(`trash/restore/${trash._id}`);
-            setNotification({
-                type: SUCCESS,
-                message: `${trash.source} restored successfully`,
-            });
-
+            notifySuccess(`${trash.source} restored successfully`);
             // Create a new array to update the state
             let updatedTrashes = [...trashes];
 
@@ -48,10 +40,7 @@ export default function Trashes({ trashes: _trashes }: any) {
             // Update the state with the new array
             setTrashes(updatedTrashes);
         } catch (error) {
-            setNotification({
-                type: ERROR,
-                message: `Failed to restore ${trash.source}`,
-            });
+            notifyError(error);
         }
     }
 
@@ -67,10 +56,7 @@ export default function Trashes({ trashes: _trashes }: any) {
         apiClient
             .delete(`trash/${trash._id}`)
             .then(() => {
-                setNotification({
-                    type: SUCCESS,
-                    message: `${trash.source} deleted successfully`,
-                });
+                notifySuccess(`${trash.source} deleted successfully`);
 
                 // Create a new array excluding the deleted item(s)
                 let updatedTrashes = [...trashes];
@@ -90,21 +76,15 @@ export default function Trashes({ trashes: _trashes }: any) {
                 // Update the state with the filtered array
                 setTrashes(updatedTrashes);
             })
-            .catch(() => {
-                setNotification({
-                    type: ERROR,
-                    message: `Failed to delete ${trash.source}`,
-                });
+            .catch((error) => {
+                notifyError(error);
             });
     }
 
     return (
         <main className="bg-gray-900 text-white min-h-screen p-6">
             <div className="container mx-auto">
-                <Notification
-                    type={notification.type}
-                    message={notification.message}
-                />
+                <NotificationList notifications={notifications} />
                 <div className="overflow-x-auto">
                     <table className="min-w-full bg-gray-800 border border-gray-700 rounded-lg">
                         <thead>

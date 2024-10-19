@@ -6,12 +6,10 @@ import { RootState } from "@/app/store/store";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 // eslint-disable-next-line no-unused-vars
-import Notification from "@/app/elements/notification/Notification";
 import ProductsCard from "./ProductsCard";
 import { arrayToObjectById } from "../functions/arrayToObjectById";
 import { updateHelperField } from "@/app/store/slices/helperSlice";
 import { productArrayToObject } from "../functions/productArrayToObject";
-import useNotification from "@/app/hooks/useNotification";
 // import { useHandleKeyUp } from "../purchase/functions/keyboardHandler";
 import ProductsRow from "./ProductsRow";
 import ColsIcon from "@/app/icons/ColsIcon";
@@ -20,7 +18,6 @@ import NotImageIcon from "@/app/icons/NotImageIcon";
 import ImageIcon from "@/app/icons/ImageIcon";
 import { setProduct } from "@/app/store/slices/productSlice";
 import useStockManager from "@/app/store/providers/stockProvider";
-import Notifications from "@/app/elements/notification/Notifications";
 // eslint-disable-next-line no-unused-vars
 import { cloneDeep } from "lodash";
 import { Supplier, SupplierWithId } from "@/app/interfaces/supplier.interface";
@@ -34,6 +31,8 @@ import SupplierCard from "./components/SupplierCart";
 import FinalView from "../sell/components/FinalView";
 import ProductUpdateShortcut from "../sell/components/ProductUpdateShortcut";
 import apiClient from "@/app/utils/apiClient";
+import useNotifications from "@/app/hooks/useNotifications";
+import NotificationList from "@/app/elements/notification/NotificationList";
 
 interface PurchaseProps {
     productsArray: ProductWithID[];
@@ -71,7 +70,9 @@ export default function Purchase({
     const helper = useSelector((state: RootState) => state.helper);
     const activePage = useRef("F5");
     const [productUpdateShortcut, setProductUpdateShortcut] = useState(false);
-    const { notification, notifySuccess, notifyError } = useNotification();
+
+    const { notifications, notifySuccess, notifyError } = useNotifications();
+
     const [settingState, setSettingState] = useState(setting);
     // eslint-disable-next-line no-unused-vars
     // const notifications = useSelector(
@@ -327,7 +328,10 @@ export default function Purchase({
                 .then((res) => {
                     // Update the prices in stockManager
                     stockManager
-                        .set(`products.${product._id}.prices`, res.data.prices)
+                        .set(
+                            `products.${product._id}.prices`,
+                            res.data.data.prices
+                        )
                         .save();
 
                     // Update the prices in the React state immutably
@@ -336,7 +340,7 @@ export default function Purchase({
                             ...state,
                             [product._id]: {
                                 ...state[product._id],
-                                prices: res.data.prices,
+                                prices: res.data.data.prices,
                             },
                         };
                     });
@@ -433,12 +437,7 @@ export default function Purchase({
                 <div className="ps-[94px] 2xl:ps-[130px] 2xl:pe-[20px] bg-white dark:bg-gray-950">
                     <div className="grid grid-cols-1 2xl:grid-cols-9">
                         <div className="col-span-8 me-3 lg:pe-3">
-                            <Notifications />
-                            <Notification
-                                type={notification.type}
-                                message={notification.message}
-                                className="justify-center"
-                            />
+                            <NotificationList notifications={notifications} />
                         </div>
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 lg:h-screen gap-6 overflow-x-hidden overflow-y-auto lg:overflow-y-hidden cosmos-scrollbar">

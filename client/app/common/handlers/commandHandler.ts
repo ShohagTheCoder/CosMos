@@ -258,12 +258,6 @@ export default class CommandHandler extends KeyboardHandler {
                 .save();
         });
         this.group(["PageUp", "PageDown"], () => {
-            // this.setCommand("");
-            // this.stateManager
-            //     .update("products.{{activeProduct}}", (product: ProductWithID) => {
-
-            //     })
-            //     .save();
             this.handleUpdateProductPrice(
                 -this.stateManager.get("products.{{activeProduct}}.updatePrice")
             );

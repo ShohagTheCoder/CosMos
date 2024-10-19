@@ -1,12 +1,14 @@
 "use client";
-import Notification from "@/app/elements/notification/Notification";
-import useNotification from "@/app/hooks/useNotification";
+import NotificationList from "@/app/elements/notification/NotificationList";
+import Notification from "@/app/elements/notification/NotificationList";
+import useNotifications from "@/app/hooks/useNotifications";
+import useNotification from "@/app/hooks/useNotifications";
 import apiClient from "@/app/utils/apiClient";
 import React, { useState } from "react";
 
 export default function ClearProductsPage() {
     const [password, setPassword] = useState("");
-    const { notification, notifyError, notifySuccess } = useNotification();
+    const { notifications, notifyError, notifySuccess } = useNotifications();
 
     function handleClear() {
         if (password === "clear") {
@@ -24,11 +26,7 @@ export default function ClearProductsPage() {
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-900">
             <div className="p-6 rounded-lg shadow-lg bg-gray-800 w-full max-w-sm">
-                <Notification
-                    message={notification.message}
-                    type={notification.type}
-                    className="mb-3"
-                />
+                <NotificationList notifications={notifications} />
                 <h1 className="text-xl font-semibold mb-4 text-gray-200">
                     Clear Data
                 </h1>
