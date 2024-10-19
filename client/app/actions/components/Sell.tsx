@@ -590,6 +590,7 @@ export default function Sell({
                             <div className="pe-3 h-auto overflow-y-auto overflow-x-hidden cosmos-scrollbar">
                                 <div>
                                     <CartProduct
+                                        stateManager={cartManager}
                                         setProductUpdateShortcut={
                                             handleProductUpdateShortcut
                                         }

@@ -1,36 +1,28 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
-import { RootState } from "@/app/store/store";
 import getUnits from "@/app/functions/getUnits";
-import TrashIcon from "@/app/icons/TrashIcon";
 import formatNumber from "@/app/functions/formatNumber";
-import NotImageIcon from "@/app/icons/NotImageIcon";
-import ImageIcon from "@/app/icons/ImageIcon";
-import PriceTagIcon from "@/app/icons/PriceTagIcon";
-import DiscountIcon from "@/app/icons/DiscountIcon";
-import ExtraDiscountIcon from "@/app/icons/ExtraDiscountIcon";
 import InfoIcon from "@/app/icons/InfoIcon";
-import useCartManager from "@/app/store/providers/cartProvider";
 import NoteIcon from "@/app/icons/NoteIcon";
 import fixFloatingPoint from "@/app/functions/fixFloatingPoint";
-import apiClient from "@/app/utils/apiClient";
+import CartSettingsBar from "./CartSettingsBar";
 
 function CartProduct({
+    stateManager,
     setProductUpdateShortcut,
     setting,
     handleUpdateProductPrice,
 }: {
+    stateManager: any;
     // eslint-disable-next-line no-unused-vars
     setProductUpdateShortcut: (productId: string) => void;
     setting: any;
     // eslint-disable-next-line no-unused-vars
     handleUpdateProductPrice: (amount: number) => void;
 }) {
-    let cart = useSelector((state: RootState) => state.cart);
-    const [settingState, setSettingState] = useState(setting);
+    let cart = stateManager.getData();
 
-    const cartManager = useCartManager();
+    const [settingState, setSettingState] = useState(setting);
 
     function getProductForCart(p: ProductWithID) {
         let product: any = { ...p };
@@ -42,97 +34,15 @@ function CartProduct({
         return product;
     }
 
-    function updateSetting(payload: any) {
-        apiClient
-            .patch(`/settings/${setting._id}`, payload)
-            .then(() => {
-                console.log("Setting updated successfully");
-                setSettingState((state: any) => ({ ...state, ...payload }));
-            })
-            .catch((error) => console.log(error));
-    }
-
     return (
         <div className="cart">
-            <div className="flex flex-wrap justify-between items-center py-2 px-2 bg-gray-300 dark:bg-gray-800 mb-3">
-                <button
-                    className="flex items-center p-1 py-2 px-3 rounded-lg select-none hover:bg-green-800"
-                    onClick={() => {
-                        cartManager
-                            .increment(
-                                "products.{{activeProduct}}.extraDiscount"
-                            )
-                            .save();
-                    }}
-                >
-                    <ExtraDiscountIcon />+
-                </button>
-                <button
-                    className="flex items-center p-1 py-2 px-3 rounded-lg select-none hover:bg-red-800"
-                    onClick={() => {
-                        cartManager
-                            .decrement(
-                                "products.{{activeProduct}}.extraDiscount"
-                            )
-                            .save();
-                    }}
-                >
-                    <ExtraDiscountIcon /> -
-                </button>
-                <button
-                    className="flex items-center gap-1 py-2 px-3 rounded-lg select-none hover:bg-green-800"
-                    onClick={() => {
-                        cartManager
-                            .increment("products.{{activeProduct}}.discount")
-                            .save();
-                    }}
-                >
-                    <DiscountIcon height="16" /> +
-                </button>
-                <button
-                    className="flex gap-1 items-center py-2 px-3 rounded-lg select-none hover:bg-red-800"
-                    onClick={() => {
-                        cartManager
-                            .decrement("products.{{activeProduct}}.discount")
-                            .save();
-                    }}
-                >
-                    <DiscountIcon height="16" /> -
-                </button>
-                <button
-                    className="flex items-center gap-1 py-2 px-3 rounded-lg select-none hover:bg-green-800"
-                    onClick={() => handleUpdateProductPrice(1)}
-                >
-                    <PriceTagIcon /> +
-                </button>
-                <button
-                    className="flex items-center gap-1 py-2 px-3 rounded-lg select-none hover:bg-red-800"
-                    onClick={() => handleUpdateProductPrice(-1)}
-                >
-                    <PriceTagIcon /> -
-                </button>
-                <button
-                    className="py-2 px-3 rounded-lg select-none hover:bg-red-800"
-                    onDoubleClick={() => {
-                        cartManager.removeTo(undefined).save();
-                    }}
-                >
-                    <TrashIcon height="20" width="20" />
-                </button>
-                <button
-                    className="py-2 px-3 rounded-lg select-none hover:bg-green-800"
-                    onClick={() => {
-                        updateSetting({ cartImage: !settingState.cartImage });
-                    }}
-                >
-                    {settingState.cartImage ? (
-                        <NotImageIcon />
-                    ) : (
-                        <ImageIcon height="20" />
-                    )}
-                </button>
-            </div>
-            {Object.values(cart.products).map((p: ProductWithID) => {
+            <CartSettingsBar
+                stateManager={stateManager}
+                setSettingState={settingState}
+                settingState={setSettingState}
+                handleUpdateProductPrice={handleUpdateProductPrice}
+            />
+            {Object.values(cart.products).map((p: any) => {
                 let product = getProductForCart(p);
                 if (product._id == cart.activeProduct) {
                     return (
@@ -178,7 +88,7 @@ function CartProduct({
                                                 alt={product.name}
                                                 className="h-full object-cover"
                                                 onClick={() => {
-                                                    cartManager
+                                                    stateManager
                                                         .set(
                                                             "activeProduct",
                                                             product._id
@@ -247,7 +157,7 @@ function CartProduct({
                                                                     .value
                                                             }
                                                             onChange={(e) => {
-                                                                cartManager
+                                                                stateManager
                                                                     .set(
                                                                         `products.${product._id}.discount`,
                                                                         parseFloat(
@@ -291,7 +201,7 @@ function CartProduct({
                                                                 product.extraDiscount
                                                             )}
                                                             onChange={(e) => {
-                                                                cartManager
+                                                                stateManager
                                                                     .set(
                                                                         `products.${product._id}.extraDiscount`,
                                                                         parseFloat(
@@ -323,7 +233,7 @@ function CartProduct({
                                         <button
                                             className="h-[40px] w-[40px] select-none hover:bg-green-500 hover:text-white text-2xl bg-gray-300 text-gray-700 border-0"
                                             onClick={() => {
-                                                cartManager
+                                                stateManager
                                                     .decrement(
                                                         `products.${product._id}.quantity`
                                                     )
@@ -337,7 +247,7 @@ function CartProduct({
                                             className="no-spin h-[40px] w-[70px] bg-black  outline-none text-white text-center"
                                             value={product.quantity}
                                             onChange={(e) => {
-                                                cartManager
+                                                stateManager
                                                     .set(
                                                         `products.${product._id}.quantity`,
                                                         parseFloat(
@@ -351,7 +261,7 @@ function CartProduct({
                                         <button
                                             className="h-[40px] w-[40px] select-none hover:bg-green-500 hover:text-white text-2xl bg-gray-300 text-gray-700 border-0"
                                             onClick={() => {
-                                                cartManager
+                                                stateManager
                                                     .increment(
                                                         `products.${product._id}.quantity`
                                                     )
@@ -365,7 +275,7 @@ function CartProduct({
                                                 className="h-[40px] bg-black text-white px-2 outline-none"
                                                 value={product.unit.unit}
                                                 onChange={(e) => {
-                                                    cartManager
+                                                    stateManager
                                                         .set(
                                                             `products.${product._id}.unit`,
                                                             e.target.value
@@ -429,7 +339,7 @@ function CartProduct({
                             key={p._id}
                             className="border-2 border-dashed dark:hover:bg-green-950 border-gray-600 p-2 mb-2"
                             onClick={() => {
-                                cartManager
+                                stateManager
                                     .set("activeProduct", product._id)
                                     .save();
                             }}

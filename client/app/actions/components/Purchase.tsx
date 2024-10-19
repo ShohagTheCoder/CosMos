@@ -33,6 +33,7 @@ import ProductUpdateShortcut from "../sell/components/ProductUpdateShortcut";
 import apiClient from "@/app/utils/apiClient";
 import useNotifications from "@/app/hooks/useNotifications";
 import NotificationList from "@/app/elements/notification/NotificationList";
+import CartProduct from "./components/CartProduct";
 
 interface PurchaseProps {
     productsArray: ProductWithID[];
@@ -610,7 +611,8 @@ export default function Purchase({
                         <div className="py-4 mb-4 lg:pe-3 col-span-8 lg:col-span-3 min-h-screen overflow-hidden grid grid-rows-1">
                             <div className="pe-3 h-auto overflow-y-auto overflow-x-hidden cosmos-scrollbar">
                                 <div>
-                                    <StockProduct
+                                    <CartProduct
+                                        stateManager={stockManager}
                                         setProductUpdateShortcut={
                                             handleProductUpdateShortcut
                                         }
