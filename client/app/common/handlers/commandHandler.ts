@@ -47,28 +47,33 @@ export default class CommandHandler extends KeyboardHandler {
             return;
         }
 
-        if (/^[0-9]*00[0-9]*$/.test(this.value)) {
+        if (/^[0-9]*00[1-9][0-9]*$/.test(this.value)) {
             let splited = splitIntoParts(this.value, "00", 2);
-            // let splited = this.value.split("00", 2);
             let commandKey = splited[0];
             let amount = parseInt(splited[1] + e.key);
             if (commandKey.length > 0) {
                 let product = this.getProductByCommand(commandKey);
                 if (product) {
-                    this.stateManager
-                        .addTo(product)
-                        .update(`products.{{activeProduct}}.discount`, () => {
-                            if (amount < product.price / 2) {
-                                console.log("amount is price");
-                                return amount;
-                            } else {
-                                console.log("price - amount");
-                                return product.price - amount;
-                            }
-                        })
-                        .save();
+                    this.stateManager.addTo(product);
                 }
             }
+
+            // Get the product
+            let product = this.stateManager.get("products.{{activeProduct}}");
+
+            if (product !== undefined) {
+                this.stateManager.update(
+                    `products.{{activeProduct}}.discount`,
+                    () => {
+                        if (amount < product.price / 2) {
+                            return amount;
+                        } else {
+                            return product.price - amount;
+                        }
+                    }
+                );
+            }
+            this.stateManager.save();
             return;
         }
 
@@ -412,30 +417,34 @@ export default class CommandHandler extends KeyboardHandler {
         this.listen(["NumpadEnter", "Enter"], (e) => {
             if (/^\d*00[1-9]\d*[^0]\d*$/.test(this.value)) {
                 let splited = splitIntoParts(this.value, "00", 2);
-                // let splited = this.value.split("00", 2);
                 let commandKey = splited[0];
                 let amount = parseInt(splited[1]);
                 if (commandKey.length > 0) {
                     let product = this.getProductByCommand(commandKey);
                     if (product) {
-                        this.stateManager
-                            .addTo(product)
-                            .update(
-                                `products.{{activeProduct}}.discount`,
-                                () => {
-                                    if (amount < product.price / 2) {
-                                        console.log("amount is price");
-                                        return amount;
-                                    } else {
-                                        console.log("price - amount");
-                                        return product.price - amount;
-                                    }
-                                }
-                            )
-                            .save();
+                        this.stateManager.addTo(product);
                     }
                 }
-                this.setCommand("");
+
+                // Get the product
+                let product = this.stateManager.get(
+                    "products.{{activeProduct}}"
+                );
+
+                if (product !== undefined) {
+                    this.stateManager.update(
+                        `products.{{activeProduct}}.discount`,
+                        () => {
+                            if (amount < product.price / 2) {
+                                return amount;
+                            } else {
+                                return product.price - amount;
+                            }
+                        }
+                    );
+                }
+
+                this.stateManager.save();
                 return;
             }
 
@@ -482,10 +491,11 @@ export default class CommandHandler extends KeyboardHandler {
             if (/^\/[1-9][0-9]*$/.test(this.value)) {
                 let amount = parseInt(this.value.slice(1));
                 this.setCommand("");
-                // dispatch(addExtraDiscount({ key: undefined, amount }));
-                this.stateManager
-                    .set("products.{{activeProduct}}.extraDiscount", amount)
-                    .save();
+                if (this.stateManager.get("activeProduct") !== undefined) {
+                    this.stateManager
+                        .set("products.{{activeProduct}}.extraDiscount", amount)
+                        .save();
+                }
                 return;
             }
 
@@ -493,10 +503,11 @@ export default class CommandHandler extends KeyboardHandler {
             if (/^\*[1-9][0-9]*$/.test(this.value)) {
                 let amount = parseInt(this.value.slice(1));
                 this.setCommand("");
-                // dispatch(addDiscount({ key: undefined, amount }));
-                this.stateManager
-                    .set("products.{{activeProduct}}.discount", amount)
-                    .save();
+                if (this.stateManager.get("activeProduct") !== undefined) {
+                    this.stateManager
+                        .set("products.{{activeProduct}}.discount", amount)
+                        .save();
+                }
                 return;
             }
 

@@ -45,6 +45,8 @@ export default class StateManager<T extends Record<string, any>> {
                     dynamicKey in result
                 ) {
                     result = result[dynamicKey];
+                } else {
+                    return undefined;
                 }
             } else {
                 // Navigate through the state object using normal keys

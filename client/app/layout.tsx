@@ -14,21 +14,21 @@ export default async function RootLayout({
     children: React.ReactNode;
 }) {
     let darkMode = true;
-    // try {
-    //     // Fetch settings directly
-    //     const cookieStore = cookies();
-    //     let userId = cookieStore.get("user-id")?.value;
-    //     if (userId) {
-    //         const { data }: any = await axios.get(
-    //             `${process.env.NEXT_PUBLIC_API_BASE_URL}/settings/byUserId/${userId}/darkMode`
-    //         );
-    //         darkMode = data;
-    //     }
-    // } catch (error) {
-    //     console.log(
-    //         "From Layout.tsx : faild to fetch user settings dark mode field"
-    //     );
-    // }
+    try {
+        // Fetch settings directly
+        const cookieStore = cookies();
+        let userId = cookieStore.get("user-id")?.value;
+        if (userId) {
+            const { data }: any = await axios.get(
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}/settings/byUserId/${userId}/darkMode`
+            );
+            darkMode = data;
+        }
+    } catch (error) {
+        console.log(
+            "From Layout.tsx : faild to fetch user settings dark mode field"
+        );
+    }
 
     // If dark mode availabel add it
     let interCalss = inter.className;

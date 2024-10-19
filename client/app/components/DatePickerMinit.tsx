@@ -62,7 +62,7 @@ const DatePickerMini: React.FC<DateInputProps> = ({
             </button>
 
             {showCalendar && (
-                <div className="absolute bg-gray-900 p-4 rounded-md shadow-lg mt-2">
+                <div className="absolute bg-gray-900 p-4 rounded-md shadow-lg top-0">
                     <div className="flex justify-between items-center mb-2">
                         <span className="text-gray-300">Select Dates</span>
                         <button

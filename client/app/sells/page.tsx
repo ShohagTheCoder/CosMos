@@ -1,8 +1,6 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import Sells from "./components/Sells";
 import ErrorResponse from "../common/components/ErrorResponse";
-import apiServer from "../utils/apiServer";
 import Sidebar from "../components/Sidebar";
 import SellsList from "../components/common/SellsList";
 

@@ -24,7 +24,7 @@ function SidebarItem({
     submenu = false,
 }: SidebarItemProps) {
     return (
-        <div className="relative overflow-visible sidebar-menu-item">
+        <div className="relative overflow-visible sidebar-menu-item !z-[5000]">
             {link ? (
                 <a
                     href={link}
@@ -55,9 +55,9 @@ function SidebarItem({
             )}
             {/* Adjusted z-index for visibility */}
             {submenu ? (
-                <div className="absolute ps-3 left-full hidden sidebar-submenu-item top-0 z-10">
-                    <div className="py-2 min-w-[160px] bg-gray-900 border-2 border-gray-600 border-dashed">
-                        <div className="w-full flex flex-col">
+                <div className="absolute ps-3 left-full hidden sidebar-submenu-item top-0 !z-[2000] bg-gray-900">
+                    <div className="py-2 min-w-[160px] bg-gray-900 border-2 border-gray-600 border-dashed relative">
+                        <div className="w-full flex flex-col relative">
                             {submenu.map((item) => (
                                 <a
                                     href={item.link}

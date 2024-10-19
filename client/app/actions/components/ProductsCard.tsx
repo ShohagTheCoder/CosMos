@@ -44,8 +44,8 @@ function ProductsCard({
                         }`}
                     >
                         {showProductImage ? (
-                            <div className="w-full md:h-[160px] xl:h-[200px] relative">
-                                <button
+                            <div className="w-full md:h-[160px] xl:h-[200px]">
+                                {/* <button
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setProductUpdateShortcut(product._id);
@@ -53,7 +53,7 @@ function ProductsCard({
                                     className="absolute right-0 p-1 text-white bg-green-600 rounded"
                                 >
                                     <InfoIcon />
-                                </button>
+                                </button> */}
                                 <img
                                     className="w-full h-full object-cover"
                                     src={`/images/products/${
