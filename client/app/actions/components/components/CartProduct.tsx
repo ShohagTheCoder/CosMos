@@ -4,7 +4,6 @@ import getUnits from "@/app/functions/getUnits";
 import formatNumber from "@/app/functions/formatNumber";
 import InfoIcon from "@/app/icons/InfoIcon";
 import NoteIcon from "@/app/icons/NoteIcon";
-import fixFloatingPoint from "@/app/functions/fixFloatingPoint";
 import CartSettingsBar from "./CartSettingsBar";
 
 function CartProduct({
@@ -113,22 +112,31 @@ function CartProduct({
                                                         }
                                                     </td>
                                                     <td className="pe-3">
-                                                        {fixFloatingPoint(
-                                                            product.price
+                                                        {product.price.toLocaleString(
+                                                            "en-US",
+                                                            {
+                                                                maximumFractionDigits: 1,
+                                                            }
                                                         )}{" "}
                                                         ৳
                                                     </td>
                                                     <td className="pe-3">%</td>
                                                     <td className="pe-3 text-center">
                                                         <p className="no-spin py-1 w-[46px] dark:bg-gray-900 text-center outline-none">
-                                                            {fixFloatingPoint(
-                                                                product.baseDiscount
+                                                            {product.baseDiscount.toLocaleString(
+                                                                "en-US",
+                                                                {
+                                                                    maximumFractionDigits: 1,
+                                                                }
                                                             )}
                                                         </p>
                                                     </td>
                                                     <td className="pe-3 text-end">
-                                                        {fixFloatingPoint(
-                                                            product.discountPrice
+                                                        {product.discountPrice.toLocaleString(
+                                                            "en-US",
+                                                            {
+                                                                maximumFractionDigits: 1,
+                                                            }
                                                         )}{" "}
                                                         ৳
                                                     </td>
@@ -138,10 +146,14 @@ function CartProduct({
                                                         1 {product.unit.label}
                                                     </td>
                                                     <td className="pe-3">
-                                                        {fixFloatingPoint(
+                                                        {(
                                                             product.price *
-                                                                product.unit
-                                                                    .value
+                                                            product.unit.value
+                                                        ).toLocaleString(
+                                                            "en-US",
+                                                            {
+                                                                maximumFractionDigits: 1,
+                                                            }
                                                         )}{" "}
                                                         ৳
                                                     </td>
@@ -149,8 +161,13 @@ function CartProduct({
                                                     <td className="pe-3">
                                                         <input
                                                             type="number"
-                                                            value={fixFloatingPoint(
-                                                                product.discount
+                                                            value={product.discount.toLocaleString(
+                                                                "en-US",
+                                                                {
+                                                                    maximumFractionDigits: 1,
+                                                                    useGrouping:
+                                                                        false,
+                                                                }
                                                             )}
                                                             step={
                                                                 product.unit
@@ -172,10 +189,14 @@ function CartProduct({
                                                         />
                                                     </td>
                                                     <td className="pe-3 text-end">
-                                                        {fixFloatingPoint(
+                                                        {(
                                                             product.discountPrice *
-                                                                product.unit
-                                                                    .value
+                                                            product.unit.value
+                                                        ).toLocaleString(
+                                                            "en-US",
+                                                            {
+                                                                maximumFractionDigits: 1,
+                                                            }
                                                         )}{" "}
                                                         ৳
                                                     </td>
@@ -187,9 +208,14 @@ function CartProduct({
                                                             product.unit.label}
                                                     </td>
                                                     <td className="pe-3">
-                                                        {fixFloatingPoint(
+                                                        {(
                                                             product.subTotal +
-                                                                product.extraDiscount
+                                                            product.extraDiscount
+                                                        ).toLocaleString(
+                                                            "en-US",
+                                                            {
+                                                                maximumFractionDigits: 1,
+                                                            }
                                                         )}
                                                         ৳
                                                     </td>
@@ -197,8 +223,13 @@ function CartProduct({
                                                     <td className="pe-3">
                                                         <input
                                                             type="number"
-                                                            value={fixFloatingPoint(
-                                                                product.extraDiscount
+                                                            value={product.extraDiscount.toLocaleString(
+                                                                "en-US",
+                                                                {
+                                                                    maximumFractionDigits: 1,
+                                                                    useGrouping:
+                                                                        false,
+                                                                }
                                                             )}
                                                             onChange={(e) => {
                                                                 stateManager
@@ -216,10 +247,11 @@ function CartProduct({
                                                         />
                                                     </td>
                                                     <td className="pe-3 text-lg text-end">
-                                                        {fixFloatingPoint(
-                                                            product.subTotal.toLocaleString(
-                                                                "en-US"
-                                                            )
+                                                        {product.subTotal.toLocaleString(
+                                                            "en-US",
+                                                            {
+                                                                maximumFractionDigits: 1,
+                                                            }
                                                         )}{" "}
                                                         ৳
                                                     </td>
@@ -296,31 +328,22 @@ function CartProduct({
                                             </select>
                                         </div>
                                     </div>
-                                    <div className="w-auto ms-3">
-                                        {product.saleUnitsBase ==
-                                        product.unit ? (
-                                            ""
-                                        ) : (
-                                            <div className="w-auto h-full gap-3 flex flex-wrap justify-end items-center">
-                                                <p>=</p>
-                                                <p>{product.unit.value}</p>
+                                    <div className="w-full ms-3">
+                                        {product.saleUnitsBase !==
+                                            product.unit && (
+                                            <div className="w-auto h-full gap-3 flex flex-wrap items-center">
                                                 <p>
+                                                    = {product.unit.value}{" "}
                                                     {
                                                         product.saleUnitsBase
                                                             .label
-                                                    }
-                                                </p>
-                                                <p>*</p>
-                                                <p>{product.quantity}</p>
-                                                <p>=</p>
-                                                <p>
+                                                    }{" "}
+                                                    * {product.quantity} ={" "}
                                                     {formatNumber(
                                                         product.unit.value *
                                                             product.quantity,
                                                         3
-                                                    )}
-                                                </p>
-                                                <p>
+                                                    )}{" "}
                                                     {
                                                         product.saleUnitsBase
                                                             .label

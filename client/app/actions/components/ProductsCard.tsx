@@ -1,7 +1,5 @@
-import fixFloatingPoint from "@/app/functions/fixFloatingPoint";
 import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 import getStockLine from "@/app/functions/getStockLine";
-import InfoIcon from "@/app/icons/InfoIcon";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 
 interface ProductsCardProps {
@@ -94,13 +92,9 @@ function ProductsCard({
                                     }
                                 </span>
                                 <p className="font-semibold text-xl text-green-900 dark:text-green-300 inline-block">
-                                    {fixFloatingPoint(
-                                        getProductUnitPrice(product) *
-                                            product.units?.[
-                                                product.displaySaleUnit
-                                            ]?.value,
-                                        1
-                                    )}
+                                    {getProductUnitPrice(product) *
+                                        product.units?.[product.displaySaleUnit]
+                                            ?.value}
                                     <span> ৳</span>
                                 </p>
                             </div>
