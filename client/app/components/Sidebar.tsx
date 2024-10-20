@@ -22,7 +22,7 @@ export default function Sidebar({
     userId: undefined | string;
 }) {
     return (
-        <div className="bg-gray-300 dark:bg-gray-900 fixed text-black dark:text-white start-0 top-0 w-[80px] h-screen border-r-2 border-dashed border-slate-600">
+        <div className="bg-gray-300 dark:bg-gray-900 fixed text-black dark:text-white start-0 top-0 w-[80px] h-screen border-r-2 border-dashed border-slate-600 print:hidden">
             <div className="h-full flex flex-col justify-between items-center py-6 cosmos-scrollbar">
                 <div className="flex flex-col justify-center items-center gap-4 relative">
                     <SidebarItem

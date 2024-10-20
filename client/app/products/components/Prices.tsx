@@ -51,24 +51,22 @@ function Prices() {
     }
 
     return (
-        <div className="bg-gray-700 mb-4">
-            <div>
-                <Switch
-                    checked={product.sellEnable}
-                    onChange={(value) =>
-                        dispatch(
-                            updateProductField({
-                                field: "sellEnable",
-                                value,
-                            })
-                        )
-                    }
-                    label="This product is for sell"
-                    className="justify-between bg-gray-700 !mb-0 !py-3"
-                />
-            </div>
+        <div className="bg-gray-700">
+            <Switch
+                checked={product.sellEnable}
+                onChange={(value) =>
+                    dispatch(
+                        updateProductField({
+                            field: "sellEnable",
+                            value,
+                        })
+                    )
+                }
+                label="This product is for sell"
+                className="justify-between bg-gray-700 !mb-0 !py-3 bg-green-700"
+            />
             {product.sellEnable ? (
-                <div>
+                <div className="p-4 bg-blue-950">
                     {prices.map((price, key) => (
                         <div
                             key={key}

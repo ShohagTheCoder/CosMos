@@ -39,9 +39,9 @@ function PurchaseMeasurements() {
     }
 
     return (
-        <div className="bg-gray-700 mb-4">
+        <div className="mb-4">
             {product.purchaseEnable ? (
-                <div>
+                <div className="pb-4 ps-4 pe-4 bg-pink-950">
                     {purchaseMeasurements.map((measurement, key) => (
                         <div
                             key={key}

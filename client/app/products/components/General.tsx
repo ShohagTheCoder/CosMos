@@ -12,7 +12,8 @@ import apiClient from "@/app/utils/apiClient";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ProductWithID } from "../interfaces/product.interface";
-import { ErrorMap } from "../create/components/CreateProduct";
+import CreateCategory from "@/app/categories/create/page";
+import CreateBrand from "@/app/brands/create/page";
 
 function General({ image, setImage, validationHandler }: any) {
     const dispatch = useDispatch();
@@ -21,6 +22,36 @@ function General({ image, setImage, validationHandler }: any) {
     const [brands, setBrands] = useState<any[]>([]);
     const [categories, setCategories] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [createBrandPopup, setCreateBrandPopup] = useState<boolean>(false);
+    const [createCategoryPopup, setCreateCategoryPopup] =
+        useState<boolean>(false);
+
+    async function handlePopupClose() {
+        try {
+            const [brandsResponse, categoriesResponse] = await Promise.all([
+                apiClient.get("brands"),
+                apiClient.get("categories"),
+            ]);
+
+            setBrands(
+                brandsResponse.data.map((item: any) => ({
+                    value: item._id,
+                    label: item.name,
+                }))
+            );
+
+            setCategories(
+                categoriesResponse.data.map((item: any) => ({
+                    value: item._id,
+                    label: item.name,
+                }))
+            );
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+        setCreateBrandPopup(false);
+        setCreateCategoryPopup(false);
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -57,10 +88,6 @@ function General({ image, setImage, validationHandler }: any) {
         fetchData();
     }, []);
 
-    function validateSKU(SKU: string) {
-        return;
-    }
-
     if (loading) {
         return (
             <div className="h-[500px] w-[600px]">
@@ -71,6 +98,34 @@ function General({ image, setImage, validationHandler }: any) {
 
     return (
         <div className="bg-gray-800 rounded-lg shadow-lg w-[600px] mx-auto">
+            {createCategoryPopup || createBrandPopup ? (
+                <div className="h-auto w-screen fixed z-50 left-0 top-0">
+                    <div className="flex w-full justify-end p-5">
+                        <button
+                            onClick={() => handlePopupClose()}
+                            className="h-[40px] w-[40px] text-2xl bg-red-500 text-white"
+                        >
+                            x
+                        </button>
+                    </div>
+                </div>
+            ) : (
+                ""
+            )}
+            {createCategoryPopup ? (
+                <div className="bg-gray-800 fixed top-0 left-0 h-screen w-screen z-20">
+                    <CreateCategory />
+                </div>
+            ) : (
+                ""
+            )}
+            {createBrandPopup ? (
+                <div className="bg-gray-800 fixed top-0 left-0 h-screen w-screen z-30">
+                    <CreateBrand />
+                </div>
+            ) : (
+                ""
+            )}
             <div className="grid grid-cols-2 gap-5">
                 <TextInput
                     className="mb-3"
@@ -151,44 +206,62 @@ function General({ image, setImage, validationHandler }: any) {
                 }}
             />
             <div className="grid grid-cols-2 gap-5">
-                <SearchableSelectInput
-                    value={
-                        typeof product.category == "string"
-                            ? product.category
-                            : ""
-                    }
-                    onChange={(e) =>
-                        dispatch(
-                            updateProductField({
-                                field: "category",
-                                value: e,
-                            })
-                        )
-                    }
-                    options={{
-                        options: categories,
-                        label: "Select Category",
-                    }}
-                    className="mb-3"
-                />
-                <SearchableSelectInput
-                    value={
-                        typeof product.brand == "string" ? product.brand : ""
-                    }
-                    onChange={(e) =>
-                        dispatch(
-                            updateProductField({
-                                field: "brand",
-                                value: e,
-                            })
-                        )
-                    }
-                    options={{
-                        options: brands,
-                        label: "Select Brand",
-                    }}
-                    className="mb-3"
-                />
+                <div className="flex justify-between items-start">
+                    <SearchableSelectInput
+                        value={
+                            typeof product.category == "string"
+                                ? product.category
+                                : ""
+                        }
+                        onChange={(e) =>
+                            dispatch(
+                                updateProductField({
+                                    field: "category",
+                                    value: e,
+                                })
+                            )
+                        }
+                        options={{
+                            options: categories,
+                            label: "Select Category",
+                        }}
+                        className="mb-3 flex-grow"
+                    />
+                    <button
+                        onClick={() => setCreateCategoryPopup(true)}
+                        className="text-gray-300 text-xl"
+                    >
+                        +
+                    </button>
+                </div>
+                <div className="flex justify-between items-start">
+                    <SearchableSelectInput
+                        value={
+                            typeof product.brand == "string"
+                                ? product.brand
+                                : ""
+                        }
+                        onChange={(e) =>
+                            dispatch(
+                                updateProductField({
+                                    field: "brand",
+                                    value: e,
+                                })
+                            )
+                        }
+                        options={{
+                            options: brands,
+                            label: "Select Brand",
+                        }}
+                        className="mb-3 flex-grow"
+                    />
+                    <button
+                        onClick={() => setCreateBrandPopup(true)}
+                        className="text-gray-300 text-xl"
+                    >
+                        +
+                    </button>
+                </div>
             </div>
 
             {product.SKU.length > 4 ? (

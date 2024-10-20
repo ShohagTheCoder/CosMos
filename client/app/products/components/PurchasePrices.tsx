@@ -50,24 +50,22 @@ function PurchasePrices() {
     }
 
     return (
-        <div className="bg-gray-700 mb-4">
-            <div>
-                <Switch
-                    checked={product.purchaseEnable}
-                    onChange={(value) =>
-                        dispatch(
-                            updateProductField({
-                                field: "purchaseEnable",
-                                value,
-                            })
-                        )
-                    }
-                    label="This product will be purchased"
-                    className="justify-between bg-gray-700 !mb-0 !py-3"
-                />
-            </div>
+        <div className="">
+            <Switch
+                checked={product.purchaseEnable}
+                onChange={(value) =>
+                    dispatch(
+                        updateProductField({
+                            field: "purchaseEnable",
+                            value,
+                        })
+                    )
+                }
+                label="This product will be purchased"
+                className="justify-between bg-gray-700 !mb-0 !py-3 bg-green-700"
+            />
             {product.purchaseEnable ? (
-                <div>
+                <div className="p-4 bg-pink-950">
                     {purchasePrices.map((price, key) => (
                         <div
                             key={key}

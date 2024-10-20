@@ -41,7 +41,7 @@ function Measurements() {
     return (
         <div className="bg-gray-700 mb-4">
             {product.sellEnable ? (
-                <div>
+                <div className="ps-4 pe-4 pb-4 bg-blue-950">
                     {measurements.map((measurement, key) => (
                         <div
                             key={key}

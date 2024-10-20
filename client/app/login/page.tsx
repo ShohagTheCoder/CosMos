@@ -4,7 +4,7 @@ import { useState } from "react";
 import axios from "axios";
 
 export default function LoginPage() {
-    const [username, setUsername] = useState("Anis Ahmed");
+    const [name, setName] = useState("Anis Ahmed");
     const [password, setPassword] = useState("pass");
     const [error, setError] = useState("");
 
@@ -14,7 +14,7 @@ export default function LoginPage() {
 
         try {
             const { data } = await axios.post("/api/auth", {
-                username,
+                username: name,
                 password,
             });
 
@@ -55,15 +55,15 @@ export default function LoginPage() {
                     <div className="mb-4">
                         <label
                             className="block text-gray-400 text-sm font-bold mb-2"
-                            htmlFor="username"
+                            htmlFor="name"
                         >
-                            Username
+                            Name
                         </label>
                         <input
-                            id="username"
+                            id="name"
                             type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
                             className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-gray-700 text-gray-300 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
                             required
                         />
@@ -91,10 +91,9 @@ export default function LoginPage() {
                         type="submit"
                         className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     >
-                        Sign In
+                        Login
                     </button>
                     <div className="mt-4 flex items-center justify-center gap-4">
-                        <span className="text-gray-400">OR</span>
                         <div className="flex gap-2">
                             <a
                                 href="/"
@@ -102,6 +101,7 @@ export default function LoginPage() {
                             >
                                 Home
                             </a>
+                            <span className="text-gray-400">OR</span>
                             <a
                                 href="/actions/sell"
                                 className="text-blue-400 hover:text-blue-600"
