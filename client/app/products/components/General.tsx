@@ -199,9 +199,13 @@ function General({ image, setImage, validationHandler }: any) {
                 }
                 options={{
                     label: "Product Name",
-                    validate: (value) => value.length >= 6,
+                    validate: (value) =>
+                        validationHandler.validate("Name", value, [
+                            () =>
+                                value.length >= 3 ? true : "Name is too short",
+                        ]),
                     validMessage: "Name looks good!",
-                    invalidMessage: "Please enter a valid name",
+                    invalidMessage: validationHandler.errors["Name"],
                     placeholder: "Ex: Orange",
                 }}
             />
