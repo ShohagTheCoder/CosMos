@@ -1,9 +1,5 @@
-import { RootState } from "@/app/store/store";
-import React from "react";
-import { useSelector } from "react-redux";
-
-export default function FinalView() {
-    const cart = useSelector((state: RootState) => state.cart);
+export default function FinalView({ stateManager }: any) {
+    const cart = stateManager.getData();
 
     return (
         // <div className="fixed z-50 bg-gray-800 h-svh w-svw flex justify-center items-start">
@@ -19,7 +15,7 @@ export default function FinalView() {
                     </thead>
                     <tbody>
                         {Object.values(cart.products).map(
-                            (product, index: number) => {
+                            (product: any, index: number) => {
                                 return (
                                     <tr
                                         key={product._id}

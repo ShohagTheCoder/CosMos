@@ -517,9 +517,11 @@ export default function Purchase({
                                 ) : (
                                     <>
                                         {commandCounter.name ==
-                                            "completePurchase" &&
+                                            "completeSell" &&
                                         commandCounter.value >= 1 ? (
-                                            <FinalView />
+                                            <FinalView
+                                                stateManager={stockManager}
+                                            />
                                         ) : isSuppliers ? (
                                             <div>
                                                 <SupplierCard
@@ -611,16 +613,21 @@ export default function Purchase({
                         <div className="py-4 mb-4 lg:pe-3 col-span-8 lg:col-span-3 min-h-screen overflow-hidden grid grid-rows-1">
                             <div className="pe-3 h-auto overflow-y-auto overflow-x-hidden cosmos-scrollbar">
                                 <div>
-                                    <CartProduct
-                                        stateManager={stockManager}
-                                        setProductUpdateShortcut={
-                                            handleProductUpdateShortcut
-                                        }
-                                        setting={setting}
-                                        handleUpdateProductPrice={
-                                            handleUpdateProductPrice
-                                        }
-                                    />
+                                    {commandCounter.name == "completeSell" &&
+                                    commandCounter.value >= 1 ? (
+                                        ""
+                                    ) : (
+                                        <CartProduct
+                                            stateManager={stockManager}
+                                            setProductUpdateShortcut={
+                                                handleProductUpdateShortcut
+                                            }
+                                            setting={setting}
+                                            handleUpdateProductPrice={
+                                                handleUpdateProductPrice
+                                            }
+                                        />
+                                    )}
                                     <SupplierDetails />
                                     <div className="">
                                         <textarea
