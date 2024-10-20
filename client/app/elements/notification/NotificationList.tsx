@@ -11,6 +11,8 @@ const NotificationList: React.FC<NotificationListProps> = ({
     notifications,
     className = "", // Default to an empty string if not provided
 }) => {
+    if (notifications.length == 0) return;
+
     return (
         <div className={className}>
             {notifications.map((notification) => (

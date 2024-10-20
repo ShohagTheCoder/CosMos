@@ -26,7 +26,6 @@ import SupplierDetails from "./components/SupplierDetails";
 import { StockState } from "@/app/store/slices/stockSlice";
 import PurchasePageSelector from "./components/PurchasePageSelector";
 import PurchaseCommandHandler from "@/app/common/handlers/purchaseCommandHandler";
-import StockProduct from "./components/StockProduct";
 import SupplierCard from "./components/SupplierCart";
 import FinalView from "../sell/components/FinalView";
 import ProductUpdateShortcut from "../sell/components/ProductUpdateShortcut";
@@ -433,7 +432,10 @@ export default function Purchase({
                 <div className="ps-[94px] 2xl:ps-[130px] 2xl:pe-[20px] bg-white dark:bg-gray-950">
                     <div className="grid grid-cols-1 2xl:grid-cols-9">
                         <div className="col-span-8 me-3 lg:pe-3">
-                            <NotificationList notifications={notifications} />
+                            <NotificationList
+                                notifications={notifications}
+                                className="mt-4"
+                            />
                         </div>
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 lg:h-screen gap-6 overflow-x-hidden overflow-y-auto lg:overflow-y-hidden cosmos-scrollbar">
