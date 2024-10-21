@@ -113,7 +113,7 @@ export class CartManager<T extends CartState> extends StateManager<T> {
         const cartProductsKey = Object.keys(this.get("products"));
         const activeProduct = this.get("activeProduct");
 
-        if (!activeProduct || cartProductsKey.length <= 1) return this;
+        if (!activeProduct || cartProductsKey.length == 0) return this;
 
         const currentIndex = cartProductsKey.indexOf(activeProduct);
         const newIndex =

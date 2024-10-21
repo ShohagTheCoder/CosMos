@@ -30,18 +30,15 @@ export default class StateManager<T extends Record<string, any>> {
         const keys = key.split(".");
         let result: any = cloneDeep(this.data);
 
-        // Handle dynamic key replacements
-        keys.forEach((k) => {
-            // If there's a dynamic placeholder like `{any}` in the key path, replace it with the actual value
+        // Handle dynamic key replacements and traverse through the object
+        for (const k of keys) {
             if (k.startsWith("{{") && k.endsWith("}}")) {
-                const dynamicKeyName = k.slice(2, -2); // Extracts key name between `{}`
-                // Ensure dynamicKey exists in this.data
+                const dynamicKeyName = k.slice(2, -2); // Extract key name between `{{}}`
                 const dynamicKey = this.data[dynamicKeyName];
 
-                // Replace the placeholder if it exists in the current `result`
                 if (
                     result &&
-                    typeof result == "object" &&
+                    typeof result === "object" &&
                     dynamicKey in result
                 ) {
                     result = result[dynamicKey];
@@ -49,15 +46,16 @@ export default class StateManager<T extends Record<string, any>> {
                     return undefined;
                 }
             } else {
-                // Navigate through the state object using normal keys
-                if (result && typeof result == "object") {
+                if (result && typeof result === "object" && k in result) {
                     result = result[k];
+                } else {
+                    return undefined;
                 }
             }
-        });
+        }
 
-        // Return a shallow copy if the result is an object, otherwise return the value directly
-        return result;
+        // Return a shallow copy if result is an object, otherwise return the value directly
+        return typeof result === "object" ? { ...result } : result;
     }
 
     set<K extends string>(key: K, value: any): this {
