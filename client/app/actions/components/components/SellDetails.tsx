@@ -53,7 +53,7 @@ function SellDetails() {
                                     নতুন বাকি :
                                 </p>
                                 <p className=" text-lg font-semibold py-1">
-                                    {cart.due}
+                                    {cart.due.toLocaleString("en-US")}
                                     <span> ৳</span>
                                 </p>
                             </>
@@ -67,7 +67,10 @@ function SellDetails() {
                                         আগের বাকি :
                                     </p>
                                     <p className=" text-lg font-semibold py-1">
-                                        {Math.abs(customerAccount.balance)} ৳
+                                        {Math.abs(
+                                            customerAccount.balance
+                                        ).toLocaleString("en-US")}{" "}
+                                        ৳
                                     </p>
                                 </>
                             ) : (
@@ -76,7 +79,10 @@ function SellDetails() {
                                         আগের জমা :
                                     </p>
                                     <p className=" text-lg font-semibold py-1">
-                                        {customerAccount.balance} ৳
+                                        {customerAccount.balance.toLocaleString(
+                                            "en-US"
+                                        )}{" "}
+                                        ৳
                                     </p>
                                 </>
                             )}
@@ -91,7 +97,7 @@ function SellDetails() {
                                     <p className=" text-lg font-semibold py-1">
                                         {Math.abs(
                                             customerAccount.balance - cart.due
-                                        )}{" "}
+                                        ).toLocaleString("en-US")}{" "}
                                         ৳
                                     </p>
                                 </>
@@ -103,7 +109,7 @@ function SellDetails() {
                                     <p className=" text-lg font-semibold py-1">
                                         {Math.abs(
                                             customerAccount.balance - cart.due
-                                        )}{" "}
+                                        ).toLocaleString("en-US")}{" "}
                                         ৳
                                     </p>
                                 </>
