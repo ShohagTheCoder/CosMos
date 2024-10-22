@@ -33,7 +33,7 @@ export default class SellCommandHandler extends CommandHandler {
         this.listen(["Enter", "NumpadEnter"], () => {
             if (
                 !this.params.isCustomers &&
-                this.value.length > 0 &&
+                this.value.length > 1 &&
                 this.params.filteredCustomers &&
                 this.params.filteredProducts
             ) {

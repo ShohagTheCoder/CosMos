@@ -56,7 +56,6 @@ export class CartManager<T extends CartState> extends StateManager<T> {
             `products.${payload._id}`,
             (product: ProductWithID) => {
                 product.quantity += 1;
-                product.subTotal += product.price;
                 this.set("activeProduct", product._id);
                 return product;
             }

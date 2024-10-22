@@ -78,13 +78,7 @@ export default class CommandHandler extends KeyboardHandler {
         }
 
         if (/^[1-9]+$/.test(this.value)) {
-            let product = this.getProductByCommand(this.value);
-            if (product) {
-                this.stateManager
-                    .addTo(product)
-                    .set(`products.${product._id}.quantity`, parseInt(e.key))
-                    .save();
-            }
+            this.addToByShortcutKey(this.value, parseInt(e.key));
             return;
         }
 
@@ -144,10 +138,16 @@ export default class CommandHandler extends KeyboardHandler {
             "PageUp",
             "PageDown",
             "Tab",
+            "F2",
+            "F3",
+            "F4",
             "F5",
             "F6",
             "F7",
             "F8",
+            "F9",
+            "F10",
+            "F11",
         ]);
 
         // Long presses listeners
@@ -320,90 +320,110 @@ export default class CommandHandler extends KeyboardHandler {
         });
 
         this.listen("ArrowLeft", () => {
-            const max = this.params.isCustomers
-                ? Object.keys(this.params.filteredCustomers).length - 1
-                : Object.keys(this.params.filteredProducts).length - 1;
+            const { isCustomers, filteredCustomers, filteredProducts } =
+                this.params;
+            const max =
+                Object.keys(isCustomers ? filteredCustomers : filteredProducts)
+                    .length - 1;
+
+            // Handle case where input has a value
             if (this.value.length > 0) {
-                let currentIndex = this.stateManager.get(
-                    "selectedProductIndex"
-                );
-                let newIndex = currentIndex;
-                if (currentIndex == 0) {
-                    newIndex = max;
-                } else {
-                    newIndex = currentIndex - 1;
-                }
+                let currentIndex =
+                    this.stateManager.get("selectedProductIndex") ?? 0;
+
+                // Calculate the new index
+                const newIndex = currentIndex === 0 ? max : currentIndex - 1;
+
+                // Set and save the new index
                 this.stateManager.set("selectedProductIndex", newIndex).save();
-            } else {
-                this.stateManager.changeMeasurement(-1).save();
+                return;
             }
+
+            // Change measurement if input is empty
+            this.stateManager.changeMeasurement(-1).save();
         });
 
         this.listen("ArrowRight", () => {
-            const max = this.params.isCustomers
-                ? Object.keys(this.params.filteredCustomers).length - 1
-                : Object.keys(this.params.filteredProducts).length - 1;
+            const { isCustomers, filteredCustomers, filteredProducts } =
+                this.params;
+            const max =
+                Object.keys(isCustomers ? filteredCustomers : filteredProducts)
+                    .length - 1;
+
+            // Handle case where input has a value
             if (this.value.length > 0) {
-                let currentIndex = this.stateManager.get(
-                    "selectedProductIndex"
-                );
-                let newIndex = currentIndex;
-                if (currentIndex == max) {
-                    newIndex = 0;
-                } else {
-                    newIndex = currentIndex + 1;
-                }
+                let currentIndex =
+                    this.stateManager.get("selectedProductIndex") ?? 0;
+
+                // Calculate the new index
+                const newIndex = currentIndex === max ? 0 : currentIndex + 1;
+
+                // Set and save the new index
                 this.stateManager.set("selectedProductIndex", newIndex).save();
-            } else {
-                this.stateManager.changeMeasurement(1).save();
+                return;
             }
+
+            // Change measurement if input is empty
+            this.stateManager.changeMeasurement(1).save();
         });
 
         this.listen("NumpadSubtract", () => {
             this.setCommand(this.value.slice(0, -1));
         });
 
-        // ArrowUp and NumpadAdd
         this.listen(["ArrowUp", "NumpadAdd"], () => {
-            if (this.value.length == 0) {
+            // If input is empty, increment product quantity and reset command
+            if (this.value.length === 0) {
                 this.stateManager
                     .increment("products.{{activeProduct}}.quantity")
                     .save();
                 this.setCommand("");
+                return; // Early return to prevent further checks
             }
 
-            if (/^\*\d*$/.test(this.value)) {
-                this.stateManager
-                    .increment("products.{{activeProduct}}.discount")
-                    .save();
-            }
+            // Define a mapping for different input patterns and fields to update
+            const incrementMap = {
+                "^*\\d*$": "discount", // Matches "*<number>"
+                "^/\\d*$": "extraDiscount", // Matches "/<number>"
+            };
 
-            if (/^\/\d*$/.test(this.value)) {
-                this.stateManager
-                    .increment("products.{{activeProduct}}.extraDiscount")
-                    .save();
+            // Iterate over the regex patterns and perform the respective increments
+            for (const [pattern, field] of Object.entries(incrementMap)) {
+                const regex = new RegExp(pattern);
+                if (regex.test(this.value)) {
+                    this.stateManager
+                        .increment(`products.{{activeProduct}}.${field}`)
+                        .save();
+                    break; // Stop further checks once a match is found
+                }
             }
         });
 
-        // ArrowDown and NumpadEnter
         this.listen(["ArrowDown", "NumpadEnter"], () => {
-            if (this.value.length == 0) {
+            // If input is empty, decrement product quantity and reset command
+            if (this.value.length === 0) {
                 this.stateManager
                     .decrement("products.{{activeProduct}}.quantity")
                     .save();
                 this.setCommand("");
+                return; // Early return to prevent further checks
             }
 
-            if (/^\*\d*$/.test(this.value)) {
-                this.stateManager
-                    .decrement("products.{{activeProduct}}.discount")
-                    .save();
-            }
+            // Define a mapping for different input patterns and fields to update
+            const decrementMap = {
+                "^*\\d*$": "discount", // Matches "*<number>"
+                "^/\\d*$": "extraDiscount", // Matches "/<number>"
+            };
 
-            if (/^\/\d*$/.test(this.value)) {
-                this.stateManager
-                    .decrement("products.{{activeProduct}}.extraDiscount")
-                    .save();
+            // Iterate over the regex patterns and perform the respective decrements
+            for (const [pattern, field] of Object.entries(decrementMap)) {
+                const regex = new RegExp(pattern);
+                if (regex.test(this.value)) {
+                    this.stateManager
+                        .decrement(`products.{{activeProduct}}.${field}`)
+                        .save();
+                    break; // Stop further checks once a match is found
+                }
             }
         });
 
@@ -452,8 +472,8 @@ export default class CommandHandler extends KeyboardHandler {
                 const splited = splitIntoParts(this.value, "0", 2);
                 const commandKey = splited[0];
                 const quantity = parseInt(splited[1]);
-                this.addToByShortcutKey(commandKey, quantity);
                 this.setCommand("");
+                this.addToByShortcutKey(commandKey, quantity);
                 return;
             }
 

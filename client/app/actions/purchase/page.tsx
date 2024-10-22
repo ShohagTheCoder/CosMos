@@ -1,18 +1,11 @@
 import React from "react";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
-import {
-    getProductsInServerForPurchase,
-    getSuppliersInServer,
-    getUserInServer,
-} from "./../functions/apiHandlers";
 import { cookies } from "next/headers";
 import Purchase from "../components/Purchase";
-import { SupplierWithId } from "@/app/interfaces/supplier.interface";
 import { redirect } from "next/navigation";
-import NoResponse from "@/app/common/components/NoResponse";
-import apiClient from "@/app/utils/apiClient";
 import ErrorResponse from "@/app/common/components/ErrorResponse";
 import apiServer from "@/app/utils/apiServer";
+import { Command } from "../sell/page";
 
 export default async function PurchasePage() {
     const cookiesList = cookies();
@@ -27,7 +20,14 @@ export default async function PurchasePage() {
             data: { data: products },
         } = await apiServer().get("/products/forPurchase");
         const { data: suppliers } = await apiServer().get("suppliers");
-        const { data: commands } = await apiServer().get("commands");
+        const { data: commandsArray } = await apiServer().get("commands");
+        const commands = commandsArray.reduce(
+            (obj: Record<string, Command>, command: Command) => {
+                obj[command.command.toLocaleLowerCase()] = command;
+                return obj;
+            },
+            {}
+        );
         const { data: user } = await apiServer().get(`users/${userId}`);
         const { data: setting } = await apiServer().get(
             `settings/findByUserId/${userId}`

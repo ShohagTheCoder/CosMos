@@ -33,7 +33,7 @@ export default class PurchaseCommandHandler extends CommandHandler {
         this.listen(["Enter", "NumpadEnter"], () => {
             if (
                 !this.params.isSuppliers &&
-                this.value.length > 0 &&
+                this.value.length > 1 &&
                 this.params.filteredSuppliers &&
                 this.params.filteredProducts
             ) {

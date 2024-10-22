@@ -32,12 +32,13 @@ import SellCommandHandler from "@/app/common/handlers/sellCommandHandler";
 import apiClient from "@/app/utils/apiClient";
 import useNotifications from "@/app/hooks/useNotifications";
 import NotificationList from "@/app/elements/notification/NotificationList";
+import { Command } from "../sell/page";
 
 interface SellProps {
     productsArray: ProductWithID[];
     customersArray: CustomerWithId[];
     user: any;
-    commands: any[];
+    commands: Record<string, Command>;
     setting: any;
 }
 
@@ -286,9 +287,8 @@ export default function Sell({
 
     // Add to cart with product shortcut
     function getProductByCommand(shortcut: string) {
-        let command = commands.find(
-            (_: any) => _.command.toLowerCase() == shortcut
-        );
+        let command = commands[shortcut.toLocaleLowerCase()];
+
         if (command && command.value != null) {
             let product = products[command.value];
             setCommand("");

@@ -7,6 +7,12 @@ import { redirect } from "next/navigation"; // Import redirect
 import ErrorResponse from "@/app/common/components/ErrorResponse";
 import apiServer from "@/app/utils/apiServer";
 
+export interface Command {
+    command: string;
+    type: string;
+    value: string;
+}
+
 export default async function SellPage() {
     const cookiesList = cookies();
     const userId = cookiesList.get("user-id")?.value;
@@ -20,7 +26,15 @@ export default async function SellPage() {
             data: { data: products },
         } = await apiServer().get("/products");
         const customers: CustomerWithId[] = await getCustomersInServer();
-        const { data: commands } = await apiServer().get("commands");
+        const { data: commandsArray } = await apiServer().get("commands");
+        const commands = commandsArray.reduce(
+            (obj: Record<string, Command>, command: Command) => {
+                obj[command.command.toLocaleLowerCase()] = command;
+                return obj;
+            },
+            {}
+        );
+
         const { data: user } = await apiServer().get(`users/${userId}`);
         const { data: setting } = await apiServer().get(
             `settings/findByUserId/${userId}`

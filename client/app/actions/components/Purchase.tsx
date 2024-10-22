@@ -33,12 +33,13 @@ import apiClient from "@/app/utils/apiClient";
 import useNotifications from "@/app/hooks/useNotifications";
 import NotificationList from "@/app/elements/notification/NotificationList";
 import CartProduct from "./components/CartProduct";
+import { Command } from "../sell/page";
 
 interface PurchaseProps {
     productsArray: ProductWithID[];
     suppliersArray: SupplierWithId[];
     user: any;
-    commands: any[];
+    commands: Record<string, Command>;
     setting: any;
 }
 
@@ -291,9 +292,8 @@ export default function Purchase({
 
     // Add to stock with product shortcut
     function getProductByCommand(shortcut: string) {
-        let command = commands.find(
-            (_: any) => _.command.toLowerCase() == shortcut
-        );
+        let command = commands[shortcut.toLocaleLowerCase()];
+
         if (command && command.value != null) {
             let product = products[command.value];
             setCommand("");
