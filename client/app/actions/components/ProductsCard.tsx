@@ -43,15 +43,6 @@ function ProductsCard({
                     >
                         {showProductImage ? (
                             <div className="w-full md:h-[160px] xl:h-[200px]">
-                                {/* <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setProductUpdateShortcut(product._id);
-                                    }}
-                                    className="absolute right-0 p-1 text-white bg-green-600 rounded"
-                                >
-                                    <InfoIcon />
-                                </button> */}
                                 <img
                                     className="w-full h-full object-cover"
                                     src={`/images/products/${
@@ -70,7 +61,12 @@ function ProductsCard({
                                 </h2>
                                 {showProductDescription ? (
                                     <p className="text-base">
-                                        {product.description}
+                                        {product.description.length > 30
+                                            ? `${product.description.slice(
+                                                  0,
+                                                  30
+                                              )}...`
+                                            : product.description}
                                     </p>
                                 ) : (
                                     ""

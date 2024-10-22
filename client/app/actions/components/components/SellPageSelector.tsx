@@ -29,29 +29,32 @@ const SellPageSelector: React.FC<SellPageSelectorProps> = ({
     ];
 
     function getCashReturnLine() {
-        let amount1 = 0,
-            amount2 = 0;
+        let taken = 100,
+            back = 100,
+            count = 0;
 
         if (productsTotalPrice > 1000) {
+            count = Math.floor(productsTotalPrice / 1000);
             productsTotalPrice = productsTotalPrice % 1000;
         }
 
         if (productsTotalPrice <= 100) {
-            amount1 = 100 - productsTotalPrice;
-            amount2 = 200 - productsTotalPrice;
+            back = taken - productsTotalPrice;
         } else if (productsTotalPrice <= 200) {
-            amount1 = 200 - productsTotalPrice;
-            amount2 = 500 - productsTotalPrice;
+            taken = 200;
+            back = taken - productsTotalPrice;
         } else if (productsTotalPrice <= 500) {
-            amount1 = 500 - productsTotalPrice;
-            amount2 = 1000 - productsTotalPrice;
-        } else if (productsTotalPrice <= 1000) {
-            amount1 = 1000 - productsTotalPrice;
+            taken = 500;
+            back = taken - productsTotalPrice;
+        } else {
+            taken = 1000;
+            back = taken - productsTotalPrice;
         }
 
         return (
             <p className="text-xl">
-                ৳ : {amount1} | ৳ : {amount2}
+                {back.toLocaleString("en-US")} (
+                {(count * 1000 + taken).toLocaleString("en-US")}) ৳
             </p>
         );
     }
