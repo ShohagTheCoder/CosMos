@@ -36,9 +36,9 @@ function CartProduct({
     return (
         <div className="cart">
             <CartSettingsBar
+                settingState={settingState}
+                setSettingState={setSettingState}
                 stateManager={stateManager}
-                setSettingState={settingState}
-                settingState={setSettingState}
                 handleUpdateProductPrice={handleUpdateProductPrice}
             />
             {Object.values(cart.products).map((p: any) => {

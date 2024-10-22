@@ -41,10 +41,12 @@ export default class CommandHandler extends KeyboardHandler {
 
     public handleNumpadNumberKeyLongPress(e: KeyboardEvent) {
         if (this.value.length == 0) {
-            this.stateManager
-                .set("products.{{activeProduct}}.quantity", parseInt(e.key))
-                .save();
-            return;
+            if (this.stateManager.get("products.{{activeProduct}}")) {
+                this.stateManager
+                    .set("products.{{activeProduct}}.quantity", parseInt(e.key))
+                    .save();
+                return;
+            }
         }
 
         if (/^[0-9]*00[1-9][0-9]*$/.test(this.value)) {
@@ -89,9 +91,11 @@ export default class CommandHandler extends KeyboardHandler {
             let quantity = parseInt(splited[1] + e.key);
             let product = this.getProductByCommand(commandKey);
             if (commandKey.length == 0) {
-                this.stateManager
-                    .set(`products.{{activeProduct}}.quantity`, quantity)
-                    .save();
+                if (this.stateManager.get("products.{{activeProduct}}")) {
+                    this.stateManager
+                        .set(`products.{{activeProduct}}.quantity`, quantity)
+                        .save();
+                }
             } else if (product) {
                 this.stateManager
                     .addTo(product)
@@ -283,8 +287,24 @@ export default class CommandHandler extends KeyboardHandler {
 
         // Define specific key combinations or long press commands here
         this.listen("NumpadDecimal", () => {
-            if (this.value == "..") {
+            if (/^[1-9][0-9]*$/.test(this.value)) {
                 this.setCommand("");
+                let product = this.stateManager.get(
+                    "products.{{activeProduct}}"
+                );
+
+                if (product) {
+                    let amount = parseInt(this.value);
+                    this.stateManager
+                        .update("products.{{activeProduct}}.discount", () => {
+                            if (amount < product.price / 2) {
+                                return amount;
+                            } else {
+                                return product.price - amount;
+                            }
+                        })
+                        .save();
+                }
             }
         });
 
@@ -305,7 +325,7 @@ export default class CommandHandler extends KeyboardHandler {
 
         this.listen("NumpadAdd", () => {
             // Set active product quantity
-            if (/^[0-9]*$/.test(this.value)) {
+            if (/^[0-9]+$/.test(this.value)) {
                 if (this.stateManager.get("products.{{activeProduct}}")) {
                     this.setCommand("");
                     this.stateManager

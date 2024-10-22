@@ -425,15 +425,16 @@ export default function Sell({
                                     onChange={(e) => {
                                         setCommand(e.target.value);
                                     }}
-                                    onKeyDown={(e) =>
-                                        commandHandler.handleKeyDown(e)
-                                    }
-                                    onKeyUp={(e) =>
-                                        commandHandler.handleKeyUp(e)
-                                    }
+                                    onKeyDown={(e) => {
+                                        commandHandler.handleKeyDown(e);
+                                    }}
+                                    onKeyUp={(e) => {
+                                        commandHandler.handleKeyUp(e);
+                                    }}
                                     type="text"
                                     className="border-2 w-full md:w-1/2 xl:w-1/3 border-dashed border-slate-500 bg-transparent outline-none focus:border-green-500 px-4 py-2 text-lg"
                                     autoFocus
+                                    autoComplete="off"
                                 />
                             </div>
                             <div className="flex gap-4 py-2 px-3 my-3 bg-gray-300  dark:bg-gray-800">
