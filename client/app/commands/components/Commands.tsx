@@ -104,7 +104,7 @@ export default function Commands({
                             className="h-[100px] gap-3 grid grid-cols-[auto_1fr_auto] bg-gray-700 py-3 px-4 rounded-lg"
                         >
                             <div className="flex justify-center items-center">
-                                <div className="flex justify-center items-center w-[40px] h-[40px] rounded-sm bg-gray-900">
+                                <div className="flex justify-center items-center w-[40px] h-[40px] rounded-md bg-gray-900">
                                     <p className="text-lg font-bold">
                                         {command.command}
                                     </p>
@@ -134,7 +134,7 @@ export default function Commands({
                                                 alt={
                                                     products[command.value].name
                                                 }
-                                                className="h-[80px] w-[80px] object-cover"
+                                                className="h-[80px] w-[80px] object-cover rounded-md"
                                             />
                                         </>
                                     ) : (

@@ -28,28 +28,10 @@ export default async function CommandsPage() {
             (product) => !product.sellEnable
         );
 
-        let tabContents = [
-            {
-                id: "commands",
-                title: "Commands",
-                content: <Commands commands={commands} products={products} />,
-            },
-            {
-                id: "rules",
-                title: "Rules",
-                content: <Rules />,
-            },
-        ];
-
         return (
             <div className="w-full ps-[94px] pe-3 py-4 bg-gray-800">
                 <Sidebar active="commands" userId={userId} />
-                <Tab
-                    options={{
-                        titleAlignment: "center",
-                    }}
-                    tabs={tabContents}
-                />
+                <Commands commands={commands} products={products} />
             </div>
         );
     } catch (error) {

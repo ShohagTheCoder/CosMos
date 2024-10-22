@@ -82,7 +82,7 @@ export default function Trashes({ trashes: _trashes }: any) {
     }
 
     return (
-        <main className="bg-gray-900 text-white min-h-screen p-6">
+        <main className="bg-gray-900 text-white min-h-screen p-6 ps-[90px]">
             <div className="container mx-auto">
                 <NotificationList notifications={notifications} />
                 <div className="overflow-x-auto">
