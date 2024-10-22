@@ -80,6 +80,9 @@ export default function CreateUser() {
                         },
                     }}
                 />
+                <p className="text-center text-blue-400 my-3">
+                    <a href="/">Back to Dashboard</a>
+                </p>
             </div>
         </div>
     );

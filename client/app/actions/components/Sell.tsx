@@ -147,7 +147,7 @@ export default function Sell({
 
     useEffect(() => {
         // Match barcode or SKU to add product
-        if (/^[0-9]+$/.test(command)) {
+        if (command.length == 3 || command.length == 4) {
             let product = productsArray.find(
                 (product) => product.SKU.toString() == command
             );

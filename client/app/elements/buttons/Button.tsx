@@ -28,7 +28,7 @@ const Button: React.FC<ButtonProps> = ({
         secondary:
             "bg-gray-700 text-white hover:bg-gray-800 disabled:bg-gray-600",
         tertiary:
-            "bg-transparent text-blue-500 border border-blue-500 hover:bg-blue-50 disabled:border-gray-400 disabled:text-gray-400",
+            "bg-transparent text-blue-500 border border-blue-500 hover:bg-blue-500 hover:text-white disabled:border-gray-400 disabled:text-gray-400",
     };
     const sizeStyles = {
         small: "py-1 px-2 text-sm",

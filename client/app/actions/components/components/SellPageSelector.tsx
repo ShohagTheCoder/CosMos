@@ -29,27 +29,29 @@ const SellPageSelector: React.FC<SellPageSelectorProps> = ({
     ];
 
     function getCashReturnLine() {
-        let taken = 100,
-            back = 100,
-            count = 0;
+        let taken = 100;
+        let back = 100;
+        let count = 0;
 
+        // Calculate the number of 1000 units and update productsTotalPrice
         if (productsTotalPrice > 1000) {
             count = Math.floor(productsTotalPrice / 1000);
-            productsTotalPrice = productsTotalPrice % 1000;
+            productsTotalPrice %= 1000; // Get remainder of the total
         }
 
+        // Determine the `taken` value based on the product total
         if (productsTotalPrice <= 100) {
             back = taken - productsTotalPrice;
         } else if (productsTotalPrice <= 200) {
             taken = 200;
-            back = taken - productsTotalPrice;
         } else if (productsTotalPrice <= 500) {
             taken = 500;
-            back = taken - productsTotalPrice;
         } else {
             taken = 1000;
-            back = taken - productsTotalPrice;
         }
+
+        // Calculate the back amount
+        back = taken - productsTotalPrice;
 
         return (
             <p className="text-xl">

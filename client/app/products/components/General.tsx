@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ProductWithID } from "../interfaces/product.interface";
 import CreateCategory from "@/app/categories/create/page";
 import CreateBrand from "@/app/brands/create/page";
+import { capitalize } from "lodash";
 
 function General({ image, setImage, validationHandler }: any) {
     const dispatch = useDispatch();
@@ -127,6 +128,12 @@ function General({ image, setImage, validationHandler }: any) {
                 ""
             )}
             <div className="grid grid-cols-2 gap-5">
+                <div className="col-span-2">
+                    <p className="text-gray-400">
+                        With 3 or 4 letter SKU you can create about 42,875 to
+                        1.5 million products
+                    </p>
+                </div>
                 <TextInput
                     className="mb-3"
                     value={product.SKU}
@@ -134,7 +141,7 @@ function General({ image, setImage, validationHandler }: any) {
                         dispatch(
                             updateProductField({
                                 field: "SKU",
-                                value: e.target.value,
+                                value: e.target.value.toUpperCase(),
                             })
                         );
                         if (image) {
@@ -147,22 +154,25 @@ function General({ image, setImage, validationHandler }: any) {
                         }
                     }}
                     options={{
-                        label: "SKU",
+                        label: "SKU *",
                         validate: (SKU) =>
                             validationHandler.validate("SKU", SKU, [
-                                () =>
-                                    SKU.length >= 4
-                                        ? true
-                                        : "The value is short",
-
                                 () =>
                                     products.some((p) => p.SKU === SKU)
                                         ? "SKU is already exist"
                                         : true,
+                                () =>
+                                    SKU.length > 4
+                                        ? "The maximum letter is 4"
+                                        : true,
+                                () =>
+                                    SKU.length < 3
+                                        ? "The value is short"
+                                        : true,
                             ]),
                         validMessage: "SKU looks good!",
                         invalidMessage: validationHandler.errors["SKU"],
-                        placeholder: "Ex: K4674D",
+                        placeholder: "Ex: 3446 | K4D",
                     }}
                 />
                 <NumberInput
@@ -198,7 +208,7 @@ function General({ image, setImage, validationHandler }: any) {
                     )
                 }
                 options={{
-                    label: "Product Name",
+                    label: "Product Name *",
                     validate: (value) =>
                         validationHandler.validate("Name", value, [
                             () =>

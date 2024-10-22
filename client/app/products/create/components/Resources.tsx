@@ -17,7 +17,6 @@ import {
 import Switch from "@/app/elements/switch/Switch";
 import Button from "@/app/elements/buttons/Button";
 import NumberInputControl from "@/app/elements/inputs/NumberInputControl";
-import AddIcon from "@/app/icons/AddIcon";
 
 function Resources() {
     const dispatch = useDispatch();
@@ -68,19 +67,18 @@ function Resources() {
                 <Switch
                     checked={product.hasResources}
                     onChange={handleHasResource}
-                    label="Product Has resources"
+                    label="এই পণ্যটি তৈরি করতে কি কি লাগে?"
                     className="justify-between bg-slate-900 py-4"
                 />
                 {product.hasResources && product.saleUnitsBase ? (
                     <div className="mt-3">
                         <div>
-                            <p className="py-2 px-4 bg-green-700 text-white my-3">
-                                Resouce mesurement{" "}
+                            <p className="py-2 px-4 bg-gray-700 text-white my-3">
+                                এক{" "}
                                 <span className="text-xl">
                                     {product.units[product.saleUnitsBase].label}
                                 </span>{" "}
-                                per of{" "}
-                                <span className="text-xl">{product.name}</span>
+                                ({product.name}) তৈরি করতে কতটুকু করে লাগে
                             </p>
                         </div>
                         <div className="">
@@ -203,7 +201,7 @@ function Resources() {
                                 variant="tertiary"
                                 onClick={handleAddResource}
                             >
-                                <AddIcon />
+                                লাগবে +
                             </Button>
                         </div>
                     </div>

@@ -144,12 +144,28 @@ export default function StockManagement({
                     }}
                 />
             </div>
+            <div className="p-4 border border-gray-600 mb-4 text-gray-300 text-lg">
+                <p>পন্যের নমুনা :</p>
+                <p className="border-b-2 my-2 border-dashed border-gray-600"></p>
+                <p>নাম : {product.name}</p>
+                <p>বর্ননা : {product.description}</p>
+                <p>দাম : {product.price} ৳</p>
+                <p>মাপ : {product.unit}</p>
+            </div>
             {product._id ? (
-                <Button disabled={disable} onDoubleClick={handleUpdateProduct}>
+                <Button
+                    disabled={disable}
+                    onDoubleClick={handleUpdateProduct}
+                    className="w-full py-4"
+                >
                     Update Product
                 </Button>
             ) : (
-                <Button disabled={disable} onDoubleClick={handleCreateProduct}>
+                <Button
+                    disabled={disable}
+                    onDoubleClick={handleCreateProduct}
+                    className="w-full py-4"
+                >
                     Create Product
                 </Button>
             )}
