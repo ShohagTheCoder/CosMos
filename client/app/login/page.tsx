@@ -4,8 +4,8 @@ import { useState } from "react";
 import axios from "axios";
 
 export default function LoginPage() {
-    const [name, setName] = useState("Anis Ahmed");
-    const [password, setPassword] = useState("pass");
+    const [name, setName] = useState("");
+    const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -32,13 +32,6 @@ export default function LoginPage() {
 
     return (
         <div className="flex h-screen bg-gray-900 text-gray-300">
-            {/* Left Side Image */}
-            {/* <div
-                className="w-1/2 h-screen bg-cover bg-center"
-                style={{ backgroundImage: 'url("/images/common/pc-bg.jpg")' }}
-            ></div> */}
-
-            {/* Right Side Login Form */}
             <div
                 className="w-full flex justify-center items-center"
                 style={{
@@ -61,14 +54,16 @@ export default function LoginPage() {
                         </label>
                         <input
                             id="name"
-                            type="text"
+                            type="username"
+                            autoComplete="on"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-gray-700 text-gray-300 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
                             required
+                            placeholder="নাম"
                         />
                     </div>
-                    <div className="mb-6">
+                    <div className="mb-4">
                         <label
                             className="block text-gray-400 text-sm font-bold mb-2"
                             htmlFor="password"
@@ -78,10 +73,12 @@ export default function LoginPage() {
                         <input
                             id="password"
                             type="password"
+                            autoComplete="on"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             className="shadow appearance-none border border-gray-600 rounded w-full py-2 px-3 bg-gray-700 text-gray-300 mb-3 leading-tight focus:outline-none focus:shadow-outline focus:border-blue-500"
                             required
+                            placeholder="পাসওয়ার্ড"
                         />
                     </div>
                     {error && (
@@ -94,21 +91,19 @@ export default function LoginPage() {
                         Login
                     </button>
                     <div className="mt-4 flex items-center justify-center gap-4">
-                        <div className="flex gap-2">
-                            <a
-                                href="/"
-                                className="text-blue-400 hover:text-blue-600"
-                            >
-                                Home
-                            </a>
-                            <span className="text-gray-400">OR</span>
-                            <a
-                                href="/actions/sell"
-                                className="text-blue-400 hover:text-blue-600"
-                            >
-                                Sell
-                            </a>
-                        </div>
+                        <a
+                            href="/"
+                            className="text-blue-400 hover:text-blue-600"
+                        >
+                            Dashboard
+                        </a>
+                        <span className="text-gray-400">OR</span>
+                        <a
+                            href="/actions/sell"
+                            className="text-blue-400 hover:text-blue-600"
+                        >
+                            Sell
+                        </a>
                     </div>
                 </form>
             </div>

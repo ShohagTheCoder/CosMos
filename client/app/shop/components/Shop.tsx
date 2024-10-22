@@ -91,7 +91,7 @@ export default function Shop({ shop: initialShop, accounts = [] }: any) {
                             />
                             <div>
                                 <h2 className="text-2xl font-semibold">
-                                    Shop Owner
+                                    {shop.name}
                                 </h2>
                                 <p className="text-gray-400">Owner Details</p>
                             </div>
@@ -107,7 +107,10 @@ export default function Shop({ shop: initialShop, accounts = [] }: any) {
                                         <>
                                             Balance:{" "}
                                             <span className="text-green-400 font-semibold">
-                                                {account.balance} ৳
+                                                {account.balance.toLocaleString(
+                                                    "en-US"
+                                                )}{" "}
+                                                ৳
                                             </span>
                                         </>
                                     ) : (
