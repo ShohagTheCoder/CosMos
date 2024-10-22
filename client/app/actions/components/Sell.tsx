@@ -416,6 +416,9 @@ export default function Sell({
                                 activePage={activePage.current}
                                 cartStates={helper.cartStates}
                                 userName={user.name}
+                                productsTotalPrice={cartManager.get(
+                                    "totalPrice"
+                                )}
                                 handleSellPageChange={handleSellPageChange}
                             />
                             <div>

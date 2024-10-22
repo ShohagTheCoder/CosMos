@@ -10,6 +10,7 @@ interface SellPageSelectorProps {
     userName: string; // Logged-in user's name
     // eslint-disable-next-line no-unused-vars
     handleSellPageChange: (pageKey: string) => void; // Handler function to change sell page
+    productsTotalPrice: number;
 }
 
 const SellPageSelector: React.FC<SellPageSelectorProps> = ({
@@ -17,6 +18,7 @@ const SellPageSelector: React.FC<SellPageSelectorProps> = ({
     cartStates,
     userName,
     handleSellPageChange,
+    productsTotalPrice,
 }) => {
     // Define the buttons and their corresponding labels
     const sellPageButtons = [
@@ -25,6 +27,34 @@ const SellPageSelector: React.FC<SellPageSelectorProps> = ({
         { key: "F7", label: "Three" },
         { key: "F8", label: "Four" },
     ];
+
+    function getCashReturnLine() {
+        let amount1 = 0,
+            amount2 = 0;
+
+        if (productsTotalPrice > 1000) {
+            productsTotalPrice = productsTotalPrice % 1000;
+        }
+
+        if (productsTotalPrice <= 100) {
+            amount1 = 100 - productsTotalPrice;
+            amount2 = 200 - productsTotalPrice;
+        } else if (productsTotalPrice <= 200) {
+            amount1 = 200 - productsTotalPrice;
+            amount2 = 500 - productsTotalPrice;
+        } else if (productsTotalPrice <= 500) {
+            amount1 = 500 - productsTotalPrice;
+            amount2 = 1000 - productsTotalPrice;
+        } else if (productsTotalPrice <= 1000) {
+            amount1 = 1000 - productsTotalPrice;
+        }
+
+        return (
+            <p className="text-xl">
+                ৳ : {amount1} | ৳ : {amount2}
+            </p>
+        );
+    }
 
     return (
         <div className="bg-gray-300 dark:bg-gray-950 p-3 border-2 border-dashed border-slate-500 mb-3 md:flex justify-between items-center">
@@ -41,7 +71,8 @@ const SellPageSelector: React.FC<SellPageSelectorProps> = ({
                     </button>
                 ))}
             </div>
-            <div className="md:border-s-2 border-dashed border-gray-600 ps-4 flex flex-wrap justify-end gap-4 items-center">
+            <div className=" ps-4 flex flex-wrap justify-end gap-4 items-center">
+                {getCashReturnLine()}
                 <p className="inline-block bg-green-800 py-1 px-3 rounded text-white">
                     {userName}
                 </p>
