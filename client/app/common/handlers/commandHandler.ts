@@ -304,14 +304,17 @@ export default class CommandHandler extends KeyboardHandler {
         });
 
         this.listen("NumpadAdd", () => {
-            if (/^[1-9][0-9]*$/.test(this.value)) {
-                this.setCommand("");
-                this.stateManager
-                    .set(
-                        "products.{{activeProduct}}.quantity",
-                        parseInt(this.value)
-                    )
-                    .save();
+            // Set active product quantity
+            if (/^[0-9]*$/.test(this.value)) {
+                if (this.stateManager.get("products.{{activeProduct}}")) {
+                    this.setCommand("");
+                    this.stateManager
+                        .set(
+                            "products.{{activeProduct}}.quantity",
+                            parseInt(this.value)
+                        )
+                        .save();
+                }
             }
         });
 
@@ -371,63 +374,50 @@ export default class CommandHandler extends KeyboardHandler {
             this.setCommand(this.value.slice(0, -1));
         });
 
+        // ArrowUp and NumpadAdd
         this.listen(["ArrowUp", "NumpadAdd"], () => {
-            // If input is empty, increment product quantity and reset command
-            if (this.value.length === 0) {
+            if (this.value.length == 0) {
                 this.stateManager
                     .increment("products.{{activeProduct}}.quantity")
                     .save();
                 this.setCommand("");
-                return; // Early return to prevent further checks
             }
 
-            // Define a mapping for different input patterns and fields to update
-            const incrementMap = {
-                "^*\\d*$": "discount", // Matches "*<number>"
-                "^/\\d*$": "extraDiscount", // Matches "/<number>"
-            };
+            if (/^\*\d*$/.test(this.value)) {
+                this.stateManager
+                    .increment("products.{{activeProduct}}.discount")
+                    .save();
+            }
 
-            // Iterate over the regex patterns and perform the respective increments
-            for (const [pattern, field] of Object.entries(incrementMap)) {
-                const regex = new RegExp(pattern);
-                if (regex.test(this.value)) {
-                    this.stateManager
-                        .increment(`products.{{activeProduct}}.${field}`)
-                        .save();
-                    break; // Stop further checks once a match is found
-                }
+            if (/^\/\d*$/.test(this.value)) {
+                this.stateManager
+                    .increment("products.{{activeProduct}}.extraDiscount")
+                    .save();
             }
         });
 
+        // ArrowDown and NumpadEnter
         this.listen(["ArrowDown", "NumpadEnter"], () => {
-            // If input is empty, decrement product quantity and reset command
-            if (this.value.length === 0) {
+            if (this.value.length == 0) {
                 this.stateManager
                     .decrement("products.{{activeProduct}}.quantity")
                     .save();
                 this.setCommand("");
-                return; // Early return to prevent further checks
             }
 
-            // Define a mapping for different input patterns and fields to update
-            const decrementMap = {
-                "^*\\d*$": "discount", // Matches "*<number>"
-                "^/\\d*$": "extraDiscount", // Matches "/<number>"
-            };
+            if (/^\*\d*$/.test(this.value)) {
+                this.stateManager
+                    .decrement("products.{{activeProduct}}.discount")
+                    .save();
+            }
 
-            // Iterate over the regex patterns and perform the respective decrements
-            for (const [pattern, field] of Object.entries(decrementMap)) {
-                const regex = new RegExp(pattern);
-                if (regex.test(this.value)) {
-                    this.stateManager
-                        .decrement(`products.{{activeProduct}}.${field}`)
-                        .save();
-                    break; // Stop further checks once a match is found
-                }
+            if (/^\/\d*$/.test(this.value)) {
+                this.stateManager
+                    .decrement("products.{{activeProduct}}.extraDiscount")
+                    .save();
             }
         });
 
-        // Enter and NumpadEnter
         this.listen(["NumpadEnter", "Enter"], (e) => {
             if (/^\d*00[1-9]\d*[^0]\d*$/.test(this.value)) {
                 let splited = splitIntoParts(this.value, "00", 2);
@@ -447,7 +437,7 @@ export default class CommandHandler extends KeyboardHandler {
 
                 if (product !== undefined) {
                     this.stateManager.update(
-                        `products.{{activeProduct}}.discount`,
+                        "products.{{activeProduct}}.discount",
                         () => {
                             if (amount < product.price / 2) {
                                 return amount;
@@ -459,9 +449,22 @@ export default class CommandHandler extends KeyboardHandler {
                 }
 
                 this.stateManager.save();
+                this.setCommand("");
                 return;
             }
 
+            // To set active product quantity
+            if (/^0[1-9][0-9]*$/.test(this.value)) {
+                this.setCommand("");
+                this.stateManager
+                    .set(
+                        "products.{{activeProduct}}.quantity",
+                        parseInt(this.value)
+                    )
+                    .save();
+            }
+
+            // Add to cart with default quantity
             if (/^[1-9]+$/.test(this.value)) {
                 this.addToByShortcutKey(this.value, parseInt(e.key));
                 this.setCommand("");
@@ -478,8 +481,8 @@ export default class CommandHandler extends KeyboardHandler {
             }
 
             if (/^[a-zA-Z]$/.test(this.value)) {
-                this.addToByShortcutKey(this.value);
                 this.setCommand("");
+                this.addToByShortcutKey(this.value);
                 return;
             }
 
