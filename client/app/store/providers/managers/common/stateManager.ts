@@ -193,25 +193,42 @@ export default class StateManager<T extends Record<string, any>> {
     ): this {
         const target = this.data[key];
 
+        if (target === undefined || target === null) {
+            // Early return if the target is undefined or null
+            return this;
+        }
+
         if (objectKeyOrIndex === undefined) {
             if (Array.isArray(target)) {
-                target.pop();
+                // Clone the array, remove the last item, and update data
+                let newArray = [...target];
+                newArray.pop();
+                let data = cloneDeep(this.data);
+                data[key] = newArray as T[K];
+                this.data = data;
             }
         } else if (
             typeof objectKeyOrIndex === "string" &&
-            target !== null &&
-            typeof target === "object"
+            typeof target === "object" &&
+            !Array.isArray(target)
         ) {
-            // eslint-disable-next-line no-unused-vars
+            // Object case (removing a property)
             const { [objectKeyOrIndex]: _, ...rest } = target;
-            this.data[key] = rest as T[K]; // Update the key with the new object
+            let data = cloneDeep(this.data);
+            data[key] = rest as T[K];
+            this.data = data;
         } else if (
             typeof objectKeyOrIndex === "number" &&
             Array.isArray(target)
         ) {
-            const index = objectKeyOrIndex as number;
+            const index = objectKeyOrIndex;
             if (index >= 0 && index < target.length) {
-                target.splice(index, 1);
+                // Clone the array, remove the item at the given index, and update data
+                let newArray = [...target];
+                newArray.splice(index, 1);
+                let data = cloneDeep(this.data);
+                data[key] = newArray as T[K];
+                this.data = data;
             }
         }
 
