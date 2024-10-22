@@ -59,7 +59,7 @@ function SelectProductPopup({ products, callback, handleClose }: any) {
                         <span className="text-xl font-bold">×</span>
                     </button>
                 </div>
-                <div className="h-full overflow-y-auto pb-10">
+                <div className="h-full overflow-y-auto pb-10 pe-3 cosmos-scrollbar">
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {filteredProducts.map((product: any, key: number) => (
                             <div

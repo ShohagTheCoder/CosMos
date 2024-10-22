@@ -101,22 +101,28 @@ export default function Commands({
                     filteredCommands.map((command) => (
                         <div
                             key={command._id}
-                            className="h-[100px] grid grid-cols-[auto_1fr_1fr] bg-gray-700 py-3 px-6 rounded-lg"
+                            className="h-[100px] gap-3 grid grid-cols-[auto_1fr_auto] bg-gray-700 py-3 px-4 rounded-lg"
                         >
-                            <div className="flex items-center min-w-[40px]">
-                                <p className="text-lg font-bold">
-                                    {command.command}
-                                </p>
+                            <div className="flex justify-center items-center">
+                                <div className="flex justify-center items-center w-[40px] h-[40px] rounded-sm bg-gray-900">
+                                    <p className="text-lg font-bold">
+                                        {command.command}
+                                    </p>
+                                </div>
                             </div>
 
                             <div className="flex items-center">
-                                <p>{command.type}</p>
+                                {command.value && products[command.value] ? (
+                                    <p>{products[command.value].name}</p>
+                                ) : (
+                                    <p>No product selected</p>
+                                )}
                             </div>
 
                             {/* Product + Action Column */}
                             <div className="flex items-center justify-center relative group">
                                 {/* Product Info */}
-                                <div className="group-hover:hidden flex items-center gap-3">
+                                <div className="group-hover:hidden flex items-center">
                                     {command.value &&
                                     products[command.value] ? (
                                         <>
@@ -130,12 +136,9 @@ export default function Commands({
                                                 }
                                                 className="h-[80px] w-[80px] object-cover"
                                             />
-                                            <p>
-                                                {products[command.value].name}
-                                            </p>
                                         </>
                                     ) : (
-                                        <p>No product selected</p>
+                                        <p>Select one</p>
                                     )}
                                 </div>
 
@@ -145,10 +148,10 @@ export default function Commands({
                                         setCurrentCommandId(command._id);
                                         setProductsPopup(true);
                                     }}
-                                    className="hidden group-hover:flex bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded absolute"
+                                    className="hidden group-hover:flex bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded absolute right-0 top-1/2 -translate-y-1/2"
                                     disabled={loading}
                                 >
-                                    {loading ? "Loading..." : "Select Product"}
+                                    {loading ? "..." : "+"}
                                 </button>
                             </div>
                         </div>
