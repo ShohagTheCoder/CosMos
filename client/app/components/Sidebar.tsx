@@ -5,7 +5,6 @@ import SellsIcon from "../icons/SellsIcon";
 import UserIcon from "../icons/UserIcon";
 import SettingIcon from "../icons/SettingIcon";
 import CustomersIcon from "../icons/CustomersIcon";
-import AddIcon from "../icons/AddIcon";
 import CommandIcon from "../icons/CommandIcon";
 import PurchaseIcon from "../icons/PurchaseIcon";
 import SellIcon from "../icons/SellIcon";
@@ -61,6 +60,10 @@ export default function Sidebar({
                             {
                                 link: "/purchases",
                                 label: "Purchases",
+                            },
+                            {
+                                link: "/expenses",
+                                label: "Expenses",
                             },
                             {
                                 link: "/transactions",

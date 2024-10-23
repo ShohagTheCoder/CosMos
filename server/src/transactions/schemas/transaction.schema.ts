@@ -3,16 +3,16 @@ import { Document } from 'mongoose';
 
 @Schema()
 export class Transaction extends Document {
-    @Prop({ default: '' })
+    @Prop({ required: true })
     sender: string;
 
-    @Prop({ default: 'Anonymous Sender' })
+    @Prop({ required: true })
     senderName: string;
 
     @Prop({ default: '' })
     receiver: string;
 
-    @Prop({ default: 'Anonymous Receiver' })
+    @Prop({ default: 'Unknown' })
     receiverName: string;
 
     @Prop({ default: 0 })
@@ -37,7 +37,7 @@ export class Transaction extends Document {
     note: string;
 
     @Prop({ default: Date.now })
-    date: Date;
+    createdAt: Date;
 }
 
 export type TransactionDocument = Transaction & Document;

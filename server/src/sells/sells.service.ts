@@ -82,6 +82,8 @@ export class SellsService {
             Object.assign(query, otherFilters);
         }
 
+        console.log(query);
+
         // Fetch the total document count matching the query
         const totalDocuments = await this.sellModel.countDocuments(query);
 

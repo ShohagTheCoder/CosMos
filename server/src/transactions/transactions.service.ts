@@ -37,7 +37,7 @@ export class TransactionsService {
 
     async findByQuery({
         page = 1,
-        limit = 10,
+        limit = 100,
         startDate,
         endDate,
         ...otherFilters
@@ -48,7 +48,7 @@ export class TransactionsService {
         endDate?: Date | string;
         [key: string]: any;
     }) {
-        // Convert page and limit to numbers if they are strings and ensure minimum values
+        // Convert page and limit to numbers if they are strings
         const pageNumber = Math.max(
             1,
             typeof page === 'string' ? parseInt(page, 10) : page,
@@ -86,7 +86,7 @@ export class TransactionsService {
             }
         }
 
-        // Merge additional filters if any are provided and are valid objects
+        // Merge additional filters if any are provided
         if (otherFilters && typeof otherFilters === 'object') {
             Object.assign(query, otherFilters);
         }
@@ -95,18 +95,17 @@ export class TransactionsService {
         const totalDocuments =
             await this.transactionModel.countDocuments(query);
 
-        // Fetch the paginated and filtered products with selected fields and populated relations
-        const products = await this.transactionModel
+        // Fetch the paginated and filtered products
+        const transactions = await this.transactionModel
             .find(query)
             .skip(skip)
             .limit(limitNumber)
-            .sort({ _id: -1 })
             .exec();
 
-        // Return the structured response with pagination details
+        // Return the structured response with pagination details at the same level
         const response = new Response(
-            'Transactions retrieved successfully',
-        ).data(products);
+            'Tratransactions retrieved successfully',
+        ).data(transactions);
 
         // Conditionally add pagination details if available
         if (totalDocuments) {

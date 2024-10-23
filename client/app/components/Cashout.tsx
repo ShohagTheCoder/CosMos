@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Notification from "../elements/notification/NotificationList";
 import NumberInputControl from "../elements/inputs/NumberInputControl";
 import apiClient from "../utils/apiClient";
 import useNotifications from "../hooks/useNotifications";

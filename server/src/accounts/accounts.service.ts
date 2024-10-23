@@ -61,7 +61,7 @@ export class AccountsService {
                 sender.lastTransaction = transaction._id.toString();
                 sender.lastTransactionAmount = -amount;
                 sender.lastTransactionAccountName = receiver.name;
-                sender.lastTransactionDate = transaction.date;
+                sender.lastTransactionDate = transaction.createdAt;
                 sender.lastTransactionNote = note;
                 sender.lastTransactionAction = action;
 
@@ -69,7 +69,7 @@ export class AccountsService {
                 receiver.lastTransaction = transaction._id.toString();
                 receiver.lastTransactionAmount = amount;
                 receiver.lastTransactionAccountName = sender.name;
-                receiver.lastTransactionDate = transaction.date;
+                receiver.lastTransactionDate = transaction.createdAt;
                 receiver.lastTransactionNote = note;
                 receiver.lastTransactionAction = action;
 
@@ -116,7 +116,7 @@ export class AccountsService {
                 sender.lastTransaction = transaction._id.toString();
                 sender.lastTransactionAmount = -amount;
                 sender.lastTransactionAccountName = 'Cashout'; // No specific receiver
-                sender.lastTransactionDate = transaction.date;
+                sender.lastTransactionDate = transaction.createdAt;
                 sender.lastTransactionNote = note;
                 sender.lastTransactionAction = action;
 
