@@ -282,7 +282,7 @@ export default class CommandHandler extends KeyboardHandler {
         // Regular listeners
         this.listen(["F5", "F6", "F7", "F8"], (e) => {
             this.setCommand("");
-            this.params.handleSellPageChange(e.key);
+            this.params.handlePageChange(e.key);
         });
 
         // Define specific key combinations or long press commands here

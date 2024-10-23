@@ -9,7 +9,7 @@ interface SellPageSelectorProps {
     cartStates: Record<string, CartState>; // Object containing customer information for different sell pages
     userName: string; // Logged-in user's name
     // eslint-disable-next-line no-unused-vars
-    handleSellPageChange: (pageKey: string) => void; // Handler function to change sell page
+    handlePageChange: (pageKey: string) => void; // Handler function to change sell page
     productsTotalPrice: number;
 }
 
@@ -17,15 +17,15 @@ const SellPageSelector: React.FC<SellPageSelectorProps> = ({
     activePage,
     cartStates,
     userName,
-    handleSellPageChange,
+    handlePageChange,
     productsTotalPrice,
 }) => {
     // Define the buttons and their corresponding labels
     const sellPageButtons = [
-        { key: "F5", label: "One" },
-        { key: "F6", label: "Two" },
-        { key: "F7", label: "Three" },
-        { key: "F8", label: "Four" },
+        { key: "F5", label: "1" },
+        { key: "F6", label: "2" },
+        { key: "F7", label: "3" },
+        { key: "F8", label: "4" },
     ];
 
     function getCashReturnLine() {
@@ -70,7 +70,7 @@ const SellPageSelector: React.FC<SellPageSelectorProps> = ({
                         className={`py-1 px-3 ${
                             activePage === key ? "bg-green-700" : ""
                         }`}
-                        onClick={() => handleSellPageChange(key)}
+                        onClick={() => handlePageChange(key)}
                     >
                         {cartStates[key]?.customer?.name || label}
                     </button>

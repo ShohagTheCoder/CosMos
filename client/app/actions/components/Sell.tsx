@@ -134,7 +134,7 @@ export default function Sell({
             filteredProducts,
             isCustomers,
             commandCounter,
-            handleSellPageChange,
+            handlePageChange,
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
@@ -142,20 +142,22 @@ export default function Sell({
         filteredProducts,
         isCustomers,
         commandCounter,
-        handleSellPageChange,
+        handlePageChange,
     ]);
 
     useEffect(() => {
         // Match barcode or SKU to add product
-        if (command.length == 3 || command.length == 4) {
-            let product = productsArray.find(
-                (product) => product.SKU.toString() == command
-            );
+        if (command.length == 4) {
+            if (!command.startsWith("0")) {
+                let product = productsArray.find(
+                    (product) => product.SKU.toString() == command
+                );
 
-            if (product) {
-                cartManager.addTo(product).save();
-                setCommand("");
-                return;
+                if (product) {
+                    cartManager.addTo(product).save();
+                    setCommand("");
+                    return;
+                }
             }
         }
 
@@ -382,7 +384,7 @@ export default function Sell({
         setProductUpdateShortcut(false); // You can add a toast or error message here instead of closing
     }
 
-    function handleSellPageChange(pageKey: string) {
+    function handlePageChange(pageKey: string) {
         if (pageKey === activePage.current) return;
         // Deep copy cart states if necessary
         let cartStates: Record<string, CartState> = cloneDeep(
@@ -419,7 +421,7 @@ export default function Sell({
                                 productsTotalPrice={cartManager.get(
                                     "totalPrice"
                                 )}
-                                handleSellPageChange={handleSellPageChange}
+                                handlePageChange={handlePageChange}
                             />
                             <div>
                                 <input

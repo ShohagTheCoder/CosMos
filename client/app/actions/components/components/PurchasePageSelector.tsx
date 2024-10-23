@@ -17,10 +17,10 @@ const PurchasePageSelector: React.FC<PurchasePageSelectorProps> = ({
 }) => {
     // Define the buttons and their corresponding labels
     const sellPageButtons = [
-        { key: "F5", label: "One" },
-        { key: "F6", label: "Two" },
-        { key: "F7", label: "Three" },
-        { key: "F8", label: "Four" },
+        { key: "F5", label: "1" },
+        { key: "F6", label: "2" },
+        { key: "F7", label: "3" },
+        { key: "F8", label: "4" },
     ];
 
     return (

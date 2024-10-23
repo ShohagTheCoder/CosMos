@@ -153,15 +153,17 @@ export default function Purchase({
 
     useEffect(() => {
         // Match barcode or SKU to add product
-        if (/^[0-9]+$/.test(command)) {
-            let product = productsArray.find(
-                (product) => product.SKU.toString() == command
-            );
+        if (command.length == 4) {
+            if (!command.startsWith("0")) {
+                let product = productsArray.find(
+                    (product) => product.SKU.toString() == command
+                );
 
-            if (product) {
-                stockManager.addTo(product).save();
-                setCommand("");
-                return;
+                if (product) {
+                    stockManager.addTo(product).save();
+                    setCommand("");
+                    return;
+                }
             }
         }
 
