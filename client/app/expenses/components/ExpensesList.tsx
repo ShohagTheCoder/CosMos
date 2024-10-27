@@ -78,23 +78,14 @@ export default function ExpensesList() {
                                 <div className="flex flex-col gap-2">
                                     <p className="text-gray-400">
                                         <span className="font-semibold text-gray-300">
-                                            From:
-                                        </span>{" "}
-                                        {expense.senderName}
-                                    </p>
-                                    <p className="text-gray-400">
-                                        <span className="font-semibold text-gray-300">
-                                            To:
-                                        </span>{" "}
-                                        {expense.receiverName || "Unknown"}
-                                    </p>
-                                    <p className="text-gray-400">
-                                        <span className="font-semibold text-gray-300">
                                             Amount:
                                         </span>{" "}
                                         <span className="text-blue-400">
                                             {expense.amount} ৳
                                         </span>
+                                    </p>
+                                    <p className="p-3 bg-gray-700 rounded-md">
+                                        {expense.note ? expense.note : "Note ?"}
                                     </p>
                                 </div>
                             </div>

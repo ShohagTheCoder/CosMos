@@ -29,29 +29,6 @@ export default function Sidebar({
                         icon={<ColsIcon />}
                         link="/"
                         isActive={active === "dashboard"}
-                    />
-                    <SidebarItem
-                        label="Shop"
-                        icon={<ShopIcon />}
-                        link="/shop"
-                        isActive={active === "shop"}
-                    />
-                    <SidebarItem
-                        label="Sells"
-                        icon={<SellIcon />}
-                        link="/actions/sell"
-                        isActive={active === "sell"}
-                    />
-                    <SidebarItem
-                        label="Purchase"
-                        icon={<PurchaseIcon />}
-                        link="/actions/purchase"
-                        isActive={active === "purchase"}
-                    />
-                    <SidebarItem
-                        label="Reports"
-                        icon={<SellsIcon />}
-                        isActive={active === "reports"}
                         submenu={[
                             {
                                 link: "/sells",
@@ -70,6 +47,24 @@ export default function Sidebar({
                                 label: "Transactions",
                             },
                         ]}
+                    />
+                    <SidebarItem
+                        label="Shop"
+                        icon={<ShopIcon />}
+                        link="/shop"
+                        isActive={active === "shop"}
+                    />
+                    <SidebarItem
+                        label="Sells"
+                        icon={<SellIcon />}
+                        link="/actions/sell"
+                        isActive={active === "sell"}
+                    />
+                    <SidebarItem
+                        label="Purchase"
+                        icon={<PurchaseIcon />}
+                        link="/actions/purchase"
+                        isActive={active === "purchase"}
                     />
                     <SidebarItem
                         label="Products"
