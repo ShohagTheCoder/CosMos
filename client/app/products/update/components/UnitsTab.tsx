@@ -15,7 +15,7 @@ export default function UnitsTab() {
         base = "weight";
     }
     if (product.measurements[0].unit == "pcs") {
-        base = "pices";
+        base = "pieces";
     }
     if (product.measurements[0].unit == "ltr") {
         base = "volume";
@@ -32,9 +32,11 @@ export default function UnitsTab() {
                     <Units data={defaultUnits.weight} />
                 </div>
                 <div
-                    className={`tab-content ${base == "pices" ? "active" : ""}`}
+                    className={`tab-content ${
+                        base == "pieces" ? "active" : ""
+                    }`}
                 >
-                    <Units data={defaultUnits.pices} />
+                    <Units data={defaultUnits.pieces} />
                 </div>
                 <div
                     className={`tab-content ${

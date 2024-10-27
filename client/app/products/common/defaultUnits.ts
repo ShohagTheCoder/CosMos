@@ -2,7 +2,7 @@ import { Unit } from "../interfaces/product.interface";
 
 interface UnitBases {
     weight: Record<string, Unit>;
-    pices: Record<string, Unit>;
+    pieces: Record<string, Unit>;
     volume: Record<string, Unit>;
 }
 
@@ -41,7 +41,7 @@ const defaultUnits: UnitBases = {
             enable: true,
         },
     },
-    pices: {
+    pieces: {
         pcs: {
             label: "Pcs",
             unit: "pcs",
