@@ -128,12 +128,6 @@ function General({ image, setImage, validationHandler }: any) {
                 ""
             )}
             <div className="grid grid-cols-2 gap-5">
-                <div className="col-span-2">
-                    <p className="text-gray-400">
-                        With 4 letter SKU you can create about 1.5 million
-                        products
-                    </p>
-                </div>
                 <TextInput
                     className="mb-3"
                     value={product.SKU}
@@ -158,10 +152,6 @@ function General({ image, setImage, validationHandler }: any) {
                         validate: (SKU) =>
                             validationHandler.validate("SKU", SKU, [
                                 () =>
-                                    /^0/.test(SKU)
-                                        ? "SKU cannot start with 0"
-                                        : true,
-                                () =>
                                     products.some((p) => p.SKU === SKU)
                                         ? "SKU is already exist"
                                         : true,
@@ -170,7 +160,7 @@ function General({ image, setImage, validationHandler }: any) {
                                         ? "The maximum letter is 4"
                                         : true,
                                 () =>
-                                    SKU.length < 4
+                                    SKU.length < 3
                                         ? "The value is short"
                                         : true,
                             ]),
