@@ -46,7 +46,7 @@ const PurchasePageSelector: React.FC<PurchasePageSelectorProps> = ({
                     href="/logout"
                     className="bg-red-800 text-white py-1 px-3 rounded"
                 >
-                    Logout
+                    x
                 </a>
             </div>
         </div>

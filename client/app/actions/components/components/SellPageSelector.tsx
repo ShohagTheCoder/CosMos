@@ -54,10 +54,14 @@ const SellPageSelector: React.FC<SellPageSelectorProps> = ({
         back = taken - productsTotalPrice;
 
         return (
-            <p className="text-xl">
-                {back.toLocaleString("en-US")} (
-                {(count * 1000 + taken).toLocaleString("en-US")}) ৳
-            </p>
+            <div className="flex items-center gap-1">
+                <p className="text-xl bg-red-950 py-2 px-2 leading-none">
+                    - {back.toLocaleString("en-US")} ৳
+                </p>
+                <p className="text-xl bg-green-950 px-2 leading-none py-2">
+                    + {(count * 1000 + taken).toLocaleString("en-US")} ৳
+                </p>
+            </div>
         );
     }
 
@@ -85,7 +89,7 @@ const SellPageSelector: React.FC<SellPageSelectorProps> = ({
                     href="/logout"
                     className="bg-red-800 text-white py-1 px-3 rounded"
                 >
-                    Logout
+                    x
                 </a>
             </div>
         </div>
