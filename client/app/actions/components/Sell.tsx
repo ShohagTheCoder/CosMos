@@ -555,6 +555,9 @@ export default function Sell({
                                                         showProductDescription={
                                                             settingState.productDescription
                                                         }
+                                                        setProductUpdateShortcut={
+                                                            handleProductUpdateShortcut
+                                                        }
                                                     />
                                                 ) : (
                                                     <ProductsCard

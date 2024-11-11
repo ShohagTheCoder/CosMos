@@ -1,5 +1,7 @@
 import getStockLine from "@/app/functions/getStockLine";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
+import { setProduct } from "@/app/store/slices/productSlice";
+import { useDispatch } from "react-redux";
 
 interface ProductsRowProps {
     selected: number;
@@ -8,6 +10,7 @@ interface ProductsRowProps {
     products: Record<string, ProductWithID>;
     showProductImage: boolean;
     showProductDescription: boolean;
+    setProductUpdateShortcut: (productId: string) => void;
 }
 
 function ProductsRow({
@@ -16,11 +19,20 @@ function ProductsRow({
     products,
     showProductImage = true,
     showProductDescription = true,
+    setProductUpdateShortcut,
 }: ProductsRowProps) {
+    const dispatch = useDispatch();
+
     function handleCallback(id: string) {
         if (products) {
             callback(products[id]);
         }
+    }
+
+    function handleProductUpdateShortcut(e: any, productId: string) {
+        e.preventDefault();
+        dispatch(setProduct(products[productId]));
+        setProductUpdateShortcut(productId);
     }
 
     return (
@@ -31,7 +43,10 @@ function ProductsRow({
                     <div
                         key={product._id}
                         onClick={() => handleCallback(product._id)}
-                        className={`grid w-full grid-cols-6 rounded-none overflow-hidden bg-gray-300 dark:bg-gray-800 shadow ${
+                        onContextMenu={(e) =>
+                            handleProductUpdateShortcut(e, product._id)
+                        }
+                        className={`grid w-full grid-cols-6 rounded-none overflow-hidden bg-gray-300 dark:hover:bg-green-900 dark:bg-gray-800 transition-transform shadow ${
                             selected == key
                                 ? "bg-green-200 dark:bg-green-900"
                                 : ""

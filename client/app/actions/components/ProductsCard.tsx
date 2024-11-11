@@ -1,6 +1,8 @@
 import getProductUnitPrice from "@/app/functions/getProductUnitPrice";
 import getStockLine from "@/app/functions/getStockLine";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
+import { setProduct } from "@/app/store/slices/productSlice";
+import { useDispatch } from "react-redux";
 
 interface ProductsCardProps {
     selected: number;
@@ -19,11 +21,20 @@ function ProductsCard({
     products,
     showProductImage = true,
     showProductDescription = true,
+    setProductUpdateShortcut,
 }: ProductsCardProps) {
+    const dispatch = useDispatch();
+
     function handleCallback(id: string) {
         if (products) {
             callback(products[id]);
         }
+    }
+
+    function handleProductUpdateShortcut(e: any, productId: string) {
+        e.preventDefault();
+        dispatch(setProduct(products[productId]));
+        setProductUpdateShortcut(productId);
     }
 
     return (
@@ -33,6 +44,9 @@ function ProductsCard({
                 .map((product: ProductWithID, key: number) => (
                     <div
                         onClick={() => handleCallback(product._id)}
+                        onContextMenu={(e) =>
+                            handleProductUpdateShortcut(e, product._id)
+                        }
                         key={product._id}
                         className={`flex flex-col max-w-sm rounded-none overflow-hidden bg-gray-300 dark:hover:bg-green-900 dark:bg-gray-800 transition-transform shadow ${
                             selected == key
