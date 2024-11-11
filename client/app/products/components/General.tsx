@@ -14,7 +14,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { ProductWithID } from "../interfaces/product.interface";
 import CreateCategory from "@/app/categories/create/page";
 import CreateBrand from "@/app/brands/create/page";
-import { capitalize } from "lodash";
 
 function General({ image, setImage, validationHandler }: any) {
     const dispatch = useDispatch();
@@ -156,17 +155,15 @@ function General({ image, setImage, validationHandler }: any) {
                                         ? "SKU is already exist"
                                         : true,
                                 () =>
-                                    SKU.length > 4
-                                        ? "The maximum letter is 4"
+                                    SKU.length > 3
+                                        ? "The maximum letter is 3"
                                         : true,
                                 () =>
-                                    SKU.length < 3
-                                        ? "The value is short"
-                                        : true,
+                                    SKU.length < 1 ? "Please enter SKU" : true,
                             ]),
                         validMessage: "SKU looks good!",
                         invalidMessage: validationHandler.errors["SKU"],
-                        placeholder: "Ex: 34F6",
+                        placeholder: "Ex: 34F",
                     }}
                 />
                 <NumberInput
@@ -197,7 +194,9 @@ function General({ image, setImage, validationHandler }: any) {
                     dispatch(
                         updateProductField({
                             field: "name",
-                            value: e.target.value,
+                            value:
+                                e.target.value.charAt(0).toUpperCase() +
+                                e.target.value.slice(1),
                         })
                     )
                 }
@@ -272,7 +271,7 @@ function General({ image, setImage, validationHandler }: any) {
                 </div>
             </div>
 
-            {product.SKU.length > 4 ? (
+            {validationHandler.isValid("SKU") ? (
                 <ImageInput
                     image={image}
                     previewImageUrl={

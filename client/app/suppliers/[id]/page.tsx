@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import apiClient from "@/app/utils/apiClient";
 import { useParams } from "next/navigation";
-import { useDispatch } from "react-redux";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import SelectProductPopup from "@/app/components/SelectProductPopup";
 import Button from "@/app/elements/buttons/Button";

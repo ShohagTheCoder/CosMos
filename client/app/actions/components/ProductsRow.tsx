@@ -31,7 +31,7 @@ function ProductsRow({
                     <div
                         key={product._id}
                         onClick={() => handleCallback(product._id)}
-                        className={`grid w-full grid-cols-6 rounded overflow-hidden bg-gray-300 dark:bg-gray-800 shadow ${
+                        className={`grid w-full grid-cols-6 rounded-none overflow-hidden bg-gray-300 dark:bg-gray-800 shadow ${
                             selected == key
                                 ? "bg-green-200 dark:bg-green-900"
                                 : ""

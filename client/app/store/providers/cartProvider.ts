@@ -1,5 +1,4 @@
 import { useDispatch } from "react-redux";
-import { useRef } from "react";
 import { CartManager } from "./managers/cartManager";
 import {
     CartState,

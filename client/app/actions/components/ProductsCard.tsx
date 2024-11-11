@@ -19,7 +19,6 @@ function ProductsCard({
     products,
     showProductImage = true,
     showProductDescription = true,
-    setProductUpdateShortcut,
 }: ProductsCardProps) {
     function handleCallback(id: string) {
         if (products) {
@@ -35,7 +34,7 @@ function ProductsCard({
                     <div
                         onClick={() => handleCallback(product._id)}
                         key={product._id}
-                        className={`flex flex-col max-w-sm rounded overflow-hidden bg-gray-300 dark:hover:bg-green-900 dark:bg-gray-800 transition-transform shadow ${
+                        className={`flex flex-col max-w-sm rounded-none overflow-hidden bg-gray-300 dark:hover:bg-green-900 dark:bg-gray-800 transition-transform shadow ${
                             selected == key
                                 ? "bg-green-200 dark:bg-green-900"
                                 : ""
