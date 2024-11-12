@@ -285,6 +285,14 @@ export default class CommandHandler extends KeyboardHandler {
             this.params.handlePageChange(e.key);
         });
 
+        // Regular listeners
+        this.listen(["ControlRight"], (e) => {
+            e.preventDefault();
+            this.stateManager
+                .update("cartOnly", (state: boolean) => !state)
+                .save();
+        });
+
         // Define specific key combinations or long press commands here
         this.listen("NumpadDecimal", () => {
             if (/^[1-9][0-9]*$/.test(this.value)) {

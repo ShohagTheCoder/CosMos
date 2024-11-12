@@ -74,6 +74,8 @@ export default function Sell({
     const [settingState, setSettingState] = useState(setting);
     // eslint-disable-next-line no-unused-vars
 
+    const [cartOnly, setCartOnly] = useState(true);
+
     const cartManager = useCartManager();
 
     const [commandCounter, setCommandCounter] = useState({
@@ -413,16 +415,30 @@ export default function Sell({
                         className="mt-4"
                     />
                     <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 lg:h-screen gap-6 overflow-x-hidden overflow-y-auto lg:overflow-y-hidden cosmos-scrollbar">
-                        <div className="max-h=[1000px] h-full flex flex-col overflow-hidden col-span-8 lg:col-span-5 2xl:col-span-6 py-4 me-3 lg:me-0">
-                            <SellPageSelector
-                                activePage={activePage.current}
-                                cartStates={helper.cartStates}
-                                userName={user.name}
-                                productsTotalPrice={cartManager.get(
-                                    "totalPrice"
-                                )}
-                                handlePageChange={handlePageChange}
-                            />
+                        <div
+                            className={`max-h=[1000px] h-full flex flex-col overflow-hidden  py-4 me-3 lg:me-0 ${
+                                cartManager.get("cartOnly") == true
+                                    ? "col-span-8 lg:col-span-2 2xl:col-span-3"
+                                    : "col-span-8 lg:col-span-5 2xl:col-span-6"
+                            }`}
+                        >
+                            <div
+                                className={`${
+                                    cartManager.get("cartOnly") == true
+                                        ? "hidden"
+                                        : ""
+                                }`}
+                            >
+                                <SellPageSelector
+                                    activePage={activePage.current}
+                                    cartStates={helper.cartStates}
+                                    userName={user.name}
+                                    productsTotalPrice={cartManager.get(
+                                        "totalPrice"
+                                    )}
+                                    handlePageChange={handlePageChange}
+                                />
+                            </div>
                             <div>
                                 <input
                                     id="command"
@@ -431,18 +447,30 @@ export default function Sell({
                                         setCommand(e.target.value);
                                     }}
                                     onKeyDown={(e) => {
+                                        console.log(e);
                                         commandHandler.handleKeyDown(e);
                                     }}
                                     onKeyUp={(e) => {
                                         commandHandler.handleKeyUp(e);
                                     }}
                                     type="text"
-                                    className="border-2 w-full md:w-1/2 xl:w-1/3 border-dashed border-slate-500 bg-transparent outline-none focus:border-green-500 px-4 py-2 text-lg"
+                                    className={`border-2 border-dashed border-slate-500 bg-transparent outline-none focus:border-green-500 px-4 py-2 text-lg ${
+                                        cartManager.get("cartOnly") == true
+                                            ? "w-full"
+                                            : "w-full md:w-1/2 xl:w-1/3"
+                                    }`}
                                     autoFocus
                                     autoComplete="off"
                                 />
                             </div>
-                            <div className="flex gap-4 py-2 px-3 my-3 bg-gray-300  dark:bg-gray-800">
+                            <div
+                                className={`flex gap-4 py-2 px-3 my-3 bg-gray-300  dark:bg-gray-800   <div
+                                ${
+                                    cartManager.get("cartOnly") == true
+                                        ? "hidden"
+                                        : ""
+                                }`}
+                            >
                                 <button
                                     onClick={() => {
                                         updateSetting({
@@ -486,7 +514,13 @@ export default function Sell({
                                     )}
                                 </button>
                             </div>
-                            <div className="overflow-x-hidden overflow-y-auto pe-3 cosmos-scrollbar">
+                            <div
+                                className={`overflow-x-hidden overflow-y-auto pe-3 cosmos-scrollbar ${
+                                    cartManager.get("cartOnly") == true
+                                        ? "hidden"
+                                        : ""
+                                }`}
+                            >
                                 {productUpdateShortcut ? (
                                     <ProductUpdateShortcut
                                         handleClose={() =>

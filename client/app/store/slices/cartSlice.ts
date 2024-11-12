@@ -13,6 +13,7 @@ export interface CartState {
     paid: number;
     greeting: string | undefined;
     customerAccount: any;
+    cartOnly: boolean;
 }
 
 export const initialCartState: CartState = {
@@ -26,6 +27,7 @@ export const initialCartState: CartState = {
     customerAccount: {
         balance: 0,
     },
+    cartOnly: false,
 };
 
 const cartSlice = createSlice({

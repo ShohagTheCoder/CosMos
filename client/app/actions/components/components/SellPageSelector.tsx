@@ -56,11 +56,11 @@ const SellPageSelector: React.FC<SellPageSelectorProps> = ({
         return (
             <div className="flex items-center gap-1">
                 <p className="text-xl bg-red-950 py-2 px-2 leading-none">
-                    - {back.toLocaleString("en-US")} ৳
-                </p>
+                    {back.toLocaleString("en-US")}
+                </p>{" "}
                 <p className="text-xl bg-green-950 px-2 leading-none py-2">
-                    + {(count * 1000 + taken).toLocaleString("en-US")} ৳
-                </p>
+                    {(count * 1000 + taken).toLocaleString("en-US")}
+                </p>{" "}
             </div>
         );
     }
