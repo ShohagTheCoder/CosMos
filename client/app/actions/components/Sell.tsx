@@ -464,168 +464,179 @@ export default function Sell({
                                 />
                             </div>
                             <div
-                                className={`flex gap-4 py-2 px-3 my-3 bg-gray-300  dark:bg-gray-800   <div
-                                ${
+                                className={`${
                                     cartManager.get("cartOnly") == true
                                         ? "hidden"
                                         : ""
                                 }`}
                             >
-                                <button
-                                    onClick={() => {
-                                        updateSetting({
-                                            productImage:
-                                                !settingState.productImage,
-                                        });
-                                    }}
+                                <div
+                                    className={`flex gap-4 py-2 px-3 my-3 bg-gray-300  dark:bg-gray-800`}
                                 >
-                                    {settingState.productImage ? (
-                                        <NotImageIcon />
-                                    ) : (
-                                        <ImageIcon height="20" />
-                                    )}
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        updateSetting({
-                                            productRow:
-                                                !settingState.productRow,
-                                        });
-                                    }}
-                                >
-                                    {settingState.productRow ? (
-                                        <ColsIcon height="20" />
-                                    ) : (
-                                        <RowIcon height="18" />
-                                    )}
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        updateSetting({
-                                            productDescription:
-                                                !settingState.productDescription,
-                                        });
-                                    }}
-                                >
-                                    {settingState.productDescription ? (
-                                        <ColsIcon height="20" />
-                                    ) : (
-                                        <RowIcon height="18" />
-                                    )}
-                                </button>
-                            </div>
-                            <div
-                                className={`overflow-x-hidden overflow-y-auto pe-3 cosmos-scrollbar ${
-                                    cartManager.get("cartOnly") == true
-                                        ? "hidden"
-                                        : ""
-                                }`}
-                            >
-                                {productUpdateShortcut ? (
-                                    <ProductUpdateShortcut
-                                        handleClose={() =>
-                                            setProductUpdateShortcut(false)
-                                        }
-                                        callback={handleProductUpdate}
-                                    />
-                                ) : (
-                                    <>
-                                        {commandCounter.name ==
-                                            "completeSell" &&
-                                        commandCounter.value >= 1 ? (
-                                            <FinalView
-                                                stateManager={cartManager}
-                                            />
-                                        ) : isCustomers ? (
-                                            <div>
-                                                <CustomerCard
-                                                    customers={
-                                                        filteredCustomers
-                                                    }
-                                                    callback={(
-                                                        customer: Customer
-                                                    ) => {
-                                                        // dispatch(addCustomer(customer));
-                                                        cartManager
-                                                            .set(
-                                                                "customer",
-                                                                customer
-                                                            )
-                                                            .save();
-                                                        setCommand("");
-                                                        // if()
-                                                        document
-                                                            .getElementById(
-                                                                "command"
-                                                            )
-                                                            ?.focus();
-                                                    }}
-                                                />
-                                            </div>
+                                    <button
+                                        onClick={() => {
+                                            updateSetting({
+                                                productImage:
+                                                    !settingState.productImage,
+                                            });
+                                        }}
+                                    >
+                                        {settingState.productImage ? (
+                                            <NotImageIcon />
                                         ) : (
-                                            <>
-                                                {settingState.productRow ? (
-                                                    <ProductsRow
-                                                        selected={
-                                                            cart.selectedProductIndex
-                                                        }
-                                                        callback={(product) => {
-                                                            cartManager
-                                                                .addTo(product)
-                                                                .save();
-                                                            setCommand("");
-                                                            document
-                                                                .getElementById(
-                                                                    "command"
-                                                                )
-                                                                ?.focus();
-                                                        }}
-                                                        products={
-                                                            filteredProducts
-                                                        }
-                                                        showProductImage={
-                                                            settingState.productImage
-                                                        }
-                                                        showProductDescription={
-                                                            settingState.productDescription
-                                                        }
-                                                        setProductUpdateShortcut={
-                                                            handleProductUpdateShortcut
-                                                        }
-                                                    />
-                                                ) : (
-                                                    <ProductsCard
-                                                        setProductUpdateShortcut={
-                                                            handleProductUpdateShortcut
-                                                        }
-                                                        selected={
-                                                            cart.selectedProductIndex
-                                                        }
-                                                        callback={(product) => {
-                                                            cartManager
-                                                                .addTo(product)
-                                                                .save();
-                                                            setCommand("");
-                                                            document
-                                                                .getElementById(
-                                                                    "command"
-                                                                )
-                                                                ?.focus();
-                                                        }}
-                                                        products={
-                                                            filteredProducts
-                                                        }
-                                                        showProductImage={
-                                                            settingState.productImage
-                                                        }
-                                                        showProductDescription={
-                                                            settingState.productDescription
-                                                        }
-                                                    />
-                                                )}
-                                            </>
+                                            <ImageIcon height="20" />
                                         )}
-                                    </>
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            updateSetting({
+                                                productRow:
+                                                    !settingState.productRow,
+                                            });
+                                        }}
+                                    >
+                                        {settingState.productRow ? (
+                                            <ColsIcon height="20" />
+                                        ) : (
+                                            <RowIcon height="18" />
+                                        )}
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            updateSetting({
+                                                productDescription:
+                                                    !settingState.productDescription,
+                                            });
+                                        }}
+                                    >
+                                        {settingState.productDescription ? (
+                                            <ColsIcon height="20" />
+                                        ) : (
+                                            <RowIcon height="18" />
+                                        )}
+                                    </button>
+                                </div>
+                                <div>
+                                    {productUpdateShortcut ? (
+                                        <ProductUpdateShortcut
+                                            handleClose={() =>
+                                                setProductUpdateShortcut(false)
+                                            }
+                                            callback={handleProductUpdate}
+                                        />
+                                    ) : (
+                                        <>
+                                            {commandCounter.name ==
+                                                "completeSell" &&
+                                            commandCounter.value >= 1 ? (
+                                                ""
+                                            ) : isCustomers ? (
+                                                <div>
+                                                    <CustomerCard
+                                                        customers={
+                                                            filteredCustomers
+                                                        }
+                                                        callback={(
+                                                            customer: Customer
+                                                        ) => {
+                                                            // dispatch(addCustomer(customer));
+                                                            cartManager
+                                                                .set(
+                                                                    "customer",
+                                                                    customer
+                                                                )
+                                                                .save();
+                                                            setCommand("");
+                                                            // if()
+                                                            document
+                                                                .getElementById(
+                                                                    "command"
+                                                                )
+                                                                ?.focus();
+                                                        }}
+                                                    />
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    {settingState.productRow ? (
+                                                        <ProductsRow
+                                                            selected={
+                                                                cart.selectedProductIndex
+                                                            }
+                                                            callback={(
+                                                                product
+                                                            ) => {
+                                                                cartManager
+                                                                    .addTo(
+                                                                        product
+                                                                    )
+                                                                    .save();
+                                                                setCommand("");
+                                                                document
+                                                                    .getElementById(
+                                                                        "command"
+                                                                    )
+                                                                    ?.focus();
+                                                            }}
+                                                            products={
+                                                                filteredProducts
+                                                            }
+                                                            showProductImage={
+                                                                settingState.productImage
+                                                            }
+                                                            showProductDescription={
+                                                                settingState.productDescription
+                                                            }
+                                                            setProductUpdateShortcut={
+                                                                handleProductUpdateShortcut
+                                                            }
+                                                        />
+                                                    ) : (
+                                                        <ProductsCard
+                                                            setProductUpdateShortcut={
+                                                                handleProductUpdateShortcut
+                                                            }
+                                                            selected={
+                                                                cart.selectedProductIndex
+                                                            }
+                                                            callback={(
+                                                                product
+                                                            ) => {
+                                                                cartManager
+                                                                    .addTo(
+                                                                        product
+                                                                    )
+                                                                    .save();
+                                                                setCommand("");
+                                                                document
+                                                                    .getElementById(
+                                                                        "command"
+                                                                    )
+                                                                    ?.focus();
+                                                            }}
+                                                            products={
+                                                                filteredProducts
+                                                            }
+                                                            showProductImage={
+                                                                settingState.productImage
+                                                            }
+                                                            showProductDescription={
+                                                                settingState.productDescription
+                                                            }
+                                                        />
+                                                    )}
+                                                </>
+                                            )}
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                            <div>
+                                {commandCounter.name == "completeSell" &&
+                                commandCounter.value >= 1 ? (
+                                    <FinalView stateManager={cartManager} />
+                                ) : (
+                                    ""
                                 )}
                             </div>
                         </div>

@@ -578,9 +578,5 @@ export default class CommandHandler extends KeyboardHandler {
                 return;
             }
         });
-
-        this.listen("ControlRight", () => {
-            this.handleProductUpdateShortcut();
-        });
     }
 }
