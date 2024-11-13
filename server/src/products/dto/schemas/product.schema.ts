@@ -176,6 +176,9 @@ export class Product extends Document {
     note: string;
 
     @Prop()
+    barcode: string;
+
+    @Prop()
     displayPurchaseUnit: string;
 
     @Prop({ default: 1 })

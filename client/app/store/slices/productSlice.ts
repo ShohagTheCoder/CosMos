@@ -11,7 +11,7 @@ import getProductUnitPurchasePrice from "@/app/functions/purchase/getProductUnit
 import defaultUnits from "@/app/products/common/defaultUnits";
 
 const initialState: Product = {
-    SKU: "",
+    SKU: Date.now().toString(),
     name: "",
     description: "Descripton",
     units: defaultUnits.weight,

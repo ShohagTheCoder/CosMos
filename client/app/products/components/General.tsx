@@ -1,6 +1,5 @@
 "use client";
 import ImageInput from "@/app/elements/inputs/ImageInput";
-import NumberInput from "@/app/elements/inputs/NumberInput";
 import TagsInput from "@/app/elements/inputs/TagsInput";
 import TextInput from "@/app/elements/inputs/TextInput";
 import PulseLoading from "@/app/elements/loding/PulseLoading";
@@ -126,64 +125,30 @@ function General({ image, setImage, validationHandler }: any) {
             ) : (
                 ""
             )}
-            <div className="grid grid-cols-2 gap-5">
+            <div className="mb-3">
                 <TextInput
-                    className="mb-3"
-                    value={product.SKU}
+                    className=""
+                    value={product.barcode}
                     onChange={(e) => {
                         dispatch(
                             updateProductField({
-                                field: "SKU",
-                                value: e.target.value.toUpperCase(),
-                            })
-                        );
-                        if (image) {
-                            dispatch(
-                                updateProductField({
-                                    field: "image",
-                                    value: e.target.value + "-" + image.name,
-                                })
-                            );
-                        }
-                    }}
-                    options={{
-                        label: "SKU *",
-                        validate: (SKU) =>
-                            validationHandler.validate("SKU", SKU, [
-                                () =>
-                                    products.some((p) => p.SKU === SKU)
-                                        ? "SKU is already exist"
-                                        : true,
-                                () =>
-                                    SKU.length > 3
-                                        ? "The maximum letter is 3"
-                                        : true,
-                                () =>
-                                    SKU.length < 1 ? "Please enter SKU" : true,
-                            ]),
-                        validMessage: "SKU looks good!",
-                        invalidMessage: validationHandler.errors["SKU"],
-                        placeholder: "Ex: 34F",
-                    }}
-                />
-                <NumberInput
-                    className="mb-3"
-                    value={product.priority}
-                    onChange={(e) =>
-                        dispatch(
-                            updateProductField({
-                                field: "priority",
+                                field: "barcode",
                                 value: e.target.value,
                             })
-                        )
-                    }
+                        );
+                    }}
                     options={{
-                        label: "Product Priority",
-                        validate: (value) =>
-                            parseInt(value) >= 1 && parseInt(value) <= 10,
-                        validMessage: "Priority accepted!",
-                        invalidMessage: "Priority must be between 1 and 10",
-                        placeholder: "Ex: 0 or 3",
+                        label: "Barcode",
+                        validate: (barcode) =>
+                            validationHandler.validate("barcode", barcode, [
+                                () =>
+                                    products.some((p) => p.barcode === barcode)
+                                        ? "Barcode is already exist"
+                                        : true,
+                            ]),
+                        validMessage: "Barcode looks good!",
+                        invalidMessage: validationHandler.errors["barcode"],
+                        placeholder: "Ex: 158485678",
                     }}
                 />
             </div>
@@ -271,31 +236,6 @@ function General({ image, setImage, validationHandler }: any) {
                 </div>
             </div>
 
-            {validationHandler.isValid("SKU") ? (
-                <ImageInput
-                    image={image}
-                    previewImageUrl={
-                        product.image
-                            ? `/images/products/${product.image}`
-                            : null
-                    }
-                    callback={(file: File) => {
-                        setImage(file);
-                        dispatch(
-                            updateProductField({
-                                field: "image",
-                                value: product.SKU + "-" + file.name,
-                            })
-                        );
-                    }}
-                    options={{
-                        label: "Product image",
-                    }}
-                />
-            ) : (
-                ""
-            )}
-
             <TagsInput
                 value={product.keywords}
                 onChange={(keywords) =>
@@ -333,6 +273,30 @@ function General({ image, setImage, validationHandler }: any) {
                     rows: 2,
                 }}
             />
+
+            <div className="mt-3">
+                <ImageInput
+                    image={image}
+                    previewImageUrl={
+                        product.image
+                            ? `/images/products/${product.image}`
+                            : null
+                    }
+                    callback={(file: File) => {
+                        setImage(file);
+                        dispatch(
+                            updateProductField({
+                                field: "image",
+                                value: product.SKU + "-" + file.name,
+                            })
+                        );
+                    }}
+                    options={{
+                        label: "Product image",
+                        containerClassName: "w-full",
+                    }}
+                />
+            </div>
         </div>
     );
 }

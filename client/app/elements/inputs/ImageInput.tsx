@@ -102,7 +102,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
                     <img
                         src={preview}
                         alt="Image Preview"
-                        className={`w-full h-full object-cover rounded-lg ${previewClassName}`}
+                        className={`w-full p-2 h-full object-contain rounded-lg ${previewClassName}`}
                     />
                 )}
             </div>

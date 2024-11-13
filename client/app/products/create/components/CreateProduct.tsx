@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import General from "../../components/General";
 import UnitsTab from "../../components/UnitsTab";
 import Resources from "./Resources";
@@ -13,7 +13,6 @@ export interface ErrorMap {
 
 export default function CreateProduct() {
     const validationHandler = useValidationHandler({
-        SKU: "Plese enter SKU",
         Name: "Please enter Name",
     });
 
