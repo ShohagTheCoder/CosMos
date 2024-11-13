@@ -69,7 +69,6 @@ export default function StockManagement({
             (acc: any, [key, value]) => {
                 if (
                     product.product &&
-                    key in product.product &&
                     value !== product.product[key] &&
                     key !== "product"
                 ) {

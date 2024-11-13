@@ -8,10 +8,15 @@ import StockManagement from "@/app/products/create/components/StockManagement";
 import { useDispatch } from "react-redux";
 import { setProduct } from "@/app/store/slices/productSlice";
 import UnitsTab from "@/app/products/components/UnitsTab";
+import useValidationHandler from "@/app/hooks/useValidationHandler";
 
 export default function UpdateProduct({ product }: any) {
     const dispatch = useDispatch();
     const [image, setImage] = useState(null);
+
+    const validationHandler = useValidationHandler({
+        Name: "Please enter Name",
+    });
 
     useEffect(() => {
         dispatch(setProduct(product));
@@ -40,7 +45,13 @@ export default function UpdateProduct({ product }: any) {
         {
             id: "general",
             title: "General",
-            content: <General />,
+            content: (
+                <General
+                    image={image}
+                    setImage={setImage}
+                    validationHandler={validationHandler}
+                />
+            ),
         },
         {
             id: "units",
@@ -55,7 +66,13 @@ export default function UpdateProduct({ product }: any) {
         {
             id: "create",
             title: "Create",
-            content: <StockManagement image={image} setImage={setImage} />,
+            content: (
+                <StockManagement
+                    image={image}
+                    setImage={setImage}
+                    validationHandler={validationHandler}
+                />
+            ),
         },
     ];
 
