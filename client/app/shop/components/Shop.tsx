@@ -142,11 +142,6 @@ export default function Shop({ shop: initialShop, accounts = [] }: any) {
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <div className="flex items-center gap-4">
-                            <a href="/users/create">Create user</a>
-                        </div>
-                    </div>
                 </div>
             </div>
         </main>

@@ -1,6 +1,4 @@
 import React, { useMemo, useState } from "react";
-import useNotification from "../hooks/useNotifications";
-import Notification from "../elements/notification/NotificationList";
 import SearchableSelectInput from "../elements/select/SearchableSelectInput";
 import NumberInputControl from "../elements/inputs/NumberInputControl";
 import apiClient from "../utils/apiClient";
@@ -60,67 +58,97 @@ function TransferMoney({
     }
 
     return (
-        <div className="fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-80 z-50 flex justify-center items-center">
-            <div className="w-full max-w-lg mx-auto bg-gray-900 text-white rounded-lg p-6 shadow-lg border border-gray-700">
+        <div className="fixed top-0 left-0 h-screen w-screen select-none bg-black z-50 flex justify-center items-center">
+            <div className="w-full max-w-lg mx-auto bg-gray-900 text-white rounded-lg shadow-lg border border-gray-700">
                 <NotificationList notifications={notifications} />
                 {/* Close Button */}
-                <div className="flex justify-end mb-3">
+                <div className="flex justify-end mb-2 relative">
                     <button
                         onClick={handleClose}
-                        className="text-white bg-red-600 hover:bg-red-700 p-2 rounded h-[40px] w-[40px]"
+                        className="absolute top-2 right-2 text-gray-400 hover:text-red-500 transition-colors duration-300"
                     >
-                        X
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                        </svg>
                     </button>
                 </div>
-                {/* Account Balance */}
-                <div className="mb-4 p-4 rounded-md bg-gradient-to-r from-green-900 to-blue-900">
-                    <p className="text-xl text-center font-semibold">
-                        Balance: {account.balance} ৳
-                    </p>
-                </div>
+                <div className="p-6">
+                    {/* Account Balance */}
+                    <div className="">
+                        <p className="text-lg text-gray-400">
+                            Balance:{" "}
+                            <span className="text-2xl font-semibold mx-2 text-white">
+                                {account.balance}
+                            </span>
+                            ৳
+                        </p>
+                    </div>
 
-                {/* Receiver Select Input */}
-                <div className="mb-4">
-                    <SearchableSelectInput
-                        value={receiverId}
-                        onChange={(value: any) => setReceiverId(value)}
-                        options={{
-                            label: "Receiver Account",
-                            options: accounts,
-                        }}
-                    />
-                </div>
+                    <div className="border-t-2 border-gray-700 border-dashed my-3" />
 
-                {/* Input Fields */}
-                <div className="space-y-4">
-                    {/* Amount */}
-                    <NumberInputControl
-                        value={amount}
-                        onChange={setAmount}
-                        className="w-full flex"
-                        buttonClassName="h-[50px] w-[50px]"
-                        inputClassName="text-lg flex-grow w-auto bg-gray-800 p-3 text-white placeholder-gray-400 focus:outline-none h-[50px]"
-                    />
+                    {/* Receiver Select Input */}
+                    <div className="mb-4">
+                        <SearchableSelectInput
+                            value={receiverId}
+                            onChange={(value: any) => {
+                                setReceiverId(value);
+                                console.log(accounts);
+                            }}
+                            options={{
+                                label: "Receiver Account",
+                                options: accounts,
+                            }}
+                        />
+                    </div>
 
-                    {/* Note */}
-                    <textarea
-                        id="note"
-                        className="w-full bg-gray-800 p-3 rounded-md text-white placeholder-gray-400 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500 resize-none"
-                        placeholder="Add a note (optional)"
-                        rows={2}
-                        value={note}
-                        onChange={(e) => setNote(e.target.value)}
-                    ></textarea>
-                </div>
+                    <div className={`${receiverId ? "visible" : "hidden"}`}>
+                        {/* Input Fields */}
+                        <div className="space-y-4">
+                            {/* Amount */}
+                            <NumberInputControl
+                                value={amount}
+                                onChange={setAmount}
+                                className="w-full flex"
+                                buttonClassName="h-[50px] w-[50px]"
+                                inputClassName="text-lg flex-grow w-auto bg-gray-800 p-3 text-white placeholder-gray-400 focus:outline-none h-[50px]"
+                            />
 
-                {/* Send Money Button */}
-                <div className="mt-6">
-                    <button
-                        onDoubleClick={handleSendMoney}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-md font-semibold transition duration-300 shadow-lg"
-                    >
-                        Send Money
-                    </button>
+                            {/* Note */}
+                            <textarea
+                                id="note"
+                                className="w-full bg-gray-800 p-3 rounded-md text-white placeholder-gray-400 border border-gray-600 focus:outline-none focus:ring focus:ring-blue-500 resize-none"
+                                placeholder="Add a note (optional)"
+                                rows={2}
+                                value={note}
+                                onChange={(e) => setNote(e.target.value)}
+                            ></textarea>
+                        </div>
+
+                        {/* Send Money Button */}
+                        <div
+                            className={`mt-6 ${
+                                amount > 0 ? "visible" : "hidden"
+                            }`}
+                        >
+                            <button
+                                onDoubleClick={handleSendMoney}
+                                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-md font-semibold transition duration-300 shadow-lg"
+                            >
+                                Send Money
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

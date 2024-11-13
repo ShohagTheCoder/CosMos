@@ -50,8 +50,8 @@ export default function Cashout({ account, callback, handleClose }: any) {
     };
 
     return (
-        <div className="fixed top-0 left-0 h-screen w-screen bg-black bg-opacity-60 backdrop-blur-md z-50 flex justify-center items-center">
-            <div className="w-full max-w-md bg-gray-900 text-white rounded-lg shadow-xl transform transition-all ease-in-out duration-500 p-8 relative">
+        <div className="fixed top-0 left-0 h-screen w-screen select-none bg-black z-50 flex justify-center items-center">
+            <div className="w-full max-w-lg mx-auto bg-gray-900 text-white rounded-lg shadow-lg border border-gray-700 p-6 relative">
                 {/* Close Button */}
                 <button
                     onClick={handleClose}
@@ -75,17 +75,16 @@ export default function Cashout({ account, callback, handleClose }: any) {
 
                 {/* Notification */}
                 <NotificationList notifications={notifications} />
-
-                {/* Account Balance */}
-                <div className="mb-5 p-4 bg-gradient-to-r from-gray-700 to-green-900 rounded-lg text-center text-lg shadow-md">
-                    <p>
+                <div className="">
+                    <p className="text-lg text-gray-400">
                         Balance:{" "}
-                        <span className="text-2xl font-semibold">
+                        <span className="text-2xl font-semibold mx-2 text-white">
                             {account.balance}
-                        </span>{" "}
+                        </span>
                         ৳
                     </p>
                 </div>
+                <div className="border-t-2 border-gray-700 border-dashed my-3" />
 
                 {/* Input Fields */}
                 <div className="space-y-4">
@@ -107,7 +106,7 @@ export default function Cashout({ account, callback, handleClose }: any) {
                             <button
                                 key={item.label}
                                 onClick={() => setNote(item.note)}
-                                className="bg-gray-600 text-white rounded-md px-2 py-1 hover:bg-blue-700 transition duration-300"
+                                className="bg-gray-800 text-white rounded-md px-2 py-1 hover:bg-blue-700 transition duration-300"
                             >
                                 {item.label}
                             </button>
@@ -124,22 +123,24 @@ export default function Cashout({ account, callback, handleClose }: any) {
                     ></textarea>
                 </div>
 
-                {/* Cashout Button */}
-                <button
-                    onDoubleClick={handleCashout}
-                    className={`mt-4 w-full py-3 rounded-lg font-semibold text-lg tracking-wide shadow-md ${
-                        cashoutButtonLoading
-                            ? "bg-blue-500 cursor-not-allowed"
-                            : "bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50"
-                    } transition-all duration-300`}
-                    disabled={amount <= 0 || cashoutButtonLoading}
-                >
-                    {cashoutButtonLoading ? (
-                        <span className="animate-pulse">Processing...</span>
-                    ) : (
-                        "Cash Out"
-                    )}
-                </button>
+                <div className={`mt-4 ${amount > 0 ? "visible" : "hidden"}`}>
+                    {/* Cashout Button */}
+                    <button
+                        onDoubleClick={handleCashout}
+                        className={`w-full py-3 rounded-lg font-semibold text-lg tracking-wide shadow-md ${
+                            cashoutButtonLoading
+                                ? "bg-blue-500 cursor-not-allowed"
+                                : "bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50"
+                        } transition-all duration-300`}
+                        disabled={amount <= 0 || cashoutButtonLoading}
+                    >
+                        {cashoutButtonLoading ? (
+                            <span className="animate-pulse">Processing...</span>
+                        ) : (
+                            "Cash Out"
+                        )}
+                    </button>
+                </div>
             </div>
         </div>
     );
