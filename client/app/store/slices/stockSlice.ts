@@ -8,12 +8,16 @@ export interface StockState {
     supplier?: Supplier;
     activeProduct?: string;
     selectedProductIndex: number;
+    cartOnly: boolean;
+    totalOnly: boolean;
 }
 
 export const initialStockState: StockState = {
     selectedProductIndex: 0,
     products: {},
     totalPrice: 0,
+    cartOnly: false,
+    totalOnly: false,
 };
 
 const stockSlice = createSlice({

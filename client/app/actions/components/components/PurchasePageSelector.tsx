@@ -29,7 +29,7 @@ const PurchasePageSelector: React.FC<PurchasePageSelectorProps> = ({
                 {sellPageButtons.map(({ key, label }) => (
                     <button
                         key={key}
-                        className={`py-1 px-3 ${
+                        className={`py-1 px-3 hover:bg-blue-700 ${
                             activePage === key ? "bg-green-700" : ""
                         }`}
                         onClick={() => handlePageChange(key)}

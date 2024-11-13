@@ -289,6 +289,13 @@ export default class CommandHandler extends KeyboardHandler {
         this.listen(["ControlRight"], (e) => {
             e.preventDefault();
             this.stateManager
+                .update("totalOnly", (state: boolean) => !state)
+                .save();
+        });
+
+        this.group(["ShiftRight", "ControlRight"], (e) => {
+            e.preventDefault();
+            this.stateManager
                 .update("cartOnly", (state: boolean) => !state)
                 .save();
         });
