@@ -427,7 +427,7 @@ export default function Purchase({
     }
 
     return (
-        <div className="text-black dark:text-white">
+        <div className="text-black dark:text-white select-none">
             {/* <PurchaseReceipt /> */}
             <div className="print:hidden">
                 <Sidebar active="purchase" userId={user._id} />
@@ -577,6 +577,9 @@ export default function Purchase({
                                                         }
                                                         showProductDescription={
                                                             settingState.productDescription
+                                                        }
+                                                        setProductUpdateShortcut={() =>
+                                                            console.log()
                                                         }
                                                     />
                                                 ) : (

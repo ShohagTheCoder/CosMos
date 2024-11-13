@@ -405,7 +405,7 @@ export default function Sell({
     }
 
     return (
-        <div className="text-black dark:text-white">
+        <div className="text-black dark:text-white select-none">
             {/* <SellReceipt /> */}
             <div className="print:hidden">
                 <Sidebar active="sell" userId={user._id} />

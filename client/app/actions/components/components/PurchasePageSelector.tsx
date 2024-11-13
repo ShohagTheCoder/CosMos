@@ -39,15 +39,9 @@ const PurchasePageSelector: React.FC<PurchasePageSelectorProps> = ({
                 ))}
             </div>
             <div className="md:border-s-2 border-dashed border-gray-600 ps-4 flex flex-wrap justify-end gap-4 items-center">
-                <p className="inline-block bg-green-800 py-1 px-3 rounded text-white">
+                <p className="inline-block bg-gray-700 py-2 px-3 text-white">
                     {userName}
                 </p>
-                <a
-                    href="/logout"
-                    className="bg-red-800 text-white py-1 px-3 rounded"
-                >
-                    x
-                </a>
             </div>
         </div>
     );

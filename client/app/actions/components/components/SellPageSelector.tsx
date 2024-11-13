@@ -54,13 +54,17 @@ const SellPageSelector: React.FC<SellPageSelectorProps> = ({
         back = taken - productsTotalPrice;
 
         return (
-            <div className="flex items-center gap-1">
-                <p className="text-xl bg-red-950 py-2 px-2 leading-none">
-                    {back.toLocaleString("en-US")}
-                </p>{" "}
-                <p className="text-xl bg-green-950 px-2 leading-none py-2">
-                    {(count * 1000 + taken).toLocaleString("en-US")}
-                </p>{" "}
+            <div className="flex">
+                <div className="bg-red-900 py-1 px-2">
+                    <p className="text-xl leading-normal">
+                        {back.toLocaleString("en-US")}
+                    </p>{" "}
+                </div>
+                <div className="bg-green-900 px-2 py-1">
+                    <p className="text-xl leading-normal">
+                        {(count * 1000 + taken).toLocaleString("en-US")}
+                    </p>{" "}
+                </div>
             </div>
         );
     }
@@ -80,17 +84,11 @@ const SellPageSelector: React.FC<SellPageSelectorProps> = ({
                     </button>
                 ))}
             </div>
-            <div className=" ps-4 flex flex-wrap justify-end gap-4 items-center">
+            <div className="md:border-s-2 border-dashed border-gray-600 ps-3 flex flex-wrap justify-end gap-2 items-center">
                 {getCashReturnLine()}
-                <p className="inline-block bg-green-800 py-1 px-3 rounded text-white">
+                <p className="inline-block bg-gray-700 py-2 px-3 text-white">
                     {userName}
                 </p>
-                <a
-                    href="/logout"
-                    className="bg-red-800 text-white py-1 px-3 rounded"
-                >
-                    x
-                </a>
             </div>
         </div>
     );
