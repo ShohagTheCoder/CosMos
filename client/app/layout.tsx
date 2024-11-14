@@ -37,7 +37,11 @@ export default async function RootLayout({
 
     return (
         <html lang="en">
-            <body className={interCalss + "text-black dark:text-white"}>
+            <body
+                className={
+                    interCalss + "text-black dark:text-white cosmos-scrollbar"
+                }
+            >
                 <ReduxProvider>{children}</ReduxProvider>
             </body>
         </html>

@@ -14,10 +14,10 @@ import { ProductWithID } from "../interfaces/product.interface";
 import CreateCategory from "@/app/categories/create/page";
 import CreateBrand from "@/app/brands/create/page";
 
-function General({ image, setImage, validationHandler }: any) {
+function General({ image, setImage, validationHandler, products }: any) {
     const dispatch = useDispatch();
     const product = useSelector((state: RootState) => state.product);
-    const [products, setProducts] = useState<ProductWithID[]>([]);
+
     const [brands, setBrands] = useState<any[]>([]);
     const [categories, setCategories] = useState<any[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -55,12 +55,10 @@ function General({ image, setImage, validationHandler }: any) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [productsResponse, brandsResponse, categoriesResponse] =
-                    await Promise.all([
-                        apiClient.get("products"),
-                        apiClient.get("brands"),
-                        apiClient.get("categories"),
-                    ]);
+                const [brandsResponse, categoriesResponse] = await Promise.all([
+                    apiClient.get("brands"),
+                    apiClient.get("categories"),
+                ]);
 
                 setBrands(
                     brandsResponse.data.map((item: any) => ({
@@ -75,8 +73,6 @@ function General({ image, setImage, validationHandler }: any) {
                         label: item.name,
                     }))
                 );
-
-                setProducts(productsResponse.data.data);
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
@@ -142,7 +138,10 @@ function General({ image, setImage, validationHandler }: any) {
                         validate: (barcode) =>
                             validationHandler.validate("barcode", barcode, [
                                 () =>
-                                    products.some((p) => p.barcode === barcode)
+                                    products.some(
+                                        (p: ProductWithID) =>
+                                            p.barcode === barcode
+                                    )
                                         ? "Barcode is already exist"
                                         : true,
                             ]),

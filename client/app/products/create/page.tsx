@@ -18,9 +18,9 @@ export default async function CreateProductPage() {
         const userId = cookieStore.get("user-id")?.value;
 
         return (
-            <div className="min-h-screen max-auto flex justify-center bg-gray-800">
+            <div className="min-h-screen flex justify-center bg-gray-800 cosmos-scrollbar">
                 <Sidebar userId={userId} active="createProduct" />
-                <div className="container w-auto inline-block transition-all my-5 mx-auto rounded-md bg-gray-800 text-white">
+                <div className="container bg-gray-800 text-white overflow-hidden">
                     <CreateProduct />
                 </div>
             </div>
