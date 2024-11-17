@@ -105,7 +105,7 @@ export default function Commands({
                         >
                             <div className="flex justify-center items-center">
                                 <div className="flex justify-center items-center w-[40px] h-[40px] rounded-md bg-gray-900">
-                                    <p className="text-lg font-bold">
+                                    <p className="text-lg font-bold text-white">
                                         {command.command}
                                     </p>
                                 </div>

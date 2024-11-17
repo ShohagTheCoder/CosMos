@@ -61,6 +61,12 @@ export default function Sidebar({
                         isActive={active === "sell"}
                     />
                     <SidebarItem
+                        label="Pending"
+                        icon={<SellIcon />}
+                        link="/pending"
+                        isActive={active === "pending"}
+                    />
+                    <SidebarItem
                         label="Purchase"
                         icon={<PurchaseIcon />}
                         link="/actions/purchase"

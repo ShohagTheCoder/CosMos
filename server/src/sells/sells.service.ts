@@ -26,6 +26,10 @@ export class SellsService {
         return this.sellModel.find();
     }
 
+    findAllPending() {
+        return this.sellModel.find({ status: 'pending' });
+    }
+
     async findByQuery({
         page = 1,
         limit = 10,
@@ -123,6 +127,33 @@ export class SellsService {
 
     async findOne(id: string) {
         return await this.sellModel.findById(id).exec();
+    }
+
+    async createPending(createSellDto: CreateSellDto) {
+        try {
+            // Save the sell as pending
+            createSellDto.status = 'pending';
+
+            if (Object.keys(createSellDto.products).length == 0) {
+                if (createSellDto.customer == undefined) {
+                    throw new Error('Sell is emty');
+                    return;
+                }
+            }
+
+            // Create and save the new sell
+            const createdSell = new this.sellModel(createSellDto);
+
+            return {
+                status: 'success',
+                data: await createdSell.save(),
+                message: 'Sell pending',
+            };
+        } catch (error) {
+            // Handle errors appropriately
+            console.error('Error creating sell:', error);
+            throw error; // Re-throw the error or handle it as needed
+        }
     }
 
     async create(createSellDto: CreateSellDto) {

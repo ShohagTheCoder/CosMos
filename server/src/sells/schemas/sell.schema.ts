@@ -7,6 +7,9 @@ export class Sell {
     @Prop({ required: true, min: 0 })
     totalPrice: number;
 
+    @Prop({ default: 'complete' })
+    status: string;
+
     @Prop({ maxlength: 500 })
     note: string;
 

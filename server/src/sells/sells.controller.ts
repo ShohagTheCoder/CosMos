@@ -27,6 +27,12 @@ export class SellsController {
         return this.sellsService.create(createSellDto);
     }
 
+    @Post('pending')
+    async createPending(@Body() createSellDto: CreateSellDto) {
+        // Use the correct DTO type
+        return this.sellsService.createPending(createSellDto);
+    }
+
     @Get('query')
     async findByQuery(@Query() query: any) {
         return await this.sellsService.findByQuery(query);
@@ -40,6 +46,11 @@ export class SellsController {
     @Get('findByCustomer/:id')
     async findByCustomer(@Param('id') id: string) {
         return this.sellsService.findByCustomer(id);
+    }
+
+    @Get('pending')
+    async findAllPending() {
+        return this.sellsService.findAllPending();
     }
 
     @Get()

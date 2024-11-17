@@ -18,4 +18,5 @@ export interface CreateSellDto {
     paid: number;
     note: string;
     customerTotalDue: number;
+    status: string;
 }
