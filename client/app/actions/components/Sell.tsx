@@ -690,9 +690,9 @@ export default function Sell({
                                 )}
                             </div>
                         </div>
-                        <div className="py-4 mb-4 lg:pe-3 col-span-8 lg:col-span-3 min-h-screen overflow-hidden grid grid-rows-1">
-                            <div className="pe-3 h-auto overflow-y-auto overflow-x-hidden cosmos-scrollbar">
-                                <div>
+                        <div className="py-4 lg:pe-3 col-span-8 lg:col-span-3 min-h-screen">
+                            <div className="pe-3 h-full overflow-y-auto overflow-x-hidden cosmos-scrollbar flex flex-col">
+                                <div className="flex-grow">
                                     {commandCounter.name == "completeSell" &&
                                     commandCounter.value >= 1 ? (
                                         ""
@@ -708,56 +708,56 @@ export default function Sell({
                                             }
                                         />
                                     )}
-                                    <CustomerDetails />
-                                    <div className="">
-                                        <textarea
-                                            ref={noteRef}
-                                            className="w-full resize-none p-3 outline-none border-dashed border-2 border-gray-600 placeholder-black dark:placeholder-slate-300 mb-1 bg-transparent"
-                                            value={note}
-                                            onChange={(e) =>
-                                                setNote(e.target.value)
-                                            }
-                                            rows={2}
-                                            cols={50}
-                                            placeholder="বিক্রি সম্পর্কে কিছু লিখুন"
-                                        ></textarea>
-                                    </div>
-                                    <SellDetails />
-                                    <div className="flex gap-4">
-                                        <button
-                                            disabled={sellButtonLoading}
-                                            onDoubleClick={handleCompleteSell}
-                                            className={`w-1/2 pt-3 pb-2 border-2 border-dashed border-green-600 bg-green-900 hover:bg-green-700 text-white ${
-                                                sellButtonLoading
-                                                    ? "cursor-not-allowed"
-                                                    : "cursor-pointer"
-                                            }`}
-                                        >
-                                            Sell & Print
-                                        </button>
-                                        <button
-                                            disabled={sellButtonLoading}
-                                            onDoubleClick={handleCompleteSell}
-                                            className={`w-1/3 pt-3 pb-2 border-2 border-dashed border-blue-600 bg-blue-900 hover:bg-blue-700 text-white ${
-                                                sellButtonLoading
-                                                    ? "cursor-not-allowed"
-                                                    : "cursor-pointer"
-                                            }`}
-                                        >
-                                            Sell
-                                        </button>
-                                        <button
-                                            disabled={sellButtonLoading}
-                                            onDoubleClick={handlePendingSell}
-                                            className={`w-1/2 pt-3 pb-2 border-dashed border-2 border-yellow-600 bg-yellow-900 hover:bg-blue-700 text-white ${
-                                                sellButtonLoading
-                                                    ? "cursor-not-allowed"
-                                                    : "cursor-pointer"
-                                            }`}
-                                        >
-                                            Pending
-                                        </button>
-                                    </div>
+                                </div>
+                                <CustomerDetails />
+                                <div className="">
+                                    <textarea
+                                        ref={noteRef}
+                                        className="w-full resize-none p-3 outline-none border-dashed border-2 border-gray-600 placeholder-black dark:placeholder-slate-300 mb-1 bg-transparent"
+                                        value={note}
+                                        onChange={(e) =>
+                                            setNote(e.target.value)
+                                        }
+                                        rows={2}
+                                        cols={50}
+                                        placeholder="বিক্রি সম্পর্কে কিছু লিখুন"
+                                    ></textarea>
+                                </div>
+                                <SellDetails />
+                                <div className="flex gap-4">
+                                    <button
+                                        disabled={sellButtonLoading}
+                                        onDoubleClick={handleCompleteSell}
+                                        className={`w-1/2 pt-3 pb-2 border-2 border-dashed border-green-600 bg-green-900 hover:bg-green-700 text-white ${
+                                            sellButtonLoading
+                                                ? "cursor-not-allowed"
+                                                : "cursor-pointer"
+                                        }`}
+                                    >
+                                        Sell & Print
+                                    </button>
+                                    <button
+                                        disabled={sellButtonLoading}
+                                        onDoubleClick={handleCompleteSell}
+                                        className={`w-1/3 pt-3 pb-2 border-2 border-dashed border-blue-600 bg-blue-900 hover:bg-blue-700 text-white ${
+                                            sellButtonLoading
+                                                ? "cursor-not-allowed"
+                                                : "cursor-pointer"
+                                        }`}
+                                    >
+                                        Sell
+                                    </button>
+                                    <button
+                                        disabled={sellButtonLoading}
+                                        onDoubleClick={handlePendingSell}
+                                        className={`w-1/2 pt-3 pb-2 border-dashed border-2 border-yellow-600 bg-yellow-900 hover:bg-blue-700 text-white ${
+                                            sellButtonLoading
+                                                ? "cursor-not-allowed"
+                                                : "cursor-pointer"
+                                        }`}
+                                    >
+                                        Pending
+                                    </button>
                                 </div>
                             </div>
                         </div>

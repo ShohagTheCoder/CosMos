@@ -689,72 +689,64 @@ export default function Sell({
                                 )}
                             </div>
                         </div>
-                        <div className="py-4 mb-4 lg:pe-3 col-span-8 lg:col-span-3 min-h-screen overflow-hidden grid grid-rows-1">
-                            <div className="overflow-y-auto overflow-x-hidden h-full cosmos-scrollbar pe-2">
-                                <div className="h-full flex flex-col justify-between">
-                                    <div>
-                                        <CustomerDetails />
-                                        {commandCounter.name ==
-                                            "completeSell" &&
-                                        commandCounter.value >= 1 ? (
-                                            ""
-                                        ) : (
-                                            <CartProduct
-                                                stateManager={cartManager}
-                                                setProductUpdateShortcut={
-                                                    handleProductUpdateShortcut
-                                                }
-                                                setting={setting}
-                                                handleUpdateProductPrice={
-                                                    handleUpdateProductPrice
-                                                }
-                                            />
-                                        )}
-
-                                        <div className="">
-                                            <textarea
-                                                ref={noteRef}
-                                                className="w-full resize-none p-3 outline-none border-dashed border-2 border-gray-600 placeholder-black dark:placeholder-slate-300 mb-1 bg-transparent"
-                                                value={note}
-                                                onChange={(e) =>
-                                                    setNote(e.target.value)
-                                                }
-                                                rows={1}
-                                                cols={50}
-                                                placeholder="অর্ডার সম্পর্কে কিছু লিখুন"
-                                            ></textarea>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <SellDetails />
-                                        <div className="flex gap-4">
-                                            <button
-                                                disabled={sellButtonLoading}
-                                                onDoubleClick={
-                                                    handlePendingSell
-                                                }
-                                                className={`w-1/2 pt-3 pb-2 border-2 border-dashed border-green-600 bg-green-900 hover:bg-green-700 text-white ${
-                                                    sellButtonLoading
-                                                        ? "cursor-not-allowed"
-                                                        : "cursor-pointer"
-                                                }`}
-                                            >
-                                                Order
-                                            </button>
-                                            <button
-                                                disabled={sellButtonLoading}
-                                                onDoubleClick={
-                                                    handleCompleteSell
-                                                }
-                                                className={`w-1/2 pt-3 pb-2 border-dashed border-2 border-yellow-600 bg-yellow-900 hover:bg-blue-700 text-white ${
-                                                    sellButtonLoading
-                                                        ? "cursor-not-allowed"
-                                                        : "cursor-pointer"
-                                                }`}
-                                            >
-                                                Paid
-                                            </button>
-                                        </div>
+                        <div className="py-4 lg:pe-3 col-span-8 lg:col-span-3 min-h-screen">
+                            <div className="overflow-y-auto overflow-x-hidden h-full cosmos-scrollbar pe-2 flex flex-col">
+                                <div className="flex-grow">
+                                    <CustomerDetails />
+                                    {commandCounter.name == "completeSell" &&
+                                    commandCounter.value >= 1 ? (
+                                        ""
+                                    ) : (
+                                        <CartProduct
+                                            stateManager={cartManager}
+                                            setProductUpdateShortcut={
+                                                handleProductUpdateShortcut
+                                            }
+                                            setting={setting}
+                                            handleUpdateProductPrice={
+                                                handleUpdateProductPrice
+                                            }
+                                        />
+                                    )}
+                                </div>
+                                <div className="">
+                                    <textarea
+                                        ref={noteRef}
+                                        className="w-full resize-none p-3 outline-none border-dashed border-2 border-gray-600 placeholder-black dark:placeholder-slate-300 mb-1 bg-transparent"
+                                        value={note}
+                                        onChange={(e) =>
+                                            setNote(e.target.value)
+                                        }
+                                        rows={1}
+                                        cols={50}
+                                        placeholder="অর্ডার সম্পর্কে কিছু লিখুন"
+                                    ></textarea>
+                                </div>
+                                <div>
+                                    <SellDetails />
+                                    <div className="flex gap-4">
+                                        <button
+                                            disabled={sellButtonLoading}
+                                            onDoubleClick={handlePendingSell}
+                                            className={`w-1/2 pt-3 pb-2 border-2 border-dashed border-green-600 bg-green-900 hover:bg-green-700 text-white ${
+                                                sellButtonLoading
+                                                    ? "cursor-not-allowed"
+                                                    : "cursor-pointer"
+                                            }`}
+                                        >
+                                            Order
+                                        </button>
+                                        <button
+                                            disabled={sellButtonLoading}
+                                            onDoubleClick={handleCompleteSell}
+                                            className={`w-1/2 pt-3 pb-2 border-dashed border-2 border-yellow-600 bg-yellow-900 hover:bg-blue-700 text-white ${
+                                                sellButtonLoading
+                                                    ? "cursor-not-allowed"
+                                                    : "cursor-pointer"
+                                            }`}
+                                        >
+                                            Paid
+                                        </button>
                                     </div>
                                 </div>
                             </div>
