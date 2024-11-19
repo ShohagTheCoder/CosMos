@@ -2,6 +2,7 @@ import { Product } from 'src/products/dto/schemas/product.schema';
 
 // Define the type for createSellDto
 export interface CreateSellDto {
+    _id?: string;
     totalPrice: number;
     customer?: {
         _id: string;
@@ -19,4 +20,6 @@ export interface CreateSellDto {
     note: string;
     customerTotalDue: number;
     status: string;
+    paidTransaction: any;
+    dueTransaction: any;
 }

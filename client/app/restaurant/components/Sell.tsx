@@ -314,6 +314,7 @@ export default function Sell({
         }
     }
 
+    // Pending section
     useEffect(() => {
         async function setPendigSell() {
             const { data: sale } = await apiClient.get(`sells/pending/${id}`);

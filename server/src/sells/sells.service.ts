@@ -11,6 +11,7 @@ import {
     ProductDocument,
 } from 'src/products/dto/schemas/product.schema';
 import { Response } from 'src/common/utils/apiResponse';
+import { error } from 'console';
 
 @Injectable()
 export class SellsService {
@@ -163,17 +164,24 @@ export class SellsService {
     async create(createSellDto: CreateSellDto) {
         try {
             const shop = await this.usersService.findShop();
-
             if (!shop) {
-                throw new Error('Shop not found to exicute sell');
-                return;
+                throw new Error('Shop not found to execute sell');
             }
 
-            if (Object.keys(createSellDto.products).length == 0) {
-                if (createSellDto.customer == undefined) {
-                    throw new Error('Sell is emty');
-                    return;
-                }
+            // Chek if sell already complete
+            if (createSellDto.status == 'complete') {
+                throw new Error('Sell is already complete');
+            }
+
+            // Mark the sell as complete
+            createSellDto.status = 'complete';
+
+            if (
+                (!createSellDto.products ||
+                    Object.keys(createSellDto.products).length === 0) &&
+                !createSellDto.customer
+            ) {
+                throw new Error('Sell is empty');
             }
 
             if (!createSellDto.customer) {
@@ -191,10 +199,7 @@ export class SellsService {
                 }
             }
 
-            // Create and save the new sell
-            const createdSell = new this.sellModel(createSellDto);
-
-            // Create transaction from user to cart for sell's paid
+            // Handle transactions
             const userToCart = await this.accountsService.sendMoney({
                 senderId: createSellDto.user.account,
                 receiverId: shop.account,
@@ -203,9 +208,8 @@ export class SellsService {
                 note: createSellDto.note,
             });
 
-            createdSell.paidTransaction = userToCart._id.toString();
+            createSellDto.paidTransaction = userToCart._id.toString();
 
-            // Create transaction for sell from customer to cart if the sell has due
             if (createSellDto.due > 0 && createSellDto.customer) {
                 const customerToCart = await this.accountsService.sendMoney({
                     senderId: createSellDto.customer.account,
@@ -215,18 +219,24 @@ export class SellsService {
                     note: createSellDto.note,
                 });
 
-                createdSell.dueTransaction = customerToCart._id.toString();
+                createSellDto.dueTransaction = customerToCart._id.toString();
             }
+
+            // Update or create the sell document
+            const updatedOrCreatedSell = await this.sellModel.findOneAndUpdate(
+                { _id: createSellDto._id || new this.sellModel()._id }, // Match by _id or create a new one
+                createSellDto, // Update with new data
+                { upsert: true, new: true }, // Upsert and return the new document
+            );
 
             return {
                 status: 'success',
-                data: await createdSell.save(),
-                message: 'Sell complete',
+                data: updatedOrCreatedSell,
+                message: 'Sell processed successfully',
             };
         } catch (error) {
-            // Handle errors appropriately
-            console.error('Error creating sell:', error);
-            throw error; // Re-throw the error or handle it as needed
+            console.error('Error creating/updating sell:', error);
+            throw error;
         }
     }
 
