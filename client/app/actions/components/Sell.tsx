@@ -466,10 +466,7 @@ export default function Sell({
             <div className="print:hidden">
                 <Sidebar active="sell" userId={user._id} />
                 <div className="ps-[94px] 2xl:ps-[130px] 2xl:pe-[20px] bg-white dark:bg-gray-950">
-                    <NotificationList
-                        notifications={notifications}
-                        className="mt-4"
-                    />
+                    <NotificationList notifications={notifications} />
                     <div className="grid grid-cols-1 lg:grid-cols-8 2xl:grid-cols-9 lg:h-screen gap-6 overflow-x-hidden overflow-y-auto lg:overflow-y-hidden cosmos-scrollbar">
                         <div
                             className={`max-h=[1000px] h-full flex flex-col overflow-hidden  py-4 me-3 lg:me-0 ${
