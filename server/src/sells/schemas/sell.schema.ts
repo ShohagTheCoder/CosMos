@@ -10,6 +10,9 @@ export class Sell {
     @Prop({ default: 'complete' })
     status: string;
 
+    @Prop({ default: undefined })
+    greeting: string;
+
     @Prop({ maxlength: 500 })
     note: string;
 

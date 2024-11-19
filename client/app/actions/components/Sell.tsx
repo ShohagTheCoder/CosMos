@@ -431,6 +431,8 @@ export default function Sell({
                     if (sale.status == "pending") {
                         sale.totalOnly = false;
                         sale.cartOnly = false;
+                        sale.selectedProductIndex = 0;
+                        sale.activeProduct = Object.keys(sale.products)[0];
                         cartManager.reset(sale);
                     }
                 }

@@ -50,13 +50,7 @@ function CartProduct({
                                 key={product._id}
                                 className="mb-3 border-dashed border-2 border-slate-500"
                             >
-                                <div
-                                    className={`p-3 flex flex-col gap-3 ${
-                                        product._id == cart.activeProduct
-                                            ? "bg-green-300 dark:bg-green-950"
-                                            : ""
-                                    }`}
-                                >
+                                <div className={`p-3 flex flex-col gap-3`}>
                                     {product.note ? (
                                         <div className="flex gap-3">
                                             {product.name}
