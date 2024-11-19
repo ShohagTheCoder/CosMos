@@ -334,6 +334,17 @@ export default function Sell({
         setPendigSell();
     }, [id]);
 
+    async function setCustomerWithAccount(customer: Customer) {
+        const { data: account } = await apiClient.get(
+            `accounts/${customer.account}`
+        );
+        cartManager
+            .set("customer", customer)
+            .set("customerAccount", account)
+            .save();
+        setCommand("");
+    }
+
     // Add to cart with product shortcut
     function getProductByCommand(shortcut: string) {
         let command = commands[shortcut.toLocaleLowerCase()];
@@ -583,15 +594,10 @@ export default function Sell({
                                                         callback={(
                                                             customer: Customer
                                                         ) => {
-                                                            // dispatch(addCustomer(customer));
-                                                            cartManager
-                                                                .set(
-                                                                    "customer",
-                                                                    customer
-                                                                )
-                                                                .save();
+                                                            setCustomerWithAccount(
+                                                                customer
+                                                            );
                                                             setCommand("");
-                                                            // if()
                                                             document
                                                                 .getElementById(
                                                                     "command"

@@ -79,7 +79,7 @@ function SellDetails() {
                                         আগের জমা :
                                     </p>
                                     <p className=" text-lg font-semibold py-1">
-                                        {customerAccount.balance.toLocaleString(
+                                        {customerAccount.balance?.toLocaleString(
                                             "en-US"
                                         )}{" "}
                                         ৳

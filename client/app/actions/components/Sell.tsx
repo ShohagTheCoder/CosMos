@@ -408,7 +408,10 @@ export default function Sell({
     }
 
     async function setCustomerWithAccount(customer: Customer) {
-        const account = await apiClient.get(`accounts/${customer._id}`);
+        const { data: account } = await apiClient.get(
+            `accounts/${customer.account}`
+        );
+
         cartManager
             .set("customer", customer)
             .set("customerAccount", account)
@@ -435,6 +438,27 @@ export default function Sell({
         }
         setPendigSell();
     }, [id]);
+
+    async function handlePendingSell() {
+        setSellButtonLoading(true);
+
+        apiClient
+            .post("/sells/pending", { ...cartManager.getData(), user })
+            .then(async (res) => {
+                notifySuccess(res.data.message);
+                cartManager.reset(initialCartState);
+            })
+            .catch((error) => {
+                console.log(error);
+                notifyError(error);
+            })
+            .finally(() => {
+                setTimeout(() => {
+                    // setSellButtonLoading(false);
+                    setSellButtonLoading(false);
+                }, 3000);
+            });
+    }
 
     return (
         <div className="text-black dark:text-white select-none">
@@ -725,7 +749,7 @@ export default function Sell({
                                         </button>
                                         <button
                                             disabled={sellButtonLoading}
-                                            onDoubleClick={handleCompleteSell}
+                                            onDoubleClick={handlePendingSell}
                                             className={`w-1/2 pt-3 pb-2 border-dashed border-2 border-yellow-600 bg-yellow-900 hover:bg-blue-700 text-white ${
                                                 sellButtonLoading
                                                     ? "cursor-not-allowed"
