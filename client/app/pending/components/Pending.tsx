@@ -1,4 +1,5 @@
 "use client";
+import TrashIcon from "@/app/icons/TrashIcon";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { CartState } from "@/app/store/slices/cartSlice";
 import apiClient from "@/app/utils/apiClient";
@@ -40,18 +41,18 @@ export default function Pending({ sells }: { sells: CartState[] }) {
                     {sells.map((sell: CartState) => (
                         <div
                             key={sell._id}
-                            className="bg-gray-700 text-white p-4 rounded-md shadow-lg"
+                            className="bg-gray-700 text-white p-4 rounded-md shadow-lg flex flex-col"
                         >
-                            <div className="mb-3">
-                                <p className="font-bold">Customer:</p>
+                            <div className="mb-3 flex justify-between">
+                                <p className="font-bold">Customer :</p>
                                 <p>{sell.customer?.name || "Unknown"}</p>
                             </div>
-                            <div className="bg-gray-800 p-3 rounded-md mb-3">
+                            <div className="bg-gray-800 py-2 px-3 rounded-md mb-3 space-y-3 flex-grow">
                                 {Object.values(sell.products).map(
                                     (product: ProductWithID) => (
                                         <div
                                             key={product._id}
-                                            className="flex justify-between mb-2"
+                                            className="flex justify-between"
                                         >
                                             <p>{product.name}</p>
                                             <p>
@@ -63,13 +64,13 @@ export default function Pending({ sells }: { sells: CartState[] }) {
                                 )}
                             </div>
                             <div className="flex justify-between items-center bg-gray-800 p-3 rounded-md mb-3">
-                                <p className="font-bold">Total:</p>
+                                <p className="font-bold">Total :</p>
                                 <p>{sell.totalPrice} ৳</p>
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex gap-3">
                                 <a
                                     href={`/restaurant/${sell._id}`}
-                                    className="flex-1 bg-green-700 text-white py-2 px-3 rounded-md hover:bg-green-800 text-center transition duration-200"
+                                    className="flex-1 bg-gray-800 hover:bg-green-700 text-white py-2 px-3 rounded-md text-center transition duration-200"
                                 >
                                     View
                                 </a>
@@ -77,10 +78,10 @@ export default function Pending({ sells }: { sells: CartState[] }) {
                                     onDoubleClick={() =>
                                         handleDeletePendingSell(sell._id)
                                     }
-                                    className="bg-red-700 text-white py-2 px-3 rounded-md hover:bg-red-800 transition duration-200"
+                                    className="bg-red-900 text-white py-2 px-3 rounded-md hover:bg-red-700 transition duration-200"
                                     title="Double-click to delete"
                                 >
-                                    Delete
+                                    <TrashIcon height="18" />
                                 </button>
                             </div>
                         </div>
