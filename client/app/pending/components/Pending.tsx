@@ -16,6 +16,36 @@ export default function Pending({ sells }: { sells: CartState[] }) {
         }
     };
 
+    function getDate(inputDate: Date) {
+        const date = new Date(inputDate); // Use a different name or directly use inputDate
+
+        // Get the parts of the date
+        const day = date.toLocaleString("en-US", { weekday: "long" }); // e.g., "Tuesday"
+        const month = date.toLocaleString("en-US", { month: "long" }); // e.g., "November"
+        const dayOfMonth = date.getDate(); // e.g., 19
+        const year = date.getFullYear(); // e.g., 2024
+
+        // Format the date
+        return `${day}, ${month} ${dayOfMonth}, ${year}`;
+    }
+
+    function getTime(inputDate: Date): string {
+        const date = new Date(inputDate);
+
+        let hours = date.getHours(); // Get the hour (0-23)
+        const minutes = date.getMinutes(); // Get the minutes (0-59)
+        const period = hours >= 12 ? "PM" : "AM"; // Determine AM/PM
+
+        // Convert to 12-hour format
+        hours = hours % 12 || 12; // Converts 0 to 12 for midnight
+
+        // Add leading zero to minutes if needed
+        const formattedMinutes = minutes.toString().padStart(2, "0");
+
+        // Format the time
+        return `${hours}:${formattedMinutes} ${period}`;
+    }
+
     if (sells.length === 0) {
         return (
             <div className="container mx-auto h-screen flex justify-center items-center">
@@ -35,54 +65,93 @@ export default function Pending({ sells }: { sells: CartState[] }) {
     }
 
     return (
-        <div className="p-4">
+        <div className="p-4 select-none">
             <div className="container mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {sells.map((sell: CartState) => (
                         <div
+                            onClick={() => {
+                                window.location.href = `/restaurant/${sell._id}`;
+                            }}
                             key={sell._id}
-                            className="bg-gray-700 text-white p-4 rounded-md shadow-lg flex flex-col"
+                            className="bg-gray-700 hover:bg-blue-900 text-white p-4 rounded-md shadow-lg flex flex-col"
                         >
-                            <div className="mb-3 flex justify-between">
-                                <p className="font-bold">Customer :</p>
-                                <p>{sell.customer?.name || "Unknown"}</p>
+                            <div className="mb-3 flex gap-3">
+                                <div className="h-10 w-10 bg-gray-500 rounded-md flex justify-center items-center">
+                                    <p className="font-bold text-lg leading-none mb-0 h-[14px]">
+                                        {sell._id.slice(-2, sell._id.lenght)}
+                                    </p>
+                                </div>
+
+                                <div className="flex flex-col justify-between">
+                                    <p className="leading-none">
+                                        {sell.customer?.name || "Unknown"}
+                                    </p>
+                                    <p className="text-sm text-gray-300">
+                                        {sell.customer?.phoneNumber ||
+                                            "#019xxxxxxxx"}
+                                    </p>
+                                </div>
+                                <div className="ms-auto">
+                                    <button
+                                        className="hover:text-red-500"
+                                        onDoubleClick={() =>
+                                            handleDeletePendingSell(sell._id)
+                                        }
+                                    >
+                                        <TrashIcon height="18" />
+                                    </button>
+                                </div>
                             </div>
-                            <div className="bg-gray-800 py-2 px-3 rounded-md mb-3 space-y-3 flex-grow">
-                                {Object.values(sell.products).map(
-                                    (product: ProductWithID) => (
-                                        <div
-                                            key={product._id}
-                                            className="flex justify-between"
-                                        >
-                                            <p>{product.name}</p>
-                                            <p>
-                                                {product.quantity}{" "}
-                                                {product.unit}
-                                            </p>
-                                        </div>
-                                    )
-                                )}
+                            <div className="flex justify-between mb-2">
+                                <p className="text-sm text-gray-300">
+                                    {getDate(sell.createdAt)}
+                                </p>
+                                <p className="text-sm text-gray-300">
+                                    {getTime(sell.createdAt)}
+                                </p>
                             </div>
-                            <div className="flex justify-between items-center bg-gray-800 p-3 rounded-md mb-3">
-                                <p className="font-bold">Total :</p>
-                                <p>{sell.totalPrice} ৳</p>
+                            <div className="border-y border-gray-500 py-3 mb-3 flex-grow">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr>
+                                            <th className="text-gray-300">
+                                                Item
+                                            </th>
+                                            <th className="px-3 text-gray-300">
+                                                Qty
+                                            </th>
+                                            <th className="text-right text-gray-300">
+                                                Price
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {Object.values(sell.products).map(
+                                            (product: ProductWithID) => (
+                                                <tr key={product._id}>
+                                                    <td className="py-2">
+                                                        {product.name}
+                                                    </td>
+                                                    <td className="py-2 px-3">
+                                                        {product.quantity}{" "}
+                                                        {product.unit}
+                                                    </td>
+                                                    <td className="text-right">
+                                                        {product.price} ৳
+                                                    </td>
+                                                </tr>
+                                            )
+                                        )}
+                                    </tbody>
+                                </table>
                             </div>
-                            <div className="flex gap-3">
-                                <a
-                                    href={`/restaurant/${sell._id}`}
-                                    className="flex-1 bg-gray-800 hover:bg-green-700 text-white py-2 px-3 rounded-md text-center transition duration-200"
-                                >
-                                    View
-                                </a>
-                                <button
-                                    onDoubleClick={() =>
-                                        handleDeletePendingSell(sell._id)
-                                    }
-                                    className="bg-red-900 text-white py-2 px-3 rounded-md hover:bg-red-700 transition duration-200"
-                                    title="Double-click to delete"
-                                >
-                                    <TrashIcon height="18" />
-                                </button>
+
+                            <div className="flex justify-between items-center rounded-md">
+                                <p className="font-semibold">Total :</p>
+                                <p className="text-xl font-semibold">
+                                    {sell.totalPrice} ৳
+                                </p>
                             </div>
                         </div>
                     ))}
