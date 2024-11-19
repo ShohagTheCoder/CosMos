@@ -66,10 +66,7 @@ export default function Products({
         <div className="min-h-screen bg-white dark:bg-gray-800">
             <Sidebar userId={userId} active="products" />
             <div className="container max-w-[1200px] mx-auto px-4 pt-8 pb-4">
-                <NotificationList
-                    notifications={notifications}
-                    className="mb-3"
-                />
+                <NotificationList notifications={notifications} />
                 <div className="flex items-center justify-between gap-6 mb-4">
                     <h2 className="text-2xl font-bold">Products</h2>
                     <div className="w-auto flex gap-3 items-center">
