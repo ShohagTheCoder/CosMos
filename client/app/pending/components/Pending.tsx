@@ -79,7 +79,9 @@ export default function Pending({ sells }: { sells: CartState[] }) {
                             <div className="mb-3 flex gap-3">
                                 <div className="h-10 w-10 bg-gray-500 rounded-md flex justify-center items-center">
                                     <p className="font-bold text-lg leading-none mb-0 h-[14px]">
-                                        {sell._id.slice(-2, sell._id.lenght)}
+                                        {sell._id
+                                            .slice(-2, sell._id.lenght)
+                                            .toUpperCase()}
                                     </p>
                                 </div>
 
@@ -88,16 +90,16 @@ export default function Pending({ sells }: { sells: CartState[] }) {
                                         {sell.customer?.name || "Unknown"}
                                     </p>
                                     <p className="text-sm text-gray-300">
-                                        {sell.customer?.phoneNumber ||
-                                            "#019xxxxxxxx"}
+                                        {sell.customer?.phoneNumber || "#..."}
                                     </p>
                                 </div>
                                 <div className="ms-auto">
                                     <button
                                         className="hover:text-red-500"
-                                        onDoubleClick={() =>
-                                            handleDeletePendingSell(sell._id)
-                                        }
+                                        onDoubleClick={(e) => {
+                                            e.preventDefault();
+                                            handleDeletePendingSell(sell._id);
+                                        }}
                                     >
                                         <TrashIcon height="18" />
                                     </button>
