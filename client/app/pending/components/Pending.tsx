@@ -74,10 +74,10 @@ export default function Pending({ sells }: { sells: CartState[] }) {
                                 window.location.href = `/restaurant/${sell._id}`;
                             }}
                             key={sell._id}
-                            className="bg-gray-700 hover:bg-blue-900 text-white p-4 rounded-md shadow-lg flex flex-col"
+                            className="bg-gray-800 hover:bg-blue-900 text-white p-4 rounded-md shadow-lg flex flex-col"
                         >
                             <div className="mb-3 flex gap-3">
-                                <div className="h-10 w-10 bg-gray-500 rounded-md flex justify-center items-center">
+                                <div className="h-10 w-10 bg-blue-800 rounded-md flex justify-center items-center">
                                     <p className="font-bold text-lg leading-none mb-0 h-[14px]">
                                         {sell._id
                                             .slice(-2, sell._id.lenght)
@@ -93,7 +93,7 @@ export default function Pending({ sells }: { sells: CartState[] }) {
                                 </div>
                                 <div className="ms-auto">
                                     <button
-                                        className="hover:text-red-500"
+                                        className="hover:bg-red-800 h-10 w-10 rounded-lg bg-gray-700 flex justify-center items-center"
                                         onDoubleClick={(e) => {
                                             e.preventDefault();
                                             handleDeletePendingSell(sell._id);
@@ -111,7 +111,7 @@ export default function Pending({ sells }: { sells: CartState[] }) {
                                     {getTime(sell.createdAt)}
                                 </p>
                             </div>
-                            <div className="border-y border-gray-500 py-3 mb-3 flex-grow">
+                            <div className="border-y border-gray-600 py-3 mb-3 flex-grow">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
                                         <tr>

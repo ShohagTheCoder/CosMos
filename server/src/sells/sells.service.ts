@@ -28,7 +28,9 @@ export class SellsService {
     }
 
     findAllPending() {
-        return this.sellModel.find({ status: 'pending' });
+        return this.sellModel
+            .find({ status: 'pending' })
+            .sort({ createdAt: -1 });
     }
 
     async findPendingById(id: string) {
