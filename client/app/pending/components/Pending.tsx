@@ -86,11 +86,9 @@ export default function Pending({ sells }: { sells: CartState[] }) {
                                 </div>
 
                                 <div className="flex flex-col justify-between">
-                                    <p className="leading-none">
-                                        {sell.customer?.name || "Unknown"}
-                                    </p>
+                                    <p>{sell.customer?.name || "Unknown"}</p>
                                     <p className="text-sm text-gray-300">
-                                        {sell.customer?.phoneNumber || "#..."}
+                                        {sell.customer?.phoneNumber || "..."}
                                     </p>
                                 </div>
                                 <div className="ms-auto">
@@ -133,7 +131,13 @@ export default function Pending({ sells }: { sells: CartState[] }) {
                                             (product: ProductWithID) => (
                                                 <tr key={product._id}>
                                                     <td className="py-2">
-                                                        {product.name}
+                                                        {product.name.length >
+                                                        14
+                                                            ? product.name.slice(
+                                                                  0,
+                                                                  14
+                                                              ) + ".."
+                                                            : product.name}
                                                     </td>
                                                     <td className="py-2 px-3">
                                                         {product.quantity}{" "}
