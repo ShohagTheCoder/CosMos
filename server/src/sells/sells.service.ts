@@ -30,6 +30,10 @@ export class SellsService {
         return this.sellModel.find({ status: 'pending' });
     }
 
+    async findPendingById(id: string) {
+        return await this.sellModel.findById(id);
+    }
+
     async findByQuery({
         page = 1,
         limit = 10,

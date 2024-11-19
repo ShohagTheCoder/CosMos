@@ -33,6 +33,7 @@ import apiClient from "@/app/utils/apiClient";
 import useNotifications from "@/app/hooks/useNotifications";
 import NotificationList from "@/app/elements/notification/NotificationList";
 import { Command } from "../sell/page";
+import { useParams } from "next/navigation";
 
 interface SellProps {
     productsArray: ProductWithID[];
@@ -58,6 +59,8 @@ export default function Sell({
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [productsArray]
     );
+
+    const { id } = useParams();
 
     let [command, setCommand] = useState("");
     const [filteredCustomers, setFilteredCustomers] = useState(customers);
@@ -404,6 +407,29 @@ export default function Sell({
         cartManager.reset(newState);
     }
 
+    async function setCustomerWithAccount(customer: Customer) {
+        const account = await apiClient.get(`accounts/${customer._id}`);
+        cartManager
+            .set("customer", customer)
+            .set("customerAccount", account)
+            .save();
+        setCommand("");
+    }
+
+    useEffect(() => {
+        // async function setPendigSell() {
+        //     const { data: sale } = await apiClient.get(`sells/pending/${id}`);
+
+        //     console.log(sale);
+
+        //     if (sale) {
+        //         cartManager.reset(sale);
+        //     }
+        // }
+        // setPendigSell();
+        console.log("Goog");
+    }, [id]);
+
     return (
         <div className="text-black dark:text-white select-none">
             {/* <SellReceipt /> */}
@@ -539,15 +565,10 @@ export default function Sell({
                                                         callback={(
                                                             customer: Customer
                                                         ) => {
-                                                            // dispatch(addCustomer(customer));
-                                                            cartManager
-                                                                .set(
-                                                                    "customer",
-                                                                    customer
-                                                                )
-                                                                .save();
-                                                            setCommand("");
-                                                            // if()
+                                                            setCustomerWithAccount(
+                                                                customer
+                                                            );
+
                                                             document
                                                                 .getElementById(
                                                                     "command"

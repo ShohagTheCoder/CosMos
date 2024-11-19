@@ -33,6 +33,7 @@ import { productArrayToObject } from "@/app/actions/functions/productArrayToObje
 import { Command } from "../page";
 import FinalView from "./FinalView";
 import ProductUpdateShortcut from "./ProductUpdateShortcut";
+import { useParams } from "next/navigation";
 
 interface SellProps {
     productsArray: ProductWithID[];
@@ -82,6 +83,8 @@ export default function Sell({
         name: "unknown",
         value: 0,
     });
+
+    const { id } = useParams();
 
     const [sellButtonLoading, setSellButtonLoading] = useState(false);
 
@@ -311,6 +314,21 @@ export default function Sell({
         }
     }
 
+    useEffect(() => {
+        async function setPendigSell() {
+            const { data: sale } = await apiClient.get(`sells/pending/${id}`);
+
+            if (sale) {
+                if (sale.status == "pending") {
+                    sale.totalOnly = false;
+                    sale.cartOnly = false;
+                    cartManager.reset(sale);
+                }
+            }
+        }
+        setPendigSell();
+    }, [id]);
+
     // Add to cart with product shortcut
     function getProductByCommand(shortcut: string) {
         let command = commands[shortcut.toLocaleLowerCase()];
@@ -469,7 +487,6 @@ export default function Sell({
                                         setCommand(e.target.value);
                                     }}
                                     onKeyDown={(e) => {
-                                        console.log(e);
                                         commandHandler.handleKeyDown(e);
                                     }}
                                     onKeyUp={(e) => {

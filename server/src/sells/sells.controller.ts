@@ -52,6 +52,10 @@ export class SellsController {
     async findAllPending() {
         return this.sellsService.findAllPending();
     }
+    @Get('pending/:id')
+    async findPendingById(@Param('id') id: string) {
+        return this.sellsService.findPendingById(id);
+    }
 
     @Get()
     async findAll() {
