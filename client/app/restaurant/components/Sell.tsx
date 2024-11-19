@@ -317,13 +317,17 @@ export default function Sell({
     // Pending section
     useEffect(() => {
         async function setPendigSell() {
-            const { data: sale } = await apiClient.get(`sells/pending/${id}`);
+            if (id) {
+                const { data: sale } = await apiClient.get(
+                    `sells/pending/${id}`
+                );
 
-            if (sale) {
-                if (sale.status == "pending") {
-                    sale.totalOnly = false;
-                    sale.cartOnly = false;
-                    cartManager.reset(sale);
+                if (sale) {
+                    if (sale.status == "pending") {
+                        sale.totalOnly = false;
+                        sale.cartOnly = false;
+                        cartManager.reset(sale);
+                    }
                 }
             }
         }

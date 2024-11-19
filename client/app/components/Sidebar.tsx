@@ -59,6 +59,7 @@ export default function Sidebar({
                         icon={<SellIcon />}
                         link="/actions/sell"
                         isActive={active === "sell"}
+                        submenu={[{ link: "/restaurant", label: "Restaurant" }]}
                     />
                     <SidebarItem
                         label="Pending"

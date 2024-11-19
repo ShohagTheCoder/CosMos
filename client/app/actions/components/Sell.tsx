@@ -416,18 +416,24 @@ export default function Sell({
         setCommand("");
     }
 
+    // Pending section
     useEffect(() => {
-        // async function setPendigSell() {
-        //     const { data: sale } = await apiClient.get(`sells/pending/${id}`);
+        async function setPendigSell() {
+            if (id) {
+                const { data: sale } = await apiClient.get(
+                    `sells/pending/${id}`
+                );
 
-        //     console.log(sale);
-
-        //     if (sale) {
-        //         cartManager.reset(sale);
-        //     }
-        // }
-        // setPendigSell();
-        console.log("Goog");
+                if (sale) {
+                    if (sale.status == "pending") {
+                        sale.totalOnly = false;
+                        sale.cartOnly = false;
+                        cartManager.reset(sale);
+                    }
+                }
+            }
+        }
+        setPendigSell();
     }, [id]);
 
     return (

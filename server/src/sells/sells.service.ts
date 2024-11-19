@@ -136,27 +136,45 @@ export class SellsService {
 
     async createPending(createSellDto: CreateSellDto) {
         try {
-            // Save the sell as pending
+            // Ensure the sell has a status
             createSellDto.status = 'pending';
 
-            if (Object.keys(createSellDto.products).length == 0) {
-                if (createSellDto.customer == undefined) {
-                    throw new Error('Sell is emty');
-                    return;
+            // Validate sell data
+            if (Object.keys(createSellDto.products).length === 0) {
+                if (!createSellDto.customer) {
+                    throw new Error('Sell is empty');
                 }
             }
 
-            // Create and save the new sell
-            const createdSell = new this.sellModel(createSellDto);
+            // Check if a sell with the given criteria already exists
+            const existingSell = await this.sellModel.findOne({
+                _id: createSellDto._id, // Replace with your unique identifier
+            });
 
-            return {
-                status: 'success',
-                data: await createdSell.save(),
-                message: 'Sell pending',
-            };
+            if (existingSell) {
+                // Update the existing sell
+                Object.assign(existingSell, createSellDto);
+                await existingSell.save();
+
+                return {
+                    status: 'success',
+                    data: existingSell,
+                    message: 'Sell updated to pending',
+                };
+            } else {
+                // Create and save a new sell
+                const createdSell = new this.sellModel(createSellDto);
+                await createdSell.save();
+
+                return {
+                    status: 'success',
+                    data: createdSell,
+                    message: 'New sell created with pending status',
+                };
+            }
         } catch (error) {
             // Handle errors appropriately
-            console.error('Error creating sell:', error);
+            console.error('Error creating or updating sell:', error);
             throw error; // Re-throw the error or handle it as needed
         }
     }
