@@ -34,6 +34,7 @@ import useNotifications from "@/app/hooks/useNotifications";
 import NotificationList from "@/app/elements/notification/NotificationList";
 import { Command } from "../sell/page";
 import { useParams } from "next/navigation";
+import PendingCard from "@/app/pending/components/PendingCard";
 
 interface SellProps {
     productsArray: ProductWithID[];
@@ -75,9 +76,12 @@ export default function Sell({
     const [productUpdateShortcut, setProductUpdateShortcut] = useState(false);
     const { notifications, notifySuccess, notifyError } = useNotifications();
     const [settingState, setSettingState] = useState(setting);
+    const [isPending, setIsPending] = useState(false);
     // eslint-disable-next-line no-unused-vars
 
     const [cartOnly, setCartOnly] = useState(true);
+
+    const [pendings, setPendings] = useState<CartState[]>([]);
 
     const cartManager = useCartManager();
 
@@ -166,8 +170,33 @@ export default function Sell({
             }
         }
 
-        if (/^\s+/.test(command) && customers) {
-            setIsCustomers(true);
+        if (/^\s{2,}/.test(command)) {
+            if (isCustomers) {
+                setIsCustomers(false);
+            }
+
+            if (!isPending) {
+                setIsPending(true);
+                apiClient
+                    .get("sells/pending")
+                    .then((res) => {
+                        setPendings(res.data);
+                    })
+                    .catch((error) => {
+                        console.log("Faild to fetch pending sells", error);
+                    });
+            }
+            return;
+        }
+
+        if (/^\s{1,1}/.test(command) && customers) {
+            console.log("IS customer");
+            if (isPending) {
+                setIsPending(false);
+            }
+            if (!isCustomers) {
+                setIsCustomers(true);
+            }
             // Convert filtered array back to object
             const filteredCustomersObject = Object.entries(customers).reduce<
                 Record<string, CustomerWithId>
@@ -214,8 +243,14 @@ export default function Sell({
             if (isCustomers) {
                 setIsCustomers(false);
             }
+            if (isPending) {
+                setIsPending(false);
+            }
             setFilteredProducts(products);
         } else if (command == " ") {
+            if (isPending) {
+                setIsPending(false);
+            }
             if (!isCustomers) {
                 setIsCustomers(true);
             }
@@ -462,6 +497,77 @@ export default function Sell({
             });
     }
 
+    const renderContent = () => {
+        if (productUpdateShortcut) {
+            return (
+                <ProductUpdateShortcut
+                    handleClose={() => setProductUpdateShortcut(false)}
+                    callback={handleProductUpdate}
+                />
+            );
+        }
+
+        if (
+            commandCounter.name === "completeSell" &&
+            commandCounter.value >= 1
+        ) {
+            return null; // Render nothing
+        }
+
+        if (isPending) {
+            return (
+                <div className="grid grid-cols-3 gap-3">
+                    <PendingCard sells={pendings} />
+                </div>
+            );
+        }
+
+        if (isCustomers) {
+            return (
+                <CustomerCard
+                    customers={filteredCustomers}
+                    callback={(customer: Customer) => {
+                        setCustomerWithAccount(customer);
+                        document.getElementById("command")?.focus();
+                    }}
+                />
+            );
+        }
+
+        // Default case: Render product-related components
+        if (settingState.productRow) {
+            return (
+                <ProductsRow
+                    selected={cart.selectedProductIndex}
+                    callback={(product) => {
+                        cartManager.addTo(product).save();
+                        setCommand("");
+                        document.getElementById("command")?.focus();
+                    }}
+                    products={filteredProducts}
+                    showProductImage={settingState.productImage}
+                    showProductDescription={settingState.productDescription}
+                    setProductUpdateShortcut={handleProductUpdateShortcut}
+                />
+            );
+        }
+
+        return (
+            <ProductsCard
+                setProductUpdateShortcut={handleProductUpdateShortcut}
+                selected={cart.selectedProductIndex}
+                callback={(product) => {
+                    cartManager.addTo(product).save();
+                    setCommand("");
+                    document.getElementById("command")?.focus();
+                }}
+                products={filteredProducts}
+                showProductImage={settingState.productImage}
+                showProductDescription={settingState.productDescription}
+            />
+        );
+    };
+
     return (
         <div className="text-black dark:text-white select-none">
             {/* <SellReceipt /> */}
@@ -502,7 +608,6 @@ export default function Sell({
                                         setCommand(e.target.value);
                                     }}
                                     onKeyDown={(e) => {
-                                        console.log(e);
                                         commandHandler.handleKeyDown(e);
                                     }}
                                     onKeyUp={(e) => {
@@ -571,115 +676,7 @@ export default function Sell({
                                         )}
                                     </button>
                                 </div>
-                                <div>
-                                    {productUpdateShortcut ? (
-                                        <ProductUpdateShortcut
-                                            handleClose={() =>
-                                                setProductUpdateShortcut(false)
-                                            }
-                                            callback={handleProductUpdate}
-                                        />
-                                    ) : (
-                                        <>
-                                            {commandCounter.name ==
-                                                "completeSell" &&
-                                            commandCounter.value >= 1 ? (
-                                                ""
-                                            ) : isCustomers ? (
-                                                <div>
-                                                    <CustomerCard
-                                                        customers={
-                                                            filteredCustomers
-                                                        }
-                                                        callback={(
-                                                            customer: Customer
-                                                        ) => {
-                                                            setCustomerWithAccount(
-                                                                customer
-                                                            );
-
-                                                            document
-                                                                .getElementById(
-                                                                    "command"
-                                                                )
-                                                                ?.focus();
-                                                        }}
-                                                    />
-                                                </div>
-                                            ) : (
-                                                <>
-                                                    {settingState.productRow ? (
-                                                        <ProductsRow
-                                                            selected={
-                                                                cart.selectedProductIndex
-                                                            }
-                                                            callback={(
-                                                                product
-                                                            ) => {
-                                                                cartManager
-                                                                    .addTo(
-                                                                        product
-                                                                    )
-                                                                    .save();
-                                                                setCommand("");
-                                                                document
-                                                                    .getElementById(
-                                                                        "command"
-                                                                    )
-                                                                    ?.focus();
-                                                            }}
-                                                            products={
-                                                                filteredProducts
-                                                            }
-                                                            showProductImage={
-                                                                settingState.productImage
-                                                            }
-                                                            showProductDescription={
-                                                                settingState.productDescription
-                                                            }
-                                                            setProductUpdateShortcut={
-                                                                handleProductUpdateShortcut
-                                                            }
-                                                        />
-                                                    ) : (
-                                                        <ProductsCard
-                                                            setProductUpdateShortcut={
-                                                                handleProductUpdateShortcut
-                                                            }
-                                                            selected={
-                                                                cart.selectedProductIndex
-                                                            }
-                                                            callback={(
-                                                                product
-                                                            ) => {
-                                                                cartManager
-                                                                    .addTo(
-                                                                        product
-                                                                    )
-                                                                    .save();
-                                                                setCommand("");
-                                                                document
-                                                                    .getElementById(
-                                                                        "command"
-                                                                    )
-                                                                    ?.focus();
-                                                            }}
-                                                            products={
-                                                                filteredProducts
-                                                            }
-                                                            showProductImage={
-                                                                settingState.productImage
-                                                            }
-                                                            showProductDescription={
-                                                                settingState.productDescription
-                                                            }
-                                                        />
-                                                    )}
-                                                </>
-                                            )}
-                                        </>
-                                    )}
-                                </div>
+                                <div>{renderContent()}</div>
                             </div>
                             <div>
                                 {commandCounter.name == "completeSell" &&
@@ -718,7 +715,7 @@ export default function Sell({
                                         onChange={(e) =>
                                             setNote(e.target.value)
                                         }
-                                        rows={2}
+                                        rows={1}
                                         cols={50}
                                         placeholder="বিক্রি সম্পর্কে কিছু লিখুন"
                                     ></textarea>
