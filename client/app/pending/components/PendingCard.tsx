@@ -47,7 +47,7 @@ export default function PendingCard({ sells }: { sells: CartState[] }) {
     }
 
     return (
-        <div>
+        <>
             {sells.map((sell: CartState) => (
                 <div
                     onClick={() => {
@@ -136,6 +136,6 @@ export default function PendingCard({ sells }: { sells: CartState[] }) {
                     </div>
                 </div>
             ))}
-        </div>
+        </>
     );
 }

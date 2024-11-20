@@ -155,49 +155,43 @@ export default function Sell({
     ]);
 
     useEffect(() => {
-        // Match barcode to add product
-        if (command.length > 7) {
-            if (/^[0-9]+$/.test(command)) {
-                let product = productsArray.find(
-                    (product) => product.barcode == command
-                );
+        // Handle barcode input to add a product to the cart
+        if (command.length > 7 && /^[0-9]+$/.test(command)) {
+            const product = productsArray.find(
+                (product) => product.barcode === command
+            );
 
-                if (product) {
-                    cartManager.addTo(product).save();
-                    setCommand("");
-                    return;
-                }
+            if (product) {
+                cartManager.addTo(product).save();
+                setCommand(""); // Clear the command after adding the product
+                return;
             }
         }
 
+        // Check for double spaces to fetch pending sells
         if (/^\s{2,}/.test(command)) {
-            if (isCustomers) {
-                setIsCustomers(false);
-            }
+            if (isCustomers) setIsCustomers(false); // Exit customer mode if active
 
             if (!isPending) {
                 setIsPending(true);
                 apiClient
                     .get("sells/pending")
                     .then((res) => {
-                        setPendings(res.data);
+                        setPendings(res.data); // Set fetched pending sells
                     })
                     .catch((error) => {
-                        console.log("Faild to fetch pending sells", error);
+                        console.error("Failed to fetch pending sells:", error);
                     });
             }
             return;
         }
 
-        if (/^\s{1,1}/.test(command) && customers) {
-            console.log("IS customer");
-            if (isPending) {
-                setIsPending(false);
-            }
-            if (!isCustomers) {
-                setIsCustomers(true);
-            }
-            // Convert filtered array back to object
+        // Handle single space input for filtering customers
+        if (/^\s{1}/.test(command) && customers) {
+            if (isPending) setIsPending(false); // Exit pending mode
+            if (!isCustomers) setIsCustomers(true); // Activate customer mode
+
+            // Filter customers based on the command
             const filteredCustomersObject = Object.entries(customers).reduce<
                 Record<string, CustomerWithId>
             >((acc, [key, customer]) => {
@@ -212,23 +206,22 @@ export default function Sell({
             }, {});
 
             setFilteredCustomers(filteredCustomersObject);
-        } else if (/^(?![0-9\s.])[a-zA-Z]{2,10}/.test(command) && products) {
-            if (isCustomers) {
-                setIsCustomers(false);
-            }
+            return;
+        }
 
-            let filteredProductsObject = Object.entries(products).reduce<
+        // Handle product search with alphabetic command
+        if (/^(?![0-9\s.])[a-zA-Z]{2,10}/.test(command) && products) {
+            if (isCustomers) setIsCustomers(false); // Exit customer mode
+
+            // Filter products based on name, keywords, or brand
+            const filteredProductsObject = Object.entries(products).reduce<
                 Record<string, ProductWithID>
             >((acc, [key, value]) => {
-                if (value.name.toLowerCase().includes(command.toLowerCase())) {
-                    acc[key] = value;
-                } else if (
+                if (
+                    value.name.toLowerCase().includes(command.toLowerCase()) ||
                     value.keywords.some((keyword) =>
                         keyword.toLowerCase().includes(command.toLowerCase())
-                    )
-                ) {
-                    acc[key] = value;
-                } else if (
+                    ) ||
                     value.brand?.name
                         .toLowerCase()
                         .includes(command.toLowerCase())
@@ -239,30 +232,30 @@ export default function Sell({
             }, {});
 
             setFilteredProducts(filteredProductsObject);
-        } else if (command.length == 0) {
-            if (isCustomers) {
-                setIsCustomers(false);
-            }
-            if (isPending) {
-                setIsPending(false);
-            }
-            setFilteredProducts(products);
-        } else if (command == " ") {
-            if (isPending) {
-                setIsPending(false);
-            }
-            if (!isCustomers) {
-                setIsCustomers(true);
-            }
-            setFilteredCustomers(customers);
+            return;
         }
 
-        // Reset selected product index
+        // Handle reset when command is empty
+        if (command.length === 0) {
+            if (isCustomers) setIsCustomers(false);
+            if (isPending) setIsPending(false);
+            setFilteredProducts(products); // Reset to all products
+            return;
+        }
+
+        // Handle single space for customer reset
+        if (command === " ") {
+            if (isPending) setIsPending(false);
+            if (!isCustomers) setIsCustomers(true);
+            setFilteredCustomers(customers); // Reset to all customers
+            return;
+        }
+
+        // Reset selected product index in the cart
         if (cart.selectedProductIndex > 0) {
             cartManager.set("selectedProductIndex", 0);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [command, products]);
+    }, [command, products]); // Dependencies array ensures the effect runs when these values change
 
     async function handleCompleteSell() {
         setSellButtonLoading(true);
@@ -515,6 +508,14 @@ export default function Sell({
         }
 
         if (isPending) {
+            if (pendings.length <= 0) {
+                return (
+                    <div className="pt-10">
+                        <p className="text-lg">No pending sells</p>
+                    </div>
+                );
+            }
+
             return (
                 <div className="grid grid-cols-3 gap-3">
                     <PendingCard sells={pendings} />
