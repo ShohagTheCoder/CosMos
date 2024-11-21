@@ -126,8 +126,8 @@ export class SellsService {
         });
     }
 
-    findByCustomer(id: string) {
-        return this.sellModel.find({
+    async findByCustomer(id: string) {
+        return await this.sellModel.find({
             'customer._id': id,
         });
     }

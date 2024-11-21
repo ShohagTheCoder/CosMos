@@ -447,26 +447,32 @@ export default function Sell({
         setCommand("");
     }
 
+    // Set the pending sale to cart state
+    async function setPendigSell(sale: CartState) {
+        if (sale.status == "pending") {
+            sale.totalOnly = false;
+            sale.cartOnly = false;
+            sale.selectedProductIndex = 0;
+            sale.activeProduct = Object.keys(sale.products)[0];
+            cartManager.reset(sale);
+        }
+    }
+
+    // Fetch a pending sale by ID
+    async function setPendingSellById(id: string) {
+        try {
+            const { data: sale } = await apiClient.get(`sells/pending/${id}`);
+            setPendigSell(sale);
+        } catch (error) {
+            console.log("Faild to find pending sell for id + " + id, error);
+        }
+    }
+
     // Pending section
     useEffect(() => {
-        async function setPendigSell() {
-            if (id) {
-                const { data: sale } = await apiClient.get(
-                    `sells/pending/${id}`
-                );
-
-                if (sale) {
-                    if (sale.status == "pending") {
-                        sale.totalOnly = false;
-                        sale.cartOnly = false;
-                        sale.selectedProductIndex = 0;
-                        sale.activeProduct = Object.keys(sale.products)[0];
-                        cartManager.reset(sale);
-                    }
-                }
-            }
+        if (id) {
+            setPendingSellById(id as string);
         }
-        setPendigSell();
     }, [id]);
 
     async function handlePendingSell() {
@@ -518,7 +524,13 @@ export default function Sell({
 
             return (
                 <div className="grid grid-cols-3 gap-3">
-                    <PendingCard sells={pendings} />
+                    <PendingCard
+                        sells={pendings}
+                        callback={(sell) => {
+                            setPendigSell(sell);
+                            setCommand("");
+                        }}
+                    />
                 </div>
             );
         }

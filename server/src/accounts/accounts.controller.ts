@@ -17,6 +17,12 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 export class AccountsController {
     constructor(private readonly accountsService: AccountsService) {}
 
+    @Get(':id')
+    async findOne(@Param('id') id: string) {
+        console.log('Gooe');
+        return await this.accountsService.findOne(id);
+    }
+
     @Post()
     create(@Body() createAccountDto: any) {
         return this.accountsService.create(createAccountDto);
@@ -43,11 +49,6 @@ export class AccountsController {
     @Get()
     findAll() {
         return this.accountsService.findAll();
-    }
-
-    @Get(':id')
-    async findOne(@Param('id') id: string) {
-        return await this.accountsService.findOne(id);
     }
 
     @Patch(':id')

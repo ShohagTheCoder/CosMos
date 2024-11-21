@@ -5,7 +5,13 @@ import { CartState } from "@/app/store/slices/cartSlice";
 import apiClient from "@/app/utils/apiClient";
 import React from "react";
 
-export default function PendingCard({ sells }: { sells: CartState[] }) {
+export default function PendingCard({
+    sells,
+    callback,
+}: {
+    sells: CartState[];
+    callback: (sell: CartState) => void;
+}) {
     const handleDeletePendingSell = async (id: string) => {
         try {
             await apiClient.delete(`sells/${id}`);
@@ -51,7 +57,7 @@ export default function PendingCard({ sells }: { sells: CartState[] }) {
             {sells.map((sell: CartState) => (
                 <div
                     onClick={() => {
-                        window.location.href = `/restaurant/${sell._id}`;
+                        callback(sell);
                     }}
                     key={sell._id}
                     className="bg-gray-800 hover:bg-blue-900 text-white p-4 rounded-md shadow-lg flex flex-col"

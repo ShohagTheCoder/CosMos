@@ -45,7 +45,7 @@ export class SellsController {
 
     @Get('findByCustomer/:id')
     async findByCustomer(@Param('id') id: string) {
-        return this.sellsService.findByCustomer(id);
+        return await this.sellsService.findByCustomer(id);
     }
 
     @Get('pending')
@@ -57,14 +57,14 @@ export class SellsController {
         return this.sellsService.findPendingById(id);
     }
 
-    @Get()
-    async findAll() {
-        return this.sellsService.findAll();
-    }
-
     @Get(':id')
     async findOne(@Param('id') id: string) {
         return await this.sellsService.findOne(id);
+    }
+
+    @Get()
+    async findAll() {
+        return this.sellsService.findAll();
     }
 
     @Put(':id')

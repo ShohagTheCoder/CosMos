@@ -141,6 +141,7 @@ export class AccountsService {
     }
 
     async findOne(id: string) {
+        console.log('Hello');
         return await this.accountModel.findById(id);
     }
 

@@ -1,8 +1,6 @@
 import React from "react";
-import apiClient from "../utils/apiClient";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import NoResponse from "../common/components/NoResponse";
 import Customers from "./components/Customers";
 import ErrorResponse from "../common/components/ErrorResponse";
 import apiServer from "../utils/apiServer";
