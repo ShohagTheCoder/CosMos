@@ -115,10 +115,10 @@ function CartProduct({
                                                             )}{" "}
                                                             ৳
                                                         </td>
-                                                        <td className="pe-3">
-                                                            %
+                                                        <td className="px-1">
+                                                            -
                                                         </td>
-                                                        <td className="pe-3 text-center">
+                                                        <td className="pe-0 text-center">
                                                             <p className="no-spin py-1 w-[46px] dark:bg-gray-900 text-center outline-none">
                                                                 {product.baseDiscount.toLocaleString(
                                                                     "en-US",
@@ -127,6 +127,9 @@ function CartProduct({
                                                                     }
                                                                 )}
                                                             </p>
+                                                        </td>
+                                                        <td className="px-1">
+                                                            =
                                                         </td>
                                                         <td className="pe-3 text-end">
                                                             {product.discountPrice.toLocaleString(
@@ -156,10 +159,10 @@ function CartProduct({
                                                             )}{" "}
                                                             ৳
                                                         </td>
-                                                        <td className="pe-3">
-                                                            %
+                                                        <td className="px-1">
+                                                            -
                                                         </td>
-                                                        <td className="pe-3">
+                                                        <td className="pe-0">
                                                             <input
                                                                 type="number"
                                                                 value={product.discount.toLocaleString(
@@ -191,6 +194,9 @@ function CartProduct({
                                                                 }}
                                                                 className="no-spin h-[30px] w-[46px] dark:bg-gray-900 text-center outline-none"
                                                             />
+                                                        </td>
+                                                        <td className="px-1">
+                                                            =
                                                         </td>
                                                         <td className="pe-3 text-end">
                                                             {(
@@ -225,10 +231,10 @@ function CartProduct({
                                                             )}
                                                             ৳
                                                         </td>
-                                                        <td className="pe-3">
-                                                            %
+                                                        <td className="px-1">
+                                                            -
                                                         </td>
-                                                        <td className="pe-3">
+                                                        <td className="pe-0">
                                                             <input
                                                                 type="number"
                                                                 value={product.extraDiscount.toLocaleString(
@@ -256,6 +262,9 @@ function CartProduct({
                                                                 }}
                                                                 className="no-spin h-[30px] w-[46px] dark:bg-gray-900 text-center outline-none"
                                                             />
+                                                        </td>
+                                                        <td className="px-1">
+                                                            =
                                                         </td>
                                                         <td className="pe-3 text-lg text-end">
                                                             {product.subTotal.toLocaleString(
