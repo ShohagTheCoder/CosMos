@@ -1,0 +1,17 @@
+@media print {
+    body {
+        background: white;
+        margin: 0;
+        padding: 0;
+    }
+
+    .receipt {
+        width: 58mm; /* Match the printer width */
+        margin: 0 auto;
+    }
+
+    /* Optional: Hide buttons or other UI elements not needed for printing */
+    .no-print {
+        display: none;
+    }
+}

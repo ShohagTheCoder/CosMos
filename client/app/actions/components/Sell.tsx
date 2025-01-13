@@ -263,6 +263,7 @@ export default function Sell({
             .post("/sells", { ...cartManager.getData(), user })
             .then(async (res) => {
                 notifySuccess(res.data.message);
+
                 cartManager.reset(initialCartState);
                 try {
                     let { data: _productsArray } = await apiClient.get(
