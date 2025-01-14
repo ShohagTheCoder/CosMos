@@ -1,12 +1,49 @@
 "use client";
 import { ProductWithID } from "@/app/products/interfaces/product.interface";
-import React from "react";
+import React, { useEffect } from "react";
 import "./print.css";
 
 export default function Print({ sale }: { sale: any }) {
-    console.log(sale);
+    // Listen for enter click and open print dialog
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            const keysToTriggerPrint = ["Enter", "0", "1", "2", "+"];
+            if (keysToTriggerPrint.includes(event.key)) {
+                event.preventDefault();
+                window.print();
+                // Check if there is a history to go back to
+                if (window.history.length > 1) {
+                    window.history.back(); // Navigate back
+                } else {
+                    window.close(); // Close the tab
+                }
+            }
+
+            // Define keys that will trigger the close or go back behavior
+            const keysToCloseOrGoBack = ["Escape", "Backspace"];
+            if (keysToCloseOrGoBack.includes(event.key)) {
+                event.preventDefault();
+
+                // Check if there is a history to go back to
+                if (window.history.length > 1) {
+                    window.history.back(); // Navigate back
+                } else {
+                    window.close(); // Close the tab
+                }
+            }
+        };
+
+        // Add event listener
+        document.addEventListener("keydown", handleKeyDown);
+
+        // Cleanup event listener on unmount
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, []);
+
     return (
-        <div className="container mx-auto">
+        <div className="container mx-auto bg-white text-black">
             <div
                 className="p-4 border border-slate-400 w-[300px] mx-auto text-sm font-mono"
                 style={{ fontFamily: "monospace" }} // Ensures compatibility with POS printers
@@ -66,7 +103,7 @@ export default function Print({ sale }: { sale: any }) {
                 {/* Footer */}
                 <div className="text-center mt-6">
                     <p>Thank you for dining with us!</p>
-                    <p>"Savor the Flavor, Love Every Bite!"</p>
+                    <p>Savor the Flavor, Love Every Bite!</p>
                 </div>
             </div>
         </div>
