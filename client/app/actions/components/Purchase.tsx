@@ -236,6 +236,7 @@ export default function Purchase({
             .post("/purchases", { ...stockManager.getData(), user })
             .then(async (res) => {
                 notifySuccess(res.data.message);
+
                 stockManager.reset(initialStockState);
                 try {
                     let { data: _productsArray } = await apiClient.get(

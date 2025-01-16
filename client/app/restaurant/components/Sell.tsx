@@ -283,6 +283,15 @@ export default function Sell({
             .post("/sells", { ...cartManager.getData(), user })
             .then(async (res) => {
                 notifySuccess(res.data.message);
+
+                const url =
+                    process.env.NEXT_PUBLIC_NEXT_API_URL +
+                    "/print/" +
+                    res.data.data._id;
+
+                // Open print page
+                window.open(url, "_blank");
+
                 cartManager.reset(initialCartState);
                 try {
                     let { data: _productsArray } = await apiClient.get(

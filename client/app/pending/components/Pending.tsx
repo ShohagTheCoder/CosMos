@@ -22,11 +22,17 @@ export default function Pending({ sells }: { sells: CartState[] }) {
         );
     }
 
+    // activate pending sale
+    function activatePendingSale(sale: CartState) {
+        //code
+        window.location.href = `/actions/sell/${sale._id}`;
+    }
+
     return (
         <div className="p-4 select-none">
             <div className="container mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <PendingCard sells={sells} />
+                    <PendingCard sells={sells} callback={activatePendingSale} />
                 </div>
             </div>
         </div>

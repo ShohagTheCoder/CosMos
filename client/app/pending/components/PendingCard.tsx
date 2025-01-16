@@ -80,8 +80,12 @@ export default function PendingCard({
                         <div className="ms-auto">
                             <button
                                 className="hover:bg-red-800 h-10 w-10 rounded-lg bg-gray-700 flex justify-center items-center"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                }}
                                 onDoubleClick={(e) => {
                                     e.preventDefault();
+                                    e.stopPropagation();
                                     handleDeletePendingSell(sell._id);
                                 }}
                             >
