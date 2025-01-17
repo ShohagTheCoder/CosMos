@@ -19,6 +19,7 @@ import { CommandsModule } from './commands/commands.module';
 import { CategoriesModule } from './categories/categories.module';
 import { RegisterModule } from './register/register.module';
 import { ClearModule } from './clear/clear.module';
+import { BusinessesModule } from './businesses/businesses.module';
 
 @Module({
     imports: [
@@ -40,6 +41,7 @@ import { ClearModule } from './clear/clear.module';
         CategoriesModule,
         RegisterModule,
         ClearModule,
+        BusinessesModule,
     ],
     controllers: [AppController],
     providers: [AppService],

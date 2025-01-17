@@ -3,7 +3,13 @@ import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import React, { useEffect } from "react";
 import "./print.css";
 
-export default function Print({ sale }: { sale: any }) {
+export default function Print({
+    sale,
+    printSetting,
+}: {
+    sale: any;
+    printSetting: any;
+}) {
     // Listen for enter click and open print dialog
     useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -45,14 +51,16 @@ export default function Print({ sale }: { sale: any }) {
     return (
         <div className="container mx-auto bg-white text-black">
             <div
-                className="p-4 border border-slate-400 w-[300px] mx-auto text-sm font-mono"
+                className="px-4 py-6 border border-slate-400 w-[300px] mx-auto text-sm font-mono"
                 style={{ fontFamily: "monospace" }} // Ensures compatibility with POS printers
             >
                 {/* Header */}
                 <div className="text-center mb-4">
-                    <p className="text-lg font-bold">Mr. Kitchen</p>
-                    <p>Bancharampur</p>
-                    <p>Phone : .............</p>
+                    <p className="text-lg font-bold">
+                        {printSetting.title || "Title"}
+                    </p>
+                    <p>{printSetting.address || "Address"}</p>
+                    <p>Phone : {printSetting.phone || "00000000000"}</p>
                 </div>
 
                 {/* Date and Sale Info */}
@@ -102,8 +110,10 @@ export default function Print({ sale }: { sale: any }) {
 
                 {/* Footer */}
                 <div className="text-center mt-6">
-                    <p>Thank you for dining with us!</p>
-                    <p>Savor the Flavor, Love Every Bite!</p>
+                    <p>
+                        {printSetting.message ||
+                            "Thank you for dining with us!"}
+                    </p>
                 </div>
             </div>
         </div>
