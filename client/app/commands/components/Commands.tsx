@@ -104,8 +104,8 @@ export default function Commands({
                             className="h-[100px] gap-3 grid grid-cols-[auto_1fr_auto] bg-gray-700 py-3 px-4 rounded-lg"
                         >
                             <div className="flex justify-center items-center">
-                                <div className="flex justify-center items-center w-[40px] h-[40px] rounded-md bg-gray-900">
-                                    <p className="text-lg font-bold text-white">
+                                <div className="flex justify-center items-center w-[50px] h-[50px] rounded-md bg-gray-900">
+                                    <p className="text-xl text-white">
                                         {command.command}
                                     </p>
                                 </div>
@@ -113,20 +113,30 @@ export default function Commands({
 
                             <div className="flex items-center">
                                 {command.value && products[command.value] ? (
-                                    <p>{products[command.value].name}</p>
+                                    <p className="text-white">
+                                        {products[command.value].name}
+                                    </p>
                                 ) : (
-                                    <p>No product selected</p>
+                                    <p className="text-gray-400">
+                                        No product selected
+                                    </p>
                                 )}
                             </div>
 
                             {/* Product + Action Column */}
                             <div className="flex items-center justify-center relative group">
                                 {/* Product Info */}
-                                <div className="group-hover:hidden flex items-center">
+                                <div className="flex items-center">
                                     {command.value &&
                                     products[command.value] ? (
                                         <>
                                             <img
+                                                onClick={() => {
+                                                    setCurrentCommandId(
+                                                        command._id
+                                                    );
+                                                    setProductsPopup(true);
+                                                }}
                                                 src={`/images/products/${
                                                     products[command.value]
                                                         .image || "product.jpg"
@@ -138,21 +148,20 @@ export default function Commands({
                                             />
                                         </>
                                     ) : (
-                                        <p>Select one</p>
+                                        <button
+                                            onClick={() => {
+                                                setCurrentCommandId(
+                                                    command._id
+                                                );
+                                                setProductsPopup(true);
+                                            }}
+                                            className="bg-gray-800 transition-all hover:bg-green-700 text-white px-4 py-2 rounded h-[80px] w-[80px]"
+                                            disabled={loading}
+                                        >
+                                            {loading ? "..." : "+"}
+                                        </button>
                                     )}
                                 </div>
-
-                                {/* Select Button (shown on hover) */}
-                                <button
-                                    onClick={() => {
-                                        setCurrentCommandId(command._id);
-                                        setProductsPopup(true);
-                                    }}
-                                    className="hidden group-hover:flex bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded absolute right-0 top-1/2 -translate-y-1/2"
-                                    disabled={loading}
-                                >
-                                    {loading ? "..." : "+"}
-                                </button>
                             </div>
                         </div>
                     ))

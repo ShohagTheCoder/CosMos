@@ -1,7 +1,6 @@
 "use client";
 import "./style.css";
 import ProductsIcon from "../icons/ProductsIcon";
-import SellsIcon from "../icons/SellsIcon";
 import UserIcon from "../icons/UserIcon";
 import SettingIcon from "../icons/SettingIcon";
 import CustomersIcon from "../icons/CustomersIcon";
@@ -12,7 +11,6 @@ import TrashIcon from "../icons/TrashIcon";
 import SidebarItem from "./SidebarItem";
 import ColsIcon from "../icons/ColsIcon";
 import ShopIcon from "../icons/ShopIcon";
-import PendingIcon from "../icons/PendingIcon";
 
 export default function Sidebar({
     active = "home",
@@ -62,12 +60,12 @@ export default function Sidebar({
                         isActive={active === "sell"}
                         submenu={[{ link: "/restaurant", label: "Restaurant" }]}
                     />
-                    <SidebarItem
+                    {/* <SidebarItem
                         label="Pending"
                         icon={<PendingIcon />}
                         link="/pending"
                         isActive={active === "pending"}
-                    />
+                    /> */}
                     <SidebarItem
                         label="Purchase"
                         icon={<PurchaseIcon />}

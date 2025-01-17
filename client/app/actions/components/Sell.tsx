@@ -79,7 +79,7 @@ export default function Sell({
     const [isPending, setIsPending] = useState(false);
     // eslint-disable-next-line no-unused-vars
 
-    const [cartOnly, setCartOnly] = useState(true);
+    // const [cartOnly, setCartOnly] = useState(true);
 
     const [pendings, setPendings] = useState<CartState[]>([]);
 
