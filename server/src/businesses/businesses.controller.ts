@@ -18,7 +18,7 @@ export class BusinessesController {
         return this.businessesService.create(createBusinessDto);
     }
 
-    @Get('get/setting/print')
+    @Get('settings/print')
     getPrintSetting() {
         return this.businessesService.getPrintSetting();
     }
@@ -41,6 +41,11 @@ export class BusinessesController {
     @Get(':id')
     findOne(@Param('id') id: string) {
         return this.businessesService.findOne(+id);
+    }
+
+    @Patch('settings/print')
+    updatePrintSetting(@Body() updatePrintSettingDto: any) {
+        return this.businessesService.updatePrintSetting(updatePrintSettingDto);
     }
 
     @Patch(':id')

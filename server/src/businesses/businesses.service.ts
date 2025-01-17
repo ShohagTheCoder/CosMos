@@ -48,6 +48,25 @@ export class BusinessesService {
         return `This action returns a #${id} business`;
     }
 
+    async updatePrintSetting(printSettingDto: any) {
+        const business = await this.businessModel.findOne().exec();
+
+        if (!business) {
+            throw new Error('Business not found'); // Or handle it with your custom error response
+        }
+
+        // Use set() or markModified() for proper change detection in nested objects
+        business.settings.print = { ...printSettingDto }; // Or business.settings.print = printSettingDto directly if it's a full object replacement
+
+        // Alternatively, use markModified if the above still doesn't trigger the save
+        business.markModified('settings.print'); // Tells Mongoose to track changes in the nested object
+
+        // Save the updated business document
+        await business.save(); // Wait for the save operation to complete
+
+        return new Response().success().done(); // Or adjust based on your response handling
+    }
+
     update(id: number, updateBusinessDto: any) {
         return `This action updates a #${id} business`;
     }

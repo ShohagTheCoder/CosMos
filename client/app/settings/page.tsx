@@ -1,9 +1,9 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import NoResponse from "../common/components/NoResponse";
-import apiClient from "../utils/apiClient";
 import Settings from "./components/Settings";
 import Sidebar from "../components/Sidebar";
+import apiServer from "../utils/apiServer";
 
 export default async function SettingsPage() {
     const cookiesList = cookies();
@@ -14,14 +14,19 @@ export default async function SettingsPage() {
     }
 
     try {
-        const { data: settings } = await apiClient.get(
+        const { data: settings } = await apiServer().get(
             `/settings/findByUserId/${userId}`
         );
+
+        const {
+            data: { data: printSetting },
+        } = await apiServer().get("/businesses/settings/print");
+
         return (
             <div>
                 <Sidebar active="settings" userId={userId} />
                 <div>
-                    <Settings settings={settings} />
+                    <Settings settings={settings} printSetting={printSetting} />
                 </div>
             </div>
         );

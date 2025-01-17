@@ -55,12 +55,13 @@ export default function Print({
                 style={{ fontFamily: "monospace" }} // Ensures compatibility with POS printers
             >
                 {/* Header */}
-                <div className="text-center mb-4">
-                    <p className="text-lg font-bold">
+                <div className="mb-3">
+                    <p className="text-center text-lg font-bold">
+                        {printSetting.name || "Name"}
+                    </p>
+                    <p className="text-center text-sm">
                         {printSetting.title || "Title"}
                     </p>
-                    <p>{printSetting.address || "Address"}</p>
-                    <p>Phone : {printSetting.phone || "00000000000"}</p>
                 </div>
 
                 {/* Date and Sale Info */}
@@ -70,45 +71,73 @@ export default function Print({
                             " - " +
                             new Date(sale.createdAt).toLocaleTimeString()}
                     </p>
-                    <p>Customer : {sale.customer?.name ?? "unknown"}</p>
+                    {sale.customer == undefined ? (
+                        ""
+                    ) : (
+                        <p>Customer : {sale.customer?.name}</p>
+                    )}
                 </div>
 
                 {/* Product List */}
-                <div className="border-t border-b border-dashed py-2">
-                    {Object.values(
-                        sale.products as Record<string, ProductWithID>
-                    ).map((product: ProductWithID) => (
-                        <div key={product._id} className="flex justify-between">
-                            <span>
-                                {product.name.length > 10
-                                    ? product.name.substring(0, 12) + ".."
-                                    : product.name}
-                            </span>
-                            <span>
-                                {product.price.toFixed(0)} x {product.quantity}{" "}
-                                {product.unit} = {product.subTotal.toFixed(0)}
-                            </span>
-                        </div>
-                    ))}
-                </div>
+                <table className="border-t border-b border-black w-full">
+                    <thead>
+                        <tr className="text-left">
+                            <th className="py-1">Product</th>
+                            <th className="py-1 px-2">P x Q</th>
+                            <th className="py-1 text-right">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {Object.values(
+                            sale.products as Record<string, ProductWithID>
+                        ).map((product: ProductWithID) => (
+                            <tr key={product._id}>
+                                <td className="py-1">
+                                    {product.name.length > 10
+                                        ? product.name.substring(0, 12) + ".."
+                                        : product.name}
+                                </td>
+                                <td className="py-1 px-2 min-w-[110px]">
+                                    {product.price.toFixed(0)} x{" "}
+                                    {product.quantity}
+                                    {product.unit}
+                                </td>
+                                <td className="py-1 text-right">
+                                    {product.subTotal.toFixed(0)}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
 
                 {/* Total */}
                 <div className="mt-4">
-                    {/* <div className="flex justify-between">
-                        <strong>Subtotal:</strong>
-                        <span>{sale.totalPrice.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                        <strong>Discount:</strong>
-                        <span>0</span>
-                    </div> */}
+                    {printSetting.discount == true ? (
+                        <>
+                            <div className="flex justify-between">
+                                <strong>Subtotal:</strong>
+                                <span>{sale.totalPrice.toFixed(0)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <strong>Discount:</strong>
+                                <span>0</span>
+                            </div>
+                        </>
+                    ) : (
+                        ""
+                    )}
+
                     <div className="flex justify-between">
                         <strong>Total:</strong>
-                        <span>{sale.totalPrice.toFixed(2)}</span>
+                        <span>{sale.totalPrice.toFixed(0)}</span>
                     </div>
                 </div>
 
                 {/* Footer */}
+                <div className="mb-3 mt-3 text-center">
+                    <p>Address : {printSetting.address || "Address"}</p>
+                    <p>Phone : {printSetting.phone || "00000000000"}</p>
+                </div>
                 <div className="text-center mt-6">
                     <p>
                         {printSetting.message ||

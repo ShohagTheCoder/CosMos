@@ -25,7 +25,7 @@ export default async function PrintByIdPage({
     try {
         const {
             data: { data: printSetting },
-        } = await apiServer().get("/businesses/get/setting/print");
+        } = await apiServer().get("/businesses/settings/print");
         const { data: sale } = await apiServer().get(`/sells/${id}`);
         return <Print sale={sale} printSetting={printSetting} />;
     } catch (error: any) {
