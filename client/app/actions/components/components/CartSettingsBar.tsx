@@ -17,6 +17,7 @@ export default function CartSettingsBar({
     settingState: any;
     setSettingState: any;
     stateManager: any;
+    // eslint-disable-next-line no-unused-vars
     handleUpdateProductPrice: (amount: number) => void;
 }) {
     function updateSetting(payload: any) {

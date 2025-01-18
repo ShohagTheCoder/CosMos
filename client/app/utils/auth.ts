@@ -7,8 +7,12 @@ export async function login(email: any, password: any) {
 }
 
 export function logout() {
-    Cookies.remove("access_token");
-    window.location.href = "/login";
+    try {
+        Cookies.remove("access_token");
+        window.location.href = "/login";
+    } catch (error: any) {
+        console.log("Faild to lotout in logout function", error.messagage);
+    }
 }
 
 export function getToken() {

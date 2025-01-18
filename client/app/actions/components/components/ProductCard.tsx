@@ -1,4 +1,3 @@
-import { ProductWithID } from "@/app/products/interfaces/product.interface";
 import { RootState } from "@/app/store/store";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -8,8 +7,8 @@ function ProductCard({ products }: { products: any }) {
         (state: RootState) => state.cart.selectedProductIndex
     );
 
+    // eslint-disable-next-line no-unused-vars
     function handleaddTo(_id: string) {
-        const newProduct: ProductWithID = products[_id];
         document.getElementById("command")?.focus();
     }
 

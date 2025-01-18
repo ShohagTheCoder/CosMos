@@ -10,6 +10,7 @@ interface ProductsRowProps {
     products: Record<string, ProductWithID>;
     showProductImage: boolean;
     showProductDescription: boolean;
+    // eslint-disable-next-line no-unused-vars
     setProductUpdateShortcut: (productId: string) => void;
 }
 

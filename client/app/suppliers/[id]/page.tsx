@@ -16,13 +16,6 @@ interface Supplier {
     products: string[];
 }
 
-interface Product {
-    _id: string;
-    name: string;
-    price: number;
-    // Add other product fields as needed
-}
-
 export default function ViewSupplier() {
     const [supplier, setSupplier] = useState<Supplier | null>(null);
     const [loading, setLoading] = useState(true);

@@ -6,6 +6,7 @@ import React from "react";
 
 interface ProductsCardProps {
     selected: number;
+    // eslint-disable-next-line no-unused-vars
     callback: (product: ProductWithID) => void;
     products: Record<string, ProductWithID> | undefined;
 }

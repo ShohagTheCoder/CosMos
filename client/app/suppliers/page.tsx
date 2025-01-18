@@ -3,10 +3,8 @@
 import { useEffect, useState } from "react";
 import apiClient from "../utils/apiClient";
 import Link from "next/link";
-import Notification, {
-    NotificationProps,
-} from "../elements/notification/NotificationList";
 import { ERROR, SUCCESS } from "../utils/constants/message";
+import Notification from "../elements/notification/Notification";
 
 interface Supplier {
     _id: string;
@@ -19,7 +17,7 @@ interface Supplier {
 
 export default function Suppliers() {
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
-    const [notification, setNotification] = useState<NotificationProps>({
+    const [notification, setNotification] = useState({
         type: "none",
         message: "This is a notification",
     });
@@ -52,13 +50,11 @@ export default function Suppliers() {
                     type: SUCCESS,
                     message: `Supplier deleted successfully`,
                 });
-                console.log(response.data);
             } catch (error) {
                 setNotification({
                     type: ERROR,
                     message: `Faild to delete supplier`,
                 });
-                console.error(error);
             }
         }
     }
@@ -67,7 +63,9 @@ export default function Suppliers() {
         <main className="bg-gray-900 text-white min-h-screen p-6">
             <div className="container mx-auto">
                 <Notification
-                    type={notification.type}
+                    type={SUCCESS}
+                    id={23456}
+                    clearNotification={() => console.log("hello")}
                     message={notification.message}
                 />
                 <div className="mb-4">

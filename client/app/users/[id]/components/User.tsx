@@ -1,6 +1,4 @@
 "use client";
-import DatePickerMini from "@/app/components/DatePickerMinit";
-import SellsRow from "@/app/components/SellsRow";
 import Sidebar from "@/app/components/Sidebar";
 import TransferMoney from "@/app/components/TransferMoney";
 import apiClient from "@/app/utils/apiClient";
