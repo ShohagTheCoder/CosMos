@@ -32,6 +32,7 @@ export function middleware(req: NextRequest) {
 // Apply middleware to all routes except login
 export const config = {
     matcher: [
+        "/",
         "/dashboard",
         "/shop",
         "/restaurant",

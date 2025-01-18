@@ -61,7 +61,6 @@ export class PurchasesService {
                 message: 'Purchase complete',
             };
         } catch (error) {
-            console.log(error);
             // Handle errors appropriately
             throw new Error(error); // Re-throw the error or handle it as needed
         }

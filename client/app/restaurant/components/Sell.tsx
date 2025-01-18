@@ -745,17 +745,6 @@ export default function Sell({
                                     <div className="flex gap-4">
                                         <button
                                             disabled={sellButtonLoading}
-                                            onDoubleClick={handlePendingSell}
-                                            className={`w-1/2 pt-3 pb-2 border-2 border-dashed border-green-600 bg-green-900 hover:bg-green-700 text-white ${
-                                                sellButtonLoading
-                                                    ? "cursor-not-allowed"
-                                                    : "cursor-pointer"
-                                            }`}
-                                        >
-                                            Order
-                                        </button>
-                                        <button
-                                            disabled={sellButtonLoading}
                                             onDoubleClick={handleCompleteSell}
                                             className={`w-1/2 pt-3 pb-2 border-dashed border-2 border-yellow-600 bg-yellow-900 hover:bg-blue-700 text-white ${
                                                 sellButtonLoading
@@ -764,6 +753,17 @@ export default function Sell({
                                             }`}
                                         >
                                             Paid
+                                        </button>
+                                        <button
+                                            disabled={sellButtonLoading}
+                                            onDoubleClick={handlePendingSell}
+                                            className={`w-1/2 pt-3 pb-2 border-2 border-dashed border-green-600 bg-green-900 hover:bg-green-700 text-white ${
+                                                sellButtonLoading
+                                                    ? "cursor-not-allowed"
+                                                    : "cursor-pointer"
+                                            }`}
+                                        >
+                                            Order
                                         </button>
                                     </div>
                                 </div>

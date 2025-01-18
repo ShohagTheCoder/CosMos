@@ -19,7 +19,6 @@ export class AccountsController {
 
     @Get(':id')
     async findOne(@Param('id') id: string) {
-        console.log('Gooe');
         return await this.accountsService.findOne(id);
     }
 

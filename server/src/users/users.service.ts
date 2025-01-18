@@ -15,8 +15,6 @@ export class UsersService {
     ) {}
 
     async create(createUserDto: any) {
-        // console.log(createUserDto);
-        // return;
         try {
             const user = new this.userModel(createUserDto);
             const account = new this.accountModel({
@@ -53,8 +51,7 @@ export class UsersService {
                 data: null,
             };
         } catch (error) {
-            console.log(error);
-            throw error;
+            return new Response().error(error.message).done();
         }
     }
 

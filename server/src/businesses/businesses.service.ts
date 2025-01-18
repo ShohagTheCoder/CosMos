@@ -17,16 +17,12 @@ export class BusinessesService {
         if (existingCount === 0) {
             try {
                 await this.businessModel.create(createBusinessDto);
-                console.log('Business created successfully');
                 return 'Business created successfully';
             } catch (error) {
-                console.log('Faild to create business');
-                console.log(error.message);
                 return 'Faild to create business';
             }
         }
 
-        console.log('Business already exists');
         return 'Business already exists';
     }
 
